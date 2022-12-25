@@ -1,0 +1,1 @@
+# quiz-registrator-api
