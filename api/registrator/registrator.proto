@@ -1,0 +1,382 @@
+syntax = "proto3";
+
+package users;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator;registrator";
+
+import "google/protobuf/timestamp.proto";
+
+message Game {
+	string address = 1;
+	google.protobuf.Timestamp date = 2;
+	uint32 game_type = 3;
+	uint64 id = 4;
+	int64 external_id = 5;
+	uint32 league = 6;
+	uint32 max_players = 7;
+	string number = 8;
+	string place = 9;
+	bool registered = 10;
+	Payment payment = 11;
+	uint32 number_players = 12;
+	uint32 number_legioners = 13;
+	bool my = 14;
+	uint32 my_legioners = 15;
+	uint32 result_place = 16;
+}
+
+service CroupierService {
+	// GetLotteryStatus returns lottery status by game id
+	rpc GetLotteryStatus(GetLotteryStatusRequest) returns (GetLotteryStatusResponse) {
+	}
+
+	// RegisterForLottery registers player for lottery
+	rpc RegisterForLottery(RegisterForLotteryRequest) returns (RegisterForLotteryResponse) {
+	}
+}
+
+message GetLotteryStatusRequest {
+	uint64 game_id = 1;
+}
+
+message GetLotteryStatusResponse {
+	bool active = 1;
+}
+
+message RegisterForLotteryRequest {
+	uint64 game_id = 1;
+}
+
+message RegisterForLotteryResponse {
+	uint64 number = 1;
+}
+
+service PhotographerService {
+	// AddGamePhotos adds game photos
+	rpc AddGamePhotos(AddGamePhotosRequest) returns (AddGamePhotosResponse) {
+	}
+	
+	rpc GetGamesWithPhotos(GetGamesWithPhotosRequest) returns (GetGamesWithPhotosResponse) {
+	}
+
+	rpc GetPhotosByGameID(GetPhotosByGameIDRequest) returns (GetPhotosByGameIDResponse) {
+	}
+}
+
+message AddGamePhotosRequest {
+	uint64 game_id = 1;
+	repeated string urls = 2;
+}
+
+message AddGamePhotosResponse {
+}
+
+
+message GetGamesWithPhotosRequest {
+	uint64 limit = 1;
+	uint64 offset = 2;
+}
+
+message GetGamesWithPhotosResponse {
+	repeated Game games = 1;
+	uint64 total = 2;
+}
+
+message GetPhotosByGameIDRequest {
+	uint64 game_id = 1;
+}
+
+message GetPhotosByGameIDResponse {
+	repeated string urls = 1;
+}
+
+service RegistratorService {
+	// AddGame creates a new game
+	rpc AddGame(AddGameRequest) returns (AddGameResponse) {
+	}
+
+	// Returns Already exists
+	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
+	}
+
+	// DeleteGame deletes a game
+	rpc DeleteGame(DeleteGameRequest) returns (DeleteGameResponse) {
+	}
+
+	// Returns game or Not Found
+	rpc GetGameByID(GetGameByIDRequest) returns (GetGameByIDResponse) {
+	}
+
+	rpc GetGames(GetGamesRequest) returns (GetGamesResponse) {
+	}
+
+	rpc GetPlayersByGameID(GetPlayersByGameIDRequest) returns (GetPlayersByGameIDResponse) {
+	}
+
+	rpc GetRegisteredGames(GetRegisteredGamesRequest) returns (GetRegisteredGamesResponse) {
+	}
+
+	rpc GetUser(GetUserRequest) returns (GetUserResponse) {
+	}
+
+	rpc GetUserByTelegramID(GetUserByTelegramIDRequest) returns (GetUserByTelegramIDResponse) {
+	}
+
+	rpc GetUserGames(GetUserGamesRequest) returns (GetUserGamesResponse) {
+	}
+
+	rpc RegisterGame(RegisterGameRequest) returns (RegisterGameResponse) {
+	}
+
+	rpc RegisterPlayer(RegisterPlayerRequest) returns (RegisterPlayerResponse) {
+	}
+
+	rpc UnregisterGame(UnregisterGameRequest) returns (UnregisterGameResponse) {
+	}
+
+	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (UnregisterPlayerResponse) {
+	}
+
+	rpc UpdatePayment(UpdatePaymentRequest) returns (UpdatePaymentResponse) {
+	}
+
+	// UpdateUserEmail updates a user email
+	rpc UpdateUserEmail(UpdateUserEmailRequest) returns (UpdateUserEmailResponse) {
+	}
+
+	// UpdateUserName updates a user's name
+	rpc UpdateUserName(UpdateUserNameRequest) returns (UpdateUserNameResponse) {
+	}
+
+	// UpdateUserPhone updates a user's phone
+	rpc UpdateUserPhone(UpdateUserPhoneRequest) returns (UpdateUserPhoneResponse) {
+	}
+
+	// UpdateUserState updates a user's state
+	rpc UpdateUserState(UpdateUserStateRequest) returns (UpdateUserStateResponse) {
+	}
+}
+
+message AddGameRequest {
+	int64 external_id = 1;
+	uint32 league = 2;
+	uint32 game_type = 3;
+	string number = 4;
+	string place = 5;
+	string address = 6;
+	google.protobuf.Timestamp date = 7;
+	uint32 max_players = 8;
+}
+
+message AddGameResponse {
+	uint64 id = 1;
+}
+
+message CreateUserRequest {
+	string name = 1;
+	int64 telegram_id = 2;
+	uint32 state = 3;
+}
+  
+message CreateUserResponse {
+	uint64 id = 1;
+}
+  
+message DeleteGameRequest {
+	uint64 id = 1;
+}
+  
+message DeleteGameResponse {
+}
+
+enum Payment {
+	PAYMENT_INVALID = 0;
+	PAYMENT_CASH = 1;
+	PAYMENT_CERTIFICATE = 2;
+	PAYMENT_MIXED = 3;
+}
+
+message GetGameByIDRequest {
+	uint64 game_id = 1;
+}
+  
+message GetGameByIDResponse {
+	Game game = 1;
+}
+
+message GetGamesRequest {
+	bool active = 1;
+}
+  
+message GetGamesResponse {
+	repeated Game games = 1;
+}
+
+enum Degree {
+	DEGREE_INVALID = 0;
+	DEGREE_LIKELY = 1;
+	DEGREE_UNLIKELY = 2;
+}
+
+message Player {
+	string name = 1;
+	Degree degree = 2;
+}
+
+message GetPlayersByGameIDRequest {
+	uint64 game_id = 1;
+}
+
+message GetPlayersByGameIDResponse {
+	repeated Player players = 1;
+}
+
+message GetRegisteredGamesRequest {
+	bool active = 1;
+}
+  
+message GetRegisteredGamesResponse {
+	repeated Game games = 1;
+}
+
+message User {
+	uint64 id = 1;
+	string name = 2;
+	int64 telegram_id = 3;
+	string email = 4;
+	string phone = 5;
+	uint32 state = 6;
+}
+
+message GetUserRequest {
+}
+  
+message GetUserResponse {
+	User user = 1;
+}
+
+message GetUserByTelegramIDRequest {
+	int64 telegram_id = 1;
+}
+  
+message GetUserByTelegramIDResponse {
+	User user = 1;
+}
+
+message GetUserGamesRequest {
+	bool active = 1;
+	uint64 user_id = 2;
+}
+  
+message GetUserGamesResponse {
+	repeated Game games = 1;
+}
+
+enum RegisterGameStatus {
+	REGISTER_GAME_STATUS_INVALID = 0;
+	REGISTER_GAME_STATUS_OK = 1;
+	REGISTER_GAME_STATUS_ALREADY_REGISTERED = 2;
+	REGISTER_GAME_STATUS_ERROR = 3;
+}
+
+message RegisterGameRequest {
+	uint64 game_id = 1;	
+}
+
+message RegisterGameResponse {
+	RegisterGameStatus status = 1;
+}
+  
+enum PlayerType {
+	PLAYER_TYPE_INVALID = 0;
+	PLAYER_TYPE_ME = 1;
+	PLAYER_TYPE_LEGIONER = 2;
+}
+
+enum RegisterPlayerStatus {
+	REGISTER_PLAYER_STATUS_INVALID = 0;
+	REGISTER_PLAYER_STATUS_OK = 1;
+	REGISTER_PLAYER_STATUS_ALREADY_REGISTERED = 2;
+	REGISTER_PLAYER_STATUS_ERROR = 3;
+}
+
+message RegisterPlayerRequest {
+	uint64 game_id = 1;	
+	PlayerType player_type = 2;
+	Degree degree = 3;
+}
+  
+message RegisterPlayerResponse {
+	RegisterPlayerStatus status = 1;
+}
+
+enum UnregisterGameStatus {
+	UNREGISTER_GAME_STATUS_INVALID = 0;
+	UNREGISTER_GAME_STATUS_OK = 1;
+	UNREGISTER_GAME_STATUS_NOT_REGISTERED = 2;
+	UNREGISTER_GAME_STATUS_ERROR = 3;
+}
+
+message UnregisterGameRequest {
+	uint64 game_id = 1;	
+}
+
+message UnregisterGameResponse {
+	UnregisterGameStatus status = 1;
+}
+  
+enum UnregisterPlayerStatus {
+	UNREGISTER_PLAYER_STATUS_INVALID = 0;
+	UNREGISTER_PLAYER_STATUS_OK = 1;
+	UNREGISTER_PLAYER_STATUS_NOT_REGISTERED = 2;
+	UNREGISTER_PLAYER_STATUS_ERROR = 3;
+}
+
+message UnregisterPlayerRequest {
+	uint64 game_id = 1;	
+	PlayerType player_type = 2;
+}
+  
+message UnregisterPlayerResponse {
+	UnregisterPlayerStatus status = 1;
+}
+
+message UpdatePaymentRequest {
+	uint64 game_id = 1;
+	Payment payment = 2;
+}
+
+message UpdatePaymentResponse {
+}
+
+message UpdateUserEmailRequest {
+	uint64 id = 1;
+	string email = 2;
+}
+
+message UpdateUserEmailResponse {
+}
+
+message UpdateUserNameRequest {
+	uint64 id = 1;
+	string name = 2;
+}
+
+message UpdateUserNameResponse {
+}
+
+message UpdateUserPhoneRequest {
+	uint64 id = 1;
+	string phone = 2;
+}
+
+message UpdateUserPhoneResponse {
+}
+
+message UpdateUserStateRequest {
+	uint64 id = 1;
+	uint32 state = 2;
+}
+
+message UpdateUserStateResponse {
+}
