@@ -1,0 +1,8 @@
+.vscode
+.DS_Store
+bin
+registrator-api
+!registrator-api/
+token
+token_test
+vendor

@@ -1,0 +1,24 @@
+#Log level
+log_level = "debug"
+elastic_address = "localhost"
+elastic_port = 9200
+elastic_index = "quiz_registrator_api_prod"
+elastic_logs_enabled = true
+
+#
+# Registrator settings
+#
+bind_address = "localhost"
+bind_port = 8080
+active_game_lag = 3600
+# lottery starts 3600 seconds before the game start
+lottery_starts_before = 3600
+
+#
+# DB Settings
+#
+driver = "mysql"
+database_address = "localhost"
+database_name = "quiz_registrator_api_prod"
+database_port = 3306
+database_username = "quiz_prod"
