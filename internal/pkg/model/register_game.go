@@ -1,0 +1,13 @@
+package model
+
+// RegisterGameStatus ...
+type RegisterGameStatus int32
+
+const (
+	// RegisterGameStatusInvalid ...
+	RegisterGameStatusInvalid RegisterGameStatus = iota
+	// RegisterGameStatusOK ...
+	RegisterGameStatusOK
+	// RegisterGameStatusAlreadyRegistered ...
+	RegisterGameStatusAlreadyRegistered
+)

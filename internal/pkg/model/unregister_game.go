@@ -1,0 +1,13 @@
+package model
+
+// UnregisterGameStatus ...
+type UnregisterGameStatus int32
+
+const (
+	// UnregisterGameStatusInvalid ...
+	UnregisterGameStatusInvalid UnregisterGameStatus = iota
+	// UnregisterGameStatusOK ...
+	UnregisterGameStatusOK
+	// UnregisterGameStatusNotRegistered ...
+	UnregisterGameStatusNotRegistered
+)
