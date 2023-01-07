@@ -26,8 +26,8 @@ func (a *GameStorageAdapter) Delete(ctx context.Context, gameID int32) error {
 }
 
 // Find ...
-func (a *GameStorageAdapter) Find(ctx context.Context, q builder.Cond) ([]model.Game, error) {
-	dbGames, err := a.gameStorage.Find(ctx, q, "")
+func (a *GameStorageAdapter) Find(ctx context.Context, q builder.Cond, sort string) ([]model.Game, error) {
+	dbGames, err := a.gameStorage.Find(ctx, q, sort)
 	if err != nil {
 		return nil, err
 	}

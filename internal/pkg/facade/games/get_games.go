@@ -86,7 +86,7 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 		builder.In(
 			"type", availibilityGameTypes,
 		),
-	))
+	), "-date")
 	if err != nil {
 		return nil, fmt.Errorf("get games error: %w", err)
 	}
@@ -143,7 +143,7 @@ func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Ga
 		playerGameIDs = append(playerGameIDs, playerGame.FkGameID)
 	}
 
-	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs))
+	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs), "-date")
 	if err != nil {
 		return nil, fmt.Errorf("get games by user error: %w", err)
 	}
@@ -194,7 +194,7 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 		builder.In(
 			"type", availibilityGameTypes,
 		),
-	))
+	), "-date")
 	if err != nil {
 		return nil, err
 	}

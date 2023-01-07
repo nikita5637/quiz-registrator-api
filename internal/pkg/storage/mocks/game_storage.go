@@ -63,13 +63,13 @@ func (_c *GameStorage_Delete_Call) Return(_a0 error) *GameStorage_Delete_Call {
 	return _c
 }
 
-// Find provides a mock function with given fields: ctx, q
-func (_m *GameStorage) Find(ctx context.Context, q builder.Cond) ([]model.Game, error) {
-	ret := _m.Called(ctx, q)
+// Find provides a mock function with given fields: ctx, q, sort
+func (_m *GameStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]model.Game, error) {
+	ret := _m.Called(ctx, q, sort)
 
 	var r0 []model.Game
-	if rf, ok := ret.Get(0).(func(context.Context, builder.Cond) []model.Game); ok {
-		r0 = rf(ctx, q)
+	if rf, ok := ret.Get(0).(func(context.Context, builder.Cond, string) []model.Game); ok {
+		r0 = rf(ctx, q, sort)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]model.Game)
@@ -77,8 +77,8 @@ func (_m *GameStorage) Find(ctx context.Context, q builder.Cond) ([]model.Game, 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, builder.Cond) error); ok {
-		r1 = rf(ctx, q)
+	if rf, ok := ret.Get(1).(func(context.Context, builder.Cond, string) error); ok {
+		r1 = rf(ctx, q, sort)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -94,13 +94,14 @@ type GameStorage_Find_Call struct {
 // Find is a helper method to define mock.On call
 //  - ctx context.Context
 //  - q builder.Cond
-func (_e *GameStorage_Expecter) Find(ctx interface{}, q interface{}) *GameStorage_Find_Call {
-	return &GameStorage_Find_Call{Call: _e.mock.On("Find", ctx, q)}
+//  - sort string
+func (_e *GameStorage_Expecter) Find(ctx interface{}, q interface{}, sort interface{}) *GameStorage_Find_Call {
+	return &GameStorage_Find_Call{Call: _e.mock.On("Find", ctx, q, sort)}
 }
 
-func (_c *GameStorage_Find_Call) Run(run func(ctx context.Context, q builder.Cond)) *GameStorage_Find_Call {
+func (_c *GameStorage_Find_Call) Run(run func(ctx context.Context, q builder.Cond, sort string)) *GameStorage_Find_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(builder.Cond))
+		run(args[0].(context.Context), args[1].(builder.Cond), args[2].(string))
 	})
 	return _c
 }
