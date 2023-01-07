@@ -96,19 +96,82 @@ func TestRegistrator_GetUser(t *testing.T) {
 		fx := tearUp(t)
 
 		user := model.User{
-			ID:    1,
-			Name:  "name",
-			Email: "email",
-			Phone: "phone",
-			State: model.UserStateChangingName,
+			ID:         1,
+			Name:       "name",
+			TelegramID: 1,
+			Email:      "email",
+			Phone:      "phone",
+			State:      model.UserStateChangingName,
 		}
-
-		user.TelegramID = 1
 
 		fx.usersFacade.EXPECT().GetUser(fx.ctx).Return(user, nil)
 
 		got, err := fx.registrator.GetUser(fx.ctx, &registrator.GetUserRequest{})
 		assert.Equal(t, &registrator.GetUserResponse{
+			User: &registrator.User{
+				Id:         1,
+				Name:       "name",
+				Email:      "email",
+				Phone:      "phone",
+				State:      registrator.UserState(model.UserStateChangingName),
+				TelegramId: 1,
+			},
+		}, got)
+		assert.NoError(t, err)
+	})
+}
+
+func TestRegistrator_GetUserByID(t *testing.T) {
+	t.Run("internal error while get user", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.usersFacade.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(model.User{}, errors.New("some error"))
+
+		got, err := fx.registrator.GetUserByID(fx.ctx, &registrator.GetUserByIDRequest{
+			Id: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+		assert.Len(t, st.Details(), 0)
+	})
+
+	t.Run("user not found error while get user", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.usersFacade.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(model.User{}, model.ErrUserNotFound)
+
+		got, err := fx.registrator.GetUserByID(fx.ctx, &registrator.GetUserByIDRequest{
+			Id: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		user := model.User{
+			ID:         1,
+			Name:       "name",
+			TelegramID: 1,
+			Email:      "email",
+			Phone:      "phone",
+			State:      model.UserStateChangingName,
+		}
+
+		fx.usersFacade.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(user, nil)
+
+		got, err := fx.registrator.GetUserByID(fx.ctx, &registrator.GetUserByIDRequest{
+			Id: 1,
+		})
+		assert.Equal(t, &registrator.GetUserByIDResponse{
 			User: &registrator.User{
 				Id:         1,
 				Name:       "name",
@@ -159,14 +222,13 @@ func TestRegistrator_GetUserByTelegramID(t *testing.T) {
 		fx := tearUp(t)
 
 		user := model.User{
-			ID:    1,
-			Name:  "name",
-			Email: "email",
-			Phone: "phone",
-			State: model.UserStateChangingName,
+			ID:         1,
+			Name:       "name",
+			TelegramID: 1,
+			Email:      "email",
+			Phone:      "phone",
+			State:      model.UserStateChangingName,
 		}
-
-		user.TelegramID = 1
 
 		fx.usersFacade.EXPECT().GetUserByTelegramID(fx.ctx, int64(1)).Return(user, nil)
 

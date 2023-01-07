@@ -42,6 +42,20 @@ func (f *Facade) GetUser(ctx context.Context) (model.User, error) {
 	return user, nil
 }
 
+// GetUserByID ...
+func (f *Facade) GetUserByID(ctx context.Context, userID int32) (model.User, error) {
+	user, err := f.userStorage.GetUserByID(ctx, userID)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return model.User{}, fmt.Errorf("get user by ID error: %w", model.ErrUserNotFound)
+		}
+
+		return model.User{}, fmt.Errorf("get user by ID error: %w", err)
+	}
+
+	return user, nil
+}
+
 // GetUserByTelegramID ...
 func (f *Facade) GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error) {
 	user, err := f.userStorage.GetUserByTelegramID(ctx, telegramID)

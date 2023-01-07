@@ -92,6 +92,32 @@ func (r *Registrator) GetUser(ctx context.Context, req *registrator.GetUserReque
 	}, nil
 }
 
+// GetUserByID ...
+func (r *Registrator) GetUserByID(ctx context.Context, req *registrator.GetUserByIDRequest) (*registrator.GetUserByIDResponse, error) {
+	user, err := r.usersFacade.GetUserByID(ctx, req.GetId())
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+
+		if errors.Is(err, model.ErrUserNotFound) {
+			reason := fmt.Sprintf("user with id %d not found", req.GetId())
+			st = getStatus(ctx, codes.NotFound, err, reason, userNotFoundLexeme)
+		}
+
+		return nil, st.Err()
+	}
+
+	return &registrator.GetUserByIDResponse{
+		User: &registrator.User{
+			Id:         user.ID,
+			Name:       user.Name,
+			TelegramId: user.TelegramID,
+			Email:      user.Email,
+			Phone:      user.Phone,
+			State:      registrator.UserState(user.State),
+		},
+	}, nil
+}
+
 // GetUserByTelegramID ...
 func (r *Registrator) GetUserByTelegramID(ctx context.Context, req *registrator.GetUserByTelegramIDRequest) (*registrator.GetUserByTelegramIDResponse, error) {
 	user, err := r.usersFacade.GetUserByTelegramID(ctx, req.GetTelegramId())

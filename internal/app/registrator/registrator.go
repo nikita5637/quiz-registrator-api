@@ -84,6 +84,7 @@ type Registrator struct {
 type UsersFacade interface {
 	CreateUser(ctx context.Context, user model.User) (int32, error)
 	GetUser(ctx context.Context) (model.User, error)
+	GetUserByID(ctx context.Context, userID int32) (model.User, error)
 	GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error)
 	UpdateUserEmail(ctx context.Context, userID int32, email string) error
 	UpdateUserName(ctx context.Context, userID int32, name string) error

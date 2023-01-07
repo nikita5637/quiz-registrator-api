@@ -333,6 +333,8 @@ type RegistratorServiceClient interface {
 	GetRegisteredGames(ctx context.Context, in *GetRegisteredGamesRequest, opts ...grpc.CallOption) (*GetRegisteredGamesResponse, error)
 	// GetUser returns user by headers from context
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// GetUserByID returns user by user ID
+	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error)
 	// GetUserByTelegramID returns a user by telegram ID
 	GetUserByTelegramID(ctx context.Context, in *GetUserByTelegramIDRequest, opts ...grpc.CallOption) (*GetUserByTelegramIDResponse, error)
 	// GetUserGames returns games by user ID
@@ -449,6 +451,15 @@ func (c *registratorServiceClient) GetRegisteredGames(ctx context.Context, in *G
 func (c *registratorServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
+	out := new(GetUserByIDResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -578,6 +589,8 @@ type RegistratorServiceServer interface {
 	GetRegisteredGames(context.Context, *GetRegisteredGamesRequest) (*GetRegisteredGamesResponse, error)
 	// GetUser returns user by headers from context
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// GetUserByID returns user by user ID
+	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error)
 	// GetUserByTelegramID returns a user by telegram ID
 	GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error)
 	// GetUserGames returns games by user ID
@@ -636,6 +649,9 @@ func (UnimplementedRegistratorServiceServer) GetRegisteredGames(context.Context,
 }
 func (UnimplementedRegistratorServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedRegistratorServiceServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByTelegramID not implemented")
@@ -859,6 +875,24 @@ func _RegistratorService_GetUser_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).GetUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/GetUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1107,6 +1141,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _RegistratorService_GetUser_Handler,
+		},
+		{
+			MethodName: "GetUserByID",
+			Handler:    _RegistratorService_GetUserByID_Handler,
 		},
 		{
 			MethodName: "GetUserByTelegramID",
