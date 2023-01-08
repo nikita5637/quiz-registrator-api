@@ -59,7 +59,7 @@ func (s *GamePhotoStorage) GetGameIDsWithPhotos(ctx context.Context, limit uint3
 		query += " LIMIT ?"
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}

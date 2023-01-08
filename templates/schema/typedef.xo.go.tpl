@@ -12,13 +12,13 @@ type {{ $t.GoName }} struct {
 
 // {{ $t.GoName }}Storage is {{ $t.GoName }} service implementation
 type {{ $t.GoName }}Storage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // New{{ $t.GoName }}Storage creates new instance of {{ $t.GoName }}Storage
 func New{{ $t.GoName }}Storage(db *sql.DB) *{{ $t.GoName }}Storage {
 	return &{{ $t.GoName }}Storage{
-		db: db,
+		db: tx.NewManager(db),
 	}
 }
 
@@ -47,7 +47,7 @@ func (s *{{ $t.GoName }}Storage) Find(ctx context.Context, q builder.Cond, sort 
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +97,7 @@ func (s *{{ $t.GoName }}Storage) FindWithLimit(ctx context.Context, q builder.Co
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -137,7 +137,7 @@ func (s *{{ $t.GoName }}Storage) Total(ctx context.Context, q builder.Cond) (uin
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -220,7 +220,7 @@ func (s *{{ $t.GoName }}Storage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 

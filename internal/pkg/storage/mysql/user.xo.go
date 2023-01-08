@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // User represents a row from 'user'.
@@ -24,13 +26,13 @@ type User struct {
 
 // UserStorage is User service implementation
 type UserStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewUserStorage creates new instance of UserStorage
 func NewUserStorage(db *sql.DB) *UserStorage {
 	return &UserStorage{
-		db: db,
+		db: tx.NewManager(db),
 	}
 }
 
@@ -59,7 +61,7 @@ func (s *UserStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +116,7 @@ func (s *UserStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +161,7 @@ func (s *UserStorage) Total(ctx context.Context, q builder.Cond) (uint64, error)
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -189,7 +191,7 @@ func (s *UserStorage) Insert(ctx context.Context, item User) (int, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State)
 	if err != nil {
 		return 0, err
 	}
@@ -210,7 +212,7 @@ func (s *UserStorage) Update(ctx context.Context, item User) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.ID); err != nil {
 		return err
 	}
 
@@ -229,7 +231,7 @@ func (s *UserStorage) Upsert(ctx context.Context, item User) error {
 		`name = VALUES(name), telegram_id = VALUES(telegram_id), email = VALUES(email), phone = VALUES(phone), state = VALUES(state), created_at = VALUES(created_at), updated_at = VALUES(updated_at)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.CreatedAt, item.UpdatedAt)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State); err != nil {
 		return err
 	}
 
@@ -244,7 +246,7 @@ func (s *UserStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -263,7 +265,7 @@ func (s *UserStorage) GetUserByEmail(ctx context.Context, email sql.NullString) 
 	// run
 	logger.Debugf(ctx, sqlstr, email)
 	u := User{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, email).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, email).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -281,7 +283,7 @@ func (s *UserStorage) GetUserByPhone(ctx context.Context, phone sql.NullString) 
 	// run
 	logger.Debugf(ctx, sqlstr, phone)
 	u := User{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, phone).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, phone).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -299,7 +301,7 @@ func (s *UserStorage) GetUserByTelegramID(ctx context.Context, telegramID int64)
 	// run
 	logger.Debugf(ctx, sqlstr, telegramID)
 	u := User{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, telegramID).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, telegramID).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -317,7 +319,7 @@ func (s *UserStorage) GetUserByID(ctx context.Context, id int) (*User, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	u := User{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil

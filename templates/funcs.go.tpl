@@ -419,7 +419,14 @@ func (f *Funcs) db(name string, v ...interface{}) string {
 		p = append(p, "ctx")
 	}
 	p = append(p, "sqlstr")
-	return fmt.Sprintf("db.%s(%s)", name, f.names("", append(p, v...)...))
+
+	replica := "Master"
+	if name == "QueryRowContext" ||
+		name == "QueryContext" {
+		replica = "Sync"
+	}
+
+	return fmt.Sprintf("db.%s(ctx).%s(%s)", replica, name, f.names("", append(p, v...)...))
 }
 
 // db_prefix generates a db.<name>Context(ctx, sqlstr, <prefix>.param, ...).

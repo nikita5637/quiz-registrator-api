@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // Place represents a row from 'place'.
@@ -23,13 +25,13 @@ type Place struct {
 
 // PlaceStorage is Place service implementation
 type PlaceStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewPlaceStorage creates new instance of PlaceStorage
 func NewPlaceStorage(db *sql.DB) *PlaceStorage {
 	return &PlaceStorage{
-		db: db,
+		db: tx.NewManager(db),
 	}
 }
 
@@ -58,7 +60,7 @@ func (s *PlaceStorage) Find(ctx context.Context, q builder.Cond, sort string) ([
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,7 +114,7 @@ func (s *PlaceStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort s
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -156,7 +158,7 @@ func (s *PlaceStorage) Total(ctx context.Context, q builder.Cond) (uint64, error
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -186,7 +188,7 @@ func (s *PlaceStorage) Insert(ctx context.Context, item Place) (int, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink)
 	if err != nil {
 		return 0, err
 	}
@@ -207,7 +209,7 @@ func (s *PlaceStorage) Update(ctx context.Context, item Place) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink, item.ID); err != nil {
 		return err
 	}
 
@@ -226,7 +228,7 @@ func (s *PlaceStorage) Upsert(ctx context.Context, item Place) error {
 		`name = VALUES(name), address = VALUES(address), short_name = VALUES(short_name), latitude = VALUES(latitude), longitude = VALUES(longitude), menu_link = VALUES(menu_link)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.Name, item.Address, item.ShortName, item.Latitude, item.Longitude, item.MenuLink); err != nil {
 		return err
 	}
 
@@ -241,7 +243,7 @@ func (s *PlaceStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -260,7 +262,7 @@ func (s *PlaceStorage) GetPlaceByID(ctx context.Context, id int) (*Place, error)
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	p := Place{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&p.ID, &p.Name, &p.Address, &p.ShortName, &p.Latitude, &p.Longitude, &p.MenuLink); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&p.ID, &p.Name, &p.Address, &p.ShortName, &p.Latitude, &p.Longitude, &p.MenuLink); err != nil {
 		return nil, err
 	}
 	return &p, nil
