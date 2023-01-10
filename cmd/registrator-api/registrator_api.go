@@ -19,6 +19,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 var (
@@ -85,13 +86,15 @@ func main() {
 
 	croupier := croupier.New(croupierConfig)
 
-	gameStorage := storage.NewGameStorage(db)
-	gamePhotoStorage := storage.NewGamePhotoStorage(db)
-	gamePlayerStorage := storage.NewGamePlayerStorage(db)
-	gameResultStorage := storage.NewGameResultStorage(db)
-	leagueStorage := storage.NewLeagueStorage(db)
-	placeStorage := storage.NewPlaceStorage(db)
-	userStorage := storage.NewUserStorage(db)
+	txManager := tx.NewManager(db)
+
+	gameStorage := storage.NewGameStorage(txManager)
+	gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
+	gamePlayerStorage := storage.NewGamePlayerStorage(txManager)
+	gameResultStorage := storage.NewGameResultStorage(txManager)
+	leagueStorage := storage.NewLeagueStorage(txManager)
+	placeStorage := storage.NewPlaceStorage(txManager)
+	userStorage := storage.NewUserStorage(txManager)
 
 	gamesFacadeConfig := games.Config{
 		GamePlayerStorage: gamePlayerStorage,

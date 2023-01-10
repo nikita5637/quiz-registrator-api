@@ -16,9 +16,9 @@ type {{ $t.GoName }}Storage struct {
 }
 
 // New{{ $t.GoName }}Storage creates new instance of {{ $t.GoName }}Storage
-func New{{ $t.GoName }}Storage(db *sql.DB) *{{ $t.GoName }}Storage {
+func New{{ $t.GoName }}Storage(txManager *tx.Manager) *{{ $t.GoName }}Storage {
 	return &{{ $t.GoName }}Storage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 

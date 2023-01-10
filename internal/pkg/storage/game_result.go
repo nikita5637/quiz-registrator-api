@@ -4,11 +4,11 @@ package storage
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GameResultStorage ...
@@ -17,10 +17,10 @@ type GameResultStorage interface {
 }
 
 // NewGameResultStorage ...
-func NewGameResultStorage(db *sql.DB) GameResultStorage {
+func NewGameResultStorage(txManager *tx.Manager) GameResultStorage {
 	switch config.GetValue("Driver").String() {
 	case config.DriverMySQL:
-		return mysql.NewGameResultStorageAdapter(db)
+		return mysql.NewGameResultStorageAdapter(txManager)
 	}
 
 	return nil

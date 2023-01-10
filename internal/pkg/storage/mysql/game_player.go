@@ -6,6 +6,7 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GamePlayerStorageAdapter ...
@@ -14,9 +15,9 @@ type GamePlayerStorageAdapter struct {
 }
 
 // NewGamePlayerStorageAdapter ...
-func NewGamePlayerStorageAdapter(db *sql.DB) *GamePlayerStorageAdapter {
+func NewGamePlayerStorageAdapter(txManager *tx.Manager) *GamePlayerStorageAdapter {
 	return &GamePlayerStorageAdapter{
-		gamePlayerStorage: NewGamePlayerStorage(db),
+		gamePlayerStorage: NewGamePlayerStorage(txManager),
 	}
 }
 

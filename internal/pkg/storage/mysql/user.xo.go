@@ -30,9 +30,9 @@ type UserStorage struct {
 }
 
 // NewUserStorage creates new instance of UserStorage
-func NewUserStorage(db *sql.DB) *UserStorage {
+func NewUserStorage(txManager *tx.Manager) *UserStorage {
 	return &UserStorage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 

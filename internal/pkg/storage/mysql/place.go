@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // PlaceStorageAdapter ...
@@ -13,9 +13,9 @@ type PlaceStorageAdapter struct {
 }
 
 // NewPlaceStorageAdapter ...
-func NewPlaceStorageAdapter(db *sql.DB) *PlaceStorageAdapter {
+func NewPlaceStorageAdapter(txManager *tx.Manager) *PlaceStorageAdapter {
 	return &PlaceStorageAdapter{
-		placeStorage: NewPlaceStorage(db),
+		placeStorage: NewPlaceStorage(txManager),
 	}
 }
 

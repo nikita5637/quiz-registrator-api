@@ -4,12 +4,12 @@ package storage
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GameStorage ...
@@ -22,10 +22,10 @@ type GameStorage interface {
 }
 
 // NewGameStorage ...
-func NewGameStorage(db *sql.DB) GameStorage {
+func NewGameStorage(txManager *tx.Manager) GameStorage {
 	switch config.GetValue("Driver").String() {
 	case config.DriverMySQL:
-		return mysql.NewGameStorageAdapter(db)
+		return mysql.NewGameStorageAdapter(txManager)
 	}
 
 	return nil

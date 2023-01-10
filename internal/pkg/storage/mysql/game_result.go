@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GameResultStorageAdapter ...
@@ -13,9 +13,9 @@ type GameResultStorageAdapter struct {
 }
 
 // NewGameResultStorageAdapter ...
-func NewGameResultStorageAdapter(db *sql.DB) *GameResultStorageAdapter {
+func NewGameResultStorageAdapter(txManager *tx.Manager) *GameResultStorageAdapter {
 	return &GameResultStorageAdapter{
-		gameResultStorage: NewGameResultStorage(db),
+		gameResultStorage: NewGameResultStorage(txManager),
 	}
 }
 

@@ -29,9 +29,9 @@ type PlaceStorage struct {
 }
 
 // NewPlaceStorage creates new instance of PlaceStorage
-func NewPlaceStorage(db *sql.DB) *PlaceStorage {
+func NewPlaceStorage(txManager *tx.Manager) *PlaceStorage {
 	return &PlaceStorage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 

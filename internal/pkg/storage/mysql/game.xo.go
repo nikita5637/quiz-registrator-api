@@ -39,9 +39,9 @@ type GameStorage struct {
 }
 
 // NewGameStorage creates new instance of GameStorage
-func NewGameStorage(db *sql.DB) *GameStorage {
+func NewGameStorage(txManager *tx.Manager) *GameStorage {
 	return &GameStorage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 

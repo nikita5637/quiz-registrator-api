@@ -4,7 +4,6 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
@@ -25,9 +24,9 @@ type GameResultStorage struct {
 }
 
 // NewGameResultStorage creates new instance of GameResultStorage
-func NewGameResultStorage(db *sql.DB) *GameResultStorage {
+func NewGameResultStorage(txManager *tx.Manager) *GameResultStorage {
 	return &GameResultStorage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 

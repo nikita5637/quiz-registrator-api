@@ -49,6 +49,7 @@ gen-db: .install-xo
 	$(XO_BIN) schema \
 	--schema="" \
 	--go-import="github.com/nikita5637/quiz-registrator-api/internal/pkg/logger" \
+	--go-import="github.com/nikita5637/quiz-registrator-api/internal/pkg/tx" \
 	--out internal/pkg/storage/mysql \
 	--src templates \
 	--template go \

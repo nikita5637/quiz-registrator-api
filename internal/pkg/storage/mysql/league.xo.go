@@ -27,9 +27,9 @@ type LeagueStorage struct {
 }
 
 // NewLeagueStorage creates new instance of LeagueStorage
-func NewLeagueStorage(db *sql.DB) *LeagueStorage {
+func NewLeagueStorage(txManager *tx.Manager) *LeagueStorage {
 	return &LeagueStorage{
-		db: tx.NewManager(db),
+		db: txManager,
 	}
 }
 
