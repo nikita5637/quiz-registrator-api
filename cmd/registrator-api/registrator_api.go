@@ -107,6 +107,7 @@ func main() {
 		GameStorage:       gameStorage,
 		GamePhotoStorage:  gamePhotoStorage,
 		GameResultStorage: gameResultStorage,
+		TxManager:         txManager,
 	}
 	gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
 
