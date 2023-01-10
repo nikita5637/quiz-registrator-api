@@ -15,7 +15,7 @@ func (f *Facade) AddGamePhotos(ctx context.Context, gameID int32, urls []string)
 	_, err := f.gameStorage.GetGameByID(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.ErrGameNotFound
+			return fmt.Errorf("add game photos error: %w", model.ErrGameNotFound)
 		}
 
 		return fmt.Errorf("add game photos error: %w", err)
