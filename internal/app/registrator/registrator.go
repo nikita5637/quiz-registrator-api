@@ -30,6 +30,7 @@ type Croupier interface {
 // GamesFacade ...
 type GamesFacade interface {
 	AddGame(ctx context.Context, game model.Game) (int32, error)
+	AddGames(ctx context.Context, games []model.Game) error
 	DeleteGame(ctx context.Context, gameID int32) error
 	// GetGameByID guaranteed returns active game by game ID
 	GetGameByID(ctx context.Context, id int32) (model.Game, error)

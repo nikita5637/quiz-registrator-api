@@ -71,3 +71,104 @@ func TestGame_IsActive(t *testing.T) {
 		assert.True(t, got)
 	})
 }
+
+func TestFacade_ValidateGame(t *testing.T) {
+	t.Run("league id validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: -1,
+			Number:   "1",
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidLeagueID)
+	})
+
+	t.Run("game type validation error case 1", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     0,
+			Number:   "1",
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidGameType)
+	})
+
+	t.Run("game type validation error case 2", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     3,
+			Number:   "1",
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidGameType)
+	})
+
+	t.Run("game number validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     GameTypeClassic,
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidGameNumber)
+	})
+
+	t.Run("place id validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     GameTypeClassic,
+			Number:   "1",
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidPlaceID)
+	})
+
+	t.Run("date validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     GameTypeClassic,
+			Number:   "1",
+			PlaceID:  1,
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidDate)
+	})
+
+	t.Run("price validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     GameTypeClassic,
+			Number:   "1",
+			PlaceID:  1,
+			Date:     DateTime(time_utils.TimeNow()),
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidPrice)
+	})
+
+	t.Run("max players validation error", func(t *testing.T) {
+		err := ValidateGame(Game{
+			LeagueID: LeagueQuizPlease,
+			Type:     GameTypeClassic,
+			Number:   "1",
+			PlaceID:  1,
+			Date:     DateTime(time_utils.TimeNow()),
+			Price:    400,
+		})
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrInvalidMaxPlayers)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		timeNow := time_utils.TimeNow()
+
+		err := ValidateGame(Game{
+			LeagueID:   LeagueQuizPlease,
+			Type:       GameTypeClassic,
+			Number:     "1",
+			PlaceID:    1,
+			Date:       DateTime(timeNow),
+			Price:      400,
+			MaxPlayers: 10,
+		})
+		assert.NoError(t, err)
+	})
+}

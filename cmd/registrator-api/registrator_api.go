@@ -99,6 +99,7 @@ func main() {
 	gamesFacadeConfig := games.Config{
 		GamePlayerStorage: gamePlayerStorage,
 		GameStorage:       gameStorage,
+		TxManager:         txManager,
 	}
 
 	gamesFacade := games.NewFacade(gamesFacadeConfig)

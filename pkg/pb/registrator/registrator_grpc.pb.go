@@ -315,6 +315,8 @@ var PhotographerService_ServiceDesc = grpc.ServiceDesc{
 type RegistratorServiceClient interface {
 	// AddGame creates a new game
 	AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error)
+	// AddGames inserts a new games. Used by quiz-fetcher
+	AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
@@ -370,6 +372,15 @@ func NewRegistratorServiceClient(cc grpc.ClientConnInterface) RegistratorService
 func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error) {
 	out := new(AddGameResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGame", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error) {
+	out := new(AddGamesResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -571,6 +582,8 @@ func (c *registratorServiceClient) UpdatePayment(ctx context.Context, in *Update
 type RegistratorServiceServer interface {
 	// AddGame creates a new game
 	AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error)
+	// AddGames inserts a new games. Used by quiz-fetcher
+	AddGames(context.Context, *AddGamesRequest) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
@@ -622,6 +635,9 @@ type UnimplementedRegistratorServiceServer struct {
 
 func (UnimplementedRegistratorServiceServer) AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGame not implemented")
+}
+func (UnimplementedRegistratorServiceServer) AddGames(context.Context, *AddGamesRequest) (*AddGamesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddGames not implemented")
 }
 func (UnimplementedRegistratorServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
@@ -713,6 +729,24 @@ func _RegistratorService_AddGame_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).AddGame(ctx, req.(*AddGameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_AddGames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddGamesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).AddGames(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/AddGames",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).AddGames(ctx, req.(*AddGamesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1105,6 +1139,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddGame",
 			Handler:    _RegistratorService_AddGame_Handler,
+		},
+		{
+			MethodName: "AddGames",
+			Handler:    _RegistratorService_AddGames_Handler,
 		},
 		{
 			MethodName: "CreateUser",

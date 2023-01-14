@@ -132,6 +132,10 @@ service RegistratorService {
 	rpc AddGame(AddGameRequest) returns (AddGameResponse) {
 	}
 
+	// AddGames inserts a new games. Used by quiz-fetcher
+	rpc AddGames(AddGamesRequest) returns (AddGamesResponse) {
+	}
+
 	// CreateUser creates new user
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
 	}
@@ -232,6 +236,25 @@ message AddGameRequest {
 
 message AddGameResponse {
 	int32 id = 1;
+}
+
+message AddGamesRequest {
+	message Game {
+		int32 external_id = 1;
+		int32 league_id = 2;
+		GameType game_type = 3;
+		string number = 4;
+		string name = 5;
+		int32 place_id = 6;
+		google.protobuf.Timestamp date = 7;
+		uint32 price = 8;
+		string payment_type = 9;
+		uint32 max_players = 10;
+	}
+	repeated Game games = 1;
+}
+
+message AddGamesResponse {
 }
 
 enum UserState {

@@ -17,10 +17,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid leagueID", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidLeagueID)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -37,10 +35,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid game type", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidGameType)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -57,10 +53,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid game number", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidGameNumber)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -77,10 +71,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid place id", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidPlaceID)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -97,10 +89,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid date", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidDate)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -117,10 +107,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid price", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidPrice)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -137,10 +125,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("error invalid max players", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, model.ErrInvalidMaxPlayers)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -157,10 +143,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("internal error while add game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 1,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -177,10 +161,8 @@ func TestRegistrator_AddGame(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ts := timestamppb.Timestamp{}
 		fx.gamesFacade.EXPECT().AddGame(fx.ctx, model.Game{
 			PlaceID: 2,
-			Date:    model.DateTime(ts.AsTime()),
 		}).Return(1, nil)
 
 		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
@@ -189,6 +171,192 @@ func TestRegistrator_AddGame(t *testing.T) {
 		assert.Equal(t, &registrator.AddGameResponse{
 			Id: 1,
 		}, got)
+		assert.NoError(t, err)
+	})
+}
+
+func TestRegistrator_AddGames(t *testing.T) {
+	t.Run("internal error with skip game while add games", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamesFacade.EXPECT().AddGames(fx.ctx, []model.Game{
+			{
+				ExternalID: 2,
+				LeagueID:   2,
+				Type:       model.GameTypeClassic,
+				Number:     "2",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+			{
+				ExternalID: 4,
+				LeagueID:   4,
+				Type:       model.GameTypeMoviesAndMusic,
+				Number:     "4",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+		}).Return(errors.New("some error"))
+
+		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+			Games: []*registrator.AddGamesRequest_Game{
+				{
+					ExternalId: 1,
+					LeagueId:   1,
+				},
+				{
+					ExternalId: 2,
+					LeagueId:   2,
+					GameType:   registrator.GameType(model.GameTypeClassic),
+					Number:     "2",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+				{
+					ExternalId: 3,
+					LeagueId:   3,
+				},
+				{
+					ExternalId: 4,
+					LeagueId:   4,
+					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Number:     "4",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+			},
+		})
+
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+		assert.Len(t, st.Details(), 0)
+	})
+	t.Run("ok with skip game", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamesFacade.EXPECT().AddGames(fx.ctx, []model.Game{
+			{
+				ExternalID: 2,
+				LeagueID:   2,
+				Type:       model.GameTypeClassic,
+				Number:     "2",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+			{
+				ExternalID: 4,
+				LeagueID:   4,
+				Type:       model.GameTypeMoviesAndMusic,
+				Number:     "4",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+		}).Return(nil)
+
+		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+			Games: []*registrator.AddGamesRequest_Game{
+				{
+					ExternalId: 1,
+					LeagueId:   1,
+				},
+				{
+					ExternalId: 2,
+					LeagueId:   2,
+					GameType:   registrator.GameType(model.GameTypeClassic),
+					Number:     "2",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+				{
+					ExternalId: 3,
+					LeagueId:   3,
+				},
+				{
+					ExternalId: 4,
+					LeagueId:   4,
+					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Number:     "4",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+			},
+		})
+
+		assert.NotNil(t, got)
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok without skip game", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamesFacade.EXPECT().AddGames(fx.ctx, []model.Game{
+			{
+				ExternalID: 2,
+				LeagueID:   2,
+				Type:       model.GameTypeClassic,
+				Number:     "2",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+			{
+				ExternalID: 4,
+				LeagueID:   4,
+				Type:       model.GameTypeMoviesAndMusic,
+				Number:     "4",
+				PlaceID:    1,
+				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
+				Price:      400,
+				MaxPlayers: 8,
+			},
+		}).Return(nil)
+
+		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+			Games: []*registrator.AddGamesRequest_Game{
+				{
+					ExternalId: 2,
+					LeagueId:   2,
+					GameType:   registrator.GameType(model.GameTypeClassic),
+					Number:     "2",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+				{
+					ExternalId: 4,
+					LeagueId:   4,
+					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Number:     "4",
+					PlaceId:    1,
+					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
+					Price:      400,
+					MaxPlayers: 8,
+				},
+			},
+		})
+
+		assert.NotNil(t, got)
 		assert.NoError(t, err)
 	})
 }
