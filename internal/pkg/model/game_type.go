@@ -9,4 +9,6 @@ const (
 	GameTypeMoviesAndMusic int32 = 5
 	// GameTypeClosed ...
 	GameTypeClosed int32 = 6
+	// GameTypeThematicMoviesAndMusic ...
+	GameTypeThematicMoviesAndMusic int32 = 9
 )
