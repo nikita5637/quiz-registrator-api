@@ -160,6 +160,10 @@ service RegistratorService {
 	rpc GetPlaceByID(GetPlaceByIDRequest) returns (GetPlaceByIDResponse) {
 	}
 
+	// GetPlaceByNameAndAddress returns place by name and address
+	rpc GetPlaceByNameAndAddress(GetPlaceByNameAndAddressRequest) returns (GetPlaceByNameAndAddressResponse) {
+	}
+
 	// GetPlayersByGameID returns list of players by game ID
 	rpc GetPlayersByGameID(GetPlayersByGameIDRequest) returns (GetPlayersByGameIDResponse) {
 	}
@@ -313,6 +317,15 @@ message GetPlaceByIDRequest {
 }
   
 message GetPlaceByIDResponse {
+	Place place = 1;
+}
+
+message GetPlaceByNameAndAddressRequest {
+	string name = 1;
+	string address = 2;
+}
+  
+message GetPlaceByNameAndAddressResponse {
 	Place place = 1;
 }
 

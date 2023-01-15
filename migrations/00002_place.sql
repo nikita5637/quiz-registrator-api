@@ -2,8 +2,8 @@
 
 CREATE TABLE IF NOT EXISTS `place` (
 	`id` int(11) NOT NULL,
-	`name` varchar(64) NOT NULL,
-	`address` varchar(64) NOT NULL,
+	`name` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+	`address` varchar(64) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
 	`short_name` varchar(8) DEFAULT NULL,
 	`latitude` double DEFAULT NULL,
 	`longitude` double DEFAULT NULL,

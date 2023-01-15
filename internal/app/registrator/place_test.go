@@ -75,3 +75,71 @@ func TestRegistrator_GetPlaceByID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 }
+
+func TestRegistrator_GetPlaceByNameAndAddress(t *testing.T) {
+	t.Run("internal error while get place by name and address", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.placesFacade.EXPECT().GetPlaceByNameAndAddress(fx.ctx, "name", "address").Return(model.Place{}, errors.New("some error"))
+
+		got, err := fx.registrator.GetPlaceByNameAndAddress(fx.ctx, &registrator.GetPlaceByNameAndAddressRequest{
+			Address: "address",
+			Name:    "name",
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+		assert.Len(t, st.Details(), 0)
+	})
+
+	t.Run("place not found error while get place by name and address", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.placesFacade.EXPECT().GetPlaceByNameAndAddress(fx.ctx, "name", "address").Return(model.Place{}, model.ErrPlaceNotFound)
+
+		got, err := fx.registrator.GetPlaceByNameAndAddress(fx.ctx, &registrator.GetPlaceByNameAndAddressRequest{
+			Address: "address",
+			Name:    "name",
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.placesFacade.EXPECT().GetPlaceByNameAndAddress(fx.ctx, "name", "address").Return(model.Place{
+			ID:        1,
+			Name:      "name",
+			Address:   "address",
+			ShortName: "short name",
+			Latitude:  1.1,
+			Longitude: 1.1,
+			MenuLink:  "menu link",
+		}, nil)
+
+		got, err := fx.registrator.GetPlaceByNameAndAddress(fx.ctx, &registrator.GetPlaceByNameAndAddressRequest{
+			Address: "address",
+			Name:    "name",
+		})
+		assert.NotNil(t, got)
+		assert.Equal(t, &registrator.GetPlaceByNameAndAddressResponse{
+			Place: &registrator.Place{
+				Id:        1,
+				Address:   "address",
+				Name:      "name",
+				ShortName: "short name",
+				Latitude:  1.1,
+				Longitude: 1.1,
+				MenuLink:  "menu link",
+			},
+		}, got)
+		assert.NoError(t, err)
+	})
+}

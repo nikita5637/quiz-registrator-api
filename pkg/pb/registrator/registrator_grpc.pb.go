@@ -329,6 +329,8 @@ type RegistratorServiceClient interface {
 	GetLeagueByID(ctx context.Context, in *GetLeagueByIDRequest, opts ...grpc.CallOption) (*GetLeagueByIDResponse, error)
 	// GetPlaceByID returns place by place ID
 	GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error)
+	// GetPlaceByNameAndAddress returns place by name and address
+	GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(ctx context.Context, in *GetPlayersByGameIDRequest, opts ...grpc.CallOption) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
@@ -435,6 +437,15 @@ func (c *registratorServiceClient) GetLeagueByID(ctx context.Context, in *GetLea
 func (c *registratorServiceClient) GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error) {
 	out := new(GetPlaceByIDResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlaceByID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error) {
+	out := new(GetPlaceByNameAndAddressResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlaceByNameAndAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -596,6 +607,8 @@ type RegistratorServiceServer interface {
 	GetLeagueByID(context.Context, *GetLeagueByIDRequest) (*GetLeagueByIDResponse, error)
 	// GetPlaceByID returns place by place ID
 	GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error)
+	// GetPlaceByNameAndAddress returns place by name and address
+	GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
@@ -656,6 +669,9 @@ func (UnimplementedRegistratorServiceServer) GetLeagueByID(context.Context, *Get
 }
 func (UnimplementedRegistratorServiceServer) GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByID not implemented")
+}
+func (UnimplementedRegistratorServiceServer) GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByNameAndAddress not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPlayersByGameID not implemented")
@@ -855,6 +871,24 @@ func _RegistratorService_GetPlaceByID_Handler(srv interface{}, ctx context.Conte
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetPlaceByID(ctx, req.(*GetPlaceByIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_GetPlaceByNameAndAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlaceByNameAndAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/GetPlaceByNameAndAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, req.(*GetPlaceByNameAndAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1167,6 +1201,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetPlaceByID",
 			Handler:    _RegistratorService_GetPlaceByID_Handler,
+		},
+		{
+			MethodName: "GetPlaceByNameAndAddress",
+			Handler:    _RegistratorService_GetPlaceByNameAndAddress_Handler,
 		},
 		{
 			MethodName: "GetPlayersByGameID",

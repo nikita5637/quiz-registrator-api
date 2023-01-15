@@ -61,6 +61,7 @@ type LeaguesFacade interface {
 // PlacesFacade ...
 type PlacesFacade interface {
 	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
+	GetPlaceByNameAndAddress(ctx context.Context, name, address string) (model.Place, error)
 }
 
 // Registrator ...

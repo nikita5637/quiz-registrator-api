@@ -1,5 +1,5 @@
 #Log level
-log_level = "debug"
+log_level = "info"
 elastic_address = "localhost"
 elastic_port = 9200
 elastic_index = "quiz_registrator_api_prod"

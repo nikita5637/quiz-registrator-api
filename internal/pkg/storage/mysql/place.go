@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 
+	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
@@ -19,14 +20,29 @@ func NewPlaceStorageAdapter(txManager *tx.Manager) *PlaceStorageAdapter {
 	}
 }
 
+// Find ...
+func (a *PlaceStorageAdapter) Find(ctx context.Context, q builder.Cond, sort string) ([]model.Place, error) {
+	dbPlaces, err := a.placeStorage.Find(ctx, q, sort)
+	if err != nil {
+		return nil, err
+	}
+
+	modelPlaces := make([]model.Place, 0, len(dbPlaces))
+	for _, dbPlace := range dbPlaces {
+		modelPlaces = append(modelPlaces, convertDBPlaceToModelPlace(dbPlace))
+	}
+
+	return modelPlaces, nil
+}
+
 // GetPlaceByID ...
 func (a *PlaceStorageAdapter) GetPlaceByID(ctx context.Context, id int32) (model.Place, error) {
-	placeDB, err := a.placeStorage.GetPlaceByID(ctx, int(id))
+	dbPlace, err := a.placeStorage.GetPlaceByID(ctx, int(id))
 	if err != nil {
 		return model.Place{}, err
 	}
 
-	return convertDBPlaceToModelPlace(*placeDB), nil
+	return convertDBPlaceToModelPlace(*dbPlace), nil
 }
 
 func convertDBPlaceToModelPlace(place Place) model.Place {

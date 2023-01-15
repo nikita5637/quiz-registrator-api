@@ -68,6 +68,10 @@ func userStateInterceptor(ctx context.Context,
 		return handler(ctx, req)
 	}
 
+	if info.FullMethod == "/users.RegistratorService/GetPlaceByNameAndAddress" {
+		return handler(ctx, req)
+	}
+
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {
 		headers := md.Get("x-inline-query")
