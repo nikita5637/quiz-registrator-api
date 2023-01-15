@@ -20,6 +20,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
+	"go.uber.org/zap"
 )
 
 var (
@@ -60,7 +61,9 @@ func main() {
 	}
 
 	logLevel := config.GetLogLevel()
-	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner))
+	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner, zap.Fields(
+		zap.String("module", "registrator-api"),
+	)))
 	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
 
 	db, err := storage.NewDB()
