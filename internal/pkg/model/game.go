@@ -112,7 +112,7 @@ func validateGameType(value interface{}) error {
 		return nil
 	}
 
-	return errors.New("invalid game type value")
+	return ErrInvalidGameType
 }
 
 func validateGameDate(value interface{}) error {
@@ -122,7 +122,7 @@ func validateGameDate(value interface{}) error {
 	}
 
 	if gameDate.AsTime().IsZero() {
-		return errors.New("invalid game date")
+		return ErrInvalidDate
 	}
 
 	return nil

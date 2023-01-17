@@ -211,7 +211,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					GameType:   registrator.GameType(model.GameTypeClassic),
+					Type:       registrator.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -225,7 +225,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Type:       registrator.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -277,7 +277,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					GameType:   registrator.GameType(model.GameTypeClassic),
+					Type:       registrator.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -291,7 +291,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Type:       registrator.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -336,7 +336,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					GameType:   registrator.GameType(model.GameTypeClassic),
+					Type:       registrator.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -346,7 +346,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					GameType:   registrator.GameType(model.GameTypeMoviesAndMusic),
+					Type:       registrator.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),

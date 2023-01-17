@@ -229,7 +229,7 @@ service RegistratorService {
 message AddGameRequest {
 	int32 external_id = 1;
 	int32 league_id = 2;
-	GameType game_type = 3;
+	GameType type = 3;
 	string number = 4;
 	string name = 5;
 	int32 place_id = 6;
@@ -247,7 +247,7 @@ message AddGamesRequest {
 	message Game {
 		int32 external_id = 1;
 		int32 league_id = 2;
-		GameType game_type = 3;
+		GameType type = 3;
 		string number = 4;
 		string name = 5;
 		int32 place_id = 6;

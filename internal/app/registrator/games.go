@@ -51,7 +51,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 	game := model.Game{
 		ExternalID:  req.GetExternalId(),
 		LeagueID:    req.GetLeagueId(),
-		Type:        int32(req.GetGameType()),
+		Type:        int32(req.GetType()),
 		Number:      req.GetNumber(),
 		Name:        req.GetName(),
 		PlaceID:     req.GetPlaceId(),
@@ -71,7 +71,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 			reason := fmt.Sprintf("invalid league ID: %d", req.GetLeagueId())
 			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidLeagueIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameType) {
-			reason := fmt.Sprintf("invalid game type: %d", req.GetGameType())
+			reason := fmt.Sprintf("invalid type: %d", req.GetType())
 			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidGameTypeLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameNumber) {
 			reason := fmt.Sprintf("invalid game number: %s", req.GetNumber())
@@ -105,7 +105,7 @@ func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesReq
 		game := model.Game{
 			ExternalID:  pbGame.GetExternalId(),
 			LeagueID:    pbGame.GetLeagueId(),
-			Type:        int32(pbGame.GetGameType()),
+			Type:        int32(pbGame.GetType()),
 			Number:      pbGame.GetNumber(),
 			Name:        pbGame.GetName(),
 			PlaceID:     pbGame.GetPlaceId(),
