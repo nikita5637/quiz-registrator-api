@@ -11,6 +11,7 @@ type GlobalConfig struct {
 	DatabaseConfig
 	LoggerConfig
 	RegistratorConfig
+	ReminderConfig
 }
 
 var globalConfig GlobalConfig

@@ -15,23 +15,30 @@ func (f *Facade) AddGamePhotos(ctx context.Context, gameID int32, urls []string)
 	_, err := f.gameStorage.GetGameByID(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.ErrGameNotFound
+			return fmt.Errorf("add game photos error: %w", model.ErrGameNotFound)
 		}
 
 		return fmt.Errorf("add game photos error: %w", err)
 	}
 
-	for _, url := range urls {
-		gamePhoto := model.GamePhoto{
-			FkGameID: gameID,
-			URL:      url,
-		}
-		_, err := f.gamePhotoStorage.Insert(ctx, gamePhoto)
-		if err != nil {
-			return fmt.Errorf("add game photos error: %w", err)
+	err = f.db.RunTX(ctx, "add game photos", func(ctx context.Context) error {
+		for _, url := range urls {
+			gamePhoto := model.GamePhoto{
+				FkGameID: gameID,
+				URL:      url,
+			}
+
+			if _, err2 := f.gamePhotoStorage.Insert(ctx, gamePhoto); err2 != nil {
+				return err2
+			}
+
+			logger.DebugKV(ctx, "added new game photo", "game id", gameID, "url", url)
 		}
 
-		logger.DebugKV(ctx, "added new game photo", "game id", gameID, "url", url)
+		return nil
+	})
+	if err != nil {
+		return fmt.Errorf("add game photos error: %w", err)
 	}
 
 	return nil

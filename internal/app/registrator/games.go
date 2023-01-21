@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
@@ -50,14 +51,17 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 	game := model.Game{
 		ExternalID:  req.GetExternalId(),
 		LeagueID:    req.GetLeagueId(),
-		Type:        int32(req.GetGameType()),
+		Type:        int32(req.GetType()),
 		Number:      req.GetNumber(),
 		Name:        req.GetName(),
 		PlaceID:     req.GetPlaceId(),
-		Date:        model.DateTime(req.GetDate().AsTime()),
 		Price:       req.GetPrice(),
 		PaymentType: req.GetPaymentType(),
 		MaxPlayers:  req.GetMaxPlayers(),
+	}
+
+	if req.GetDate() != nil {
+		game.Date = model.DateTime(req.GetDate().AsTime())
 	}
 
 	id, err := r.gamesFacade.AddGame(ctx, game)
@@ -67,7 +71,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 			reason := fmt.Sprintf("invalid league ID: %d", req.GetLeagueId())
 			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidLeagueIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameType) {
-			reason := fmt.Sprintf("invalid game type: %d", req.GetGameType())
+			reason := fmt.Sprintf("invalid type: %d", req.GetType())
 			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidGameTypeLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameNumber) {
 			reason := fmt.Sprintf("invalid game number: %s", req.GetNumber())
@@ -92,6 +96,42 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 	return &registrator.AddGameResponse{
 		Id: id,
 	}, nil
+}
+
+// AddGames ...
+func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesRequest) (*registrator.AddGamesResponse, error) {
+	games := make([]model.Game, 0, len(req.GetGames()))
+	for _, pbGame := range req.GetGames() {
+		game := model.Game{
+			ExternalID:  pbGame.GetExternalId(),
+			LeagueID:    pbGame.GetLeagueId(),
+			Type:        int32(pbGame.GetType()),
+			Number:      pbGame.GetNumber(),
+			Name:        pbGame.GetName(),
+			PlaceID:     pbGame.GetPlaceId(),
+			Price:       pbGame.GetPrice(),
+			PaymentType: pbGame.GetPaymentType(),
+			MaxPlayers:  pbGame.GetMaxPlayers(),
+		}
+
+		if pbGame.GetDate() != nil {
+			game.Date = model.DateTime(pbGame.GetDate().AsTime())
+		}
+
+		if err := model.ValidateGame(game); err != nil {
+			logger.WarnKV(ctx, "skipped game", "error", err.Error(), "game", game)
+		} else {
+			games = append(games, game)
+		}
+	}
+
+	err := r.gamesFacade.AddGames(ctx, games)
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+		return nil, st.Err()
+	}
+
+	return &registrator.AddGamesResponse{}, nil
 }
 
 // DeleteGame ...

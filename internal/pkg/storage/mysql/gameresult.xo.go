@@ -4,10 +4,11 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GameResult represents a row from 'game_result'.
@@ -19,13 +20,13 @@ type GameResult struct {
 
 // GameResultStorage is GameResult service implementation
 type GameResultStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewGameResultStorage creates new instance of GameResultStorage
-func NewGameResultStorage(db *sql.DB) *GameResultStorage {
+func NewGameResultStorage(txManager *tx.Manager) *GameResultStorage {
 	return &GameResultStorage{
-		db: db,
+		db: txManager,
 	}
 }
 
@@ -54,7 +55,7 @@ func (s *GameResultStorage) Find(ctx context.Context, q builder.Cond, sort strin
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +105,7 @@ func (s *GameResultStorage) FindWithLimit(ctx context.Context, q builder.Cond, s
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -144,7 +145,7 @@ func (s *GameResultStorage) Total(ctx context.Context, q builder.Cond) (uint64, 
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -174,7 +175,7 @@ func (s *GameResultStorage) Insert(ctx context.Context, item GameResult) (int, e
 	// run
 	logger.Debugf(ctx, sqlstr, item.FkGameID, item.Place)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.FkGameID, item.Place)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.FkGameID, item.Place)
 	if err != nil {
 		return 0, err
 	}
@@ -195,7 +196,7 @@ func (s *GameResultStorage) Update(ctx context.Context, item GameResult) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.FkGameID, item.Place, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.FkGameID, item.Place, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.FkGameID, item.Place, item.ID); err != nil {
 		return err
 	}
 
@@ -214,7 +215,7 @@ func (s *GameResultStorage) Upsert(ctx context.Context, item GameResult) error {
 		`fk_game_id = VALUES(fk_game_id), place = VALUES(place)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.FkGameID, item.Place)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.FkGameID, item.Place); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.FkGameID, item.Place); err != nil {
 		return err
 	}
 
@@ -229,7 +230,7 @@ func (s *GameResultStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -248,7 +249,7 @@ func (s *GameResultStorage) GetGameResultByFkGameID(ctx context.Context, fkGameI
 	// run
 	logger.Debugf(ctx, sqlstr, fkGameID)
 	gr := GameResult{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, fkGameID).Scan(&gr.ID, &gr.FkGameID, &gr.Place); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, fkGameID).Scan(&gr.ID, &gr.FkGameID, &gr.Place); err != nil {
 		return nil, err
 	}
 	return &gr, nil
@@ -266,7 +267,7 @@ func (s *GameResultStorage) GetGameResultByID(ctx context.Context, id int) (*Gam
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	gr := GameResult{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&gr.ID, &gr.FkGameID, &gr.Place); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&gr.ID, &gr.FkGameID, &gr.Place); err != nil {
 		return nil, err
 	}
 	return &gr, nil

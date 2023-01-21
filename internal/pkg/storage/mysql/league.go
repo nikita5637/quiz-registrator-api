@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // LeagueStorageAdapter ...
@@ -13,9 +13,9 @@ type LeagueStorageAdapter struct {
 }
 
 // NewLeagueStorageAdapter ...
-func NewLeagueStorageAdapter(db *sql.DB) *LeagueStorageAdapter {
+func NewLeagueStorageAdapter(txManager *tx.Manager) *LeagueStorageAdapter {
 	return &LeagueStorageAdapter{
-		leagueStorage: NewLeagueStorage(db),
+		leagueStorage: NewLeagueStorage(txManager),
 	}
 }
 

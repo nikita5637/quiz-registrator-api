@@ -8,6 +8,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
+	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
+	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
@@ -19,6 +21,10 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
+	amqp "github.com/rabbitmq/amqp091-go"
+	"go.uber.org/zap"
+	"golang.org/x/sync/errgroup"
 )
 
 var (
@@ -59,14 +65,28 @@ func main() {
 	}
 
 	logLevel := config.GetLogLevel()
-	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner))
+	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner, zap.Fields(
+		zap.String("module", "registrator-api"),
+	)))
 	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
 
 	db, err := storage.NewDB()
 	if err != nil {
-		panic(err)
+		logger.Panic(ctx, err)
 	}
 	defer db.Close()
+
+	rabbitMQConn, err := amqp.Dial(config.GetRabbitMQURL())
+	if err != nil {
+		logger.Panic(ctx, err)
+	}
+	defer rabbitMQConn.Close()
+
+	rabbitMQChannel, err := rabbitMQConn.Channel()
+	if err != nil {
+		logger.Panic(ctx, err)
+	}
+	defer rabbitMQChannel.Close()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
@@ -79,65 +99,94 @@ func main() {
 		cancel()
 	}()
 
-	croupierConfig := croupier.Config{
-		QuizPleaseCroupier: quiz_please.New(),
-	}
+	txManager := tx.NewManager(db)
 
-	croupier := croupier.New(croupierConfig)
-
-	gameStorage := storage.NewGameStorage(db)
-	gamePhotoStorage := storage.NewGamePhotoStorage(db)
-	gamePlayerStorage := storage.NewGamePlayerStorage(db)
-	gameResultStorage := storage.NewGameResultStorage(db)
-	leagueStorage := storage.NewLeagueStorage(db)
-	placeStorage := storage.NewPlaceStorage(db)
-	userStorage := storage.NewUserStorage(db)
+	gameStorage := storage.NewGameStorage(txManager)
+	gamePlayerStorage := storage.NewGamePlayerStorage(txManager)
 
 	gamesFacadeConfig := games.Config{
-		GamePlayerStorage: gamePlayerStorage,
 		GameStorage:       gameStorage,
+		GamePlayerStorage: gamePlayerStorage,
+		TxManager:         txManager,
 	}
 
 	gamesFacade := games.NewFacade(gamesFacadeConfig)
 
-	gamePhotosFacadeConfig := gamephotos.Config{
-		GameStorage:       gameStorage,
-		GamePhotoStorage:  gamePhotoStorage,
-		GameResultStorage: gameResultStorage,
-	}
-	gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+	g, ctx := errgroup.WithContext(ctx)
+	g.Go(func() error {
+		croupierConfig := croupier.Config{
+			QuizPleaseCroupier: quiz_please.New(),
+		}
 
-	leaguesFacadeConfig := leagues.Config{
-		LeagueStorage: leagueStorage,
-	}
-	leaguesFacade := leagues.NewFacade(leaguesFacadeConfig)
+		croupier := croupier.New(croupierConfig)
 
-	placesFacadeConfig := places.Config{
-		PlaceStorage: placeStorage,
-	}
-	placesFacade := places.NewFacade(placesFacadeConfig)
+		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
+		gameResultStorage := storage.NewGameResultStorage(txManager)
+		leagueStorage := storage.NewLeagueStorage(txManager)
+		placeStorage := storage.NewPlaceStorage(txManager)
+		userStorage := storage.NewUserStorage(txManager)
 
-	usersFacadeConfig := users.Config{
-		UserStorage: userStorage,
-	}
-	usersFacade := users.NewFacade(usersFacadeConfig)
+		gamePhotosFacadeConfig := gamephotos.Config{
+			GameStorage:       gameStorage,
+			GamePhotoStorage:  gamePhotoStorage,
+			GameResultStorage: gameResultStorage,
+			TxManager:         txManager,
+		}
+		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
 
-	registratorConfig := registrator.Config{
-		BindAddr: config.GetBindAddress(),
+		leaguesFacadeConfig := leagues.Config{
+			LeagueStorage: leagueStorage,
+		}
+		leaguesFacade := leagues.NewFacade(leaguesFacadeConfig)
 
-		Croupier: croupier,
+		placesFacadeConfig := places.Config{
+			PlaceStorage: placeStorage,
+		}
+		placesFacade := places.NewFacade(placesFacadeConfig)
 
-		GamesFacade:      gamesFacade,
-		GamePhotosFacade: gamePhotosFacade,
-		LeaguesFacade:    leaguesFacade,
-		PlacesFacade:     placesFacade,
-		UsersFacade:      usersFacade,
-	}
+		usersFacadeConfig := users.Config{
+			UserStorage: userStorage,
+		}
+		usersFacade := users.NewFacade(usersFacadeConfig)
 
-	reg := registrator.New(registratorConfig)
+		registratorConfig := registrator.Config{
+			BindAddr: config.GetBindAddress(),
 
-	err = reg.ListenAndServe(ctx)
-	if err != nil {
+			Croupier: croupier,
+
+			GamesFacade:      gamesFacade,
+			GamePhotosFacade: gamePhotosFacade,
+			LeaguesFacade:    leaguesFacade,
+			PlacesFacade:     placesFacade,
+			UsersFacade:      usersFacade,
+		}
+
+		reg := registrator.New(registratorConfig)
+
+		logger.Infof(ctx, "starting registrator")
+		return reg.ListenAndServe(ctx)
+	})
+
+	g.Go(func() error {
+		gameReminderConfig := game_reminder.Config{
+			GamesFacade:     gamesFacade,
+			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		gameReminder := game_reminder.New(gameReminderConfig)
+
+		remindManagerConfig := remindmanager.Config{
+			Reminders: []remindmanager.Reminder{
+				gameReminder,
+			},
+		}
+		remindManager := remindmanager.New(remindManagerConfig)
+
+		logger.Infof(ctx, "starting remind manager")
+		return remindManager.Start(ctx)
+	})
+
+	if err := g.Wait(); err != nil {
 		logger.Panic(ctx, err)
 	}
 }

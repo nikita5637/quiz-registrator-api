@@ -113,6 +113,59 @@ func TestFacade_GetUser(t *testing.T) {
 	})
 }
 
+func TestFacade_GetUserByID(t *testing.T) {
+	timeNow := time_utils.TimeNow()
+
+	t.Run("sql.ErrNoRows error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.userStorage.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(model.User{}, sql.ErrNoRows)
+
+		got, err := fx.facade.GetUserByID(fx.ctx, 1)
+		assert.Equal(t, model.User{}, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, model.ErrUserNotFound)
+	})
+
+	t.Run("internal error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.userStorage.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(model.User{}, errors.New("some error"))
+
+		got, err := fx.facade.GetUserByID(fx.ctx, 1)
+		assert.Equal(t, model.User{}, got)
+		assert.Error(t, err)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.userStorage.EXPECT().GetUserByID(fx.ctx, int32(1)).Return(model.User{
+			ID:         1,
+			Name:       "name",
+			TelegramID: -100,
+			Email:      "email",
+			Phone:      "phone",
+			State:      1,
+			CreatedAt:  model.DateTime(timeNow),
+			UpdatedAt:  model.DateTime(timeNow.Add(1 * time.Second)),
+		}, nil)
+
+		got, err := fx.facade.GetUserByID(fx.ctx, 1)
+		assert.Equal(t, model.User{
+			ID:         1,
+			Name:       "name",
+			TelegramID: -100,
+			Email:      "email",
+			Phone:      "phone",
+			State:      1,
+			CreatedAt:  model.DateTime(timeNow),
+			UpdatedAt:  model.DateTime(timeNow.Add(1 * time.Second)),
+		}, got)
+		assert.NoError(t, err)
+	})
+}
+
 func TestFacade_GetUserByTelegramID(t *testing.T) {
 	timeNow := time_utils.TimeNow()
 

@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
 
 	"github.com/go-xorm/builder"
@@ -86,7 +87,7 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 		builder.In(
 			"type", availibilityGameTypes,
 		),
-	))
+	), "date")
 	if err != nil {
 		return nil, fmt.Errorf("get games error: %w", err)
 	}
@@ -143,7 +144,7 @@ func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Ga
 		playerGameIDs = append(playerGameIDs, playerGame.FkGameID)
 	}
 
-	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs))
+	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs), "date")
 	if err != nil {
 		return nil, fmt.Errorf("get games by user error: %w", err)
 	}
@@ -194,7 +195,7 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 		builder.In(
 			"type", availibilityGameTypes,
 		),
-	))
+	), "date")
 	if err != nil {
 		return nil, err
 	}
@@ -229,4 +230,23 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 	}
 
 	return games, err
+}
+
+// GetTodaysGames ...
+func (f *Facade) GetTodaysGames(ctx context.Context) ([]model.Game, error) {
+	timeNow := time_utils.TimeNow()
+
+	dateExpr := fmt.Sprintf("date LIKE \"%04d-%02d-%02d%%\"", timeNow.Year(), timeNow.Month(), timeNow.Day())
+
+	games, err := f.gameStorage.Find(ctx, builder.NewCond().And(
+		builder.Eq{
+			"registered": true,
+		},
+		builder.Expr(dateExpr),
+	), "")
+	if err != nil {
+		return nil, fmt.Errorf("get todays games error: %w", err)
+	}
+
+	return games, nil
 }

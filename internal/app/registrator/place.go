@@ -22,7 +22,7 @@ var (
 
 // GetPlaceByID ...
 func (r *Registrator) GetPlaceByID(ctx context.Context, req *registrator.GetPlaceByIDRequest) (*registrator.GetPlaceByIDResponse, error) {
-	p, err := r.placesFacade.GetPlaceByID(ctx, req.GetId())
+	place, err := r.placesFacade.GetPlaceByID(ctx, req.GetId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
@@ -45,14 +45,47 @@ func (r *Registrator) GetPlaceByID(ctx context.Context, req *registrator.GetPlac
 	}
 
 	return &registrator.GetPlaceByIDResponse{
-		Place: &registrator.Place{
-			Id:        p.ID,
-			Address:   p.Address,
-			Name:      p.Name,
-			ShortName: p.ShortName,
-			Longitude: p.Longitude,
-			Latitude:  p.Latitude,
-			MenuLink:  p.MenuLink,
-		},
+		Place: convertModelPlaceToPBPlace(place),
 	}, err
+}
+
+// GetPlaceByNameAndAddress ...
+func (r *Registrator) GetPlaceByNameAndAddress(ctx context.Context, req *registrator.GetPlaceByNameAndAddressRequest) (*registrator.GetPlaceByNameAndAddressResponse, error) {
+	place, err := r.placesFacade.GetPlaceByNameAndAddress(ctx, req.GetName(), req.GetAddress())
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+
+		if errors.Is(err, model.ErrPlaceNotFound) {
+			st = status.New(codes.NotFound, err.Error())
+			ei := &errdetails.ErrorInfo{
+				Reason: fmt.Sprintf("place with name %s and address %s not found", req.GetName(), req.GetAddress()),
+			}
+			lm := &errdetails.LocalizedMessage{
+				Locale:  i18n.GetLangFromContext(ctx),
+				Message: getTranslator(placeNotFoundLexeme)(ctx),
+			}
+			st, err = st.WithDetails(ei, lm)
+			if err != nil {
+				panic(err)
+			}
+		}
+
+		return nil, st.Err()
+	}
+
+	return &registrator.GetPlaceByNameAndAddressResponse{
+		Place: convertModelPlaceToPBPlace(place),
+	}, nil
+}
+
+func convertModelPlaceToPBPlace(place model.Place) *registrator.Place {
+	return &registrator.Place{
+		Id:        place.ID,
+		Address:   place.Address,
+		Name:      place.Name,
+		ShortName: place.ShortName,
+		Longitude: place.Longitude,
+		Latitude:  place.Latitude,
+		MenuLink:  place.MenuLink,
+	}
 }

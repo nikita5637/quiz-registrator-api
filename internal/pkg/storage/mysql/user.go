@@ -5,6 +5,7 @@ import (
 	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // UserStorageAdapter ...
@@ -13,9 +14,9 @@ type UserStorageAdapter struct {
 }
 
 // NewUserStorageAdapter ...
-func NewUserStorageAdapter(db *sql.DB) *UserStorageAdapter {
+func NewUserStorageAdapter(txManager *tx.Manager) *UserStorageAdapter {
 	return &UserStorageAdapter{
-		userStorage: NewUserStorage(db),
+		userStorage: NewUserStorage(txManager),
 	}
 }
 

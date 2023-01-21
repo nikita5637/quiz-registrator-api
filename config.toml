@@ -1,5 +1,5 @@
 #Log level
-log_level = "debug"
+log_level = "info"
 elastic_address = "localhost"
 elastic_port = 9200
 elastic_index = "quiz_registrator_api_prod"
@@ -13,6 +13,14 @@ bind_port = 8080
 active_game_lag = 3600
 # lottery starts 3600 seconds before the game start
 lottery_starts_before = 3600
+
+#
+# Reminder settings
+#
+rabbitmq_address = "localhost"
+rabbitmq_port = 5672
+rabbitmq_game_reminder_queue_name = "quiz_game_reminder_prod"
+rabbitmq_username = "quiz_reminder"
 
 #
 # DB Settings

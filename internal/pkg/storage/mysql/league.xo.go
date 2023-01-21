@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // League represents a row from 'league'.
@@ -21,13 +23,13 @@ type League struct {
 
 // LeagueStorage is League service implementation
 type LeagueStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewLeagueStorage creates new instance of LeagueStorage
-func NewLeagueStorage(db *sql.DB) *LeagueStorage {
+func NewLeagueStorage(txManager *tx.Manager) *LeagueStorage {
 	return &LeagueStorage{
-		db: db,
+		db: txManager,
 	}
 }
 
@@ -56,7 +58,7 @@ func (s *LeagueStorage) Find(ctx context.Context, q builder.Cond, sort string) (
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -108,7 +110,7 @@ func (s *LeagueStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort 
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +152,7 @@ func (s *LeagueStorage) Total(ctx context.Context, q builder.Cond) (uint64, erro
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -180,7 +182,7 @@ func (s *LeagueStorage) Insert(ctx context.Context, item League) (int, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite)
 	if err != nil {
 		return 0, err
 	}
@@ -201,7 +203,7 @@ func (s *LeagueStorage) Update(ctx context.Context, item League) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.ShortName, item.LogoLink, item.WebSite, item.ID); err != nil {
 		return err
 	}
 
@@ -220,7 +222,7 @@ func (s *LeagueStorage) Upsert(ctx context.Context, item League) error {
 		`name = VALUES(name), short_name = VALUES(short_name), logo_link = VALUES(logo_link), web_site = VALUES(web_site)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.Name, item.ShortName, item.LogoLink, item.WebSite)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.Name, item.ShortName, item.LogoLink, item.WebSite); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.Name, item.ShortName, item.LogoLink, item.WebSite); err != nil {
 		return err
 	}
 
@@ -235,7 +237,7 @@ func (s *LeagueStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -254,7 +256,7 @@ func (s *LeagueStorage) GetLeagueByID(ctx context.Context, id int) (*League, err
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	l := League{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
 		return nil, err
 	}
 	return &l, nil
@@ -272,7 +274,7 @@ func (s *LeagueStorage) GetLeagueByName(ctx context.Context, name string) (*Leag
 	// run
 	logger.Debugf(ctx, sqlstr, name)
 	l := League{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, name).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, name).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
 		return nil, err
 	}
 	return &l, nil
@@ -290,7 +292,7 @@ func (s *LeagueStorage) GetLeagueByShortName(ctx context.Context, shortName sql.
 	// run
 	logger.Debugf(ctx, sqlstr, shortName)
 	l := League{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, shortName).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, shortName).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
 		return nil, err
 	}
 	return &l, nil
@@ -308,7 +310,7 @@ func (s *LeagueStorage) GetLeagueByWebSite(ctx context.Context, webSite sql.Null
 	// run
 	logger.Debugf(ctx, sqlstr, webSite)
 	l := League{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, webSite).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, webSite).Scan(&l.ID, &l.Name, &l.ShortName, &l.LogoLink, &l.WebSite); err != nil {
 		return nil, err
 	}
 	return &l, nil

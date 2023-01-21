@@ -315,6 +315,8 @@ var PhotographerService_ServiceDesc = grpc.ServiceDesc{
 type RegistratorServiceClient interface {
 	// AddGame creates a new game
 	AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error)
+	// AddGames inserts a new games. Used by quiz-fetcher
+	AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
@@ -327,12 +329,16 @@ type RegistratorServiceClient interface {
 	GetLeagueByID(ctx context.Context, in *GetLeagueByIDRequest, opts ...grpc.CallOption) (*GetLeagueByIDResponse, error)
 	// GetPlaceByID returns place by place ID
 	GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error)
+	// GetPlaceByNameAndAddress returns place by name and address
+	GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(ctx context.Context, in *GetPlayersByGameIDRequest, opts ...grpc.CallOption) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
 	GetRegisteredGames(ctx context.Context, in *GetRegisteredGamesRequest, opts ...grpc.CallOption) (*GetRegisteredGamesResponse, error)
 	// GetUser returns user by headers from context
 	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// GetUserByID returns user by user ID
+	GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error)
 	// GetUserByTelegramID returns a user by telegram ID
 	GetUserByTelegramID(ctx context.Context, in *GetUserByTelegramIDRequest, opts ...grpc.CallOption) (*GetUserByTelegramIDResponse, error)
 	// GetUserGames returns games by user ID
@@ -368,6 +374,15 @@ func NewRegistratorServiceClient(cc grpc.ClientConnInterface) RegistratorService
 func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error) {
 	out := new(AddGameResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGame", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error) {
+	out := new(AddGamesResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -428,6 +443,15 @@ func (c *registratorServiceClient) GetPlaceByID(ctx context.Context, in *GetPlac
 	return out, nil
 }
 
+func (c *registratorServiceClient) GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error) {
+	out := new(GetPlaceByNameAndAddressResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlaceByNameAndAddress", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *registratorServiceClient) GetPlayersByGameID(ctx context.Context, in *GetPlayersByGameIDRequest, opts ...grpc.CallOption) (*GetPlayersByGameIDResponse, error) {
 	out := new(GetPlayersByGameIDResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlayersByGameID", in, out, opts...)
@@ -449,6 +473,15 @@ func (c *registratorServiceClient) GetRegisteredGames(ctx context.Context, in *G
 func (c *registratorServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUser", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
+	out := new(GetUserByIDResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -560,6 +593,8 @@ func (c *registratorServiceClient) UpdatePayment(ctx context.Context, in *Update
 type RegistratorServiceServer interface {
 	// AddGame creates a new game
 	AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error)
+	// AddGames inserts a new games. Used by quiz-fetcher
+	AddGames(context.Context, *AddGamesRequest) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
@@ -572,12 +607,16 @@ type RegistratorServiceServer interface {
 	GetLeagueByID(context.Context, *GetLeagueByIDRequest) (*GetLeagueByIDResponse, error)
 	// GetPlaceByID returns place by place ID
 	GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error)
+	// GetPlaceByNameAndAddress returns place by name and address
+	GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
 	GetRegisteredGames(context.Context, *GetRegisteredGamesRequest) (*GetRegisteredGamesResponse, error)
 	// GetUser returns user by headers from context
 	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// GetUserByID returns user by user ID
+	GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error)
 	// GetUserByTelegramID returns a user by telegram ID
 	GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error)
 	// GetUserGames returns games by user ID
@@ -610,6 +649,9 @@ type UnimplementedRegistratorServiceServer struct {
 func (UnimplementedRegistratorServiceServer) AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGame not implemented")
 }
+func (UnimplementedRegistratorServiceServer) AddGames(context.Context, *AddGamesRequest) (*AddGamesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddGames not implemented")
+}
 func (UnimplementedRegistratorServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
@@ -628,6 +670,9 @@ func (UnimplementedRegistratorServiceServer) GetLeagueByID(context.Context, *Get
 func (UnimplementedRegistratorServiceServer) GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByID not implemented")
 }
+func (UnimplementedRegistratorServiceServer) GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByNameAndAddress not implemented")
+}
 func (UnimplementedRegistratorServiceServer) GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPlayersByGameID not implemented")
 }
@@ -636,6 +681,9 @@ func (UnimplementedRegistratorServiceServer) GetRegisteredGames(context.Context,
 }
 func (UnimplementedRegistratorServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
+}
+func (UnimplementedRegistratorServiceServer) GetUserByID(context.Context, *GetUserByIDRequest) (*GetUserByIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByID not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetUserByTelegramID(context.Context, *GetUserByTelegramIDRequest) (*GetUserByTelegramIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserByTelegramID not implemented")
@@ -697,6 +745,24 @@ func _RegistratorService_AddGame_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).AddGame(ctx, req.(*AddGameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_AddGames_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddGamesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).AddGames(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/AddGames",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).AddGames(ctx, req.(*AddGamesRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -809,6 +875,24 @@ func _RegistratorService_GetPlaceByID_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RegistratorService_GetPlaceByNameAndAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetPlaceByNameAndAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/GetPlaceByNameAndAddress",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, req.(*GetPlaceByNameAndAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RegistratorService_GetPlayersByGameID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPlayersByGameIDRequest)
 	if err := dec(in); err != nil {
@@ -859,6 +943,24 @@ func _RegistratorService_GetUser_Handler(srv interface{}, ctx context.Context, d
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUser(ctx, req.(*GetUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_GetUserByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).GetUserByID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/GetUserByID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1073,6 +1175,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RegistratorService_AddGame_Handler,
 		},
 		{
+			MethodName: "AddGames",
+			Handler:    _RegistratorService_AddGames_Handler,
+		},
+		{
 			MethodName: "CreateUser",
 			Handler:    _RegistratorService_CreateUser_Handler,
 		},
@@ -1097,6 +1203,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RegistratorService_GetPlaceByID_Handler,
 		},
 		{
+			MethodName: "GetPlaceByNameAndAddress",
+			Handler:    _RegistratorService_GetPlaceByNameAndAddress_Handler,
+		},
+		{
 			MethodName: "GetPlayersByGameID",
 			Handler:    _RegistratorService_GetPlayersByGameID_Handler,
 		},
@@ -1107,6 +1217,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUser",
 			Handler:    _RegistratorService_GetUser_Handler,
+		},
+		{
+			MethodName: "GetUserByID",
+			Handler:    _RegistratorService_GetUserByID_Handler,
 		},
 		{
 			MethodName: "GetUserByTelegramID",

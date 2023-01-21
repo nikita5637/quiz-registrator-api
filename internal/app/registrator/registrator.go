@@ -30,6 +30,7 @@ type Croupier interface {
 // GamesFacade ...
 type GamesFacade interface {
 	AddGame(ctx context.Context, game model.Game) (int32, error)
+	AddGames(ctx context.Context, games []model.Game) error
 	DeleteGame(ctx context.Context, gameID int32) error
 	// GetGameByID guaranteed returns active game by game ID
 	GetGameByID(ctx context.Context, id int32) (model.Game, error)
@@ -60,6 +61,7 @@ type LeaguesFacade interface {
 // PlacesFacade ...
 type PlacesFacade interface {
 	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
+	GetPlaceByNameAndAddress(ctx context.Context, name, address string) (model.Place, error)
 }
 
 // Registrator ...
@@ -84,6 +86,7 @@ type Registrator struct {
 type UsersFacade interface {
 	CreateUser(ctx context.Context, user model.User) (int32, error)
 	GetUser(ctx context.Context) (model.User, error)
+	GetUserByID(ctx context.Context, userID int32) (model.User, error)
 	GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error)
 	UpdateUserEmail(ctx context.Context, userID int32, email string) error
 	UpdateUserName(ctx context.Context, userID int32, name string) error

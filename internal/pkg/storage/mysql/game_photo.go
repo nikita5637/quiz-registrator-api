@@ -2,9 +2,9 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GamePhotoStorageAdapter ...
@@ -13,9 +13,9 @@ type GamePhotoStorageAdapter struct {
 }
 
 // NewGamePhotoStorageAdapter ...
-func NewGamePhotoStorageAdapter(db *sql.DB) *GamePhotoStorageAdapter {
+func NewGamePhotoStorageAdapter(txManager *tx.Manager) *GamePhotoStorageAdapter {
 	return &GamePhotoStorageAdapter{
-		gamePhotoStorage: NewGamePhotoStorage(db),
+		gamePhotoStorage: NewGamePhotoStorage(txManager),
 	}
 }
 
@@ -59,7 +59,7 @@ func (s *GamePhotoStorage) GetGameIDsWithPhotos(ctx context.Context, limit uint3
 		query += " LIMIT ?"
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}

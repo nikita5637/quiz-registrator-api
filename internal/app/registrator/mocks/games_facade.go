@@ -67,6 +67,44 @@ func (_c *GamesFacade_AddGame_Call) Return(_a0 int32, _a1 error) *GamesFacade_Ad
 	return _c
 }
 
+// AddGames provides a mock function with given fields: ctx, games
+func (_m *GamesFacade) AddGames(ctx context.Context, games []model.Game) error {
+	ret := _m.Called(ctx, games)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, []model.Game) error); ok {
+		r0 = rf(ctx, games)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GamesFacade_AddGames_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'AddGames'
+type GamesFacade_AddGames_Call struct {
+	*mock.Call
+}
+
+// AddGames is a helper method to define mock.On call
+//  - ctx context.Context
+//  - games []model.Game
+func (_e *GamesFacade_Expecter) AddGames(ctx interface{}, games interface{}) *GamesFacade_AddGames_Call {
+	return &GamesFacade_AddGames_Call{Call: _e.mock.On("AddGames", ctx, games)}
+}
+
+func (_c *GamesFacade_AddGames_Call) Run(run func(ctx context.Context, games []model.Game)) *GamesFacade_AddGames_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].([]model.Game))
+	})
+	return _c
+}
+
+func (_c *GamesFacade_AddGames_Call) Return(_a0 error) *GamesFacade_AddGames_Call {
+	_c.Call.Return(_a0)
+	return _c
+}
+
 // DeleteGame provides a mock function with given fields: ctx, gameID
 func (_m *GamesFacade) DeleteGame(ctx context.Context, gameID int32) error {
 	ret := _m.Called(ctx, gameID)

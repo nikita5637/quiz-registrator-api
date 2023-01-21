@@ -8,6 +8,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GamePhoto represents a row from 'game_photo'.
@@ -20,13 +22,13 @@ type GamePhoto struct {
 
 // GamePhotoStorage is GamePhoto service implementation
 type GamePhotoStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewGamePhotoStorage creates new instance of GamePhotoStorage
-func NewGamePhotoStorage(db *sql.DB) *GamePhotoStorage {
+func NewGamePhotoStorage(txManager *tx.Manager) *GamePhotoStorage {
 	return &GamePhotoStorage{
-		db: db,
+		db: txManager,
 	}
 }
 
@@ -55,7 +57,7 @@ func (s *GamePhotoStorage) Find(ctx context.Context, q builder.Cond, sort string
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +108,7 @@ func (s *GamePhotoStorage) FindWithLimit(ctx context.Context, q builder.Cond, so
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -147,7 +149,7 @@ func (s *GamePhotoStorage) Total(ctx context.Context, q builder.Cond) (uint64, e
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -177,7 +179,7 @@ func (s *GamePhotoStorage) Insert(ctx context.Context, item GamePhoto) (int, err
 	// run
 	logger.Debugf(ctx, sqlstr, item.FkGameID, item.URL)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.FkGameID, item.URL)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.FkGameID, item.URL)
 	if err != nil {
 		return 0, err
 	}
@@ -198,7 +200,7 @@ func (s *GamePhotoStorage) Update(ctx context.Context, item GamePhoto) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.FkGameID, item.URL, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.FkGameID, item.URL, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.FkGameID, item.URL, item.ID); err != nil {
 		return err
 	}
 
@@ -217,7 +219,7 @@ func (s *GamePhotoStorage) Upsert(ctx context.Context, item GamePhoto) error {
 		`fk_game_id = VALUES(fk_game_id), url = VALUES(url), created_at = VALUES(created_at)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.FkGameID, item.URL, item.CreatedAt)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.FkGameID, item.URL); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.FkGameID, item.URL); err != nil {
 		return err
 	}
 
@@ -232,7 +234,7 @@ func (s *GamePhotoStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -250,7 +252,7 @@ func (s *GamePhotoStorage) GetGamePhotoByFkGameID(ctx context.Context, fkGameID 
 		`WHERE fk_game_id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, fkGameID)
-	rows, err := s.db.QueryContext(ctx, sqlstr, fkGameID)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, sqlstr, fkGameID)
 	if err != nil {
 		return nil, err
 	}
@@ -284,7 +286,7 @@ func (s *GamePhotoStorage) GetGamePhotoByID(ctx context.Context, id int) (*GameP
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	gp := GamePhoto{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&gp.ID, &gp.FkGameID, &gp.URL, &gp.CreatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&gp.ID, &gp.FkGameID, &gp.URL, &gp.CreatedAt); err != nil {
 		return nil, err
 	}
 	return &gp, nil

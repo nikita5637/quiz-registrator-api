@@ -4,11 +4,11 @@ package storage
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // UserStorage ...
@@ -20,10 +20,10 @@ type UserStorage interface {
 }
 
 // NewUserStorage ...
-func NewUserStorage(db *sql.DB) UserStorage {
+func NewUserStorage(txManager *tx.Manager) UserStorage {
 	switch config.GetValue("Driver").String() {
 	case config.DriverMySQL:
-		return mysql.NewUserStorageAdapter(db)
+		return mysql.NewUserStorageAdapter(txManager)
 	}
 
 	return nil

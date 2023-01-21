@@ -9,6 +9,8 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // Game represents a row from 'game'.
@@ -33,13 +35,13 @@ type Game struct {
 
 // GameStorage is Game service implementation
 type GameStorage struct {
-	db *sql.DB
+	db *tx.Manager
 }
 
 // NewGameStorage creates new instance of GameStorage
-func NewGameStorage(db *sql.DB) *GameStorage {
+func NewGameStorage(txManager *tx.Manager) *GameStorage {
 	return &GameStorage{
-		db: db,
+		db: txManager,
 	}
 }
 
@@ -68,7 +70,7 @@ func (s *GameStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 		query += ` ` + getOrderStmt(sort)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -131,7 +133,7 @@ func (s *GameStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 		args = append(args, limit)
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -184,7 +186,7 @@ func (s *GameStorage) Total(ctx context.Context, q builder.Cond) (uint64, error)
 		query += ` WHERE ` + where
 	}
 
-	rows, err := s.db.QueryContext(ctx, query, args...)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
@@ -214,7 +216,7 @@ func (s *GameStorage) Insert(ctx context.Context, item Game) (int, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered)
 
-	res, err := s.db.ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered)
 	if err != nil {
 		return 0, err
 	}
@@ -235,7 +237,7 @@ func (s *GameStorage) Update(ctx context.Context, item Game) error {
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.ID)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.ID); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.ID); err != nil {
 		return err
 	}
 
@@ -254,7 +256,7 @@ func (s *GameStorage) Upsert(ctx context.Context, item Game) error {
 		`external_id = VALUES(external_id), league_id = VALUES(league_id), type = VALUES(type), number = VALUES(number), name = VALUES(name), place_id = VALUES(place_id), date = VALUES(date), price = VALUES(price), payment_type = VALUES(payment_type), max_players = VALUES(max_players), payment = VALUES(payment), registered = VALUES(registered), created_at = VALUES(created_at), updated_at = VALUES(updated_at), deleted_at = VALUES(deleted_at)`
 	// run
 	logger.Debugf(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.CreatedAt, item.UpdatedAt, item.DeletedAt)
-	if _, err := s.db.ExecContext(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered); err != nil {
 		return err
 	}
 
@@ -268,7 +270,7 @@ func (s *GameStorage) Delete(ctx context.Context, id int) error {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
-	if _, err := s.db.ExecContext(ctx, sqlstr, id); err != nil {
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, id); err != nil {
 		return err
 	}
 
@@ -287,7 +289,7 @@ func (s *GameStorage) GetGameByID(ctx context.Context, id int) (*Game, error) {
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	g := Game{}
-	if err := s.db.QueryRowContext(ctx, sqlstr, id).Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
 		return nil, err
 	}
 	return &g, nil
@@ -304,7 +306,7 @@ func (s *GameStorage) GetGameByLeagueID(ctx context.Context, leagueID int) ([]*G
 		`WHERE league_id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, leagueID)
-	rows, err := s.db.QueryContext(ctx, sqlstr, leagueID)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, sqlstr, leagueID)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +339,7 @@ func (s *GameStorage) GetGameByPlaceID(ctx context.Context, placeID int) ([]*Gam
 		`WHERE place_id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, placeID)
-	rows, err := s.db.QueryContext(ctx, sqlstr, placeID)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, sqlstr, placeID)
 	if err != nil {
 		return nil, err
 	}
