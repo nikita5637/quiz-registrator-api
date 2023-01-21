@@ -78,10 +78,16 @@ func userStateInterceptor(ctx context.Context,
 				return handler(ctx, req)
 			}
 		}
-	}
-
-	if info.FullMethod == "/users.RegistratorService/GetPlaceByNameAndAddress" {
-		return handler(ctx, req)
+	case "/users.RegistratorService/GetGameByID",
+		"/users.RegistratorService/GetUserByID",
+		"/users.RegistratorService/GetPlaceByID":
+		md, ok := metadata.FromIncomingContext(ctx)
+		if ok {
+			headers := md.Get(moduleNameHeader)
+			if len(headers) > 0 && headers[0] == "telegram-reminder" {
+				return handler(ctx, req)
+			}
+		}
 	}
 
 	md, ok := metadata.FromIncomingContext(ctx)
