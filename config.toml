@@ -15,6 +15,14 @@ active_game_lag = 3600
 lottery_starts_before = 3600
 
 #
+# Reminder settings
+#
+rabbitmq_address = "localhost"
+rabbitmq_port = 5672
+rabbitmq_game_reminder_queue_name = "quiz_game_reminder_prod"
+rabbitmq_username = "quiz_reminder"
+
+#
 # DB Settings
 #
 driver = "mysql"
