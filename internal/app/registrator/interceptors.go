@@ -15,6 +15,10 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+const (
+	moduleNameHeader = "x-module-name"
+)
+
 func logInterceptor(ctx context.Context,
 	req interface{},
 	info *grpc.UnaryServerInfo,
@@ -64,8 +68,16 @@ func userStateInterceptor(ctx context.Context,
 		return handler(ctx, req)
 	}
 
-	if info.FullMethod == "/users.RegistratorService/AddGames" {
-		return handler(ctx, req)
+	switch info.FullMethod {
+	case "/users.RegistratorService/AddGames",
+		"/users.RegistratorService/GetPlaceByNameAndAddress":
+		md, ok := metadata.FromIncomingContext(ctx)
+		if ok {
+			headers := md.Get(moduleNameHeader)
+			if len(headers) > 0 && headers[0] == "fetcher" {
+				return handler(ctx, req)
+			}
+		}
 	}
 
 	if info.FullMethod == "/users.RegistratorService/GetPlaceByNameAndAddress" {
