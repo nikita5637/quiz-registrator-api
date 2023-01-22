@@ -123,8 +123,8 @@ message Place {
 	string address = 2;
 	string name = 3;
 	string short_name = 4;
-	float longitude = 5;
-	float latitude = 6;
+	float latitude = 5;
+	float longitude = 6;
 	string menu_link = 7;
 }
 
