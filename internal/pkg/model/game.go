@@ -27,11 +27,7 @@ type Game struct {
 	CreatedAt   DateTime
 	UpdatedAt   DateTime
 	DeletedAt   DateTime
-	//
-	gameAdditionalInfo
-}
-
-type gameAdditionalInfo struct {
+	// additional info
 	My                  bool
 	NumberOfMyLegioners uint32
 	NumberOfLegioners   uint32
