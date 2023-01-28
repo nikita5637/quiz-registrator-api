@@ -13,6 +13,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/squiz"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
@@ -114,10 +115,19 @@ func main() {
 
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		croupierConfig := croupier.Config{
-			QuizPleaseCroupier: quiz_please.New(),
+		quizPleaseCroupierConfig := quiz_please.Config{
+			LotteryLink: quiz_please.LotteryLink,
 		}
 
+		squizCroupierConfig := squiz.Config{
+			LotteryInfoPageLink:     squiz.LotteryInfoPageLink,
+			LotteryRegistrationLink: squiz.LotteryRegistrationLink,
+		}
+
+		croupierConfig := croupier.Config{
+			QuizPleaseCroupier: quiz_please.New(quizPleaseCroupierConfig),
+			SquizCroupier:      squiz.New(squizCroupierConfig),
+		}
 		croupier := croupier.New(croupierConfig)
 
 		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)

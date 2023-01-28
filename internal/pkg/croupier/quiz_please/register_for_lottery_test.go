@@ -15,7 +15,7 @@ import (
 
 func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 	t.Run("error 1", func(t *testing.T) {
-		croupier := QuizPleaseCroupier{}
+		croupier := Croupier{}
 		svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			b, err := ioutil.ReadAll(r.Body)
 			assert.NoError(t, err)
@@ -77,7 +77,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 	})
 
 	t.Run("error 2", func(t *testing.T) {
-		croupier := QuizPleaseCroupier{}
+		croupier := Croupier{}
 		svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `{"success":false,"message":"Игра не найдена"}`)
 		}))
@@ -93,7 +93,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 	})
 
 	t.Run("error 3", func(t *testing.T) {
-		croupier := QuizPleaseCroupier{}
+		croupier := Croupier{}
 		svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `{"success":false,"message":"Кажется, игрок с таким емейлом уже зарегистрирован в лототроне сегодня.<br><br> <p>Сорри, мы не можем принять вашу запись (но вы можете предложить вашему сокоманднику поучаствовать).</p>"}`)
 		}))
@@ -109,7 +109,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 	})
 
 	t.Run("error 4", func(t *testing.T) {
-		croupier := QuizPleaseCroupier{}
+		croupier := Croupier{}
 		svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `{"success":false,"message":"Лотерея не найдена"}`)
 		}))
@@ -125,7 +125,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		croupier := QuizPleaseCroupier{}
+		croupier := Croupier{}
 		svr := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, `{"success":true,"message":"168"}`)
 		}))

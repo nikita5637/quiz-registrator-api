@@ -28,7 +28,7 @@ type multipartObject struct {
 }
 
 // RegisterForLottery ...
-func (c *QuizPleaseCroupier) RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error) {
+func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error) {
 	multipartObjects := []multipartObject{
 		{
 			name:  "game_id",

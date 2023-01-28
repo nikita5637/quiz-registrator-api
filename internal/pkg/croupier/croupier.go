@@ -17,11 +17,13 @@ type LotteryRegistrator interface {
 type Croupier struct {
 	leaguesWithLottery []int32
 	quizPleaseCroupier LotteryRegistrator
+	squizCroupier      LotteryRegistrator
 }
 
 // Config ...
 type Config struct {
 	QuizPleaseCroupier LotteryRegistrator
+	SquizCroupier      LotteryRegistrator
 }
 
 // New ...
@@ -29,7 +31,9 @@ func New(cfg Config) *Croupier {
 	return &Croupier{
 		leaguesWithLottery: []int32{
 			model.LeagueQuizPlease,
+			model.LeagueSquiz,
 		},
 		quizPleaseCroupier: cfg.QuizPleaseCroupier,
+		squizCroupier:      cfg.SquizCroupier,
 	}
 }

@@ -82,8 +82,8 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		game := model.Game{
 			LeagueID: model.LeagueQuizPlease,
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
+			My:       true,
 		}
-		game.My = true
 
 		got := c.GetIsLotteryActive(ctx, game)
 		assert.True(t, got)

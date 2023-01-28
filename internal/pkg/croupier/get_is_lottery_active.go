@@ -11,14 +11,10 @@ import (
 
 // GetIsLotteryActive ...
 func (c *Croupier) GetIsLotteryActive(ctx context.Context, game model.Game) bool {
-	for _, leagueWithLottery := range c.leaguesWithLottery {
-		if game.LeagueID == leagueWithLottery {
-			if game.My {
-				lotteryStartsBefore := config.GetValue("LotteryStartsBefore").Uint16()
-				if time_utils.TimeNow().After(game.Date.AsTime().Add(-1 * time.Duration(lotteryStartsBefore) * time.Second)) {
-					return true
-				}
-			}
+	if game.My {
+		lotteryStartsBefore := config.GetValue("LotteryStartsBefore").Uint16()
+		if time_utils.TimeNow().After(game.Date.AsTime().Add(-1 * time.Duration(lotteryStartsBefore) * time.Second)) {
+			return true
 		}
 	}
 
