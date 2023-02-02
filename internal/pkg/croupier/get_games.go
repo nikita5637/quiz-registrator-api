@@ -28,7 +28,7 @@ func (c *Croupier) GetGamesWithActiveLottery(ctx context.Context) ([]model.Game,
 			continue
 		}
 
-		if game.IsActive() && c.GetIsLotteryActive(ctx, game) {
+		if game.IsActive() && game.Registered && c.GetIsLotteryActive(ctx, game) {
 			games = append(games, game)
 		}
 	}

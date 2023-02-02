@@ -88,38 +88,50 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 
 		gamesFacadeMock.EXPECT().GetGames(ctx).Return([]model.Game{
 			{
-				ID:       1,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),
-				LeagueID: model.LeagueSquiz,
+				ID:         1,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),
+				LeagueID:   model.LeagueSquiz,
+				Registered: true,
 			},
 			{
-				ID:       2,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
-				LeagueID: model.LeagueQuizPlease,
+				ID:         2,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
+				LeagueID:   model.LeagueQuizPlease,
+				Registered: true,
 			},
 			{
-				ID:       3,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID: model.LeagueSquiz,
+				ID:         3,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
+				LeagueID:   model.LeagueSquiz,
+				Registered: true,
 			},
 			{
-				ID:       4,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:30")),
-				LeagueID: model.LeagueQuizPlease,
+				ID:         4,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
+				LeagueID:   model.LeagueSquiz,
+				Registered: false,
+			},
+			{
+				ID:         5,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:30")),
+				LeagueID:   model.LeagueQuizPlease,
+				Registered: true,
 			},
 		}, nil)
 
 		got, err := c.GetGamesWithActiveLottery(ctx)
 		assert.Equal(t, []model.Game{
 			{
-				ID:       2,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
-				LeagueID: model.LeagueQuizPlease,
+				ID:         2,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
+				LeagueID:   model.LeagueQuizPlease,
+				Registered: true,
 			},
 			{
-				ID:       3,
-				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID: model.LeagueSquiz,
+				ID:         3,
+				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
+				LeagueID:   model.LeagueSquiz,
+				Registered: true,
 			},
 		}, got)
 		assert.NoError(t, err)
