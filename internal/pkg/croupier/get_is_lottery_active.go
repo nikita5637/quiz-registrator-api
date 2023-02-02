@@ -11,11 +11,9 @@ import (
 
 // GetIsLotteryActive ...
 func (c *Croupier) GetIsLotteryActive(ctx context.Context, game model.Game) bool {
-	if game.My {
-		lotteryStartsBefore := config.GetValue("LotteryStartsBefore").Uint16()
-		if time_utils.TimeNow().After(game.Date.AsTime().Add(-1 * time.Duration(lotteryStartsBefore) * time.Second)) {
-			return true
-		}
+	lotteryStartsBefore := config.GetValue("LotteryStartsBefore").Uint16()
+	if time_utils.TimeNow().After(game.Date.AsTime().Add(-1 * time.Duration(lotteryStartsBefore) * time.Second)) {
+		return true
 	}
 
 	return false

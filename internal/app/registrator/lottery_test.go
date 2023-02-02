@@ -51,6 +51,27 @@ func TestRegistrator_GetLotteryStatus(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
+	t.Run("ok game is not my", func(t *testing.T) {
+		time_utils.TimeNow = func() time.Time {
+			return time_utils.ConvertTime("2022-02-10 15:31")
+		}
+		fx := tearUp(t)
+
+		game := model.Game{
+			Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:30")),
+			LeagueID: 1,
+		}
+		game.My = false
+
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(game, nil)
+
+		got, err := fx.registrator.GetLotteryStatus(fx.ctx, &registrator.GetLotteryStatusRequest{
+			GameId: 1,
+		})
+		assert.False(t, got.GetActive())
+		assert.NoError(t, err)
+	})
+
 	t.Run("ok active", func(t *testing.T) {
 		time_utils.TimeNow = func() time.Time {
 			return time_utils.ConvertTime("2022-02-10 15:31")

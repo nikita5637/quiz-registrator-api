@@ -21,42 +21,6 @@ func (_m *Reminder) EXPECT() *Reminder_Expecter {
 	return &Reminder_Expecter{mock: &_m.Mock}
 }
 
-// GetName provides a mock function with given fields:
-func (_m *Reminder) GetName() string {
-	ret := _m.Called()
-
-	var r0 string
-	if rf, ok := ret.Get(0).(func() string); ok {
-		r0 = rf()
-	} else {
-		r0 = ret.Get(0).(string)
-	}
-
-	return r0
-}
-
-// Reminder_GetName_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetName'
-type Reminder_GetName_Call struct {
-	*mock.Call
-}
-
-// GetName is a helper method to define mock.On call
-func (_e *Reminder_Expecter) GetName() *Reminder_GetName_Call {
-	return &Reminder_GetName_Call{Call: _e.mock.On("GetName")}
-}
-
-func (_c *Reminder_GetName_Call) Run(run func()) *Reminder_GetName_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run()
-	})
-	return _c
-}
-
-func (_c *Reminder_GetName_Call) Return(_a0 string) *Reminder_GetName_Call {
-	_c.Call.Return(_a0)
-	return _c
-}
-
 // Run provides a mock function with given fields: ctx
 func (_m *Reminder) Run(ctx context.Context) error {
 	ret := _m.Called(ctx)

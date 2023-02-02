@@ -10,6 +10,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
+	lottery_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/lottery"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
@@ -113,23 +114,24 @@ func main() {
 
 	gamesFacade := games.NewFacade(gamesFacadeConfig)
 
+	quizPleaseCroupierConfig := quiz_please.Config{
+		LotteryLink: quiz_please.LotteryLink,
+	}
+
+	squizCroupierConfig := squiz.Config{
+		LotteryInfoPageLink:     squiz.LotteryInfoPageLink,
+		LotteryRegistrationLink: squiz.LotteryRegistrationLink,
+	}
+
+	croupierConfig := croupier.Config{
+		GamesFacade:        gamesFacade,
+		QuizPleaseCroupier: quiz_please.New(quizPleaseCroupierConfig),
+		SquizCroupier:      squiz.New(squizCroupierConfig),
+	}
+	croupier := croupier.New(croupierConfig)
+
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		quizPleaseCroupierConfig := quiz_please.Config{
-			LotteryLink: quiz_please.LotteryLink,
-		}
-
-		squizCroupierConfig := squiz.Config{
-			LotteryInfoPageLink:     squiz.LotteryInfoPageLink,
-			LotteryRegistrationLink: squiz.LotteryRegistrationLink,
-		}
-
-		croupierConfig := croupier.Config{
-			QuizPleaseCroupier: quiz_please.New(quizPleaseCroupierConfig),
-			SquizCroupier:      squiz.New(squizCroupierConfig),
-		}
-		croupier := croupier.New(croupierConfig)
-
 		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
 		gameResultStorage := storage.NewGameResultStorage(txManager)
 		leagueStorage := storage.NewLeagueStorage(txManager)
@@ -185,9 +187,18 @@ func main() {
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
+		lotteryReminderConfig := lottery_reminder.Config{
+			Croupier:        croupier,
+			GamesFacade:     gamesFacade,
+			QueueName:       config.GetValue("RabbitMQLotteryReminderQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)
+
 		remindManagerConfig := remindmanager.Config{
 			Reminders: []remindmanager.Reminder{
 				gameReminder,
+				lotteryReminder,
 			},
 		}
 		remindManager := remindmanager.New(remindManagerConfig)

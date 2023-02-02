@@ -1,4 +1,6 @@
+//go:generate mockery --case underscore --name Croupier --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
+//go:generate mockery --case underscore --name RabbitMQChannel --with-expecter
 
 package game
 
@@ -31,7 +33,8 @@ func TestNew(t *testing.T) {
 				},
 			},
 			want: &Reminder{
-				queueName: "queue",
+				alreadyRemindedGames: map[int32]struct{}{},
+				queueName:            "queue",
 			},
 		},
 	}
@@ -58,7 +61,7 @@ func TestReminder_Run(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("get todays games error", func(t *testing.T) {
+	t.Run("get games with active lottery error", func(t *testing.T) {
 		time_utils.TimeNow = func() time.Time {
 			return time_utils.ConvertTime("2022-02-10 10:00")
 		}
@@ -66,7 +69,7 @@ func TestReminder_Run(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return(nil, errors.New("some error"))
+		fx.croupier.EXPECT().GetGamesWithActiveLottery(fx.ctx).Return(nil, errors.New("some error"))
 
 		err := fx.reminder.Run(fx.ctx)
 		assert.Error(t, err)
@@ -80,7 +83,7 @@ func TestReminder_Run(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.croupier.EXPECT().GetGamesWithActiveLottery(fx.ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -117,7 +120,7 @@ func TestReminder_Run(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.croupier.EXPECT().GetGamesWithActiveLottery(fx.ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -146,7 +149,7 @@ func TestReminder_Run(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.croupier.EXPECT().GetGamesWithActiveLottery(fx.ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -195,7 +198,7 @@ func TestReminder_Run(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.croupier.EXPECT().GetGamesWithActiveLottery(fx.ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},

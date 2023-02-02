@@ -43,6 +43,12 @@ func (r *Registrator) GetLotteryStatus(ctx context.Context, req *registrator.Get
 		return nil, st.Err()
 	}
 
+	if !game.My {
+		return &registrator.GetLotteryStatusResponse{
+			Active: false,
+		}, nil
+	}
+
 	return &registrator.GetLotteryStatusResponse{
 		Active: r.croupier.GetIsLotteryActive(ctx, game),
 	}, nil
