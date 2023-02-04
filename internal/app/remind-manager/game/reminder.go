@@ -54,7 +54,7 @@ func New(cfg Config) *Reminder {
 func (r *Reminder) Run(ctx context.Context) error {
 	if time_utils.TimeNow().Hour() == 10 &&
 		time_utils.TimeNow().Minute() == 0 {
-		logger.Infof(ctx, "starting game reminder")
+		logger.Debug(ctx, "starting game reminder")
 
 		err := r.run(ctx)
 		if err != nil {
@@ -62,7 +62,7 @@ func (r *Reminder) Run(ctx context.Context) error {
 			return err
 		}
 
-		logger.Infof(ctx, "game reminder done")
+		logger.Debug(ctx, "game reminder done")
 	}
 
 	return nil

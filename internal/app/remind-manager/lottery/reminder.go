@@ -61,7 +61,7 @@ func New(cfg Config) *Reminder {
 
 // Run ...
 func (r *Reminder) Run(ctx context.Context) error {
-	logger.Info(ctx, "starting lottery reminder")
+	logger.Debug(ctx, "starting lottery reminder")
 
 	err := r.run(ctx)
 	if err != nil {
@@ -69,7 +69,7 @@ func (r *Reminder) Run(ctx context.Context) error {
 		return err
 	}
 
-	logger.Info(ctx, "lottery reminder done")
+	logger.Debug(ctx, "lottery reminder done")
 
 	return nil
 }
