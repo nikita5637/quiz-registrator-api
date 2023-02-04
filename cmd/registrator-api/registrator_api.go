@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"os"
 	"os/signal"
@@ -180,17 +181,27 @@ func main() {
 	})
 
 	g.Go(func() error {
+		gameReminderQueueName := config.GetValue("RabbitMQGameReminderQueueName").String()
+		if gameReminderQueueName == "" {
+			return errors.New("empty rabbit MQ game reminder queue name")
+		}
+
 		gameReminderConfig := game_reminder.Config{
 			GamesFacade:     gamesFacade,
-			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			QueueName:       gameReminderQueueName,
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
+		lotteryReminderQueueName := config.GetValue("RabbitMQLotteryReminderQueueName").String()
+		if lotteryReminderQueueName == "" {
+			return errors.New("empty rabbit MQ lottery reminder queue name")
+		}
+
 		lotteryReminderConfig := lottery_reminder.Config{
 			Croupier:        croupier,
 			GamesFacade:     gamesFacade,
-			QueueName:       config.GetValue("RabbitMQLotteryReminderQueueName").String(),
+			QueueName:       lotteryReminderQueueName,
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)

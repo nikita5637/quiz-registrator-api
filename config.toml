@@ -19,6 +19,7 @@ lottery_starts_before = 3600
 #
 rabbitmq_address = "localhost"
 rabbitmq_port = 5672
+rabbitmq_game_reminder_queue_name = "quiz_game_reminder_prod"
 rabbitmq_lottery_reminder_queue_name = "quiz_lottery_reminder_prod"
 rabbitmq_username = "quiz_reminder"
 
