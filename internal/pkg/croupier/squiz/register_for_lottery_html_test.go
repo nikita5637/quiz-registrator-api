@@ -1088,4 +1088,1143 @@ setTimeout(function(){ (function (d, w, k, o, g) { var n=d.getElementsByTagName(
 <script type="text/javascript" id="">!function(b,e,f,g,a,c,d){b.fbq||(a=b.fbq=function(){a.callMethod?a.callMethod.apply(a,arguments):a.queue.push(arguments)},b._fbq||(b._fbq=a),a.push=a,a.loaded=!0,a.version="2.0",a.queue=[],c=e.createElement(f),c.async=!0,c.src=g,d=e.getElementsByTagName(f)[0],d.parentNode.insertBefore(c,d))}(window,document,"script","https://connect.facebook.net/en_US/fbevents.js");fbq("init","557218768297076");fbq("track","PageView");</script>
 <noscript>&lt;img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=557218768297076&amp;amp;ev=PageView&amp;amp;noscript=1"&gt;</noscript>
 <div id="jivo-iframe-container" style="opacity: 0; visibility: hidden; width: 0px; height: 0px; overflow: hidden;"><iframe src="" role="presentation" allow="autoplay" title="Jivochat" name="jivo_container" id="jivo_container" frameborder="no"></iframe></div><jdiv><jdiv class="globalClass_fdcc"><jdiv style="animation: 300ms cubic-bezier(0.39, 0.24, 0.21, 0.99) 0s 1 normal both running Label_CLOSE_WIDGET_c8a4; display: block; z-index: 2147483646; position: fixed;"><jdiv class="label_f73e _bottom_ccb1 __show_c1d2 notranslate" translate="no" id="jvlabelWrap" style="right: 30px; bottom: 0px; background-image: linear-gradient(95deg, rgb(36, 163, 227) 20%, rgb(36, 163, 227) 80%);"><jdiv class="hoverl_b30e"><jdiv class="omnichannel_c559 bottom_fd52"></jdiv></jdiv><jdiv class="text_ed6c contentTransitionWrap_da40 _noAd_d9da" style="font-size: 15px; font-family: Arial, Arial; font-style: normal; color: rgb(240, 241, 241);">А вот сюда нам можно написать :)</jdiv><jdiv class="leafCont_ffe5"><jdiv class="leaf_c52b _bottom_cb1e"><jdiv class="cssLeaf_dddd" style="background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2232%22%20height%3D%2240%22%20viewBox%3D%220%200%2032%2040%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill%3D%22%2324a3e3%22%20d%3D%22M0%200h9.02L32%2033.196V40H0z%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cpath%20fill%3D%22%2318c139%22%20d%3D%22M9%200c3.581.05%2023%205.426%2023%2033.08v.03C18.922%2030.751%209%2019.311%209%205.554V0z%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A&quot;);"></jdiv></jdiv></jdiv></jdiv></jdiv><jdiv id="jivo-player" class="player_be30"><audio preload="auto" id="jivo-sound-agent_message"><source src="https://code.jivo.ru/sounds/agent_message.mp3" type="audio/mpeg"><source src="https://code.jivo.ru/sounds/agent_message.ogg" type="audio/ogg; codecs=vorbis"><source src="https://code.jivo.ru/sounds/agent_message.wav" type="audio/wav"></audio><audio preload="auto" id="jivo-sound-notification"><source src="https://code.jivo.ru/sounds/notification.mp3" type="audio/mpeg"><source src="https://code.jivo.ru/sounds/notification.ogg" type="audio/ogg; codecs=vorbis"><source src="https://code.jivo.ru/sounds/notification.wav" type="audio/wav"></audio><audio preload="auto" id="jivo-sound-outgoing_message"><source src="https://code.jivo.ru/sounds/outgoing_message.mp3" type="audio/mpeg"><source src="https://code.jivo.ru/sounds/outgoing_message.ogg" type="audio/ogg; codecs=vorbis"><source src="https://code.jivo.ru/sounds/outgoing_message.wav" type="audio/wav"></audio></jdiv><jdiv id="jcont" style="animation: 300ms cubic-bezier(0.39, 0.24, 0.21, 0.99) 0s 1 normal both running WidgetContainer_CLOSE_WIDGET_fd1f; --jright: 30px; --jheight: 496px; display: block; position: fixed; --jlabelwidth: 300px; --jlabelright: 30px;"><jdiv class="wrap_cfd2" dir="ltr" id="jivo_action"><jdiv class="closeButton_a347" id="jivo_close_button"><jdiv class="closeIcon_d798" style="background-image: url(&quot;data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2228%22%20height%3D%2228%22%20viewBox%3D%220%200%2028%2028%22%3E%0A%20%20%20%20%3Cg%20fill%3D%22none%22%20fill-rule%3D%22evenodd%22%20transform%3D%22translate(2%202)%22%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212%22%20fill%3D%22%23FFF%22%20opacity%3D%221%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Ccircle%20cx%3D%2212%22%20cy%3D%2212%22%20r%3D%2212.75%22%20stroke%3D%22%23222D38%22%20stroke-width%3D%221.5%22%20opacity%3D%221%22%2F%3E%0A%20%20%20%20%20%20%20%20%3Cg%20fill%3D%22%23222D38%22%20opacity%3D%221%22%20transform%3D%22translate(6%206)%22%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%221.611%22%20height%3D%2213.9%22%20x%3D%225.435%22%20y%3D%22-.941%22%20rx%3D%22.806%22%20transform%3D%22rotate(45%206.24%206.01)%22%2F%3E%0A%20%20%20%20%20%20%20%20%20%20%20%20%3Crect%20width%3D%221.611%22%20height%3D%2213.9%22%20x%3D%225.435%22%20y%3D%22-.941%22%20rx%3D%22.806%22%20transform%3D%22scale(-1%201)%20rotate(45%200%20-9.058)%22%2F%3E%0A%20%20%20%20%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A&quot;);"></jdiv></jdiv></jdiv><jdiv class="contentWrapper_a6cb notranslate" translate="no"></jdiv></jdiv><jdiv class="pseudoHeight_aff8"></jdiv><jdiv class="jivoMouseTrack_fb39"></jdiv></jdiv></jdiv><script type="text/javascript" id="">$(document).ready(function(){$("form.js-form-proccess").each(function(){$(this).append('\x3cinput type\x3d"hidden" name\x3d"ga-cid" value\x3d"2095662112.1674837243"\x3e \x3cinput type\x3d"hidden" name\x3d"ym-cid" value\x3d"1668581346714918248"\x3e')})});</script></body></html>`
+	html2 = `<html><head><meta charset="utf-8" /><meta http-equiv="Content-Type" content="text/html; charset=utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /> <!--metatextblock--><title>Лотерея</title><meta name="description" content="Заполни этот бланк и выиграй один из ништяков от Squiz" /> <meta property="og:url" content="https://spb.squiz.ru/game" /><meta property="og:title" content="Лотерея" /><meta property="og:description" content="Заполни этот бланк и выиграй один из ништяков от Squiz" /><meta property="og:type" content="website" /><link rel="canonical" href="https://spb.squiz.ru/game"><!--/metatextblock--><meta name="format-detection" content="telephone=no" /><meta http-equiv="x-dns-prefetch-control" content="on"><link rel="dns-prefetch" href="https://ws.tildacdn.com"><link rel="dns-prefetch" href="https://static.tildacdn.com"><link rel="shortcut icon" href="https://static.tildacdn.com/tild6534-3363-4236-b863-323265633836/favicon.jpg" type="image/x-icon" /><!-- Assets --><script src="https://neo.tildacdn.com/js/tilda-fallback-1.0.min.js" charset="utf-8" async></script><link rel="stylesheet" href="https://static.tildacdn.com/css/tilda-grid-3.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';"/><link rel="stylesheet" href="https://ws.tildacdn.com/project1057010/tilda-blocks-page4917751.min.css?t=1675626359" type="text/css" media="all" onerror="this.loaderr='y';" /><link rel="preconnect" href="https://fonts.gstatic.com"><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&subset=latin,cyrillic" rel="stylesheet"><link rel="stylesheet" href="https://static.tildacdn.com/css/tilda-forms-1.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';" /><link rel="stylesheet" href="https://static.tildacdn.com/css/tilda-popup-1.1.min.css" type="text/css" media="print" onload="this.media='all';" onerror="this.loaderr='y';" /><noscript><link rel="stylesheet" href="https://static.tildacdn.com/css/tilda-popup-1.1.min.css" type="text/css" media="all" /></noscript><link rel="stylesheet" href="https://static.tildacdn.com/css/tilda-cover-1.0.min.css" type="text/css" media="all" onerror="this.loaderr='y';" /><link rel="stylesheet" type="text/css" href="https://ws.tildacdn.com/project1057010/custom.css?t=1675626359"><script type="text/javascript">(function (d) {
+if (!d.visibilityState) {
+var s = d.createElement('script');
+s.src = 'https://static.tildacdn.com/js/tilda-polyfill-1.0.min.js';
+d.getElementsByTagName('head')[0].appendChild(s);
+}
+})(document);
+function t_onReady(func) {
+if (document.readyState != 'loading') {
+func();
+} else {
+document.addEventListener('DOMContentLoaded', func);
+}
+}
+function t_onFuncLoad(funcName, okFunc, time) {
+if (typeof window[funcName] === 'function') {
+okFunc();
+} else {
+setTimeout(function() {
+t_onFuncLoad(funcName, okFunc, time);
+},(time || 100));
+}
+}function t_throttle(fn, threshhold, scope) {return function () {fn.apply(scope || this, arguments);};}</script><script src="https://static.tildacdn.com/js/jquery-1.10.2.min.js" charset="utf-8" onerror="this.loaderr='y';"></script> <script src="https://static.tildacdn.com/js/tilda-scripts-3.0.min.js" charset="utf-8" defer onerror="this.loaderr='y';"></script><script src="https://ws.tildacdn.com/project1057010/tilda-blocks-page4917751.min.js?t=1675626359" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/lazyload-1.3.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/tilda-forms-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/tilda-popup-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/tilda-menu-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/tilda-cover-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script src="https://static.tildacdn.com/js/tilda-events-1.0.min.js" charset="utf-8" async onerror="this.loaderr='y';"></script><script type="text/javascript">window.dataLayer = window.dataLayer || [];</script><!-- Google Tag Manager --><script type="text/javascript">(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-K7R6WRP');</script><!-- End Google Tag Manager --><script type="text/javascript">(function () {
+if((/bot|google|yandex|baidu|bing|msn|duckduckbot|teoma|slurp|crawler|spider|robot|crawling|facebook/i.test(navigator.userAgent))===false && typeof(sessionStorage)!='undefined' && sessionStorage.getItem('visited')!=='y' && document.visibilityState){
+var style=document.createElement('style');
+style.type='text/css';
+style.innerHTML='@media screen and (min-width: 980px) {.t-records {opacity: 0;}.t-records_animated {-webkit-transition: opacity ease-in-out .2s;-moz-transition: opacity ease-in-out .2s;-o-transition: opacity ease-in-out .2s;transition: opacity ease-in-out .2s;}.t-records.t-records_visible {opacity: 1;}}';
+document.getElementsByTagName('head')[0].appendChild(style);
+function t_setvisRecs(){
+var alr=document.querySelectorAll('.t-records');
+Array.prototype.forEach.call(alr, function(el) {
+el.classList.add("t-records_animated");
+});
+setTimeout(function () {
+Array.prototype.forEach.call(alr, function(el) {
+el.classList.add("t-records_visible");
+});
+sessionStorage.setItem("visited", "y");
+}, 400);
+} 
+document.addEventListener('DOMContentLoaded', t_setvisRecs);
+}
+})();</script></head><body class="t-body" style="margin:0;"><!--allrecords--><div id="allrecords" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="1057010" data-tilda-page-id="4917751" data-tilda-page-alias="game" data-tilda-formskey="e1f3c41503ecee331fd3e20a0956db51" data-tilda-lazy="yes"><!--header--><div id="t-header" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="1057010" data-tilda-page-id="4548927" data-tilda-formskey="e1f3c41503ecee331fd3e20a0956db51" data-tilda-lazy="yes"><div id="rec83137848" class="r t-rec" style=" " data-animationappear="off" data-record-type="360" ><!-- T360 --><style>@media screen and (min-width: 980px) {
+.t-records {
+opacity: 0;
+}
+.t-records_animated {
+-webkit-transition: opacity ease-in-out .5s;
+-moz-transition: opacity ease-in-out .5s;
+-o-transition: opacity ease-in-out .5s;
+transition: opacity ease-in-out .5s;
+}
+.t-records.t-records_visible,
+.t-records .t-records {
+opacity: 1;
+}
+}</style><script>t_onReady(function () {
+var allRecords = document.querySelector('.t-records');
+window.addEventListener('pageshow', function (event) {
+if (event.persisted) {
+allRecords.classList.add('t-records_visible');
+}
+});
+var rec = document.querySelector('#rec83137848');
+if (!rec) return;
+rec.setAttribute('data-animationappear', 'off');
+rec.style.opacity = '1';
+allRecords.classList.add('t-records_animated');
+setTimeout(function () {
+allRecords.classList.add('t-records_visible');
+}, 200);
+});</script><script>t_onReady(function () {
+var selects = 'button:not(.t-submit):not(.t835__btn_next):not(.t835__btn_prev):not(.t835__btn_result):not(.t862__btn_next):not(.t862__btn_prev):not(.t862__btn_result):not(.t854__news-btn):not(.t862__btn_next),' +
+'a:not([href*="#"]):not(.carousel-control):not(.t-carousel__control):not(.t807__btn_reply):not([href^="#price"]):not([href^="javascript"]):not([href^="mailto"]):not([href^="tel"]):not([href^="link_sub"]):not(.js-feed-btn-show-more):not(.t367__opener):not([href^="https://www.dropbox.com/"])';
+var elements = document.querySelectorAll(selects);
+Array.prototype.forEach.call(elements, function (element) {
+if (element.getAttribute('data-menu-submenu-hook')) return;
+element.addEventListener('click', function (event) {
+var goTo = this.getAttribute('href');
+if (goTo !== null) {
+var ctrl = event.ctrlKey;
+var cmd = event.metaKey && navigator.platform.indexOf('Mac') !== -1;
+if (!ctrl && !cmd) {
+var target = this.getAttribute('target');
+if (target !== '_blank') {
+event.preventDefault();
+var allRecords = document.querySelector('.t-records');
+allRecords.classList.remove('t-records_visible');
+setTimeout(function () {
+window.location = goTo;
+}, 500);
+}
+}
+}
+});
+});
+});</script><style>.t360__bar {
+background-color: #24a3e3;
+}</style><script>t_onReady(function () {
+var isSafari = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+if (!isSafari) {
+document.body.insertAdjacentHTML('beforeend', '<div class="t360__progress"><div class="t360__bar"></div></div>');
+setTimeout(function () {
+var bar = document.querySelector('.t360__bar');
+if (bar) bar.classList.add('t360__barprogress');
+}, 10);
+}
+});
+window.addEventListener('load', function () {
+var bar = document.querySelector('.t360__bar');
+if (!bar) return;
+bar.classList.remove('t360__barprogress');
+bar.classList.add('t360__barprogressfinished');
+setTimeout(function () {
+bar.classList.add('t360__barprogresshidden');
+}, 20);
+setTimeout(function () {
+var progress = document.querySelector('.t360__progress');
+if (progress) progress.style.display = 'none';
+}, 500);
+});</script></div><div id="rec83137849" class="r t-rec t-screenmin-980px" style=" " data-animationappear="off" data-record-type="257" data-screen-min="980px" ><!-- T228 --><div id="nav83137849marker"></div><div class="tmenu-mobile" ><div class="tmenu-mobile__container"><div class="tmenu-mobile__text t-name t-name_md" field="menu_mob_title">&nbsp;</div><div class="t-menuburger t-menuburger_first "><span style="background-color:#fff;"></span><span style="background-color:#fff;"></span><span style="background-color:#fff;"></span><span style="background-color:#fff;"></span></div><script>function t_menuburger_init(recid) {
+var rec = document.querySelector('#rec' + recid);
+if (!rec) return;
+var burger = rec.querySelector('.t-menuburger');
+if (!burger) return;
+var isSecondStyle = burger.classList.contains('t-menuburger_second');
+if (isSecondStyle && !window.isMobile && !('ontouchend' in document)) {
+burger.addEventListener('mouseenter', function() {
+if (burger.classList.contains('t-menuburger-opened')) return;
+burger.classList.remove('t-menuburger-unhovered');
+burger.classList.add('t-menuburger-hovered');
+});
+burger.addEventListener('mouseleave', function() {
+if (burger.classList.contains('t-menuburger-opened')) return;
+burger.classList.remove('t-menuburger-hovered');
+burger.classList.add('t-menuburger-unhovered');
+setTimeout(function() {
+burger.classList.remove('t-menuburger-unhovered');
+}, 300);
+});
+}
+burger.addEventListener('click', function() {
+if (!burger.closest('.tmenu-mobile') &&
+!burger.closest('.t450__burger_container') &&
+!burger.closest('.t466__container') &&
+!burger.closest('.t204__burger')) {
+burger.classList.toggle('t-menuburger-opened');
+burger.classList.remove('t-menuburger-unhovered');
+}
+});
+var menu = rec.querySelector('[data-menu="yes"]');
+if (!menu) return;
+var menuLinks = menu.querySelectorAll('.t-menu__link-item');
+var submenuClassList = ['t978__menu-link_hook', 't978__tm-link', 't966__tm-link', 't794__tm-link', 't-menusub__target-link'];
+Array.prototype.forEach.call(menuLinks, function (link) {
+link.addEventListener('click', function () {
+var isSubmenuHook = submenuClassList.some(function (submenuClass) {
+return link.classList.contains(submenuClass);
+});
+if (isSubmenuHook) return;
+burger.classList.remove('t-menuburger-opened');
+});
+});
+}
+t_onReady(function() {
+t_onFuncLoad('t_menuburger_init', function(){t_menuburger_init('83137849');});
+});</script><style>.t-menuburger {
+position: relative;
+flex-shrink: 0;
+width: 28px;
+height: 20px;
+-webkit-transform: rotate(0deg);
+transform: rotate(0deg);
+transition: .5s ease-in-out;
+cursor: pointer;
+z-index: 999;
+}
+/*---menu burger lines---*/
+.t-menuburger span {
+display: block;
+position: absolute;
+width: 100%;
+opacity: 1;
+left: 0;
+-webkit-transform: rotate(0deg);
+transform: rotate(0deg);
+transition: .25s ease-in-out;
+height: 3px;
+background-color: #000;
+}
+.t-menuburger span:nth-child(1) {
+top: 0px;
+}
+.t-menuburger span:nth-child(2),
+.t-menuburger span:nth-child(3) {
+top: 8px;
+}
+.t-menuburger span:nth-child(4) {
+top: 16px;
+}
+/*menu burger big*/
+.t-menuburger__big {
+width: 42px;
+height: 32px;
+}
+.t-menuburger__big span {
+height: 5px;
+}
+.t-menuburger__big span:nth-child(2),
+.t-menuburger__big span:nth-child(3) {
+top: 13px;
+}
+.t-menuburger__big span:nth-child(4) {
+top: 26px;
+}
+/*menu burger small*/
+.t-menuburger__small {
+width: 22px;
+height: 14px;
+}
+.t-menuburger__small span {
+height: 2px;
+}
+.t-menuburger__small span:nth-child(2),
+.t-menuburger__small span:nth-child(3) {
+top: 6px;
+}
+.t-menuburger__small span:nth-child(4) {
+top: 12px;
+}
+/*menu burger opened*/
+.t-menuburger-opened span:nth-child(1) {
+top: 8px;
+width: 0%;
+left: 50%;
+}
+.t-menuburger-opened span:nth-child(2) {
+-webkit-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+.t-menuburger-opened span:nth-child(3) {
+-webkit-transform: rotate(-45deg);
+transform: rotate(-45deg);
+}
+.t-menuburger-opened span:nth-child(4) {
+top: 8px;
+width: 0%;
+left: 50%;
+}
+.t-menuburger-opened.t-menuburger__big span:nth-child(1) {
+top: 6px;
+}
+.t-menuburger-opened.t-menuburger__big span:nth-child(4) {
+top: 18px;
+}
+.t-menuburger-opened.t-menuburger__small span:nth-child(1),
+.t-menuburger-opened.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+/*---menu burger first style---*/
+@media (hover), (min-width:0\0) {
+.t-menuburger_first:hover span:nth-child(1) {
+transform: translateY(1px);
+}
+.t-menuburger_first:hover span:nth-child(4) {
+transform: translateY(-1px);
+}
+.t-menuburger_first.t-menuburger__big:hover span:nth-child(1) {
+transform: translateY(3px);
+}
+.t-menuburger_first.t-menuburger__big:hover span:nth-child(4) {
+transform: translateY(-3px);
+}
+}
+/*---menu burger second style---*/
+.t-menuburger_second span:nth-child(2),
+.t-menuburger_second span:nth-child(3) {
+width: 80%;
+left: 20%;
+right: 0;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_second.t-menuburger-hovered span:nth-child(2),
+.t-menuburger_second.t-menuburger-hovered span:nth-child(3) {
+animation: t-menuburger-anim 0.3s ease-out normal forwards;
+}
+.t-menuburger_second.t-menuburger-unhovered span:nth-child(2),
+.t-menuburger_second.t-menuburger-unhovered span:nth-child(3) {
+animation: t-menuburger-anim2 0.3s ease-out normal forwards;
+}
+}
+.t-menuburger_second.t-menuburger-opened span:nth-child(2),
+.t-menuburger_second.t-menuburger-opened span:nth-child(3){
+left: 0;
+right: 0;
+width: 100%!important;
+}
+/*---menu burger third style---*/
+.t-menuburger_third span:nth-child(4) {
+width: 70%;
+left: unset;
+right: 0;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_third:not(.t-menuburger-opened):hover span:nth-child(4) {
+width: 100%;
+}
+}
+.t-menuburger_third.t-menuburger-opened span:nth-child(4) {
+width: 0!important;
+right: 50%;
+}
+/*---menu burger fourth style---*/
+.t-menuburger_fourth {
+height: 12px;
+}
+.t-menuburger_fourth.t-menuburger__small {
+height: 8px;
+}
+.t-menuburger_fourth.t-menuburger__big {
+height: 18px;
+}
+.t-menuburger_fourth span:nth-child(2),
+.t-menuburger_fourth span:nth-child(3) {
+top: 4px;
+opacity: 0;
+}
+.t-menuburger_fourth span:nth-child(4) {
+top: 8px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__small span:nth-child(3) {
+top: 3px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__small span:nth-child(3) {
+top: 3px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__big span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__big span:nth-child(3) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__big span:nth-child(4) {
+top: 12px;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_fourth:not(.t-menuburger-opened):hover span:nth-child(1) {
+transform: translateY(1px);
+}
+.t-menuburger_fourth:not(.t-menuburger-opened):hover span:nth-child(4) {
+transform: translateY(-1px);
+}
+.t-menuburger_fourth.t-menuburger__big:not(.t-menuburger-opened):hover span:nth-child(1) {
+transform: translateY(3px);
+}
+.t-menuburger_fourth.t-menuburger__big:not(.t-menuburger-opened):hover span:nth-child(4) {
+transform: translateY(-3px);
+}
+}
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(1),
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(4) {
+top: 4px;
+}
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(2),
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(3) {
+opacity: 1;
+}
+/*---menu burger animations---*/
+@keyframes t-menuburger-anim {
+0% {
+width: 80%;
+left: 20%;
+right: 0;
+}
+50% {
+width: 100%;
+left: 0;
+right: 0;
+}
+100% {
+width: 80%;
+left: 0;
+right: 20%;
+}
+}
+@keyframes t-menuburger-anim2 {
+0% {
+width: 80%;
+left: 0;
+}
+50% {
+width: 100%;
+right: 0;
+left: 0;
+}
+100% {
+width: 80%;
+left: 20%;
+right: 0;
+}
+}</style> </div></div><style>.tmenu-mobile {
+background-color: #111;
+display: none;
+width: 100%;
+top: 0;
+z-index: 990;
+}
+.tmenu-mobile_positionfixed {
+position: fixed;
+}
+.tmenu-mobile__text {
+color: #fff;
+}
+.tmenu-mobile__container {
+min-height: 64px;
+padding: 20px;
+position: relative;
+box-sizing: border-box;
+display: -webkit-flex;
+display: -ms-flexbox;
+display: flex;
+-webkit-align-items: center;
+-ms-flex-align: center;
+align-items: center;
+-webkit-justify-content: space-between;
+-ms-flex-pack: justify;
+justify-content: space-between;
+}
+.tmenu-mobile__list {
+display: block;
+}
+.tmenu-mobile__burgerlogo {
+display: inline-block;
+font-size: 24px;
+font-weight: 400;
+white-space: nowrap;
+vertical-align: middle;
+}
+.tmenu-mobile__imglogo {
+height: auto;
+display: block;
+max-width: 300px!important;
+box-sizing: border-box;
+padding: 0;
+margin: 0 auto;
+}
+@media screen and (max-width: 980px) {
+.tmenu-mobile__menucontent_hidden {
+display: none;
+height: 100%;
+}
+.tmenu-mobile {
+display: block;
+}
+}
+@media screen and (max-width: 980px) {
+#rec83137849 .t-menuburger {
+-webkit-order: 1;
+-ms-flex-order: 1;
+order: 1;
+}
+}</style><div id="nav83137849" class="t228 t228__positionfixed tmenu-mobile__menucontent_hidden" style="background-color: rgba(51,51,51,1); " data-bgcolor-hex="#333333" data-bgcolor-rgba="rgba(51,51,51,1)" data-navmarker="nav83137849marker" data-appearoffset="" data-bgopacity-two="" data-menushadow="" data-bgopacity="1" data-menu-items-align="center" data-menu="yes"><div class="t228__maincontainer " style=""><div class="t228__padding40px"></div><div class="t228__leftside"><div class="t228__leftcontainer"><a href="/" class="t228__imgwrapper" style="color:#ffffff;"><img class="t228__imglogo t228__imglogomobile" 
+src="https://static.tildacdn.com/tild3931-3231-4334-b961-653062386133/_2.png" 
+imgfield="img"
+style="max-width: 100px; width: 100px; min-width: 100px; height: auto; display: block;"
+alt=" S Q UIZ "
+></a></div></div><div class="t228__centerside "><nav class="t228__centercontainer" 
+aria-label="Основные разделы на странице"><ul class="t228__list t228__list_hidden" 
+role="menubar" aria-label="Основные разделы на странице"><li class="t228__list_item" 
+role="none" 
+style="padding:0 15px 0 0;"><a class="t-menu__link-item" 
+href="/#schedule"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" data-menu-item-number="1" 
+style="color:#ffffff;font-weight:600;">Расписание игр</a></li><li class="t228__list_item" 
+role="none" 
+style="padding:0 15px;"><a class="t-menu__link-item" 
+href="/results"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" data-menu-item-number="2" 
+style="color:#ffffff;font-weight:600;">Результаты</a></li><li class="t228__list_item" 
+role="none" 
+style="padding:0 15px;"><a class="t-menu__link-item" 
+href="/event"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" data-menu-item-number="3" 
+style="color:#ffffff;font-weight:600;">Корпоративные квизы</a></li><li class="t228__list_item" 
+role="none" 
+style="padding:0 15px;"><a class="t-menu__link-item" 
+href="/franchise"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" data-menu-item-number="4" 
+style="color:#ffffff;font-weight:600;">Франшиза</a></li><li class="t228__list_item" 
+role="none" 
+style="padding:0 0 0 15px;"><a class="t-menu__link-item" 
+href="#contacts"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" data-menu-item-number="5" 
+style="color:#ffffff;font-weight:600;">Контакты</a></li></ul></nav></div><div class="t228__rightside"><div class="t228__rightcontainer"><div class="t228__right_descr" style=""><a href="#city" style="text-decoration: none;border-bottom: 1px solid #24a3e3;box-shadow: inset 0px -1px 0px 0px #24a3e3;-webkit-box-shadow: inset 0px -1px 0px 0px #24a3e3;-moz-box-shadow: inset 0px -1px 0px 0px #24a3e3;">Санкт-Петербург</a></div><div class="t-sociallinks"><div class="t-sociallinks__wrapper"><!-- new soclinks --><div class="t-sociallinks__item t-sociallinks__item_vk"><a href="http://vk.com/squizspb" target="_blank" rel="nofollow" style="width: 30px; height: 30px;"><svg class="t-sociallinks__svg" width=30px height=30px viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100c27.614 0 50-22.386 50-50S77.614 0 50 0 0 22.386 0 50s22.386 50 50 50ZM25 34c.406 19.488 10.15 31.2 27.233 31.2h.968V54.05c6.278.625 11.024 5.216 12.93 11.15H75c-2.436-8.87-8.838-13.773-12.836-15.647C66.162 47.242 71.783 41.62 73.126 34h-8.058c-1.749 6.184-6.932 11.805-11.867 12.336V34h-8.057v21.611C40.147 54.362 33.838 48.304 33.556 34H25Z" fill="#24a3e3"/></svg></a></div><!-- /new soclinks --><script>t_onReady(function () {
+var rec = document.getElementById('rec83137849');
+if (!rec) return;
+var customImageList = rec.querySelectorAll('img.t-sociallinks__customimg');
+Array.prototype.forEach.call(customImageList, function(img) {
+var imgURL = img.getAttribute('src');
+if (imgURL.indexOf('/lib__tildaicon__') !== -1 || imgURL.indexOf('/lib/tildaicon/') !== -1) {
+var xhr = new XMLHttpRequest();
+xhr.open('GET', imgURL);
+xhr.responseType = 'document';
+xhr.onload = function() {
+if (xhr.status >= 200 && xhr.status < 400) {
+var response = xhr.response;
+var svg = response.querySelector('svg');
+svg.style.width = '30px';
+svg.style.height = '30px';
+var figureList = svg.querySelectorAll('*:not(g):not(title):not(desc)');
+for(var j = 0; j < figureList.length; j++) {
+figureList[j].style.fill = '#24a3e3';
+}
+img.parentNode.append(svg);
+img.remove();
+} else {
+img.style.visibility = 'visible';
+}
+}
+xhr.onerror = function(error) {
+img.style.visibility = 'visible';
+}
+xhr.send();
+}
+});
+});</script></div></div></div></div><div class="t228__padding40px"></div></div></div><style>@media screen and (max-width: 980px) {
+#rec83137849 .t228__leftcontainer {
+padding: 20px;
+}
+#rec83137849 .t228__imglogo {
+padding: 20px 0;
+}
+#rec83137849 .t228 {
+position: static;
+}
+}</style><script>window.addEventListener('load', function () {
+t_onFuncLoad('t228_setWidth', function () {
+t228_setWidth('83137849');
+});
+});
+window.addEventListener('resize', t_throttle(function () {
+t_onFuncLoad('t228_setWidth', function () {
+t228_setWidth('83137849');
+});
+t_onFuncLoad('t_menu__setBGcolor', function () {
+t_menu__setBGcolor('83137849', '.t228');
+});
+}));
+t_onReady(function () {
+t_onFuncLoad('t_menu__highlightActiveLinks', function () {
+t_menu__highlightActiveLinks('.t228__list_item a');
+});
+t_onFuncLoad('t_menu__findAnchorLinks', function () {
+t_menu__findAnchorLinks('83137849', '.t228__list_item a');
+});
+t_onFuncLoad('t228__init', function () {
+t228__init('83137849');
+});
+t_onFuncLoad('t_menu__setBGcolor', function () {
+t_menu__setBGcolor('83137849', '.t228');
+});
+t_onFuncLoad('t228_setWidth', function () {
+t228_setWidth('83137849');
+});
+t_onFuncLoad('t_menu__createMobileMenu', function () {
+t_menu__createMobileMenu('83137849', '.t228');
+});
+});</script><!--[if IE 8]><style>#rec83137849 .t228 {
+filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9333333', endColorstr='#D9333333');
+}</style><![endif]--><style>#rec83137849 .t-menu__link-item{
+outline: none;
+}
+/* #rec83137849 .t-menu__link-item:not(:focus-visible){
+outline: none;
+} */
+@supports (overflow:-webkit-marquee) and (justify-content:inherit)
+{
+#rec83137849 .t-menu__link-item,
+#rec83137849 .t-menu__link-item.t-active {
+opacity: 1 !important;
+}
+}</style></div><div id="rec85651660" class="r t-rec t-screenmax-980px" style=" " data-animationappear="off" data-record-type="327" data-screen-max="980px" ><!-- T282 --><div id="nav85651660marker"></div><div id="nav85651660" class="t282 " data-menu="yes" data-appearoffset="" ><div class="t282__container t282__positionfixed" style=""><div class="t282__container__bg" style="background-color: rgba(51,51,51,1); box-shadow: 0px 1px 3px rgba(0,0,0,0.0);" data-bgcolor-hex="#333333" data-bgcolor-rgba="rgba(51,51,51,1)" data-navmarker="nav85651660marker" data-appearoffset="" data-bgopacity="1" data-menu-shadow="0px 1px 3px rgba(0,0,0,0.0)"></div><div class="t282__container__bg_opened" style="background-color:#333333;"></div><div class="t282__menu__content "><div class="t282__logo__container" style="min-height:70px;"><div class="t282__logo__content"><div field="title" class="t-title t-title_xs" style="color:#000000;font-size:19px;font-weight:400;letter-spacing:1px;"><a href="#city" style="color:#ffffff !important;text-decoration: none;border-bottom: 1px solid #24a3e3;box-shadow: inset 0px -1px 0px 0px #24a3e3;-webkit-box-shadow: inset 0px -1px 0px 0px #24a3e3;-moz-box-shadow: inset 0px -1px 0px 0px #24a3e3;">Санкт-Петербург</a></div></div></div><div class="t-menuburger t-menuburger_first "><span style="background-color:#24a3e3;"></span><span style="background-color:#24a3e3;"></span><span style="background-color:#24a3e3;"></span><span style="background-color:#24a3e3;"></span></div><script>function t_menuburger_init(recid) {
+var rec = document.querySelector('#rec' + recid);
+if (!rec) return;
+var burger = rec.querySelector('.t-menuburger');
+if (!burger) return;
+var isSecondStyle = burger.classList.contains('t-menuburger_second');
+if (isSecondStyle && !window.isMobile && !('ontouchend' in document)) {
+burger.addEventListener('mouseenter', function() {
+if (burger.classList.contains('t-menuburger-opened')) return;
+burger.classList.remove('t-menuburger-unhovered');
+burger.classList.add('t-menuburger-hovered');
+});
+burger.addEventListener('mouseleave', function() {
+if (burger.classList.contains('t-menuburger-opened')) return;
+burger.classList.remove('t-menuburger-hovered');
+burger.classList.add('t-menuburger-unhovered');
+setTimeout(function() {
+burger.classList.remove('t-menuburger-unhovered');
+}, 300);
+});
+}
+burger.addEventListener('click', function() {
+if (!burger.closest('.tmenu-mobile') &&
+!burger.closest('.t450__burger_container') &&
+!burger.closest('.t466__container') &&
+!burger.closest('.t204__burger')) {
+burger.classList.toggle('t-menuburger-opened');
+burger.classList.remove('t-menuburger-unhovered');
+}
+});
+var menu = rec.querySelector('[data-menu="yes"]');
+if (!menu) return;
+var menuLinks = menu.querySelectorAll('.t-menu__link-item');
+var submenuClassList = ['t978__menu-link_hook', 't978__tm-link', 't966__tm-link', 't794__tm-link', 't-menusub__target-link'];
+Array.prototype.forEach.call(menuLinks, function (link) {
+link.addEventListener('click', function () {
+var isSubmenuHook = submenuClassList.some(function (submenuClass) {
+return link.classList.contains(submenuClass);
+});
+if (isSubmenuHook) return;
+burger.classList.remove('t-menuburger-opened');
+});
+});
+}
+t_onReady(function() {
+t_onFuncLoad('t_menuburger_init', function(){t_menuburger_init('85651660');});
+});</script><style>.t-menuburger {
+position: relative;
+flex-shrink: 0;
+width: 28px;
+height: 20px;
+-webkit-transform: rotate(0deg);
+transform: rotate(0deg);
+transition: .5s ease-in-out;
+cursor: pointer;
+z-index: 999;
+}
+/*---menu burger lines---*/
+.t-menuburger span {
+display: block;
+position: absolute;
+width: 100%;
+opacity: 1;
+left: 0;
+-webkit-transform: rotate(0deg);
+transform: rotate(0deg);
+transition: .25s ease-in-out;
+height: 3px;
+background-color: #000;
+}
+.t-menuburger span:nth-child(1) {
+top: 0px;
+}
+.t-menuburger span:nth-child(2),
+.t-menuburger span:nth-child(3) {
+top: 8px;
+}
+.t-menuburger span:nth-child(4) {
+top: 16px;
+}
+/*menu burger big*/
+.t-menuburger__big {
+width: 42px;
+height: 32px;
+}
+.t-menuburger__big span {
+height: 5px;
+}
+.t-menuburger__big span:nth-child(2),
+.t-menuburger__big span:nth-child(3) {
+top: 13px;
+}
+.t-menuburger__big span:nth-child(4) {
+top: 26px;
+}
+/*menu burger small*/
+.t-menuburger__small {
+width: 22px;
+height: 14px;
+}
+.t-menuburger__small span {
+height: 2px;
+}
+.t-menuburger__small span:nth-child(2),
+.t-menuburger__small span:nth-child(3) {
+top: 6px;
+}
+.t-menuburger__small span:nth-child(4) {
+top: 12px;
+}
+/*menu burger opened*/
+.t-menuburger-opened span:nth-child(1) {
+top: 8px;
+width: 0%;
+left: 50%;
+}
+.t-menuburger-opened span:nth-child(2) {
+-webkit-transform: rotate(45deg);
+transform: rotate(45deg);
+}
+.t-menuburger-opened span:nth-child(3) {
+-webkit-transform: rotate(-45deg);
+transform: rotate(-45deg);
+}
+.t-menuburger-opened span:nth-child(4) {
+top: 8px;
+width: 0%;
+left: 50%;
+}
+.t-menuburger-opened.t-menuburger__big span:nth-child(1) {
+top: 6px;
+}
+.t-menuburger-opened.t-menuburger__big span:nth-child(4) {
+top: 18px;
+}
+.t-menuburger-opened.t-menuburger__small span:nth-child(1),
+.t-menuburger-opened.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+/*---menu burger first style---*/
+@media (hover), (min-width:0\0) {
+.t-menuburger_first:hover span:nth-child(1) {
+transform: translateY(1px);
+}
+.t-menuburger_first:hover span:nth-child(4) {
+transform: translateY(-1px);
+}
+.t-menuburger_first.t-menuburger__big:hover span:nth-child(1) {
+transform: translateY(3px);
+}
+.t-menuburger_first.t-menuburger__big:hover span:nth-child(4) {
+transform: translateY(-3px);
+}
+}
+/*---menu burger second style---*/
+.t-menuburger_second span:nth-child(2),
+.t-menuburger_second span:nth-child(3) {
+width: 80%;
+left: 20%;
+right: 0;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_second.t-menuburger-hovered span:nth-child(2),
+.t-menuburger_second.t-menuburger-hovered span:nth-child(3) {
+animation: t-menuburger-anim 0.3s ease-out normal forwards;
+}
+.t-menuburger_second.t-menuburger-unhovered span:nth-child(2),
+.t-menuburger_second.t-menuburger-unhovered span:nth-child(3) {
+animation: t-menuburger-anim2 0.3s ease-out normal forwards;
+}
+}
+.t-menuburger_second.t-menuburger-opened span:nth-child(2),
+.t-menuburger_second.t-menuburger-opened span:nth-child(3){
+left: 0;
+right: 0;
+width: 100%!important;
+}
+/*---menu burger third style---*/
+.t-menuburger_third span:nth-child(4) {
+width: 70%;
+left: unset;
+right: 0;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_third:not(.t-menuburger-opened):hover span:nth-child(4) {
+width: 100%;
+}
+}
+.t-menuburger_third.t-menuburger-opened span:nth-child(4) {
+width: 0!important;
+right: 50%;
+}
+/*---menu burger fourth style---*/
+.t-menuburger_fourth {
+height: 12px;
+}
+.t-menuburger_fourth.t-menuburger__small {
+height: 8px;
+}
+.t-menuburger_fourth.t-menuburger__big {
+height: 18px;
+}
+.t-menuburger_fourth span:nth-child(2),
+.t-menuburger_fourth span:nth-child(3) {
+top: 4px;
+opacity: 0;
+}
+.t-menuburger_fourth span:nth-child(4) {
+top: 8px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__small span:nth-child(3) {
+top: 3px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__small span:nth-child(3) {
+top: 3px;
+}
+.t-menuburger_fourth.t-menuburger__small span:nth-child(4) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__big span:nth-child(2),
+.t-menuburger_fourth.t-menuburger__big span:nth-child(3) {
+top: 6px;
+}
+.t-menuburger_fourth.t-menuburger__big span:nth-child(4) {
+top: 12px;
+}
+@media (hover), (min-width:0\0) {
+.t-menuburger_fourth:not(.t-menuburger-opened):hover span:nth-child(1) {
+transform: translateY(1px);
+}
+.t-menuburger_fourth:not(.t-menuburger-opened):hover span:nth-child(4) {
+transform: translateY(-1px);
+}
+.t-menuburger_fourth.t-menuburger__big:not(.t-menuburger-opened):hover span:nth-child(1) {
+transform: translateY(3px);
+}
+.t-menuburger_fourth.t-menuburger__big:not(.t-menuburger-opened):hover span:nth-child(4) {
+transform: translateY(-3px);
+}
+}
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(1),
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(4) {
+top: 4px;
+}
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(2),
+.t-menuburger_fourth.t-menuburger-opened span:nth-child(3) {
+opacity: 1;
+}
+/*---menu burger animations---*/
+@keyframes t-menuburger-anim {
+0% {
+width: 80%;
+left: 20%;
+right: 0;
+}
+50% {
+width: 100%;
+left: 0;
+right: 0;
+}
+100% {
+width: 80%;
+left: 0;
+right: 20%;
+}
+}
+@keyframes t-menuburger-anim2 {
+0% {
+width: 80%;
+left: 0;
+}
+50% {
+width: 100%;
+right: 0;
+left: 0;
+}
+100% {
+width: 80%;
+left: 20%;
+right: 0;
+}
+}</style> </div></div><div class="t282__menu__container t282__closed"><div class="t282__menu__wrapper" style="background-color:#333333;"><div class="t282__menu"><nav aria-label="Основные разделы на странице"><ul class="t282__menu__items" 
+role="menubar" aria-label="Основные разделы на странице"><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="/"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">spb.squiz.ru</a></li><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="/#schedule"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">Расписание игр</a></li><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="/results"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">Результаты</a></li><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="/event"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">Корпоративные игры</a></li><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="/franchise"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">Франшиза</a></li><li class="t282__menu__item" role="none"><a class="t282__menu__link t-heading t-heading_md t-menu__link-item" 
+href="#contacts"
+role="menuitem" tabindex="0" data-menu-submenu-hook="" 
+style="color:#efefef;font-size:24px;font-weight:400;">Контакты</a></li></ul></nav><div class="t-sociallinks"><div class="t-sociallinks__wrapper"><!-- new soclinks --><div class="t-sociallinks__item t-sociallinks__item_facebook"><a href="http://facebook.com/squizspb" target="_blank" rel="nofollow" style="width: 30px; height: 30px;"><svg class="t-sociallinks__svg" width=30px height=30px viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100c27.6142 0 50-22.3858 50-50S77.6142 0 50 0 0 22.3858 0 50s22.3858 50 50 50Zm3.431-73.9854c-2.5161.0701-5.171.6758-7.0464 2.4577-1.5488 1.4326-2.329 3.5177-2.5044 5.602-.0534 1.4908-.0458 2.9855-.0382 4.4796.0058 1.1205.0115 2.2407-.0085 3.3587-.6888.005-1.3797.0036-2.0709.0021-.9218-.0019-1.8441-.0038-2.7626.0096 0 .8921.0013 1.7855.0026 2.6797.0026 1.791.0052 3.5853-.0026 5.3799.9185.0134 1.8409.0115 2.7627.0096.6912-.0015 1.382-.0029 2.0708.0021.0155 3.5565.0127 7.1128.0098 10.669-.0036 4.4452-.0072 8.8903.0252 13.3354 1.8903-.0134 3.7765-.0115 5.6633-.0095 1.4152.0014 2.8306.0028 4.2484-.0022.0117-4.0009.0088-7.9986.0058-11.9963-.0029-3.9979-.0058-7.9957.0059-11.9964.9533-.005 1.9067-.0036 2.86-.0021 1.2713.0019 2.5425.0038 3.8137-.0096.396-2.679.7335-5.3814.9198-8.0947-1.2576-.0058-2.5155-.0058-3.7734-.0058-1.2578 0-2.5157 0-3.7734-.0059 0-.4689-.0007-.9378-.0014-1.4066-.0022-1.4063-.0044-2.8123.0131-4.2188.198-1.0834 1.3158-1.9104 2.3992-1.8403h5.1476c.0117-2.8069.0117-5.602 0-8.4089-.6636 0-1.3273-.0007-1.9911-.0014-1.9915-.0022-3.9832-.0044-5.975.0131Z" fill="#24a3e3"/></svg></a></div><div class="t-sociallinks__item t-sociallinks__item_vk"><a href="http://vk.com/squizspb" target="_blank" rel="nofollow" style="width: 30px; height: 30px;"><svg class="t-sociallinks__svg" width=30px height=30px viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100c27.614 0 50-22.386 50-50S77.614 0 50 0 0 22.386 0 50s22.386 50 50 50ZM25 34c.406 19.488 10.15 31.2 27.233 31.2h.968V54.05c6.278.625 11.024 5.216 12.93 11.15H75c-2.436-8.87-8.838-13.773-12.836-15.647C66.162 47.242 71.783 41.62 73.126 34h-8.058c-1.749 6.184-6.932 11.805-11.867 12.336V34h-8.057v21.611C40.147 54.362 33.838 48.304 33.556 34H25Z" fill="#24a3e3"/></svg></a></div><div class="t-sociallinks__item t-sociallinks__item_instagram"><a href="http://instagram.com/squiz_spb" target="_blank" rel="nofollow" style="width: 30px; height: 30px;"><svg class="t-sociallinks__svg" width=30px height=30px viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100C77.6142 100 100 77.6142 100 50C100 22.3858 77.6142 0 50 0C22.3858 0 0 22.3858 0 50C0 77.6142 22.3858 100 50 100ZM25 39.3918C25 31.4558 31.4566 25 39.3918 25H60.6082C68.5442 25 75 31.4566 75 39.3918V60.8028C75 68.738 68.5442 75.1946 60.6082 75.1946H39.3918C31.4558 75.1946 25 68.738 25 60.8028V39.3918ZM36.9883 50.0054C36.9883 42.8847 42.8438 37.0922 50.0397 37.0922C57.2356 37.0922 63.0911 42.8847 63.0911 50.0054C63.0911 57.1252 57.2356 62.9177 50.0397 62.9177C42.843 62.9177 36.9883 57.1252 36.9883 50.0054ZM41.7422 50.0054C41.7422 54.5033 45.4641 58.1638 50.0397 58.1638C54.6153 58.1638 58.3372 54.5041 58.3372 50.0054C58.3372 45.5066 54.6145 41.8469 50.0397 41.8469C45.4641 41.8469 41.7422 45.5066 41.7422 50.0054ZM63.3248 39.6355C65.0208 39.6355 66.3956 38.2606 66.3956 36.5646C66.3956 34.8687 65.0208 33.4938 63.3248 33.4938C61.6288 33.4938 60.2539 34.8687 60.2539 36.5646C60.2539 38.2606 61.6288 39.6355 63.3248 39.6355Z" fill="#24a3e3"/></svg></a></div><!-- /new soclinks --><script>t_onReady(function () {
+var rec = document.getElementById('rec85651660');
+if (!rec) return;
+var customImageList = rec.querySelectorAll('img.t-sociallinks__customimg');
+Array.prototype.forEach.call(customImageList, function(img) {
+var imgURL = img.getAttribute('src');
+if (imgURL.indexOf('/lib__tildaicon__') !== -1 || imgURL.indexOf('/lib/tildaicon/') !== -1) {
+var xhr = new XMLHttpRequest();
+xhr.open('GET', imgURL);
+xhr.responseType = 'document';
+xhr.onload = function() {
+if (xhr.status >= 200 && xhr.status < 400) {
+var response = xhr.response;
+var svg = response.querySelector('svg');
+svg.style.width = '30px';
+svg.style.height = '30px';
+var figureList = svg.querySelectorAll('*:not(g):not(title):not(desc)');
+for(var j = 0; j < figureList.length; j++) {
+figureList[j].style.fill = '#24a3e3';
+}
+img.parentNode.append(svg);
+img.remove();
+} else {
+img.style.visibility = 'visible';
+}
+}
+xhr.onerror = function(error) {
+img.style.visibility = 'visible';
+}
+xhr.send();
+}
+});
+});</script></div></div></div></div></div><div class="t282__overlay t282__closed"></div></div><script>t_onReady(function() {
+var wrapperBlock = document.querySelector('#rec85651660 .t282');
+if (!wrapperBlock) return;
+t_onFuncLoad('t282_showMenu', function () {
+t282_showMenu('85651660');
+});
+t_onFuncLoad('t282_changeSize', function () {
+t282_changeSize('85651660');
+});
+t_onFuncLoad('t282_highlight', function () {
+t282_highlight();
+});
+});
+t_onFuncLoad('t282_changeSize', function () {
+window.addEventListener('resize', t_throttle(function () {
+t282_changeSize('85651660');
+}));
+});</script><style>#rec85651660 .t-menu__link-item{
+outline: none;
+}
+/* #rec85651660 .t-menu__link-item:not(:focus-visible){
+outline: none;
+} */
+@supports (overflow:-webkit-marquee) and (justify-content:inherit)
+{
+#rec85651660 .t-menu__link-item,
+#rec85651660 .t-menu__link-item.t-active {
+opacity: 1 !important;
+}
+}</style><!--[if IE 8]><style>#rec85651660 .t282__container__bg {
+filter: progid:DXImageTransform.Microsoft.gradient(startColorStr='#D9333333', endColorstr='#D9333333');
+}</style><![endif]--></div><div id="rec83137850" class="r t-rec" style=" " data-record-type="270" ><div class="t270"></div><script>t_onReady(function () {
+var hash = window.location.hash;
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, -3);
+});
+setTimeout(function() {
+var curPath = window.location.pathname;
+var curFullPath = window.location.origin + curPath;
+var recs = document.querySelectorAll('.r');
+Array.prototype.forEach.call(recs, function(rec) {
+var selects = 'a[href^="#"]:not([href="#"]):not(.carousel-control):not(.t-carousel__control):not([href^="#price"]):not([href^="#popup"]):not([href^="#prodpopup"]):not([href^="#order"]):not([href^="#!"]):not([target="_blank"]),' + 
+'a[href^="' + curPath + '#"]:not([href*="#!/tproduct/"]):not([href*="#!/tab/"]):not([href*="#popup"]):not([target="_blank"]),' +
+'a[href^="' + curFullPath + '#"]:not([href*="#!/tproduct/"]):not([href*="#!/tab/"]):not([href*="#popup"]):not([target="_blank"])';
+var elements = rec.querySelectorAll(selects);
+Array.prototype.forEach.call(elements, function(element) {
+element.addEventListener('click', function (event) {
+event.preventDefault();
+var hash = this.hash.trim();
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, -3);
+});
+});
+});
+});
+if (document.querySelectorAll('.js-store').length > 0 || document.querySelectorAll('.js-feed').length > 0) {
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, -3, 1);
+});
+}
+}, 500);
+setTimeout(function() {
+var hash = window.location.hash;
+if (hash && document.querySelectorAll('a[name="' + hash.slice(1) + '"]').length > 0) {
+if (window.isMobile) {
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, 0);
+});
+} else {
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, 0);
+});
+}
+}
+}, 1000);
+window.addEventListener('popstate', function() {
+var hash = window.location.hash;
+if (hash && document.querySelectorAll('a[name="' + hash.slice(1) + '"]').length > 0) {
+if (window.isMobile) {
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, 0);
+});
+} else {
+t_onFuncLoad('t270_scroll', function () {
+t270_scroll(hash, 0);
+});
+}
+}
+});
+});</script></div><div id="rec162216073" class="r t-rec" style=" " data-record-type="390" ><div class="t390"><div class="t-popup" data-tooltip-hook="#city"
+role="dialog" 
+aria-modal="true" 
+tabindex="-1"
+aria-label="Ваш город" ><div class="t-popup__container t-width t-width_6" style="background-color:#333333;"><div class="t390__wrapper t-align_center"><div class="t390__title t-heading t-heading_lg" style="">Ваш город</div><div class="t390__descr t-descr t-descr_xs" style=""><div style="font-size:24px;" data-customstyle="yes"><a href="https://online.squiz.ru/" style="">Online<br /></a><a href="https://belgrade.squiz.ru/" style="">Белград<br /></a><a href="http://dubai.squiz.ru/" style="">Дубай<br /></a><a href="http://yerevan.squiz.ru/" style="">Ереван</a><a href="http://kirov.squiz.ru/" style=""><br />Киров<br /></a><a href="https://manavgat.squiz.ru/" style="">Манавгат</a><br /><a href="https://squiz.by/" style="">Минск</a><br /><a href="https://squiz.ru/" style="">Москва</a><br /><a href="https://nn.squiz.ru/" style="">Нижний Новгород<br /></a><a href="https://perth.squiz.ru/" style="">Перт<br /></a><a href="https://ptz.squiz.ru/" style="">Петрозаводск</a><a href="https://rnd.squiz.ru/" style=""><br />Ростов-на-Дону</a><br /><a href="https://spb.squiz.ru/" style="">Санкт-Петербург</a><br /></div></div></div></div><div class="t-popup__close t-popup__block-close"><button type="button" class="t-popup__close-wrapper t-popup__block-close-button" aria-label="Закрыть диалог"><svg role="presentation" class="t-popup__close-icon" width="23px" height="23px" viewBox="0 0 23 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="#fff" fill-rule="evenodd"><rect transform="translate(11.313708, 11.313708) rotate(-45.000000) translate(-11.313708, -11.313708) " x="10.3137085" y="-3.6862915" width="2" height="30"></rect><rect transform="translate(11.313708, 11.313708) rotate(-315.000000) translate(-11.313708, -11.313708) " x="10.3137085" y="-3.6862915" width="2" height="30"></rect></g></svg></button></div></div></div><script type="text/javascript">t_onReady(function(){
+var rec = document.querySelector('#rec162216073');
+if(!rec) return;
+rec.setAttribute('data-animationappear','off');
+rec.style.opacity = 1;
+t_onFuncLoad('t390_initPopup', function() {
+t390_initPopup('162216073');
+});
+});</script></div><div id="rec83137852" class="r t-rec" style=" " data-animationappear="off" data-record-type="217" ><div class="t190" style="position:fixed; z-index:100000; bottom:30px; left:30px; min-height:30px"><a href="javascript:t190_scrollToTop()"><svg role="presentation" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+width="50px" height="50px" viewBox="0 0 48 48" enable-background="new 0 0 48 48" xml:space="preserve"><path style="fill:#24a3e3;" d="M47.875,24c0,13.186-10.689,23.875-23.875,23.875S0.125,37.186,0.125,24S10.814,0.125,24,0.125
+S47.875,10.814,47.875,24z M25.503,16.881l6.994,7.049c0.583,0.588,1.532,0.592,2.121,0.008c0.588-0.583,0.592-1.533,0.008-2.122
+l-9.562-9.637c-0.281-0.283-0.664-0.443-1.063-0.443c0,0,0,0-0.001,0c-0.399,0-0.782,0.159-1.063,0.442l-9.591,9.637
+c-0.584,0.587-0.583,1.537,0.005,2.121c0.292,0.292,0.675,0.437,1.058,0.437c0.385,0,0.77-0.147,1.063-0.442L22.5,16.87v19.163
+c0,0.828,0.671,1.5,1.5,1.5s1.5-0.672,1.5-1.5L25.503,16.881z"/></svg></a></div><script>t_onReady(function(){
+var rec = document.querySelector('#rec83137852');
+if(!rec) return;
+var wrapperBlock = rec.querySelector('.t190');
+if(!wrapperBlock) return;
+wrapperBlock.style.display = 'none';
+window.addEventListener('scroll', t_throttle(function(){
+if (window.pageYOffset > window.innerHeight) {
+if(wrapperBlock.style.display === 'none') wrapperBlock.style.display = 'block';
+}else{
+if(wrapperBlock.style.display === 'block') wrapperBlock.style.display = 'none'; 
+};
+})); 
+}); </script></div><div id="rec347002995" class="r t-rec" style=" " data-animationappear="off" data-record-type="269" ><!-- t139 --><div class="t139"><script src="//code-ya.jivosite.com/widget/cZwqPRITGb" async></script></div></div></div><!--/header--><div id="rec89161196" class="r t-rec t-rec_pt_150 t-rec_pb_150" style="padding-top:150px;padding-bottom:150px; " data-animationappear="off" data-record-type="678" ><!-- t678 --><div class="t678 t-input_nomargin"><div class="t-section__container t-container"><div class="t-col t-col_12"><div class="t-section__topwrapper t-align_center"><div class="t-section__title t-title t-title_xs" field="btitle"><div style="color:#24a3e3;" data-customstyle="yes">Лотерея</div></div> <div class="t-section__descr t-descr t-descr_xl" field="bdescr">Заполни эти поля до начала финального раунда и выиграй в конце игры один из ништяков от S<span style="color: rgb(36, 163, 227);">Q</span>UIZ</div> </div></div></div><div class="t-container"><div class="t-col t-col_8 t-prefix_2"><div><form id="form89161196" name='form89161196' role="form" action='' method='POST' data-formactiontype="2" data-inputbox=".t-input-group" class="t-form js-form-proccess t-form_inputs-total_5 t-form_bbonly " data-success-callback="t678_onSuccess" ><input type="hidden" name="formservices[]" value="2f10f04603e10edcc2a2f556014f4647" class="js-formaction-services"><div class="js-successbox t-form__successbox t-text t-text_md" style="display:none;background-color:#24a3e3;" data-success-message="Шикарно! Вы в игре!"></div><div class="t-form__inputsbox"><input type="hidden" name="city" tabindex="-1" value="Санкт-Петербург"><div class="t-input-group t-input-group_nm" data-input-lid="1547045709100"><div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1547045709100" style="color:#24a3e3;font-weight:700;">Имя</div> <div class="t-input-block"><input type="text" autocomplete="name" name="name" class="t-input js-tilda-rule t-input_bbonly" value="" data-tilda-req="1" data-tilda-rule="name" style="color:#ffffff; border:1px solid #ffffff; "><div class="t-input-error"></div></div></div><div class="t-input-group t-input-group_in" data-input-lid="1547045873462"><div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1547045873462" style="color:#24a3e3;font-weight:700;">Название команды</div> <div class="t-input-block"><input type="text" name="team" class="t-input js-tilda-rule t-input_bbonly" value="" data-tilda-req="1" style="color:#ffffff; border:1px solid #ffffff; "><div class="t-input-error"></div></div></div><div class="t-input-group t-input-group_ph" data-input-lid="1547045824410"><div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1547045824410" style="color:#24a3e3;font-weight:700;">Телефон</div> <div class="t-input-block"><input type="tel" autocomplete="tel" name="phone" data-phonemask-init="no" data-phonemask-id="89161196" data-phonemask-lid="1547045824410" data-phonemask-maskcountry="RU" class="t-input js-phonemask-input js-tilda-rule t-input_bbonly" value="" placeholder="+1(999)999-9999" data-tilda-req="1" style="color:#ffffff; border:1px solid #ffffff; "><script type="text/javascript">if (! document.getElementById('t-phonemask-script')) {
+(function (d, w, o) {
+var n=d.getElementsByTagName(o)[0],s=d.createElement(o),f=function(){n.parentNode.insertBefore(s,n);};
+s.type = "text/javascript";
+s.async = true;
+s.id = 't-phonemask-script';
+s.src="https://static.tildacdn.com/js/tilda-phone-mask-1.1.min.js";
+if (w.opera=="[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else { f(); }
+})(document, window, 'script');
+} else {
+t_onReady(function () {
+t_onFuncLoad('t_form_phonemask_load', function () {
+var phoneMasks = document.querySelectorAll('#rec89161196 [data-phonemask-lid="1547045824410"]');
+t_form_phonemask_load(phoneMasks);
+});
+});
+}</script><div class="t-input-error"></div></div></div><div class="t-input-group t-input-group_em" data-input-lid="1547045864882"><div class="t-input-title t-descr t-descr_md" data-redactor-toolbar="no" field="li_title__1547045864882" style="color:#24a3e3;font-weight:700;">E-mail</div> <div class="t-input-block"><input type="text" autocomplete="email" name="email" class="t-input js-tilda-rule t-input_bbonly" value="" data-tilda-req="1" data-tilda-rule="email" style="color:#ffffff; border:1px solid #ffffff; "><div class="t-input-error"></div></div></div><div class="t-input-group t-input-group_cb" data-input-lid="1564999821503"><div class="t-input-block"><label class="t-checkbox__control t-text t-text_xs" style="color: #24a3e3"><input type="checkbox" name="policy" value="yes" class="t-checkbox js-tilda-rule" checked data-tilda-req="1"><div class="t-checkbox__indicator" style="border-color:#24a3e3"></div>Я согласен на <a href="/policy" target="_blank" style="">обработку моих персональных данных</a></label><style>#rec89161196 .t-checkbox__indicator:after {
+border-color:#24a3e3;
+}</style><div class="t-input-error"></div></div></div><!--[if IE 8]><style>.t-checkbox__control .t-checkbox, .t-radio__control .t-radio {
+left: 0px;
+z-index: 1;
+opacity: 1;
+}
+.t-checkbox__indicator, .t-radio__indicator {
+display: none;
+}
+.t-img-select__control .t-img-select {
+position: static;
+}</style><![endif]--><div class="t-form__errorbox-middle"><div class="js-errorbox-all t-form__errorbox-wrapper" style="display:none;"><div class="t-form__errorbox-text t-text t-text_md"><p class="t-form__errorbox-item js-rule-error js-rule-error-all"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-req"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-email"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-name"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-phone"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-minlength"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-string"></p></div></div> </div><div class="t-form__submit"><button type="submit" class="t-submit" style="color:#ffffff;background-color:#24a3e3;border-radius:30px; -moz-border-radius:30px; -webkit-border-radius:30px;" >Мне повезет!</button></div></div><div class="t-form__errorbox-bottom"><div class="js-errorbox-all t-form__errorbox-wrapper" style="display:none;"><div class="t-form__errorbox-text t-text t-text_md"><p class="t-form__errorbox-item js-rule-error js-rule-error-all"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-req"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-email"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-name"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-phone"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-minlength"></p><p class="t-form__errorbox-item js-rule-error js-rule-error-string"></p></div></div> </div></form><style>#rec89161196 input::-webkit-input-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 input::-moz-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 input:-moz-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 input:-ms-input-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 textarea::-webkit-input-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 textarea::-moz-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 textarea:-moz-placeholder {color:#ffffff; opacity: 0.5;}
+#rec89161196 textarea:-ms-input-placeholder {color:#ffffff; opacity: 0.5;}</style></div> <div class="t678__form-bottom-text t-text t-text_xs" field="text">Каждый участник может заполнить эту форму только один раз за игру</div> </div> </div> </div></div><div id="rec120081004" class="r t-rec" style=" " data-record-type="390" ><div class="t390"><div class="t-popup" data-tooltip-hook="#policy"
+role="dialog" 
+aria-modal="true" 
+tabindex="-1"
+><div class="t-popup__container t-width t-width_6" style="background-color:#333333;"><div class="t390__wrapper t-align_left"><div class="t390__descr t-descr t-descr_xs" style="">Предоставление настоящих сведений означает согласие подписчика на обработку ООО «Сквиз» в соответствии с Федеральным законом «О персональных данных» (в том числе сбор, систематизацию, накопление, уточнение (обновление, изменение), использование, распространение (в том числе передачу), обезличивание, блокирование, уничтожение персональных данных, бессрочное хранение) вышеуказанных данных в электронном виде и/или на бумажных носителях для целей новостной рассылки, информирования о новых продуктах и иной информации, в том числе рекламного характера, посредством почтового отправления либо электронной почты. <br /> Датой выдачи письменного согласия на обработку персональных данных подписчика является дата заполнения и предоставления данных. <br /> Указанное в настоящем пункте согласие действует бессрочно и может быть отозвано подписчиком путем уведомления на электронную почту.<br /></div></div></div><div class="t-popup__close t-popup__block-close"><button type="button" class="t-popup__close-wrapper t-popup__block-close-button" aria-label="Закрыть диалог"><svg role="presentation" class="t-popup__close-icon" width="23px" height="23px" viewBox="0 0 23 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="#fff" fill-rule="evenodd"><rect transform="translate(11.313708, 11.313708) rotate(-45.000000) translate(-11.313708, -11.313708) " x="10.3137085" y="-3.6862915" width="2" height="30"></rect><rect transform="translate(11.313708, 11.313708) rotate(-315.000000) translate(-11.313708, -11.313708) " x="10.3137085" y="-3.6862915" width="2" height="30"></rect></g></svg></button></div></div></div><script type="text/javascript">t_onReady(function(){
+var rec = document.querySelector('#rec120081004');
+if(!rec) return;
+rec.setAttribute('data-animationappear','off');
+rec.style.opacity = 1;
+t_onFuncLoad('t390_initPopup', function() {
+t390_initPopup('120081004');
+});
+});</script></div><!--footer--><div id="t-footer" class="t-records" data-hook="blocks-collection-content-node" data-tilda-project-id="1057010" data-tilda-page-id="4548928" data-tilda-formskey="e1f3c41503ecee331fd3e20a0956db51" data-tilda-lazy="yes"><div id="rec85548049" class="r t-rec" style=" " data-record-type="215" ><a name="contacts" style="font-size:0;"></a></div><div id="rec125626223" class="r t-rec" style=" " data-animationappear="off" data-record-type="455" ><!-- t455 --><!-- cover --><style>#rec125626223 .t455 .t-sociallinks__item a:before{
+background:#ffffff; }</style><!--[if IE 8]><style>.t455 .t-sociallinks__item a:before {
+background:none !important;
+}
+.t455 .t-sociallinks__item a {
+overflow: visible !important;
+}</style><![endif]--><div class="t-cover"
+id="recorddiv125626223"
+bgimgfield="img"
+style="height:550px; background-image:url('https://static.tildacdn.com/tild3733-3466-4261-b466-316534623065/-/resize/20x/_IMG_777-min.jpg');"
+><div class="t-cover__carrier" id="coverCarry125626223"data-content-cover-id="125626223"data-content-cover-bg="https://static.tildacdn.com/tild3733-3466-4261-b466-316534623065/_IMG_777-min.jpg"data-display-changed="true"data-content-cover-height="550px"data-content-cover-parallax=""style="height:550px;background-attachment:scroll; "itemscope itemtype="http://schema.org/ImageObject"><meta itemprop="image" content="https://static.tildacdn.com/tild3733-3466-4261-b466-316534623065/_IMG_777-min.jpg"></div><div class="t-cover__filter" style="height:550px;background-color:#000;filter: alpha(opacity:70); KHTMLOpacity: 0.70; MozOpacity: 0.70; opacity: 0.70;"></div><div class="t455"><div class="t-container"><div class="t-cover__wrapper t-valign_middle" style="height:550px;"><div class="t455__wrapper" data-hook-content="covercontent"><div class="t455__textwrapper t-width t-width_7"><div class="t455__title t-title t-title_md" style="color:#24a3e3;" field="title">Контакты<br /></div><div class="t455__descr t-descr t-descr_md" style="" field="descr"><a href="https://yandex.ru/maps/org/edeniza/23949866499/?indoorLevel=4&amp;ll=30.356628%2C59.920626&amp;z=17" target="_blank" style="noopener">Санкт-Петербург, Транспортный пер., 1</a><a href="tel:+78125048925"><br />+7 812 504 89 25</a><br /><a href="mailto:spb@squiz.ru">spb@squiz.ru</a><br /></div></div><div class="t-sociallinks"><div class="t-sociallinks__wrapper"><!-- new soclinks --><div class="t-sociallinks__item t-sociallinks__item_vk"><a href="http://vk.com/squizspb" target="_blank" rel="nofollow" style="width: 70px; height: 70px;"><svg class="t-sociallinks__svg" width=70px height=70px viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M50 100c27.614 0 50-22.386 50-50S77.614 0 50 0 0 22.386 0 50s22.386 50 50 50ZM25 34c.406 19.488 10.15 31.2 27.233 31.2h.968V54.05c6.278.625 11.024 5.216 12.93 11.15H75c-2.436-8.87-8.838-13.773-12.836-15.647C66.162 47.242 71.783 41.62 73.126 34h-8.058c-1.749 6.184-6.932 11.805-11.867 12.336V34h-8.057v21.611C40.147 54.362 33.838 48.304 33.556 34H25Z" fill="#24a3e3"/></svg></a></div><!-- /new soclinks --><script>t_onReady(function () {
+var rec = document.getElementById('rec125626223');
+if (!rec) return;
+var customImageList = rec.querySelectorAll('img.t-sociallinks__customimg');
+Array.prototype.forEach.call(customImageList, function(img) {
+var imgURL = img.getAttribute('src');
+if (imgURL.indexOf('/lib__tildaicon__') !== -1 || imgURL.indexOf('/lib/tildaicon/') !== -1) {
+var xhr = new XMLHttpRequest();
+xhr.open('GET', imgURL);
+xhr.responseType = 'document';
+xhr.onload = function() {
+if (xhr.status >= 200 && xhr.status < 400) {
+var response = xhr.response;
+var svg = response.querySelector('svg');
+svg.style.width = '70px';
+svg.style.height = '70px';
+var figureList = svg.querySelectorAll('*:not(g):not(title):not(desc)');
+for(var j = 0; j < figureList.length; j++) {
+figureList[j].style.fill = '#24a3e3';
+}
+img.parentNode.append(svg);
+img.remove();
+} else {
+img.style.visibility = 'visible';
+}
+}
+xhr.onerror = function(error) {
+img.style.visibility = 'visible';
+}
+xhr.send();
+}
+});
+});</script></div></div><div class="t455__bottomtext t-text t-text_xs" style="color:#cccccc;" field="text"><a href="/policy" style="" target="_blank">Политика в отношении обработки персональных данных</a></div></div></div></div></div></div></div></div><!--/footer--></div><!--/allrecords--><!-- Stat --><script type="text/javascript">if (! window.mainTracker) { window.mainTracker = 'tilda'; }
+setTimeout(function(){ (function (d, w, k, o, g) { var n=d.getElementsByTagName(o)[0],s=d.createElement(o),f=function(){n.parentNode.insertBefore(s,n);}; s.type = "text/javascript"; s.async = true; s.key = k; s.id = "tildastatscript"; s.src=g; if (w.opera=="[object Opera]") {d.addEventListener("DOMContentLoaded", f, false);} else { f(); } })(document, window, '8ebe36427c45e44a284d0794664f9963','script','https://static.tildacdn.com/js/tilda-stat-1.0.min.js');
+}, 2000); </script><!-- Google Tag Manager (noscript) --><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K7R6WRP" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript><!-- End Google Tag Manager (noscript) --></body></html>`
 )

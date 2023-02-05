@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
@@ -95,15 +96,17 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	data.Add("form-spec-comments", "")
 	gaCid, err := c.getGaCid(ctx, doc)
 	if err != nil {
-		return 0, fmt.Errorf("getting ga-cid error: %w", err)
+		logger.Warnf(ctx, "getting ga-cid error: %s", err.Error())
+	} else {
+		data.Add("ga-cid", gaCid)
 	}
-	data.Add("ga-cid", gaCid)
 
 	ymCid, err := c.getYmCid(ctx, doc)
 	if err != nil {
-		return 0, fmt.Errorf("getting ym-cid error: %w", err)
+		logger.Warnf(ctx, "getting ga-cid error: %s", err.Error())
+	} else {
+		data.Add("ym-cid", ymCid)
 	}
-	data.Add("ym-cid", ymCid)
 
 	data.Add("tildaspec-cookie", `_fbp=fb.1.1674837243537.1860351820; previousUrl=spb.squiz.ru%2Fgame; tildasid=1674837245102.474240; tildauid=1674837245102.202611; tmr_detect=0%7C1674837245889; _ga=GA1.2.2095662112.1674837243; _gid=GA1.2.858509434.1674837243; _ym_d=1674837243; _ym_isad=2; _ym_uid=1668581346714918248; _ym_visorc=w; tmr_lvid=8837cd2f89f7e2366a01121f7183882b; tmr_lvidTS=1668581346211; metrika_enabled=1`)
 	data.Add("tildaspec-referer", "https://spb.squiz.ru/game")
