@@ -12,7 +12,9 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
+	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.uber.org/zap"
 )
 
 // Croupier ...
@@ -61,15 +63,22 @@ func New(cfg Config) *Reminder {
 
 // Run ...
 func (r *Reminder) Run(ctx context.Context) error {
-	logger.Debug(ctx, "starting lottery reminder")
+	if time_utils.TimeNow().Minute() == 0 ||
+		time_utils.TimeNow().Minute() == 30 {
+		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "lottery reminder"),
+		)))
 
-	err := r.run(ctx)
-	if err != nil {
-		logger.Errorf(ctx, "lottery reminder error: %s", err.Error())
-		return err
+		logger.Info(ctx, "starting reminder")
+
+		err := r.run(ctx)
+		if err != nil {
+			logger.Errorf(ctx, "reminder error: %s", err.Error())
+			return err
+		}
+
+		logger.Info(ctx, "reminder done")
 	}
-
-	logger.Debug(ctx, "lottery reminder done")
 
 	return nil
 }
@@ -90,6 +99,11 @@ func (r *Reminder) run(ctx context.Context) error {
 	games, err := r.croupier.GetGamesWithActiveLottery(ctx)
 	if err != nil {
 		return fmt.Errorf("get games with active lottery error: %w", err)
+	}
+
+	if len(games) == 0 {
+		logger.Info(ctx, "there are not games with active lottery")
+		return nil
 	}
 
 	for _, game := range games {
@@ -115,14 +129,14 @@ func (r *Reminder) run(ctx context.Context) error {
 			continue
 		}
 
-		remind := reminder.Lottery{
+		reminder := reminder.Lottery{
 			GameID:    game.ID,
 			PlayerIDs: playerIDs,
 		}
 
-		body, err := json.Marshal(remind)
+		body, err := json.Marshal(reminder)
 		if err != nil {
-			logger.Errorf(ctx, "remind marshal error: %s", err.Error())
+			logger.Errorf(ctx, "reminder marshal error: %s", err.Error())
 			continue
 		}
 
@@ -139,6 +153,8 @@ func (r *Reminder) run(ctx context.Context) error {
 			logger.Errorf(ctx, "message publish error: %s", err.Error())
 			continue
 		}
+
+		logger.InfoKV(ctx, "message published", "reminder", reminder)
 
 		r.alreadyRemindedGames[game.ID] = struct{}{}
 	}

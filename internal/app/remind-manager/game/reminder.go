@@ -13,6 +13,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"go.uber.org/zap"
 )
 
 // GamesFacade ...
@@ -54,15 +55,19 @@ func New(cfg Config) *Reminder {
 func (r *Reminder) Run(ctx context.Context) error {
 	if time_utils.TimeNow().Hour() == 10 &&
 		time_utils.TimeNow().Minute() == 0 {
-		logger.Debug(ctx, "starting game reminder")
+		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
+		logger.Info(ctx, "starting reminder")
 
 		err := r.run(ctx)
 		if err != nil {
-			logger.Errorf(ctx, "game reminder error: %s", err.Error())
+			logger.Errorf(ctx, "reminder error: %s", err.Error())
 			return err
 		}
 
-		logger.Debug(ctx, "game reminder done")
+		logger.Info(ctx, "reminder done")
 	}
 
 	return nil
@@ -86,6 +91,11 @@ func (r *Reminder) run(ctx context.Context) error {
 		return fmt.Errorf("get todays games error: %w", err)
 	}
 
+	if len(games) == 0 {
+		logger.Info(ctx, "there are not todays games")
+		return nil
+	}
+
 	for _, game := range games {
 		players, err := r.gamesFacade.GetPlayersByGameID(ctx, game.ID)
 		if err != nil {
@@ -105,14 +115,14 @@ func (r *Reminder) run(ctx context.Context) error {
 			continue
 		}
 
-		remind := reminder.Game{
+		reminder := reminder.Game{
 			GameID:    game.ID,
 			PlayerIDs: playerIDs,
 		}
 
-		body, err := json.Marshal(remind)
+		body, err := json.Marshal(reminder)
 		if err != nil {
-			logger.Errorf(ctx, "remind marshal error: %s", err.Error())
+			logger.Errorf(ctx, "reminder marshal error: %s", err.Error())
 			continue
 		}
 
@@ -129,6 +139,8 @@ func (r *Reminder) run(ctx context.Context) error {
 			logger.Errorf(ctx, "message publish error: %s", err.Error())
 			continue
 		}
+
+		logger.InfoKV(ctx, "message published", "reminder", reminder)
 	}
 
 	return nil

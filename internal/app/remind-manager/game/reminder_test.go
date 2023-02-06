@@ -8,10 +8,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/zap"
 )
 
 func TestNew(t *testing.T) {
@@ -65,8 +67,12 @@ func TestReminder_Run(t *testing.T) {
 
 		fx := tearUp(t)
 
+		ctx := logger.ToContext(fx.ctx, logger.FromContext(fx.ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return(nil, errors.New("some error"))
+		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return(nil, errors.New("some error"))
 
 		err := fx.reminder.Run(fx.ctx)
 		assert.Error(t, err)
@@ -79,8 +85,12 @@ func TestReminder_Run(t *testing.T) {
 
 		fx := tearUp(t)
 
+		ctx := logger.ToContext(fx.ctx, logger.FromContext(fx.ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -89,7 +99,7 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
 				FkUserID: 1,
 			},
@@ -98,9 +108,9 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(2)).Return([]model.GamePlayer{}, errors.New("some error"))
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{}, errors.New("some error"))
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(fx.ctx, "", "queue", false, false, amqp.Publishing{
+		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
 			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
 		}).Return(nil)
@@ -116,14 +126,18 @@ func TestReminder_Run(t *testing.T) {
 
 		fx := tearUp(t)
 
+		ctx := logger.ToContext(fx.ctx, logger.FromContext(fx.ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
 				ID:           1,
 				RegisteredBy: 1,
@@ -145,8 +159,12 @@ func TestReminder_Run(t *testing.T) {
 
 		fx := tearUp(t)
 
+		ctx := logger.ToContext(fx.ctx, logger.FromContext(fx.ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -155,7 +173,7 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
 				FkUserID: 1,
 			},
@@ -164,7 +182,7 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(2)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
 				FkUserID: 3,
 			},
@@ -173,12 +191,12 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(fx.ctx, "", "queue", false, false, amqp.Publishing{
+		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
 			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
 		}).Return(nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(fx.ctx, "", "queue", false, false, amqp.Publishing{
+		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
 			Body:        []byte(`{"game_id":2,"player_ids":[3,4]}`),
 		}).Return(errors.New("some error"))
@@ -194,8 +212,12 @@ func TestReminder_Run(t *testing.T) {
 
 		fx := tearUp(t)
 
+		ctx := logger.ToContext(fx.ctx, logger.FromContext(fx.ctx).WithOptions(zap.Fields(
+			zap.String("reminder_name", "game reminder"),
+		)))
+
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
-		fx.gamesFacade.EXPECT().GetTodaysGames(fx.ctx).Return([]model.Game{
+		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
 			},
@@ -204,7 +226,7 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
 				FkUserID: 1,
 			},
@@ -213,7 +235,7 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(2)).Return([]model.GamePlayer{
+		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
 				FkUserID: 3,
 			},
@@ -222,12 +244,12 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(fx.ctx, "", "queue", false, false, amqp.Publishing{
+		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
 			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
 		}).Return(nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(fx.ctx, "", "queue", false, false, amqp.Publishing{
+		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
 			Body:        []byte(`{"game_id":2,"player_ids":[3,4]}`),
 		}).Return(nil)
