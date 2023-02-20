@@ -102,6 +102,7 @@ func validateGameType(value interface{}) error {
 
 	if gameType == GameTypeClassic ||
 		gameType == GameTypeThematic ||
+		gameType == GameTypeEnglish ||
 		gameType == GameTypeMoviesAndMusic ||
 		gameType == GameTypeClosed ||
 		gameType == GameTypeThematicMoviesAndMusic {
