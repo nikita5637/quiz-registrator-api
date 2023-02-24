@@ -66,9 +66,11 @@ func ValidateGame(game Game) error {
 		return ErrInvalidGameType
 	}
 
-	err = validation.Validate(game.Number, validation.Required)
-	if err != nil {
-		return ErrInvalidGameNumber
+	if game.Type != GameTypeClosed {
+		err = validation.Validate(game.Number, validation.Required)
+		if err != nil {
+			return ErrInvalidGameNumber
+		}
 	}
 
 	err = validation.Validate(game.PlaceID, validation.Required)

@@ -102,7 +102,7 @@ func TestFacade_ValidateGame(t *testing.T) {
 		assert.ErrorIs(t, err, ErrInvalidGameType)
 	})
 
-	t.Run("game number validation error", func(t *testing.T) {
+	t.Run("game number validation error. game type is classic", func(t *testing.T) {
 		err := ValidateGame(Game{
 			LeagueID: LeagueQuizPlease,
 			Type:     GameTypeClassic,
@@ -157,13 +157,28 @@ func TestFacade_ValidateGame(t *testing.T) {
 		assert.ErrorIs(t, err, ErrInvalidMaxPlayers)
 	})
 
-	t.Run("ok", func(t *testing.T) {
+	t.Run("ok. game type is classic", func(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		err := ValidateGame(Game{
 			LeagueID:   LeagueQuizPlease,
 			Type:       GameTypeClassic,
 			Number:     "1",
+			PlaceID:    1,
+			Date:       DateTime(timeNow),
+			Price:      400,
+			MaxPlayers: 10,
+		})
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok. game type is closed", func(t *testing.T) {
+		timeNow := time_utils.TimeNow()
+
+		err := ValidateGame(Game{
+			LeagueID:   LeagueQuizPlease,
+			Type:       GameTypeClosed,
+			Number:     "",
 			PlaceID:    1,
 			Date:       DateTime(timeNow),
 			Price:      400,
