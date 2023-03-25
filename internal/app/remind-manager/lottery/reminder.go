@@ -131,6 +131,7 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		reminder := reminder.Lottery{
 			GameID:    game.ID,
+			LeagueID:  game.LeagueID,
 			PlayerIDs: playerIDs,
 		}
 

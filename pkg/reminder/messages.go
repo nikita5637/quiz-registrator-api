@@ -9,5 +9,6 @@ type Game struct {
 // Lottery is a lottery remind body struct
 type Lottery struct {
 	GameID    int32   `json:"game_id,omitempty"`
+	LeagueID  int32   `json:"league_id,omitempty"`
 	PlayerIDs []int32 `json:"player_ids,omitempty"`
 }

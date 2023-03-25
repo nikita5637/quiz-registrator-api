@@ -12,6 +12,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/stretchr/testify/assert"
@@ -222,10 +223,12 @@ func TestReminder_Run(t *testing.T) {
 		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.croupier.EXPECT().GetGamesWithActiveLottery(ctx).Return([]model.Game{
 			{
-				ID: 1,
+				ID:       1,
+				LeagueID: pkgmodel.LeagueQuizPlease,
 			},
 			{
-				ID: 2,
+				ID:       2,
+				LeagueID: pkgmodel.LeagueSquiz,
 			},
 		}, nil)
 
@@ -249,12 +252,12 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
-			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
+			Body:        []byte(`{"game_id":1,"league_id":1,"player_ids":[1,2]}`),
 		}).Return(nil)
 
 		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
 			ContentType: "application/json",
-			Body:        []byte(`{"game_id":2,"player_ids":[3,4]}`),
+			Body:        []byte(`{"game_id":2,"league_id":2,"player_ids":[3,4]}`),
 		}).Return(nil)
 
 		err := fx.reminder.Run(fx.ctx)
