@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 )
 
 // RegisterForLottery ...
@@ -34,14 +35,14 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	}
 
 	switch game.LeagueID {
-	case model.LeagueQuizPlease:
+	case pkgmodel.LeagueQuizPlease:
 		number, err := c.quizPleaseCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("quiz please lottery registration error: %w", err)
 		}
 
 		return number, nil
-	case model.LeagueSquiz:
+	case pkgmodel.LeagueSquiz:
 		_, err := c.squizCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("squiz lottery registration error: %w", err)

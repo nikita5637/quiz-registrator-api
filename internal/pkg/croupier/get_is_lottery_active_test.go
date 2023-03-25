@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -26,7 +27,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
 		}
 		game.My = true
@@ -44,7 +45,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
 		}
 		game.My = true
@@ -62,7 +63,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
 			My:       true,
 		}

@@ -8,6 +8,7 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -25,7 +26,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game1 := model.Game{
 		ID:        1,
-		LeagueID:  model.LeagueQuizPlease,
+		LeagueID:  pkgmodel.LeagueQuizPlease,
 		Type:      model.GameTypeClassic,
 		Number:    "1",
 		PlaceID:   1,
@@ -35,7 +36,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game2 := model.Game{
 		ID:        2,
-		LeagueID:  model.LeagueQuizPlease,
+		LeagueID:  pkgmodel.LeagueQuizPlease,
 		Type:      model.GameTypeClassic,
 		Number:    "2",
 		PlaceID:   1,
@@ -45,7 +46,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game3 := model.Game{
 		ID:       3,
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeClassic,
 		Number:   "1",
 		PlaceID:  2,
@@ -54,7 +55,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game4 := model.Game{
 		ID:       4,
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "1",
 		PlaceID:  3,
@@ -63,7 +64,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game5 := model.Game{
 		ID:       5,
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeClassic,
 		Number:   "3",
 		PlaceID:  1,
@@ -72,7 +73,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game6 := model.Game{
 		ID:       6,
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "2",
 		PlaceID:  2,
@@ -80,21 +81,21 @@ func TestFacade_AddGames(t *testing.T) {
 	}
 
 	game7 := model.Game{
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeClassic,
 		Number:   "4",
 		PlaceID:  1,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-07 16:30")),
 	}
 	game8 := model.Game{
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "2",
 		PlaceID:  2,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-08 13:00")),
 	}
 	game9 := model.Game{
-		LeagueID: model.LeagueQuizPlease,
+		LeagueID: pkgmodel.LeagueQuizPlease,
 		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "3",
 		PlaceID:  3,
@@ -135,11 +136,11 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -200,11 +201,11 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -265,12 +266,12 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -332,11 +333,11 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -394,11 +395,11 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -453,9 +454,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -504,9 +505,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -552,9 +553,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -589,9 +590,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -631,9 +632,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -674,9 +675,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
@@ -723,9 +724,9 @@ func TestFacade_AddGames(t *testing.T) {
 		fx.gameStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
 			builder.In(
 				"league_id", []int32{
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
-					model.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
+					pkgmodel.LeagueQuizPlease,
 				},
 			),
 			builder.IsNull{
