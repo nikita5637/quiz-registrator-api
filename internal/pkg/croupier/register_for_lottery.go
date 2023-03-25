@@ -18,6 +18,11 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 		}
 	}
 
+	// TODO fix squiz lottery registration
+	if game.LeagueID == pkgmodel.LeagueSquiz {
+		implemented = false
+	}
+
 	if !implemented {
 		return 0, fmt.Errorf("%w", model.ErrLotteryNotImplemented)
 	}
