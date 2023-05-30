@@ -1,4 +1,5 @@
 //go:generate mockery --case underscore --name Croupier --with-expecter
+//go:generate mockery --case underscore --name CertificatesFacade --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
 //go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
 //go:generate mockery --case underscore --name LeaguesFacade --with-expecter
@@ -25,6 +26,14 @@ import (
 type Croupier interface {
 	GetIsLotteryActive(ctx context.Context, game model.Game) bool
 	RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error)
+}
+
+// CertificatesFacade ...
+type CertificatesFacade interface {
+	CreateCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error)
+	DeleteCertificate(ctx context.Context, id int32) error
+	ListCertificates(ctx context.Context) ([]model.Certificate, error)
+	PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error)
 }
 
 // GamesFacade ...
@@ -71,11 +80,12 @@ type Registrator struct {
 
 	croupier Croupier
 
-	gamesFacade      GamesFacade
-	gamePhotosFacade GamePhotosFacade
-	leaguesFacade    LeaguesFacade
-	placesFacade     PlacesFacade
-	usersFacade      UsersFacade
+	certificatesFacade CertificatesFacade
+	gamesFacade        GamesFacade
+	gamePhotosFacade   GamePhotosFacade
+	leaguesFacade      LeaguesFacade
+	placesFacade       PlacesFacade
+	usersFacade        UsersFacade
 
 	registratorpb.UnimplementedCroupierServiceServer
 	registratorpb.UnimplementedPhotographerServiceServer
@@ -100,11 +110,12 @@ type Config struct {
 
 	Croupier Croupier
 
-	GamesFacade      GamesFacade
-	GamePhotosFacade GamePhotosFacade
-	LeaguesFacade    LeaguesFacade
-	PlacesFacade     PlacesFacade
-	UsersFacade      UsersFacade
+	CertificatesFacade CertificatesFacade
+	GamesFacade        GamesFacade
+	GamePhotosFacade   GamePhotosFacade
+	LeaguesFacade      LeaguesFacade
+	PlacesFacade       PlacesFacade
+	UsersFacade        UsersFacade
 }
 
 // New ...
@@ -114,11 +125,12 @@ func New(cfg Config) *Registrator {
 
 		croupier: cfg.Croupier,
 
-		gamesFacade:      cfg.GamesFacade,
-		gamePhotosFacade: cfg.GamePhotosFacade,
-		leaguesFacade:    cfg.LeaguesFacade,
-		placesFacade:     cfg.PlacesFacade,
-		usersFacade:      cfg.UsersFacade,
+		certificatesFacade: cfg.CertificatesFacade,
+		gamesFacade:        cfg.GamesFacade,
+		gamePhotosFacade:   cfg.GamePhotosFacade,
+		leaguesFacade:      cfg.LeaguesFacade,
+		placesFacade:       cfg.PlacesFacade,
+		usersFacade:        cfg.UsersFacade,
 	}
 
 	var opts []grpc.ServerOption

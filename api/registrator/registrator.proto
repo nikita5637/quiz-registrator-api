@@ -4,6 +4,8 @@ package users;
 
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator;registrator";
 
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
 import "google/protobuf/timestamp.proto";
 
 service CroupierService {
@@ -30,6 +32,12 @@ message RegisterForLotteryRequest {
 
 message RegisterForLotteryResponse {
 	int32 number = 1;
+}
+
+enum CertificateType {
+	CERTIFICATE_TYPE_INVALID = 0;
+	CERTIFICATE_TYPE_FREE_PASS = 1;
+	CERTIFICATE_TYPE_BAR_BILL_PAYMENT = 2;
 }
 
 enum GameType {
@@ -92,6 +100,16 @@ message AddGamePhotosRequest {
 message AddGamePhotosResponse {
 }
 
+message Certificate {
+	int32 id = 1;
+	CertificateType type = 2;
+	// game id ...
+	int32 won_on = 3;
+	// game id ...
+	int32 spent_on = 4;
+	string info = 5;
+}
+
 message GetGamesWithPhotosRequest {
 	uint32 limit = 1;
 	uint32 offset = 2;
@@ -123,12 +141,16 @@ message Place {
 	string address = 2;
 	string name = 3;
 	string short_name = 4;
-	float longitude = 5;
-	float latitude = 6;
+	float latitude = 5;
+	float longitude = 6;
 	string menu_link = 7;
 }
 
 service RegistratorService {
+	// CreateCertificate adds new certificate
+	rpc CreateCertificate(CreateCertificateRequest) returns (Certificate) {
+	}
+
 	// AddGame creates a new game
 	rpc AddGame(AddGameRequest) returns (AddGameResponse) {
 	}
@@ -141,8 +163,16 @@ service RegistratorService {
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
 	}
 
+	// DeleteCertificate deletes new certificate
+	rpc DeleteCertificate(DeleteCertificateRequest) returns (google.protobuf.Empty) {
+	}
+
 	// DeleteGame deletes a game by game ID
 	rpc DeleteGame(DeleteGameRequest) returns (DeleteGameResponse) {
+	}
+
+	// Returns certificates
+	rpc ListCertificates(google.protobuf.Empty) returns (ListCertificatesResponse) {
 	}
 
 	// Returns game or Not Found
@@ -205,6 +235,10 @@ service RegistratorService {
 	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (UnregisterPlayerResponse) {
 	}
 
+	// Patches certificate
+	rpc PatchCertificate(PatchCertificateRequest) returns (Certificate) {
+	}
+
 	// UpdateUserEmail updates a user email
 	rpc UpdateUserEmail(UpdateUserEmailRequest) returns (UpdateUserEmailResponse) {
 	}
@@ -224,6 +258,10 @@ service RegistratorService {
 	// UpdatePayment updates payment
 	rpc UpdatePayment(UpdatePaymentRequest) returns (UpdatePaymentResponse) {
 	}
+}
+
+message CreateCertificateRequest {
+	Certificate certificate = 1;
 }
 
 message AddGameRequest {
@@ -267,7 +305,7 @@ enum UserState {
 	USER_STATE_WELCOME = 1;
 	USER_STATE_REGISTERED = 2;
 	USER_STATE_CHANGING_EMAIL = 3;
-	USER_STATE_CHANGINE_NAME = 4;
+	USER_STATE_CHANGING_NAME = 4;
 	USER_STATE_CHANGING_PHONE = 5;
 	USER_STATE_CHANGING_STATE = 6;
 }
@@ -282,11 +320,19 @@ message CreateUserResponse {
 	int32 id = 1;
 }
   
+message DeleteCertificateRequest {
+	int32 id = 1;
+}
+
 message DeleteGameRequest {
 	int32 id = 1;
 }
   
 message DeleteGameResponse {
+}
+
+message ListCertificatesResponse {
+	repeated Certificate certificates = 1;
 }
 
 message GetGameByIDRequest {
@@ -470,6 +516,12 @@ message UpdatePaymentRequest {
 }
 
 message UpdatePaymentResponse {
+}
+
+message PatchCertificateRequest {
+	Certificate certificate = 1;
+
+	google.protobuf.FieldMask update_mask = 2;
 }
 
 message UpdateUserEmailRequest {

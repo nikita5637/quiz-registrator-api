@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"os"
 	"os/signal"
@@ -10,10 +11,13 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
+	lottery_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/lottery"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/squiz"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
@@ -112,19 +116,36 @@ func main() {
 
 	gamesFacade := games.NewFacade(gamesFacadeConfig)
 
+	quizPleaseCroupierConfig := quiz_please.Config{
+		LotteryLink: quiz_please.LotteryLink,
+	}
+
+	squizCroupierConfig := squiz.Config{
+		LotteryInfoPageLink:     squiz.LotteryInfoPageLink,
+		LotteryRegistrationLink: squiz.LotteryRegistrationLink,
+	}
+
+	croupierConfig := croupier.Config{
+		GamesFacade:        gamesFacade,
+		QuizPleaseCroupier: quiz_please.New(quizPleaseCroupierConfig),
+		SquizCroupier:      squiz.New(squizCroupierConfig),
+	}
+	croupier := croupier.New(croupierConfig)
+
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		croupierConfig := croupier.Config{
-			QuizPleaseCroupier: quiz_please.New(),
-		}
-
-		croupier := croupier.New(croupierConfig)
-
+		certificateStorage := storage.NewCertificateStorage(txManager)
 		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
 		gameResultStorage := storage.NewGameResultStorage(txManager)
 		leagueStorage := storage.NewLeagueStorage(txManager)
 		placeStorage := storage.NewPlaceStorage(txManager)
 		userStorage := storage.NewUserStorage(txManager)
+
+		certificatesFacadeConfig := certificates.Config{
+			CertificateStorage: certificateStorage,
+			TxManager:          txManager,
+		}
+		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
 
 		gamePhotosFacadeConfig := gamephotos.Config{
 			GameStorage:       gameStorage,
@@ -154,11 +175,12 @@ func main() {
 
 			Croupier: croupier,
 
-			GamesFacade:      gamesFacade,
-			GamePhotosFacade: gamePhotosFacade,
-			LeaguesFacade:    leaguesFacade,
-			PlacesFacade:     placesFacade,
-			UsersFacade:      usersFacade,
+			CertificatesFacade: certificatesFacade,
+			GamesFacade:        gamesFacade,
+			GamePhotosFacade:   gamePhotosFacade,
+			LeaguesFacade:      leaguesFacade,
+			PlacesFacade:       placesFacade,
+			UsersFacade:        usersFacade,
 		}
 
 		reg := registrator.New(registratorConfig)
@@ -168,16 +190,35 @@ func main() {
 	})
 
 	g.Go(func() error {
+		gameReminderQueueName := config.GetValue("RabbitMQGameReminderQueueName").String()
+		if gameReminderQueueName == "" {
+			return errors.New("empty rabbit MQ game reminder queue name")
+		}
+
 		gameReminderConfig := game_reminder.Config{
 			GamesFacade:     gamesFacade,
-			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			QueueName:       gameReminderQueueName,
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
+		lotteryReminderQueueName := config.GetValue("RabbitMQLotteryReminderQueueName").String()
+		if lotteryReminderQueueName == "" {
+			return errors.New("empty rabbit MQ lottery reminder queue name")
+		}
+
+		lotteryReminderConfig := lottery_reminder.Config{
+			Croupier:        croupier,
+			GamesFacade:     gamesFacade,
+			QueueName:       lotteryReminderQueueName,
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)
+
 		remindManagerConfig := remindmanager.Config{
 			Reminders: []remindmanager.Reminder{
 				gameReminder,
+				lotteryReminder,
 			},
 		}
 		remindManager := remindmanager.New(remindManagerConfig)

@@ -9,6 +9,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -34,6 +35,29 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 		config.UpdateGlobalConfig(globalConfig)
 
 		time_utils.TimeNow = func() time.Time {
+			return time_utils.ConvertTime("2022-01-08 13:39")
+		}
+
+		ctx := context.Background()
+
+		got, err := croupier.RegisterForLottery(ctx, model.Game{
+			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
+			LeagueID: pkgmodel.LeagueQuizPlease,
+			My:       true,
+		}, model.User{})
+		assert.Equal(t, int32(0), got)
+		assert.Error(t, err)
+		assert.Equal(t, model.ErrLotteryNotAvailable, errors.Unwrap(err))
+	})
+
+	t.Run("game is not my", func(t *testing.T) {
+		croupier := New(Config{})
+
+		globalConfig := config.GlobalConfig{}
+		globalConfig.LotteryStartsBefore = 3600
+		config.UpdateGlobalConfig(globalConfig)
+
+		time_utils.TimeNow = func() time.Time {
 			return time_utils.ConvertTime("2022-01-10 13:39")
 		}
 
@@ -41,11 +65,12 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
+			My:       false,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
-		assert.Equal(t, model.ErrLotteryNotAvailable, errors.Unwrap(err))
+		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
 	})
 
 	t.Run("empty user.Email", func(t *testing.T) {
@@ -63,7 +88,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 		}
 		game.My = true
 
@@ -91,7 +116,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 		}
 		game.My = true
 
@@ -119,7 +144,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 		}
 		game.My = true
 
@@ -132,7 +157,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
 	})
 
-	t.Run("error while registration", func(t *testing.T) {
+	t.Run("error while registration, quiz please", func(t *testing.T) {
 		quizPleaseCroupierMock := mocks.NewLotteryRegistrator(t)
 		croupier := New(Config{
 			QuizPleaseCroupier: quizPleaseCroupierMock,
@@ -150,7 +175,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 		}
 		game.My = true
 
@@ -167,7 +192,45 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 		assert.Error(t, err)
 	})
 
-	t.Run("ok", func(t *testing.T) {
+	// TODO fix squiz lottery registration
+	/*
+		t.Run("error while registration, squiz", func(t *testing.T) {
+			squizCroupierMock := mocks.NewLotteryRegistrator(t)
+			croupier := New(Config{
+				SquizCroupier: squizCroupierMock,
+			})
+
+			globalConfig := config.GlobalConfig{}
+			globalConfig.LotteryStartsBefore = 3600
+			config.UpdateGlobalConfig(globalConfig)
+
+			time_utils.TimeNow = func() time.Time {
+				return time_utils.ConvertTime("2022-01-10 15:31")
+			}
+
+			ctx := context.Background()
+
+			game := model.Game{
+				Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
+				LeagueID: pkgmodel.LeagueSquiz,
+			}
+			game.My = true
+
+			user := model.User{
+				Email: "user email",
+				Name:  "user name",
+				Phone: "user phone",
+			}
+
+			squizCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(0, errors.New("some error"))
+
+			got, err := croupier.RegisterForLottery(ctx, game, user)
+			assert.Equal(t, int32(0), got)
+			assert.Error(t, err)
+		})
+	*/
+
+	t.Run("ok, quiz please", func(t *testing.T) {
 		quizPleaseCroupierMock := mocks.NewLotteryRegistrator(t)
 		croupier := New(Config{
 			QuizPleaseCroupier: quizPleaseCroupierMock,
@@ -185,7 +248,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: pkgmodel.LeagueQuizPlease,
 		}
 		game.My = true
 
@@ -201,4 +264,42 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 		assert.Equal(t, int32(100), got)
 		assert.NoError(t, err)
 	})
+
+	// TODO fix squiz lottery registration
+	/*
+		t.Run("ok squiz", func(t *testing.T) {
+			squizCroupierMock := mocks.NewLotteryRegistrator(t)
+			croupier := New(Config{
+				SquizCroupier: squizCroupierMock,
+			})
+
+			globalConfig := config.GlobalConfig{}
+			globalConfig.LotteryStartsBefore = 3600
+			config.UpdateGlobalConfig(globalConfig)
+
+			time_utils.TimeNow = func() time.Time {
+				return time_utils.ConvertTime("2022-01-10 15:31")
+			}
+
+			ctx := context.Background()
+
+			game := model.Game{
+				Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
+				LeagueID: pkgmodel.LeagueSquiz,
+			}
+			game.My = true
+
+			user := model.User{
+				Email: "user email",
+				Name:  "user name",
+				Phone: "user phone",
+			}
+
+			squizCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(0, nil)
+
+			got, err := croupier.RegisterForLottery(ctx, game, user)
+			assert.Equal(t, int32(0), got)
+			assert.NoError(t, err)
+		})
+	*/
 }

@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -313,14 +314,20 @@ var PhotographerService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RegistratorServiceClient interface {
+	// CreateCertificate adds new certificate
+	CreateCertificate(ctx context.Context, in *CreateCertificateRequest, opts ...grpc.CallOption) (*Certificate, error)
 	// AddGame creates a new game
 	AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error)
 	// AddGames inserts a new games. Used by quiz-fetcher
 	AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
+	// DeleteCertificate deletes new certificate
+	DeleteCertificate(ctx context.Context, in *DeleteCertificateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// DeleteGame deletes a game by game ID
 	DeleteGame(ctx context.Context, in *DeleteGameRequest, opts ...grpc.CallOption) (*DeleteGameResponse, error)
+	// Returns certificates
+	ListCertificates(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCertificatesResponse, error)
 	// Returns game or Not Found
 	GetGameByID(ctx context.Context, in *GetGameByIDRequest, opts ...grpc.CallOption) (*GetGameByIDResponse, error)
 	// GetGames returns games
@@ -351,6 +358,8 @@ type RegistratorServiceClient interface {
 	UnregisterGame(ctx context.Context, in *UnregisterGameRequest, opts ...grpc.CallOption) (*UnregisterGameResponse, error)
 	// UnregisterPlayer unregisters player
 	UnregisterPlayer(ctx context.Context, in *UnregisterPlayerRequest, opts ...grpc.CallOption) (*UnregisterPlayerResponse, error)
+	// Patches certificate
+	PatchCertificate(ctx context.Context, in *PatchCertificateRequest, opts ...grpc.CallOption) (*Certificate, error)
 	// UpdateUserEmail updates a user email
 	UpdateUserEmail(ctx context.Context, in *UpdateUserEmailRequest, opts ...grpc.CallOption) (*UpdateUserEmailResponse, error)
 	// UpdateUserName updates a user's name
@@ -369,6 +378,15 @@ type registratorServiceClient struct {
 
 func NewRegistratorServiceClient(cc grpc.ClientConnInterface) RegistratorServiceClient {
 	return &registratorServiceClient{cc}
+}
+
+func (c *registratorServiceClient) CreateCertificate(ctx context.Context, in *CreateCertificateRequest, opts ...grpc.CallOption) (*Certificate, error) {
+	out := new(Certificate)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/CreateCertificate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error) {
@@ -398,9 +416,27 @@ func (c *registratorServiceClient) CreateUser(ctx context.Context, in *CreateUse
 	return out, nil
 }
 
+func (c *registratorServiceClient) DeleteCertificate(ctx context.Context, in *DeleteCertificateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/DeleteCertificate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *registratorServiceClient) DeleteGame(ctx context.Context, in *DeleteGameRequest, opts ...grpc.CallOption) (*DeleteGameResponse, error) {
 	out := new(DeleteGameResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/DeleteGame", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *registratorServiceClient) ListCertificates(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCertificatesResponse, error) {
+	out := new(ListCertificatesResponse)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/ListCertificates", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -542,6 +578,15 @@ func (c *registratorServiceClient) UnregisterPlayer(ctx context.Context, in *Unr
 	return out, nil
 }
 
+func (c *registratorServiceClient) PatchCertificate(ctx context.Context, in *PatchCertificateRequest, opts ...grpc.CallOption) (*Certificate, error) {
+	out := new(Certificate)
+	err := c.cc.Invoke(ctx, "/users.RegistratorService/PatchCertificate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *registratorServiceClient) UpdateUserEmail(ctx context.Context, in *UpdateUserEmailRequest, opts ...grpc.CallOption) (*UpdateUserEmailResponse, error) {
 	out := new(UpdateUserEmailResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserEmail", in, out, opts...)
@@ -591,14 +636,20 @@ func (c *registratorServiceClient) UpdatePayment(ctx context.Context, in *Update
 // All implementations must embed UnimplementedRegistratorServiceServer
 // for forward compatibility
 type RegistratorServiceServer interface {
+	// CreateCertificate adds new certificate
+	CreateCertificate(context.Context, *CreateCertificateRequest) (*Certificate, error)
 	// AddGame creates a new game
 	AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error)
 	// AddGames inserts a new games. Used by quiz-fetcher
 	AddGames(context.Context, *AddGamesRequest) (*AddGamesResponse, error)
 	// CreateUser creates new user
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
+	// DeleteCertificate deletes new certificate
+	DeleteCertificate(context.Context, *DeleteCertificateRequest) (*emptypb.Empty, error)
 	// DeleteGame deletes a game by game ID
 	DeleteGame(context.Context, *DeleteGameRequest) (*DeleteGameResponse, error)
+	// Returns certificates
+	ListCertificates(context.Context, *emptypb.Empty) (*ListCertificatesResponse, error)
 	// Returns game or Not Found
 	GetGameByID(context.Context, *GetGameByIDRequest) (*GetGameByIDResponse, error)
 	// GetGames returns games
@@ -629,6 +680,8 @@ type RegistratorServiceServer interface {
 	UnregisterGame(context.Context, *UnregisterGameRequest) (*UnregisterGameResponse, error)
 	// UnregisterPlayer unregisters player
 	UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*UnregisterPlayerResponse, error)
+	// Patches certificate
+	PatchCertificate(context.Context, *PatchCertificateRequest) (*Certificate, error)
 	// UpdateUserEmail updates a user email
 	UpdateUserEmail(context.Context, *UpdateUserEmailRequest) (*UpdateUserEmailResponse, error)
 	// UpdateUserName updates a user's name
@@ -646,6 +699,9 @@ type RegistratorServiceServer interface {
 type UnimplementedRegistratorServiceServer struct {
 }
 
+func (UnimplementedRegistratorServiceServer) CreateCertificate(context.Context, *CreateCertificateRequest) (*Certificate, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCertificate not implemented")
+}
 func (UnimplementedRegistratorServiceServer) AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGame not implemented")
 }
@@ -655,8 +711,14 @@ func (UnimplementedRegistratorServiceServer) AddGames(context.Context, *AddGames
 func (UnimplementedRegistratorServiceServer) CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateUser not implemented")
 }
+func (UnimplementedRegistratorServiceServer) DeleteCertificate(context.Context, *DeleteCertificateRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteCertificate not implemented")
+}
 func (UnimplementedRegistratorServiceServer) DeleteGame(context.Context, *DeleteGameRequest) (*DeleteGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGame not implemented")
+}
+func (UnimplementedRegistratorServiceServer) ListCertificates(context.Context, *emptypb.Empty) (*ListCertificatesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListCertificates not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetGameByID(context.Context, *GetGameByIDRequest) (*GetGameByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameByID not implemented")
@@ -703,6 +765,9 @@ func (UnimplementedRegistratorServiceServer) UnregisterGame(context.Context, *Un
 func (UnimplementedRegistratorServiceServer) UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*UnregisterPlayerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnregisterPlayer not implemented")
 }
+func (UnimplementedRegistratorServiceServer) PatchCertificate(context.Context, *PatchCertificateRequest) (*Certificate, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PatchCertificate not implemented")
+}
 func (UnimplementedRegistratorServiceServer) UpdateUserEmail(context.Context, *UpdateUserEmailRequest) (*UpdateUserEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEmail not implemented")
 }
@@ -729,6 +794,24 @@ type UnsafeRegistratorServiceServer interface {
 
 func RegisterRegistratorServiceServer(s grpc.ServiceRegistrar, srv RegistratorServiceServer) {
 	s.RegisterService(&RegistratorService_ServiceDesc, srv)
+}
+
+func _RegistratorService_CreateCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCertificateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).CreateCertificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/CreateCertificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).CreateCertificate(ctx, req.(*CreateCertificateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _RegistratorService_AddGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -785,6 +868,24 @@ func _RegistratorService_CreateUser_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RegistratorService_DeleteCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteCertificateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).DeleteCertificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/DeleteCertificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).DeleteCertificate(ctx, req.(*DeleteCertificateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RegistratorService_DeleteGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(DeleteGameRequest)
 	if err := dec(in); err != nil {
@@ -799,6 +900,24 @@ func _RegistratorService_DeleteGame_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).DeleteGame(ctx, req.(*DeleteGameRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RegistratorService_ListCertificates_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).ListCertificates(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/ListCertificates",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).ListCertificates(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1073,6 +1192,24 @@ func _RegistratorService_UnregisterPlayer_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RegistratorService_PatchCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PatchCertificateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).PatchCertificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/users.RegistratorService/PatchCertificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).PatchCertificate(ctx, req.(*PatchCertificateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _RegistratorService_UpdateUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserEmailRequest)
 	if err := dec(in); err != nil {
@@ -1171,6 +1308,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RegistratorServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateCertificate",
+			Handler:    _RegistratorService_CreateCertificate_Handler,
+		},
+		{
 			MethodName: "AddGame",
 			Handler:    _RegistratorService_AddGame_Handler,
 		},
@@ -1183,8 +1324,16 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _RegistratorService_CreateUser_Handler,
 		},
 		{
+			MethodName: "DeleteCertificate",
+			Handler:    _RegistratorService_DeleteCertificate_Handler,
+		},
+		{
 			MethodName: "DeleteGame",
 			Handler:    _RegistratorService_DeleteGame_Handler,
+		},
+		{
+			MethodName: "ListCertificates",
+			Handler:    _RegistratorService_ListCertificates_Handler,
 		},
 		{
 			MethodName: "GetGameByID",
@@ -1245,6 +1394,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnregisterPlayer",
 			Handler:    _RegistratorService_UnregisterPlayer_Handler,
+		},
+		{
+			MethodName: "PatchCertificate",
+			Handler:    _RegistratorService_PatchCertificate_Handler,
 		},
 		{
 			MethodName: "UpdateUserEmail",

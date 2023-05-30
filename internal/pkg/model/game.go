@@ -6,6 +6,7 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
@@ -27,11 +28,7 @@ type Game struct {
 	CreatedAt   DateTime
 	UpdatedAt   DateTime
 	DeletedAt   DateTime
-	//
-	gameAdditionalInfo
-}
-
-type gameAdditionalInfo struct {
+	// additional info
 	My                  bool
 	NumberOfMyLegioners uint32
 	NumberOfLegioners   uint32
@@ -60,7 +57,7 @@ func (g *Game) IsActive() bool {
 
 // ValidateGame ...
 func ValidateGame(game Game) error {
-	err := validation.Validate(game.LeagueID, validation.Required, validation.Min(1), validation.Max(NumberOfLeagues-1))
+	err := validation.Validate(game.LeagueID, validation.Required, validation.Min(1), validation.Max(pkgmodel.NumberOfLeagues-1))
 	if err != nil {
 		return ErrInvalidLeagueID
 	}
@@ -70,9 +67,11 @@ func ValidateGame(game Game) error {
 		return ErrInvalidGameType
 	}
 
-	err = validation.Validate(game.Number, validation.Required)
-	if err != nil {
-		return ErrInvalidGameNumber
+	if game.Type != GameTypeClosed {
+		err = validation.Validate(game.Number, validation.Required)
+		if err != nil {
+			return ErrInvalidGameNumber
+		}
 	}
 
 	err = validation.Validate(game.PlaceID, validation.Required)
@@ -106,6 +105,7 @@ func validateGameType(value interface{}) error {
 
 	if gameType == GameTypeClassic ||
 		gameType == GameTypeThematic ||
+		gameType == GameTypeEnglish ||
 		gameType == GameTypeMoviesAndMusic ||
 		gameType == GameTypeClosed ||
 		gameType == GameTypeThematicMoviesAndMusic {

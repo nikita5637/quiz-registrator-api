@@ -2,8 +2,6 @@ package games
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
@@ -21,18 +19,9 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", model.ErrInvalidPlayerDegree)
 	}
 
-	// TODO use facade method with additional game info
-	game, err := f.gameStorage.GetGameByID(ctx, fkGameID)
+	game, err := f.GetGameByID(ctx, fkGameID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", model.ErrGameNotFound)
-		}
-
 		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", err)
-	}
-
-	if (game.NumberOfPlayers + game.NumberOfLegioners) == game.MaxPlayers {
-		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", model.ErrGameNoFreeSlots)
 	}
 
 	if fkUserID != 0 {
@@ -53,6 +42,10 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 		if len(records) > 0 {
 			return model.RegisterPlayerStatusAlreadyRegistered, nil
 		}
+	}
+
+	if (game.NumberOfPlayers + game.NumberOfLegioners) == game.MaxPlayers {
+		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", model.ErrGameNoFreeSlots)
 	}
 
 	_, err = f.gamePlayerStorage.Insert(ctx, model.GamePlayer{

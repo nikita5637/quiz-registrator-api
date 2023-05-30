@@ -2,6 +2,13 @@ package model
 
 import "errors"
 
+// Certificate facade errors
+var (
+	ErrCertificateNotFound = errors.New("certificate not found")
+	ErrWonOnGameNotFound   = errors.New("won on game not found")
+	ErrSpentOnGameNotFound = errors.New("spent on game not found")
+)
+
 // Games facade errors
 var (
 	ErrGameNoFreeSlots     = errors.New("game no free slots")

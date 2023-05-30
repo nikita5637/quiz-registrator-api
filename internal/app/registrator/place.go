@@ -84,8 +84,8 @@ func convertModelPlaceToPBPlace(place model.Place) *registrator.Place {
 		Address:   place.Address,
 		Name:      place.Name,
 		ShortName: place.ShortName,
-		Longitude: place.Longitude,
 		Latitude:  place.Latitude,
+		Longitude: place.Longitude,
 		MenuLink:  place.MenuLink,
 	}
 }

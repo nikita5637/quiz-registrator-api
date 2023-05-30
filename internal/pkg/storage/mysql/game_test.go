@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -36,7 +37,7 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 						Int64: 2,
 						Valid: true,
 					},
-					LeagueID: int(model.LeagueQuizPlease),
+					LeagueID: int(pkgmodel.LeagueQuizPlease),
 					Type:     1,
 					Number:   "1",
 					Name: sql.NullString{
@@ -70,7 +71,7 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 			want: model.Game{
 				ID:          1,
 				ExternalID:  2,
-				LeagueID:    model.LeagueQuizPlease,
+				LeagueID:    pkgmodel.LeagueQuizPlease,
 				Type:        1,
 				Number:      "1",
 				Name:        "name",
@@ -111,7 +112,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 				game: model.Game{
 					ID:          1,
 					ExternalID:  2,
-					LeagueID:    model.LeagueQuizPlease,
+					LeagueID:    pkgmodel.LeagueQuizPlease,
 					Type:        1,
 					Number:      "1",
 					Name:        "name",
@@ -130,7 +131,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID: int(model.LeagueQuizPlease),
+				LeagueID: int(pkgmodel.LeagueQuizPlease),
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
@@ -154,7 +155,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			args: args{
 				game: model.Game{
 					ID:          1,
-					LeagueID:    model.LeagueQuizPlease,
+					LeagueID:    pkgmodel.LeagueQuizPlease,
 					Type:        1,
 					Number:      "1",
 					Name:        "name",
@@ -169,7 +170,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			},
 			want: Game{
 				ID:       1,
-				LeagueID: int(model.LeagueQuizPlease),
+				LeagueID: int(pkgmodel.LeagueQuizPlease),
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
@@ -194,7 +195,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 				game: model.Game{
 					ID:          1,
 					ExternalID:  2,
-					LeagueID:    model.LeagueQuizPlease,
+					LeagueID:    pkgmodel.LeagueQuizPlease,
 					Type:        1,
 					Number:      "1",
 					PlaceID:     4,
@@ -212,7 +213,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID:    int(model.LeagueQuizPlease),
+				LeagueID:    int(pkgmodel.LeagueQuizPlease),
 				Type:        1,
 				Number:      "1",
 				PlaceID:     4,
@@ -233,7 +234,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 				game: model.Game{
 					ID:          1,
 					ExternalID:  2,
-					LeagueID:    model.LeagueQuizPlease,
+					LeagueID:    pkgmodel.LeagueQuizPlease,
 					Type:        1,
 					Number:      "1",
 					Name:        "name",
@@ -251,7 +252,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID: int(model.LeagueQuizPlease),
+				LeagueID: int(pkgmodel.LeagueQuizPlease),
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
