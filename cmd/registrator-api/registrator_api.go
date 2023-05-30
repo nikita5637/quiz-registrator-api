@@ -17,6 +17,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/squiz"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
@@ -133,11 +134,18 @@ func main() {
 
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
+		certificateStorage := storage.NewCertificateStorage(txManager)
 		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
 		gameResultStorage := storage.NewGameResultStorage(txManager)
 		leagueStorage := storage.NewLeagueStorage(txManager)
 		placeStorage := storage.NewPlaceStorage(txManager)
 		userStorage := storage.NewUserStorage(txManager)
+
+		certificatesFacadeConfig := certificates.Config{
+			CertificateStorage: certificateStorage,
+			TxManager:          txManager,
+		}
+		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
 
 		gamePhotosFacadeConfig := gamephotos.Config{
 			GameStorage:       gameStorage,
@@ -167,11 +175,12 @@ func main() {
 
 			Croupier: croupier,
 
-			GamesFacade:      gamesFacade,
-			GamePhotosFacade: gamePhotosFacade,
-			LeaguesFacade:    leaguesFacade,
-			PlacesFacade:     placesFacade,
-			UsersFacade:      usersFacade,
+			CertificatesFacade: certificatesFacade,
+			GamesFacade:        gamesFacade,
+			GamePhotosFacade:   gamePhotosFacade,
+			LeaguesFacade:      leaguesFacade,
+			PlacesFacade:       placesFacade,
+			UsersFacade:        usersFacade,
 		}
 
 		reg := registrator.New(registratorConfig)
