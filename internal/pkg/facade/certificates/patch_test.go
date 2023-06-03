@@ -23,7 +23,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{}, sql.ErrNoRows)
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{}, sql.ErrNoRows)
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
@@ -47,7 +47,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{}, errors.New("some error"))
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{}, errors.New("some error"))
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
@@ -70,7 +70,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{
 			ID:    1,
 			Type:  1,
 			WonOn: 3,
@@ -123,7 +123,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{
 			ID:    1,
 			Type:  1,
 			WonOn: 10,
@@ -176,7 +176,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{
 			ID:    1,
 			Type:  1,
 			WonOn: 10,
@@ -225,7 +225,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&db.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&db.Certificate{
 			ID:    1,
 			Type:  1,
 			WonOn: 3,

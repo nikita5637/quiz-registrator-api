@@ -37,12 +37,12 @@ func (f *Facade) GetGamesWithPhotos(ctx context.Context, limit, offset uint32) (
 			return nil, fmt.Errorf("get games with photos error: %w", err)
 		}
 
-		gameResult, err := f.gameResultStorage.GetGameResultByFkGameID(ctx, game.ID)
+		gameResult, err := f.gameResultStorage.GetGameResultByFkGameID(ctx, int(game.ID))
 		if err != nil {
 			return nil, fmt.Errorf("get games with photos error: %w", err)
 		}
 
-		game.ResultPlace = gameResult.Place
+		game.ResultPlace = gameResult.ResultPlace
 
 		games = append(games, game)
 	}

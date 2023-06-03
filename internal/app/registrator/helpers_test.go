@@ -16,6 +16,7 @@ type fixture struct {
 	certificatesFacade *mocks.CertificatesFacade
 	gamesFacade        *mocks.GamesFacade
 	gamePhotosFacade   *mocks.GamePhotosFacade
+	gameResultsFacade  *mocks.GameResultsFacade
 	leaguesFacade      *mocks.LeaguesFacade
 	placesFacade       *mocks.PlacesFacade
 	usersFacade        *mocks.UsersFacade
@@ -30,6 +31,7 @@ func tearUp(t *testing.T) *fixture {
 		certificatesFacade: mocks.NewCertificatesFacade(t),
 		gamesFacade:        mocks.NewGamesFacade(t),
 		gamePhotosFacade:   mocks.NewGamePhotosFacade(t),
+		gameResultsFacade:  mocks.NewGameResultsFacade(t),
 		leaguesFacade:      mocks.NewLeaguesFacade(t),
 		placesFacade:       mocks.NewPlacesFacade(t),
 		usersFacade:        mocks.NewUsersFacade(t),
@@ -41,6 +43,7 @@ func tearUp(t *testing.T) *fixture {
 		certificatesFacade: fx.certificatesFacade,
 		gamesFacade:        fx.gamesFacade,
 		gamePhotosFacade:   fx.gamePhotosFacade,
+		gameResultsFacade:  fx.gameResultsFacade,
 		leaguesFacade:      fx.leaguesFacade,
 		placesFacade:       fx.placesFacade,
 		usersFacade:        fx.usersFacade,

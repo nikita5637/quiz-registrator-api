@@ -22,7 +22,7 @@ const (
 func (f *Facade) PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error) {
 	patchedCert := model.Certificate{}
 	err := f.db.RunTX(ctx, "PatchCertificate", func(ctx context.Context) error {
-		originalDBCertificate, err := f.certificateStorage.GetCertificateByID(ctx, certificate.ID)
+		originalDBCertificate, err := f.certificateStorage.GetCertificateByID(ctx, int(certificate.ID))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return fmt.Errorf("get original certificate error: %w", model.ErrCertificateNotFound)

@@ -11,17 +11,19 @@ var (
 
 // Games facade errors
 var (
-	ErrGameNoFreeSlots     = errors.New("game no free slots")
-	ErrGameNotFound        = errors.New("game not found")
-	ErrInvalidDate         = errors.New("invalid date")
-	ErrInvalidGameID       = errors.New("invalid game ID")
-	ErrInvalidPlayerDegree = errors.New("invalid player degree")
-	ErrInvalidGameNumber   = errors.New("invalid game number")
-	ErrInvalidGameType     = errors.New("invalid game type")
-	ErrInvalidLeagueID     = errors.New("invalid league ID")
-	ErrInvalidMaxPlayers   = errors.New("invalid max players")
-	ErrInvalidPlaceID      = errors.New("invalid place id")
-	ErrInvalidPrice        = errors.New("invalid price")
+	ErrGameNoFreeSlots         = errors.New("game no free slots")
+	ErrGameNotFound            = errors.New("game not found")
+	ErrGameResultAlreadyExists = errors.New("game result already exists")
+	ErrGameResultNotFound      = errors.New("game result not found")
+	ErrInvalidDate             = errors.New("invalid date")
+	ErrInvalidGameID           = errors.New("invalid game ID")
+	ErrInvalidPlayerDegree     = errors.New("invalid player degree")
+	ErrInvalidGameNumber       = errors.New("invalid game number")
+	ErrInvalidGameType         = errors.New("invalid game type")
+	ErrInvalidLeagueID         = errors.New("invalid league ID")
+	ErrInvalidMaxPlayers       = errors.New("invalid max players")
+	ErrInvalidPlaceID          = errors.New("invalid place id")
+	ErrInvalidPrice            = errors.New("invalid price")
 )
 
 // Leagues facade errors

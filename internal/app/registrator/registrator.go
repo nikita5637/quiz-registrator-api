@@ -2,6 +2,7 @@
 //go:generate mockery --case underscore --name CertificatesFacade --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
 //go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
+//go:generate mockery --case underscore --name GameResultsFacade --with-expecter
 //go:generate mockery --case underscore --name LeaguesFacade --with-expecter
 //go:generate mockery --case underscore --name PlacesFacade --with-expecter
 //go:generate mockery --case underscore --name UsersFacade --with-expecter
@@ -62,6 +63,13 @@ type GamePhotosFacade interface {
 	GetPhotosByGameID(ctx context.Context, gameID int32) ([]string, error)
 }
 
+// GameResultsFacade ...
+type GameResultsFacade interface {
+	CreateGameResult(ctx context.Context, gameResult model.GameResult) (model.GameResult, error)
+	ListGameResults(ctx context.Context) ([]model.GameResult, error)
+	PatchGameResult(ctx context.Context, gameResult model.GameResult, paths []string) (model.GameResult, error)
+}
+
 // LeaguesFacade ...
 type LeaguesFacade interface {
 	GetLeagueByID(ctx context.Context, leagueID int32) (model.League, error)
@@ -71,25 +79,6 @@ type LeaguesFacade interface {
 type PlacesFacade interface {
 	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
 	GetPlaceByNameAndAddress(ctx context.Context, name, address string) (model.Place, error)
-}
-
-// Registrator ...
-type Registrator struct {
-	bindAddr   string
-	grpcServer *grpc.Server
-
-	croupier Croupier
-
-	certificatesFacade CertificatesFacade
-	gamesFacade        GamesFacade
-	gamePhotosFacade   GamePhotosFacade
-	leaguesFacade      LeaguesFacade
-	placesFacade       PlacesFacade
-	usersFacade        UsersFacade
-
-	registratorpb.UnimplementedCroupierServiceServer
-	registratorpb.UnimplementedPhotographerServiceServer
-	registratorpb.UnimplementedRegistratorServiceServer
 }
 
 // UsersFacade ...
@@ -104,6 +93,26 @@ type UsersFacade interface {
 	UpdateUserState(ctx context.Context, userID int32, state model.UserState) error
 }
 
+// Registrator ...
+type Registrator struct {
+	bindAddr   string
+	grpcServer *grpc.Server
+
+	croupier Croupier
+
+	certificatesFacade CertificatesFacade
+	gamesFacade        GamesFacade
+	gamePhotosFacade   GamePhotosFacade
+	gameResultsFacade  GameResultsFacade
+	leaguesFacade      LeaguesFacade
+	placesFacade       PlacesFacade
+	usersFacade        UsersFacade
+
+	registratorpb.UnimplementedCroupierServiceServer
+	registratorpb.UnimplementedPhotographerServiceServer
+	registratorpb.UnimplementedRegistratorServiceServer
+}
+
 // Config ...
 type Config struct {
 	BindAddr string
@@ -113,6 +122,7 @@ type Config struct {
 	CertificatesFacade CertificatesFacade
 	GamesFacade        GamesFacade
 	GamePhotosFacade   GamePhotosFacade
+	GameResultsFacade  GameResultsFacade
 	LeaguesFacade      LeaguesFacade
 	PlacesFacade       PlacesFacade
 	UsersFacade        UsersFacade
@@ -128,6 +138,7 @@ func New(cfg Config) *Registrator {
 		certificatesFacade: cfg.CertificatesFacade,
 		gamesFacade:        cfg.GamesFacade,
 		gamePhotosFacade:   cfg.GamePhotosFacade,
+		gameResultsFacade:  cfg.GameResultsFacade,
 		leaguesFacade:      cfg.LeaguesFacade,
 		placesFacade:       cfg.PlacesFacade,
 		usersFacade:        cfg.UsersFacade,

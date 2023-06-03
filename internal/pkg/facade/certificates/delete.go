@@ -12,7 +12,7 @@ import (
 // DeleteCertificate ...
 func (f *Facade) DeleteCertificate(ctx context.Context, id int32) error {
 	err := f.db.RunTX(ctx, "DeleteCertificate", func(ctx context.Context) error {
-		dbCertificate, err := f.certificateStorage.GetCertificateByID(ctx, id)
+		dbCertificate, err := f.certificateStorage.GetCertificateByID(ctx, int(id))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return fmt.Errorf("get certificate by ID error: %w", model.ErrCertificateNotFound)
@@ -25,7 +25,7 @@ func (f *Facade) DeleteCertificate(ctx context.Context, id int32) error {
 			return fmt.Errorf("get certificate by ID error: %w", model.ErrCertificateNotFound)
 		}
 
-		return f.certificateStorage.DeleteCertificate(ctx, id)
+		return f.certificateStorage.DeleteCertificate(ctx, int(id))
 	})
 	if err != nil {
 		return fmt.Errorf("delete certificate error: %w", err)

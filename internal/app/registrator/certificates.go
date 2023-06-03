@@ -185,7 +185,7 @@ func validateCertificate(ctx context.Context, certificate *registrator.Certifica
 		return errInvalidJSONInfoValue
 	}
 
-	err := validation.Validate(certificate.GetType(), validation.Required, validation.Min(1), validation.Max(int32(pkgmodel.NumberOfCertificateTypes-1)))
+	err := validation.Validate(certificate.GetType(), validation.Required, validation.Min(int32(1)), validation.Max(int32(pkgmodel.NumberOfCertificateTypes-1)))
 	if err != nil {
 		return errInvalidCertificateType
 	}

@@ -29,7 +29,7 @@ func (f *Facade) CreateCertificate(ctx context.Context, certificate model.Certif
 			return fmt.Errorf("create certificate error: %w", err)
 		}
 
-		newDBCertificate.ID = int(id)
+		newDBCertificate.ID = id
 		createdModelCert = convertDBCertificateToModelCertificate(newDBCertificate)
 
 		return nil

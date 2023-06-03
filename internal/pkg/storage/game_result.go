@@ -8,12 +8,17 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GameResultStorage ...
 type GameResultStorage interface {
-	GetGameResultByFkGameID(ctx context.Context, fkGameID int32) (model.GameResult, error)
+	CreateGameResult(ctx context.Context, dbGameResult database.GameResult) (int, error)
+	GetGameResultByID(ctx context.Context, id int) (*database.GameResult, error)
+	GetGameResults(ctx context.Context) ([]database.GameResult, error)
+	GetGameResultByFkGameID(ctx context.Context, fkGameID int) (model.GameResult, error)
+	PatchGameResult(ctx context.Context, dbGameResult database.GameResult) error
 }
 
 // NewGameResultStorage ...

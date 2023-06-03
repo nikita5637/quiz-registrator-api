@@ -1,6 +1,7 @@
 package mysql
 
 import (
+	"database/sql"
 	"reflect"
 	"testing"
 
@@ -31,12 +32,20 @@ func Test_convertDBGameResultToModelGameResult(t *testing.T) {
 					ID:       1,
 					FkGameID: 2,
 					Place:    3,
+					Points: sql.NullString{
+						Valid:  true,
+						String: "{}",
+					},
 				},
 			},
 			want: model.GameResult{
-				ID:       1,
-				FkGameID: 2,
-				Place:    3,
+				ID:          1,
+				FkGameID:    2,
+				ResultPlace: 3,
+				RoundPoints: model.MaybeString{
+					Valid: true,
+					Value: "{}",
+				},
 			},
 		},
 	}

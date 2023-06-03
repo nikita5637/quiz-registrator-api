@@ -19,6 +19,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
@@ -155,6 +156,12 @@ func main() {
 		}
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
 
+		gameResultsFacadeConfig := gameresults.Config{
+			GameResultStorage: gameResultStorage,
+			TxManager:         txManager,
+		}
+		gameResultsFacade := gameresults.NewFacade(gameResultsFacadeConfig)
+
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
 		}
@@ -178,6 +185,7 @@ func main() {
 			CertificatesFacade: certificatesFacade,
 			GamesFacade:        gamesFacade,
 			GamePhotosFacade:   gamePhotosFacade,
+			GameResultsFacade:  gameResultsFacade,
 			LeaguesFacade:      leaguesFacade,
 			PlacesFacade:       placesFacade,
 			UsersFacade:        usersFacade,
