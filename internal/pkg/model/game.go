@@ -67,7 +67,7 @@ func ValidateGame(game Game) error {
 		return ErrInvalidGameType
 	}
 
-	if game.Type != GameTypeClosed {
+	if game.Type != pkgmodel.GameTypeClosed {
 		err = validation.Validate(game.Number, validation.Required)
 		if err != nil {
 			return ErrInvalidGameNumber
@@ -103,12 +103,12 @@ func validateGameType(value interface{}) error {
 		return errors.New("game type is not int32")
 	}
 
-	if gameType == GameTypeClassic ||
-		gameType == GameTypeThematic ||
-		gameType == GameTypeEnglish ||
-		gameType == GameTypeMoviesAndMusic ||
-		gameType == GameTypeClosed ||
-		gameType == GameTypeThematicMoviesAndMusic {
+	if gameType == pkgmodel.GameTypeClassic ||
+		gameType == pkgmodel.GameTypeThematic ||
+		gameType == pkgmodel.GameTypeEnglish ||
+		gameType == pkgmodel.GameTypeMoviesAndMusic ||
+		gameType == pkgmodel.GameTypeClosed ||
+		gameType == pkgmodel.GameTypeThematicMoviesAndMusic {
 		return nil
 	}
 

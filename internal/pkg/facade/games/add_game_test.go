@@ -54,7 +54,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			Type:     pkgmodel.GameTypeClassic,
 		})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -66,7 +66,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 		})
 		assert.Equal(t, int32(0), got)
@@ -79,7 +79,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 		})
@@ -93,7 +93,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     model.DateTime(time_utils.TimeNow()),
@@ -108,7 +108,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     model.DateTime(time_utils.TimeNow()),
@@ -126,7 +126,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
 			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -136,7 +136,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -154,7 +154,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
 			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -164,7 +164,7 @@ func TestFacade_AddGame(t *testing.T) {
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
 			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),

@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
 
@@ -15,8 +16,8 @@ import (
 
 var (
 	availibilityGameTypes = []int32{
-		model.GameTypeClassic,
-		model.GameTypeThematic,
+		pkgmodel.GameTypeClassic,
+		pkgmodel.GameTypeThematic,
 	}
 )
 
