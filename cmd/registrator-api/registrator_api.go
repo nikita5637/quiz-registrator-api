@@ -8,6 +8,7 @@ import (
 	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
+	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
@@ -148,6 +149,11 @@ func main() {
 		}
 		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
 
+		certificateManagerConfig := certificatemanager.Config{
+			CertificatesFacade: certificatesFacade,
+		}
+		certificateManager := certificatemanager.New(certificateManagerConfig)
+
 		gamePhotosFacadeConfig := gamephotos.Config{
 			GameStorage:       gameStorage,
 			GamePhotoStorage:  gamePhotoStorage,
@@ -182,7 +188,7 @@ func main() {
 
 			Croupier: croupier,
 
-			CertificatesFacade: certificatesFacade,
+			CertificateManager: certificateManager,
 			GamesFacade:        gamesFacade,
 			GamePhotosFacade:   gamePhotosFacade,
 			GameResultsFacade:  gameResultsFacade,

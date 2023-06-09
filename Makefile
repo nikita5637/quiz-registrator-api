@@ -59,9 +59,14 @@ gen-db: .install-xo
 .PHONY: generate
 generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
-	--go_out=./pkg/pb/registrator --go_opt=paths=source_relative \
-	--go-grpc_out=./pkg/pb/registrator --go-grpc_opt=paths=source_relative \
-	--proto_path=./api/registrator ./api/registrator/registrator.proto
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/certificate_manager/certificate_manager.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/registrator/registrator.proto
 
 	$(GOIMPORTS_BIN) -w ./
 

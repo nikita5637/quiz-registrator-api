@@ -1,5 +1,4 @@
 //go:generate mockery --case underscore --name Croupier --with-expecter
-//go:generate mockery --case underscore --name CertificatesFacade --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
 //go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
 //go:generate mockery --case underscore --name GameResultsFacade --with-expecter
@@ -18,6 +17,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -27,14 +27,6 @@ import (
 type Croupier interface {
 	GetIsLotteryActive(ctx context.Context, game model.Game) bool
 	RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error)
-}
-
-// CertificatesFacade ...
-type CertificatesFacade interface {
-	CreateCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error)
-	DeleteCertificate(ctx context.Context, id int32) error
-	ListCertificates(ctx context.Context) ([]model.Certificate, error)
-	PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error)
 }
 
 // GamesFacade ...
@@ -100,7 +92,7 @@ type Registrator struct {
 
 	croupier Croupier
 
-	certificatesFacade CertificatesFacade
+	certificateManager certificatemanagerpb.ServiceServer
 	gamesFacade        GamesFacade
 	gamePhotosFacade   GamePhotosFacade
 	gameResultsFacade  GameResultsFacade
@@ -119,7 +111,7 @@ type Config struct {
 
 	Croupier Croupier
 
-	CertificatesFacade CertificatesFacade
+	CertificateManager certificatemanagerpb.ServiceServer
 	GamesFacade        GamesFacade
 	GamePhotosFacade   GamePhotosFacade
 	GameResultsFacade  GameResultsFacade
@@ -135,7 +127,7 @@ func New(cfg Config) *Registrator {
 
 		croupier: cfg.Croupier,
 
-		certificatesFacade: cfg.CertificatesFacade,
+		certificateManager: cfg.CertificateManager,
 		gamesFacade:        cfg.GamesFacade,
 		gamePhotosFacade:   cfg.GamePhotosFacade,
 		gameResultsFacade:  cfg.GameResultsFacade,
@@ -148,12 +140,13 @@ func New(cfg Config) *Registrator {
 	opts = append(opts, grpc.ChainUnaryInterceptor(
 		grpc_recovery.UnaryServerInterceptor(),
 		logInterceptor,
-		grpc_auth.UnaryServerInterceptor(nil),
+		grpc_auth.UnaryServerInterceptor(registrator.AuthFunc),
 		userStateInterceptor,
 	))
 	s := grpc.NewServer(opts...)
 	reflection.Register(s)
 
+	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManager)
 	registratorpb.RegisterCroupierServiceServer(s, registrator)
 	registratorpb.RegisterPhotographerServiceServer(s, registrator)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)

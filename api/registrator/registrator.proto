@@ -34,12 +34,6 @@ message RegisterForLotteryResponse {
 	int32 number = 1;
 }
 
-enum CertificateType {
-	CERTIFICATE_TYPE_INVALID = 0;
-	CERTIFICATE_TYPE_FREE_PASS = 1;
-	CERTIFICATE_TYPE_BAR_BILL_PAYMENT = 2;
-}
-
 enum GameType {
 	GAME_TYPE_INVALID = 0;
 	GAME_TYPE_CLASSIC = 1;
@@ -100,16 +94,6 @@ message AddGamePhotosRequest {
 message AddGamePhotosResponse {
 }
 
-message Certificate {
-	int32 id = 1;
-	CertificateType type = 2;
-	// game id ...
-	int32 won_on = 3;
-	// game id ...
-	int32 spent_on = 4;
-	string info = 5;
-}
-
 message GameResult {
 	int32 id = 1;
 	int32 game_id = 2;
@@ -154,10 +138,6 @@ message Place {
 }
 
 service RegistratorService {
-	// CreateCertificate adds new certificate
-	rpc CreateCertificate(CreateCertificateRequest) returns (Certificate) {
-	}
-
 	// CreateGameResult adds new game result
 	rpc CreateGameResult(CreateGameResultRequest) returns (GameResult) {
 	}
@@ -174,16 +154,8 @@ service RegistratorService {
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
 	}
 
-	// DeleteCertificate deletes new certificate
-	rpc DeleteCertificate(DeleteCertificateRequest) returns (google.protobuf.Empty) {
-	}
-
 	// DeleteGame deletes a game by game ID
 	rpc DeleteGame(DeleteGameRequest) returns (DeleteGameResponse) {
-	}
-
-	// Returns certificates
-	rpc ListCertificates(google.protobuf.Empty) returns (ListCertificatesResponse) {
 	}
 
 	// Returns game results
@@ -250,10 +222,6 @@ service RegistratorService {
 	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (UnregisterPlayerResponse) {
 	}
 
-	// Patches certificate
-	rpc PatchCertificate(PatchCertificateRequest) returns (Certificate) {
-	}
-
 	// Patches game result
 	rpc PatchGameResult(PatchGameResultRequest) returns (GameResult) {
 	}
@@ -277,10 +245,6 @@ service RegistratorService {
 	// UpdatePayment updates payment
 	rpc UpdatePayment(UpdatePaymentRequest) returns (UpdatePaymentResponse) {
 	}
-}
-
-message CreateCertificateRequest {
-	Certificate certificate = 1;
 }
 
 message CreateGameResultRequest {
@@ -343,19 +307,11 @@ message CreateUserResponse {
 	int32 id = 1;
 }
   
-message DeleteCertificateRequest {
-	int32 id = 1;
-}
-
 message DeleteGameRequest {
 	int32 id = 1;
 }
   
 message DeleteGameResponse {
-}
-
-message ListCertificatesResponse {
-	repeated Certificate certificates = 1;
 }
 
 message ListGameResultsResponse {
@@ -543,12 +499,6 @@ message UpdatePaymentRequest {
 }
 
 message UpdatePaymentResponse {
-}
-
-message PatchCertificateRequest {
-	Certificate certificate = 1;
-
-	google.protobuf.FieldMask update_mask = 2;
 }
 
 message PatchGameResultRequest {

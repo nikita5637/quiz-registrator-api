@@ -1,6 +1,14 @@
 package model
 
-import "errors"
+import (
+	"context"
+	"errors"
+
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
+)
 
 // Certificate facade errors
 var (
@@ -62,3 +70,21 @@ var (
 	// ErrUserStateValidate ...
 	ErrUserStateValidate = errors.New("invalid user state")
 )
+
+// GetStatus ...
+func GetStatus(ctx context.Context, code codes.Code, err error, reason string, lexeme i18n.Lexeme) *status.Status {
+	st := status.New(code, err.Error())
+	ei := &errdetails.ErrorInfo{
+		Reason: reason,
+	}
+	lm := &errdetails.LocalizedMessage{
+		Locale:  i18n.GetLangFromContext(ctx),
+		Message: i18n.GetTranslator(lexeme)(ctx),
+	}
+	st, err = st.WithDetails(ei, lm)
+	if err != nil {
+		panic(err)
+	}
+
+	return st
+}

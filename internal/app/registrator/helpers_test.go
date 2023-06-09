@@ -13,13 +13,12 @@ type fixture struct {
 
 	croupier *mocks.Croupier
 
-	certificatesFacade *mocks.CertificatesFacade
-	gamesFacade        *mocks.GamesFacade
-	gamePhotosFacade   *mocks.GamePhotosFacade
-	gameResultsFacade  *mocks.GameResultsFacade
-	leaguesFacade      *mocks.LeaguesFacade
-	placesFacade       *mocks.PlacesFacade
-	usersFacade        *mocks.UsersFacade
+	gamesFacade       *mocks.GamesFacade
+	gamePhotosFacade  *mocks.GamePhotosFacade
+	gameResultsFacade *mocks.GameResultsFacade
+	leaguesFacade     *mocks.LeaguesFacade
+	placesFacade      *mocks.PlacesFacade
+	usersFacade       *mocks.UsersFacade
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -28,25 +27,23 @@ func tearUp(t *testing.T) *fixture {
 
 		croupier: mocks.NewCroupier(t),
 
-		certificatesFacade: mocks.NewCertificatesFacade(t),
-		gamesFacade:        mocks.NewGamesFacade(t),
-		gamePhotosFacade:   mocks.NewGamePhotosFacade(t),
-		gameResultsFacade:  mocks.NewGameResultsFacade(t),
-		leaguesFacade:      mocks.NewLeaguesFacade(t),
-		placesFacade:       mocks.NewPlacesFacade(t),
-		usersFacade:        mocks.NewUsersFacade(t),
+		gamesFacade:       mocks.NewGamesFacade(t),
+		gamePhotosFacade:  mocks.NewGamePhotosFacade(t),
+		gameResultsFacade: mocks.NewGameResultsFacade(t),
+		leaguesFacade:     mocks.NewLeaguesFacade(t),
+		placesFacade:      mocks.NewPlacesFacade(t),
+		usersFacade:       mocks.NewUsersFacade(t),
 	}
 
 	fx.registrator = &Registrator{
 		croupier: fx.croupier,
 
-		certificatesFacade: fx.certificatesFacade,
-		gamesFacade:        fx.gamesFacade,
-		gamePhotosFacade:   fx.gamePhotosFacade,
-		gameResultsFacade:  fx.gameResultsFacade,
-		leaguesFacade:      fx.leaguesFacade,
-		placesFacade:       fx.placesFacade,
-		usersFacade:        fx.usersFacade,
+		gamesFacade:       fx.gamesFacade,
+		gamePhotosFacade:  fx.gamePhotosFacade,
+		gameResultsFacade: fx.gameResultsFacade,
+		leaguesFacade:     fx.leaguesFacade,
+		placesFacade:      fx.placesFacade,
+		usersFacade:       fx.usersFacade,
 	}
 
 	t.Cleanup(func() {})

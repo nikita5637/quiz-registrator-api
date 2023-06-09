@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// AuthFuncOverride ...
-func (r *Registrator) AuthFuncOverride(ctx context.Context, fullMethodName string) (context.Context, error) {
+// AuthFunc ...
+func (r *Registrator) AuthFunc(ctx context.Context) (context.Context, error) {
 	telegramClientID := ""
 	md, ok := metadata.FromIncomingContext(ctx)
 	if ok {

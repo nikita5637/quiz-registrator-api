@@ -11,7 +11,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	db "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -276,13 +276,13 @@ func TestFacade_PatchCertificate(t *testing.T) {
 }
 
 func TestFacade_checkPathNames(t *testing.T) {
-	field, _ := reflect.ValueOf(registrator.Certificate{}).Type().FieldByName("Type")
+	field, _ := reflect.ValueOf(certificatemanagerpb.Certificate{}).Type().FieldByName("Type")
 	assert.Equal(t, fieldNameType, strings.Split(field.Tag.Get("json"), ",")[0])
-	field, _ = reflect.ValueOf(registrator.Certificate{}).Type().FieldByName("WonOn")
+	field, _ = reflect.ValueOf(certificatemanagerpb.Certificate{}).Type().FieldByName("WonOn")
 	assert.Equal(t, fieldNameWonOn, strings.Split(field.Tag.Get("json"), ",")[0])
-	field, _ = reflect.ValueOf(registrator.Certificate{}).Type().FieldByName("SpentOn")
+	field, _ = reflect.ValueOf(certificatemanagerpb.Certificate{}).Type().FieldByName("SpentOn")
 	assert.Equal(t, fieldNameSpentOn, strings.Split(field.Tag.Get("json"), ",")[0])
-	field, _ = reflect.ValueOf(registrator.Certificate{}).Type().FieldByName("Info")
+	field, _ = reflect.ValueOf(certificatemanagerpb.Certificate{}).Type().FieldByName("Info")
 	assert.Equal(t, fieldNameInfo, strings.Split(field.Tag.Get("json"), ",")[0])
-	assert.Equal(t, 8, reflect.ValueOf(registrator.Certificate{}).Type().NumField())
+	assert.Equal(t, 8, reflect.ValueOf(certificatemanagerpb.Certificate{}).Type().NumField())
 }

@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package certificate_manager;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager;certificatemanager";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+
+enum CertificateType {
+	CERTIFICATE_TYPE_INVALID = 0;
+	CERTIFICATE_TYPE_FREE_PASS = 1;
+	CERTIFICATE_TYPE_BAR_BILL_PAYMENT = 2;
+}
+
+message Certificate {
+	int32 id = 1;
+	CertificateType type = 2;
+	// game id ...
+	int32 won_on = 3;
+	// game id ...
+	int32 spent_on = 4;
+	string info = 5;
+}
+
+service Service {
+	// CreateCertificate adds new certificate
+	rpc CreateCertificate(CreateCertificateRequest) returns (Certificate) {
+	}
+
+	// DeleteCertificate deletes new certificate
+	rpc DeleteCertificate(DeleteCertificateRequest) returns (google.protobuf.Empty) {
+	}
+
+	// Returns certificates
+	rpc ListCertificates(google.protobuf.Empty) returns (ListCertificatesResponse) {
+	}
+
+	// Patches certificate
+	rpc PatchCertificate(PatchCertificateRequest) returns (Certificate) {
+	}
+}
+
+message CreateCertificateRequest {
+	Certificate certificate = 1;
+}
+
+message DeleteCertificateRequest {
+	int32 id = 1;
+}
+
+message ListCertificatesResponse {
+	repeated Certificate certificates = 1;
+}
+
+message PatchCertificateRequest {
+	Certificate certificate = 1;
+
+	google.protobuf.FieldMask update_mask = 2;
+}
