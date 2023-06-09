@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
+	gameresultmanager "github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
@@ -168,6 +169,11 @@ func main() {
 		}
 		gameResultsFacade := gameresults.NewFacade(gameResultsFacadeConfig)
 
+		gameResultManagerConfig := gameresultmanager.Config{
+			GameResultsFacade: gameResultsFacade,
+		}
+		gameResultManager := gameresultmanager.New(gameResultManagerConfig)
+
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
 		}
@@ -189,12 +195,13 @@ func main() {
 			Croupier: croupier,
 
 			CertificateManager: certificateManager,
-			GamesFacade:        gamesFacade,
-			GamePhotosFacade:   gamePhotosFacade,
-			GameResultsFacade:  gameResultsFacade,
-			LeaguesFacade:      leaguesFacade,
-			PlacesFacade:       placesFacade,
-			UsersFacade:        usersFacade,
+			GameResultManager:  gameResultManager,
+
+			GamesFacade:      gamesFacade,
+			GamePhotosFacade: gamePhotosFacade,
+			LeaguesFacade:    leaguesFacade,
+			PlacesFacade:     placesFacade,
+			UsersFacade:      usersFacade,
 		}
 
 		reg := registrator.New(registratorConfig)

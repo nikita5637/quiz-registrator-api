@@ -10,7 +10,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -324,11 +324,11 @@ func TestFacade_PatchGameResult(t *testing.T) {
 }
 
 func TestFacade_checkPathNames(t *testing.T) {
-	field, _ := reflect.ValueOf(registrator.GameResult{}).Type().FieldByName("GameId")
+	field, _ := reflect.ValueOf(gameresultmanagerpb.GameResult{}).Type().FieldByName("GameId")
 	assert.Equal(t, fieldNameGameID, strings.Split(field.Tag.Get("json"), ",")[0])
-	field, _ = reflect.ValueOf(registrator.GameResult{}).Type().FieldByName("ResultPlace")
+	field, _ = reflect.ValueOf(gameresultmanagerpb.GameResult{}).Type().FieldByName("ResultPlace")
 	assert.Equal(t, fieldNameResultPlace, strings.Split(field.Tag.Get("json"), ",")[0])
-	field, _ = reflect.ValueOf(registrator.GameResult{}).Type().FieldByName("RoundPoints")
+	field, _ = reflect.ValueOf(gameresultmanagerpb.GameResult{}).Type().FieldByName("RoundPoints")
 	assert.Equal(t, fieldNameRoundPoints, strings.Split(field.Tag.Get("json"), ",")[0])
-	assert.Equal(t, 7, reflect.ValueOf(registrator.GameResult{}).Type().NumField())
+	assert.Equal(t, 7, reflect.ValueOf(gameresultmanagerpb.GameResult{}).Type().NumField())
 }

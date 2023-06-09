@@ -12,7 +12,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -314,8 +313,6 @@ var PhotographerService_ServiceDesc = grpc.ServiceDesc{
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type RegistratorServiceClient interface {
-	// CreateGameResult adds new game result
-	CreateGameResult(ctx context.Context, in *CreateGameResultRequest, opts ...grpc.CallOption) (*GameResult, error)
 	// AddGame creates a new game
 	AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error)
 	// AddGames inserts a new games. Used by quiz-fetcher
@@ -324,8 +321,6 @@ type RegistratorServiceClient interface {
 	CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
 	DeleteGame(ctx context.Context, in *DeleteGameRequest, opts ...grpc.CallOption) (*DeleteGameResponse, error)
-	// Returns game results
-	ListGameResults(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListGameResultsResponse, error)
 	// Returns game or Not Found
 	GetGameByID(ctx context.Context, in *GetGameByIDRequest, opts ...grpc.CallOption) (*GetGameByIDResponse, error)
 	// GetGames returns games
@@ -356,8 +351,6 @@ type RegistratorServiceClient interface {
 	UnregisterGame(ctx context.Context, in *UnregisterGameRequest, opts ...grpc.CallOption) (*UnregisterGameResponse, error)
 	// UnregisterPlayer unregisters player
 	UnregisterPlayer(ctx context.Context, in *UnregisterPlayerRequest, opts ...grpc.CallOption) (*UnregisterPlayerResponse, error)
-	// Patches game result
-	PatchGameResult(ctx context.Context, in *PatchGameResultRequest, opts ...grpc.CallOption) (*GameResult, error)
 	// UpdateUserEmail updates a user email
 	UpdateUserEmail(ctx context.Context, in *UpdateUserEmailRequest, opts ...grpc.CallOption) (*UpdateUserEmailResponse, error)
 	// UpdateUserName updates a user's name
@@ -376,15 +369,6 @@ type registratorServiceClient struct {
 
 func NewRegistratorServiceClient(cc grpc.ClientConnInterface) RegistratorServiceClient {
 	return &registratorServiceClient{cc}
-}
-
-func (c *registratorServiceClient) CreateGameResult(ctx context.Context, in *CreateGameResultRequest, opts ...grpc.CallOption) (*GameResult, error) {
-	out := new(GameResult)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/CreateGameResult", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error) {
@@ -417,15 +401,6 @@ func (c *registratorServiceClient) CreateUser(ctx context.Context, in *CreateUse
 func (c *registratorServiceClient) DeleteGame(ctx context.Context, in *DeleteGameRequest, opts ...grpc.CallOption) (*DeleteGameResponse, error) {
 	out := new(DeleteGameResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/DeleteGame", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *registratorServiceClient) ListGameResults(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListGameResultsResponse, error) {
-	out := new(ListGameResultsResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/ListGameResults", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -567,15 +542,6 @@ func (c *registratorServiceClient) UnregisterPlayer(ctx context.Context, in *Unr
 	return out, nil
 }
 
-func (c *registratorServiceClient) PatchGameResult(ctx context.Context, in *PatchGameResultRequest, opts ...grpc.CallOption) (*GameResult, error) {
-	out := new(GameResult)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/PatchGameResult", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *registratorServiceClient) UpdateUserEmail(ctx context.Context, in *UpdateUserEmailRequest, opts ...grpc.CallOption) (*UpdateUserEmailResponse, error) {
 	out := new(UpdateUserEmailResponse)
 	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserEmail", in, out, opts...)
@@ -625,8 +591,6 @@ func (c *registratorServiceClient) UpdatePayment(ctx context.Context, in *Update
 // All implementations must embed UnimplementedRegistratorServiceServer
 // for forward compatibility
 type RegistratorServiceServer interface {
-	// CreateGameResult adds new game result
-	CreateGameResult(context.Context, *CreateGameResultRequest) (*GameResult, error)
 	// AddGame creates a new game
 	AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error)
 	// AddGames inserts a new games. Used by quiz-fetcher
@@ -635,8 +599,6 @@ type RegistratorServiceServer interface {
 	CreateUser(context.Context, *CreateUserRequest) (*CreateUserResponse, error)
 	// DeleteGame deletes a game by game ID
 	DeleteGame(context.Context, *DeleteGameRequest) (*DeleteGameResponse, error)
-	// Returns game results
-	ListGameResults(context.Context, *emptypb.Empty) (*ListGameResultsResponse, error)
 	// Returns game or Not Found
 	GetGameByID(context.Context, *GetGameByIDRequest) (*GetGameByIDResponse, error)
 	// GetGames returns games
@@ -667,8 +629,6 @@ type RegistratorServiceServer interface {
 	UnregisterGame(context.Context, *UnregisterGameRequest) (*UnregisterGameResponse, error)
 	// UnregisterPlayer unregisters player
 	UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*UnregisterPlayerResponse, error)
-	// Patches game result
-	PatchGameResult(context.Context, *PatchGameResultRequest) (*GameResult, error)
 	// UpdateUserEmail updates a user email
 	UpdateUserEmail(context.Context, *UpdateUserEmailRequest) (*UpdateUserEmailResponse, error)
 	// UpdateUserName updates a user's name
@@ -686,9 +646,6 @@ type RegistratorServiceServer interface {
 type UnimplementedRegistratorServiceServer struct {
 }
 
-func (UnimplementedRegistratorServiceServer) CreateGameResult(context.Context, *CreateGameResultRequest) (*GameResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateGameResult not implemented")
-}
 func (UnimplementedRegistratorServiceServer) AddGame(context.Context, *AddGameRequest) (*AddGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGame not implemented")
 }
@@ -700,9 +657,6 @@ func (UnimplementedRegistratorServiceServer) CreateUser(context.Context, *Create
 }
 func (UnimplementedRegistratorServiceServer) DeleteGame(context.Context, *DeleteGameRequest) (*DeleteGameResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteGame not implemented")
-}
-func (UnimplementedRegistratorServiceServer) ListGameResults(context.Context, *emptypb.Empty) (*ListGameResultsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListGameResults not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetGameByID(context.Context, *GetGameByIDRequest) (*GetGameByIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGameByID not implemented")
@@ -749,9 +703,6 @@ func (UnimplementedRegistratorServiceServer) UnregisterGame(context.Context, *Un
 func (UnimplementedRegistratorServiceServer) UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*UnregisterPlayerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnregisterPlayer not implemented")
 }
-func (UnimplementedRegistratorServiceServer) PatchGameResult(context.Context, *PatchGameResultRequest) (*GameResult, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PatchGameResult not implemented")
-}
 func (UnimplementedRegistratorServiceServer) UpdateUserEmail(context.Context, *UpdateUserEmailRequest) (*UpdateUserEmailResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateUserEmail not implemented")
 }
@@ -778,24 +729,6 @@ type UnsafeRegistratorServiceServer interface {
 
 func RegisterRegistratorServiceServer(s grpc.ServiceRegistrar, srv RegistratorServiceServer) {
 	s.RegisterService(&RegistratorService_ServiceDesc, srv)
-}
-
-func _RegistratorService_CreateGameResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateGameResultRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegistratorServiceServer).CreateGameResult(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.RegistratorService/CreateGameResult",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistratorServiceServer).CreateGameResult(ctx, req.(*CreateGameResultRequest))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _RegistratorService_AddGame_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -866,24 +799,6 @@ func _RegistratorService_DeleteGame_Handler(srv interface{}, ctx context.Context
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).DeleteGame(ctx, req.(*DeleteGameRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RegistratorService_ListGameResults_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegistratorServiceServer).ListGameResults(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.RegistratorService/ListGameResults",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistratorServiceServer).ListGameResults(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1158,24 +1073,6 @@ func _RegistratorService_UnregisterPlayer_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
-func _RegistratorService_PatchGameResult_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PatchGameResultRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegistratorServiceServer).PatchGameResult(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.RegistratorService/PatchGameResult",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistratorServiceServer).PatchGameResult(ctx, req.(*PatchGameResultRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _RegistratorService_UpdateUserEmail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(UpdateUserEmailRequest)
 	if err := dec(in); err != nil {
@@ -1274,10 +1171,6 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*RegistratorServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "CreateGameResult",
-			Handler:    _RegistratorService_CreateGameResult_Handler,
-		},
-		{
 			MethodName: "AddGame",
 			Handler:    _RegistratorService_AddGame_Handler,
 		},
@@ -1292,10 +1185,6 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteGame",
 			Handler:    _RegistratorService_DeleteGame_Handler,
-		},
-		{
-			MethodName: "ListGameResults",
-			Handler:    _RegistratorService_ListGameResults_Handler,
 		},
 		{
 			MethodName: "GetGameByID",
@@ -1356,10 +1245,6 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnregisterPlayer",
 			Handler:    _RegistratorService_UnregisterPlayer_Handler,
-		},
-		{
-			MethodName: "PatchGameResult",
-			Handler:    _RegistratorService_PatchGameResult_Handler,
 		},
 		{
 			MethodName: "UpdateUserEmail",
