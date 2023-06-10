@@ -16,6 +16,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
@@ -85,6 +86,7 @@ type Registrator struct {
 
 	croupier Croupier
 
+	adminService       adminpb.ServiceServer
 	certificateManager certificatemanagerpb.ServiceServer
 	gameResultManager  gameresultmanagerpb.ServiceServer
 
@@ -105,6 +107,7 @@ type Config struct {
 
 	Croupier Croupier
 
+	AdminService       adminpb.ServiceServer
 	CertificateManager certificatemanagerpb.ServiceServer
 	GameResultManager  gameresultmanagerpb.ServiceServer
 
@@ -122,6 +125,7 @@ func New(cfg Config) *Registrator {
 
 		croupier: cfg.Croupier,
 
+		adminService:       cfg.AdminService,
 		certificateManager: cfg.CertificateManager,
 		gameResultManager:  cfg.GameResultManager,
 
@@ -142,6 +146,7 @@ func New(cfg Config) *Registrator {
 	s := grpc.NewServer(opts...)
 	reflection.Register(s)
 
+	adminpb.RegisterServiceServer(s, registrator.adminService)
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManager)
 	registratorpb.RegisterCroupierServiceServer(s, registrator)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManager)

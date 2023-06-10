@@ -17,10 +17,6 @@ var (
 		Key:      "user_already_exists",
 		FallBack: "User already exists",
 	}
-	userNotFoundLexeme = i18n.Lexeme{
-		Key:      "user_not_found",
-		FallBack: "User not found",
-	}
 	errEmailValidateLexeme = i18n.Lexeme{
 		Key:      "err_email_validation",
 		FallBack: "Invalid email format",
@@ -100,7 +96,7 @@ func (r *Registrator) GetUserByID(ctx context.Context, req *registrator.GetUserB
 
 		if errors.Is(err, model.ErrUserNotFound) {
 			reason := fmt.Sprintf("user with id %d not found", req.GetId())
-			st = getStatus(ctx, codes.NotFound, err, reason, userNotFoundLexeme)
+			st = getStatus(ctx, codes.NotFound, err, reason, i18n.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -126,7 +122,7 @@ func (r *Registrator) GetUserByTelegramID(ctx context.Context, req *registrator.
 
 		if errors.Is(err, model.ErrUserNotFound) {
 			reason := fmt.Sprintf("user with talegram id %d not found", req.GetTelegramId())
-			st = getStatus(ctx, codes.NotFound, err, reason, userNotFoundLexeme)
+			st = getStatus(ctx, codes.NotFound, err, reason, i18n.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -234,5 +230,5 @@ func (r *Registrator) UpdateUserState(ctx context.Context, req *registrator.Upda
 
 func getUserNotFoundStatus(ctx context.Context, err error, userID int32) *status.Status {
 	reason := fmt.Sprintf("user with id %d not found", userID)
-	return getStatus(ctx, codes.NotFound, err, reason, userNotFoundLexeme)
+	return getStatus(ctx, codes.NotFound, err, reason, i18n.UserNotFoundLexeme)
 }

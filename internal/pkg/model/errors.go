@@ -71,6 +71,14 @@ var (
 	ErrUserStateValidate = errors.New("invalid user state")
 )
 
+// User roles facade errors
+var (
+	// ErrUserRoleAlreadyExists ...
+	ErrUserRoleAlreadyExists = errors.New("user role already exists")
+	// ErrUserRoleNotFound ...
+	ErrUserRoleNotFound = errors.New("user role not found")
+)
+
 // GetStatus ...
 func GetStatus(ctx context.Context, code codes.Code, err error, reason string, lexeme i18n.Lexeme) *status.Status {
 	st := status.New(code, err.Error())

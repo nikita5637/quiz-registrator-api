@@ -13,4 +13,9 @@ var (
 		Key:      "game_not_found",
 		FallBack: "Game not found",
 	}
+	// UserNotFoundLexeme ...
+	UserNotFoundLexeme = Lexeme{
+		Key:      "user_not_found",
+		FallBack: "User not found",
+	}
 )

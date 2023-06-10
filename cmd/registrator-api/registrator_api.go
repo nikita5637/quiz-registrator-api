@@ -8,6 +8,7 @@ import (
 	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
+	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/admin_service"
 	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
 	gameresultmanager "github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
@@ -25,6 +26,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
@@ -143,12 +145,24 @@ func main() {
 		leagueStorage := storage.NewLeagueStorage(txManager)
 		placeStorage := storage.NewPlaceStorage(txManager)
 		userStorage := storage.NewUserStorage(txManager)
+		userRoleStorage := storage.NewUserRoleStorage(txManager)
 
 		certificatesFacadeConfig := certificates.Config{
 			CertificateStorage: certificateStorage,
 			TxManager:          txManager,
 		}
 		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
+
+		userRolesFacadeConfig := userroles.Config{
+			TxManager:       txManager,
+			UserRoleStorage: userRoleStorage,
+		}
+		userRolesFacade := userroles.New(userRolesFacadeConfig)
+
+		adminServiceConfig := adminservice.Config{
+			UserRolesFacade: userRolesFacade,
+		}
+		adminService := adminservice.New(adminServiceConfig)
 
 		certificateManagerConfig := certificatemanager.Config{
 			CertificatesFacade: certificatesFacade,
@@ -194,6 +208,7 @@ func main() {
 
 			Croupier: croupier,
 
+			AdminService:       adminService,
 			CertificateManager: certificateManager,
 			GameResultManager:  gameResultManager,
 

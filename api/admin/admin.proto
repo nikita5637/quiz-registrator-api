@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package admin;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin;admin";
+
+import "google/protobuf/empty.proto";
+
+enum Role {
+	ROLE_INVALID = 0;
+	ROLE_ADMIN = 1;
+	ROLE_MANAGEMENT = 2;
+	ROLE_USER = 3;
+} 
+
+message UserRole {
+	int32 id = 1;
+	int32 user_id = 2;
+	Role role = 3; 
+}
+
+service Service {
+	// CreateUserRole creates role for user
+	rpc CreateUserRole(CreateUserRoleRequest) returns (UserRole) {
+	}
+
+	// DeleteUserRole deletes user role
+	rpc DeleteUserRole(DeleteUserRoleRequest) returns (google.protobuf.Empty) {
+	}
+
+	// GetUserRoles returns user roles by user ID
+	rpc GetUserRolesByUserID(GetUserRolesByUserIDRequest) returns (GetUserRolesByUserIDResponse) {
+	}
+
+	// ListUserRoles deletes user role
+	rpc ListUserRoles(google.protobuf.Empty) returns (ListUserRolesResponse) {
+	}
+}
+
+message CreateUserRoleRequest {
+	UserRole user_role = 1;
+}
+
+message DeleteUserRoleRequest {
+	int32 id = 1;
+}
+
+message GetUserRolesByUserIDRequest {
+	int32 user_id = 1;
+}
+
+message GetUserRolesByUserIDResponse {
+	repeated UserRole user_roles = 1;
+}
+
+message ListUserRolesResponse {
+	repeated UserRole user_roles = 1;
+}

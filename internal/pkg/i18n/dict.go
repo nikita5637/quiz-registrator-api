@@ -32,6 +32,7 @@ var dictionary = map[string]map[string]string{
 		"invalid_max_players":                         "Некорректное максимальное число игроков",
 		"invalid_place_id":                            "Некорректное место проведения",
 		"invalid_price":                               "Некорректная цена",
+		"invalid_role":                                "Некорректная роль",
 		"league_not_found":                            "Лига не найдена",
 		"lottery_not_available":                       "Лотерея не доступна",
 		"lottery_not_implemented":                     "Лотерея не реализована для этой лиги",
@@ -42,6 +43,8 @@ var dictionary = map[string]map[string]string{
 		"unauthenticated_request":                     "Неавторизованный запрос",
 		"user_not_found":                              "Пользователь не найден",
 		"user_already_exists":                         "Пользователь уже существует",
+		"user_role_already_exists":                    "У пользователя уже есть данная роль",
+		"user_role_not_found":                         "Роль пользователя на найдена",
 		"won_on_game_not_found":                       "Игра, на которой выиграли сертификат, не найдена",
 
 		// errors

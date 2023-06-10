@@ -61,6 +61,11 @@ generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/admin/admin.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/certificate_manager/certificate_manager.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
