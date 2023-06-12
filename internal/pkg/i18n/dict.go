@@ -38,6 +38,7 @@ var dictionary = map[string]map[string]string{
 		"lottery_not_implemented":                     "Лотерея не реализована для этой лиги",
 		"lottery_permission_denied":                   "Доступ к регистрации в лотерее запрещён",
 		"no_free_slots":                               "Нет мест",
+		"permission_denied":                           "Доступ запрещен",
 		"place_not_found":                             "Место не найдено",
 		"spent_on_game_not_found":                     "Игра, на которой потратили сертификат, не найдена",
 		"unauthenticated_request":                     "Неавторизованный запрос",
@@ -46,6 +47,7 @@ var dictionary = map[string]map[string]string{
 		"user_role_already_exists":                    "У пользователя уже есть данная роль",
 		"user_role_not_found":                         "Роль пользователя на найдена",
 		"won_on_game_not_found":                       "Игра, на которой выиграли сертификат, не найдена",
+		"you_are_banned":                              "Вы заблокированы",
 
 		// errors
 		"err_email_validation":         "Некорректный формат email",

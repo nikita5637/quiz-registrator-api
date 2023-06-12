@@ -11,6 +11,9 @@ import (
 	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/admin_service"
 	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
 	gameresultmanager "github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
@@ -203,10 +206,24 @@ func main() {
 		}
 		usersFacade := users.NewFacade(usersFacadeConfig)
 
+		authenticationMiddleware := authentication.New(authentication.Config{
+			UsersFacade: usersFacade,
+		})
+
+		authorizationMiddleware := authorization.New(authorization.Config{
+			UserRolesFacade: userRolesFacade,
+		})
+
+		logMiddleware := log.New()
+
 		registratorConfig := registrator.Config{
 			BindAddr: config.GetBindAddress(),
 
 			Croupier: croupier,
+
+			AuthenticationMiddleware: authenticationMiddleware,
+			AuthorizationMiddleware:  authorizationMiddleware,
+			LogMiddleware:            logMiddleware,
 
 			AdminService:       adminService,
 			CertificateManager: certificateManager,

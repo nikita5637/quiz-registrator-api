@@ -14,6 +14,9 @@ import (
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
@@ -86,6 +89,7 @@ type Registrator struct {
 
 	croupier Croupier
 
+	// services
 	adminService       adminpb.ServiceServer
 	certificateManager certificatemanagerpb.ServiceServer
 	gameResultManager  gameresultmanagerpb.ServiceServer
@@ -107,6 +111,12 @@ type Config struct {
 
 	Croupier Croupier
 
+	// middlewares
+	AuthenticationMiddleware *authentication.Middleware
+	AuthorizationMiddleware  *authorization.Middleware
+	LogMiddleware            *log.Middleware
+
+	// services
 	AdminService       adminpb.ServiceServer
 	CertificateManager certificatemanagerpb.ServiceServer
 	GameResultManager  gameresultmanagerpb.ServiceServer
@@ -139,17 +149,17 @@ func New(cfg Config) *Registrator {
 	var opts []grpc.ServerOption
 	opts = append(opts, grpc.ChainUnaryInterceptor(
 		grpc_recovery.UnaryServerInterceptor(),
-		logInterceptor,
-		grpc_auth.UnaryServerInterceptor(registrator.AuthFunc),
-		userStateInterceptor,
+		cfg.LogMiddleware.Log(),
+		grpc_auth.UnaryServerInterceptor(cfg.AuthenticationMiddleware.Authentication()),
+		cfg.AuthorizationMiddleware.Authorization(),
 	))
 	s := grpc.NewServer(opts...)
 	reflection.Register(s)
 
 	adminpb.RegisterServiceServer(s, registrator.adminService)
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManager)
-	registratorpb.RegisterCroupierServiceServer(s, registrator)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManager)
+	registratorpb.RegisterCroupierServiceServer(s, registrator)
 	registratorpb.RegisterPhotographerServiceServer(s, registrator)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)
 
