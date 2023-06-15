@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"flag"
 	"os"
 	"os/signal"
@@ -32,6 +31,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	rabbitmqproducer "github.com/nikita5637/quiz-registrator-api/internal/pkg/rabbitmq/producer"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -84,19 +84,19 @@ func main() {
 
 	db, err := storage.NewDB()
 	if err != nil {
-		logger.Panic(ctx, err)
+		logger.Fatalf(ctx, "new DB initialization error: %s", err.Error())
 	}
 	defer db.Close()
 
 	rabbitMQConn, err := amqp.Dial(config.GetRabbitMQURL())
 	if err != nil {
-		logger.Panic(ctx, err)
+		logger.Fatalf(ctx, "get rabbitMQ connection error: %s", err.Error())
 	}
 	defer rabbitMQConn.Close()
 
 	rabbitMQChannel, err := rabbitMQConn.Channel()
 	if err != nil {
-		logger.Panic(ctx, err)
+		logger.Fatalf(ctx, "get rabbitMQ channel error: %s", err.Error())
 	}
 	defer rabbitMQChannel.Close()
 
@@ -116,9 +116,20 @@ func main() {
 	gameStorage := storage.NewGameStorage(txManager)
 	gamePlayerStorage := storage.NewGamePlayerStorage(txManager)
 
+	icsRabbitMQProducerConfig := rabbitmqproducer.Config{
+		QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
+		RabbitMQChannel: rabbitMQChannel,
+	}
+	icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
+
+	if err := icsRabbitMQProducer.Connect(ctx); err != nil {
+		logger.Fatalf(ctx, "ICS producer connect error: %s", err.Error())
+	}
+
 	gamesFacadeConfig := games.Config{
 		GameStorage:       gameStorage,
 		GamePlayerStorage: gamePlayerStorage,
+		RabbitMQProducer:  icsRabbitMQProducer,
 		TxManager:         txManager,
 	}
 
@@ -243,28 +254,36 @@ func main() {
 	})
 
 	g.Go(func() error {
-		gameReminderQueueName := config.GetValue("RabbitMQGameReminderQueueName").String()
-		if gameReminderQueueName == "" {
-			return errors.New("empty rabbit MQ game reminder queue name")
+		gameReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
+			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		gameReminderRabbitMQProducer := rabbitmqproducer.New(gameReminderRabbitMQProducerConfig)
+
+		if err := gameReminderRabbitMQProducer.Connect(ctx); err != nil {
+			logger.Fatalf(ctx, "game reminder producer connect error: %s", err.Error())
 		}
 
 		gameReminderConfig := game_reminder.Config{
-			GamesFacade:     gamesFacade,
-			QueueName:       gameReminderQueueName,
-			RabbitMQChannel: rabbitMQChannel,
+			GamesFacade:      gamesFacade,
+			RabbitMQProducer: gameReminderRabbitMQProducer,
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
-		lotteryReminderQueueName := config.GetValue("RabbitMQLotteryReminderQueueName").String()
-		if lotteryReminderQueueName == "" {
-			return errors.New("empty rabbit MQ lottery reminder queue name")
+		lotteryReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
+			QueueName:       config.GetValue("RabbitMQLotteryReminderQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		lotteryReminderRabbitMQProducer := rabbitmqproducer.New(lotteryReminderRabbitMQProducerConfig)
+
+		if err := lotteryReminderRabbitMQProducer.Connect(ctx); err != nil {
+			logger.Fatalf(ctx, "lottery reminder producer connect error: %s", err.Error())
 		}
 
 		lotteryReminderConfig := lottery_reminder.Config{
-			Croupier:        croupier,
-			GamesFacade:     gamesFacade,
-			QueueName:       lotteryReminderQueueName,
-			RabbitMQChannel: rabbitMQChannel,
+			Croupier:         croupier,
+			GamesFacade:      gamesFacade,
+			RabbitMQProducer: lotteryReminderRabbitMQProducer,
 		}
 		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)
 
@@ -281,6 +300,6 @@ func main() {
 	})
 
 	if err := g.Wait(); err != nil {
-		logger.Panic(ctx, err)
+		logger.Fatal(ctx, err)
 	}
 }

@@ -13,6 +13,7 @@ bind_port = 8080
 active_game_lag = 3600
 # lottery starts 3600 seconds before the game start
 lottery_starts_before = 3600
+rabbitmq_ics_queue_name = "quiz_ics_prod"
 
 #
 # Reminder settings

@@ -5,7 +5,8 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games/mocks"
+	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	"github.com/stretchr/testify/assert"
 )
@@ -16,8 +17,10 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	gameStorage       *mocks.GameStorage
-	gamePlayerStorage *mocks.GamePlayerStorage
+	gameStorage       *dbmocks.GameStorage
+	gamePlayerStorage *dbmocks.GamePlayerStorage
+
+	rabbitMQProducer *mocks.RabbitMQProducer
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -29,13 +32,17 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		gameStorage:       mocks.NewGameStorage(t),
-		gamePlayerStorage: mocks.NewGamePlayerStorage(t),
+		gameStorage:       dbmocks.NewGameStorage(t),
+		gamePlayerStorage: dbmocks.NewGamePlayerStorage(t),
+
+		rabbitMQProducer: mocks.NewRabbitMQProducer(t),
 	}
 
 	fx.facade = NewFacade(Config{
 		GameStorage:       fx.gameStorage,
 		GamePlayerStorage: fx.gamePlayerStorage,
+
+		RabbitMQProducer: fx.rabbitMQProducer,
 
 		TxManager: fx.db,
 	})
