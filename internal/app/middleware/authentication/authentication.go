@@ -57,6 +57,7 @@ func (m *Middleware) Authentication() grpc_auth.AuthFunc {
 			}
 
 			if serviceName != "fetcher" &&
+				serviceName != "ics-manager" &&
 				serviceName != "telegram" &&
 				serviceName != "telegram-reminder" {
 				return ctx, status.New(codes.Unauthenticated, unauthenticated).Err()

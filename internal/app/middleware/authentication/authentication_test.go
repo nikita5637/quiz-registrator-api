@@ -134,6 +134,20 @@ func TestMiddleware_Authentication(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("ok. authentication type service name. service name eq \"ics-manager\"", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := metadata.NewIncomingContext(fx.ctx, metadata.New(
+			map[string]string{
+				serviceNameHeader: "ics-manager",
+			},
+		))
+
+		fn := fx.middleware.Authentication()
+		_, err := fn(ctx)
+		assert.NoError(t, err)
+	})
+
 	t.Run("ok. authentication type service name. service name eq \"telegram\"", func(t *testing.T) {
 		fx := tearUp(t)
 
