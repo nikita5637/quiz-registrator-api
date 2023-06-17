@@ -10,7 +10,6 @@ import (
 	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/admin_service"
 	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
 	gameresultmanager "github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager"
-	icsfilemanager "github.com/nikita5637/quiz-registrator-api/internal/app/ics_file_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
@@ -27,7 +26,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/icsfiles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
@@ -158,7 +156,6 @@ func main() {
 		certificateStorage := storage.NewCertificateStorage(txManager)
 		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
 		gameResultStorage := storage.NewGameResultStorage(txManager)
-		icsFileStorage := storage.NewICSFileStorage(txManager)
 		leagueStorage := storage.NewLeagueStorage(txManager)
 		placeStorage := storage.NewPlaceStorage(txManager)
 		userStorage := storage.NewUserStorage(txManager)
@@ -205,17 +202,6 @@ func main() {
 		}
 		gameResultManager := gameresultmanager.New(gameResultManagerConfig)
 
-		icsFilesFacadeConfig := icsfiles.Config{
-			ICSFileStorage: icsFileStorage,
-			TxManager:      txManager,
-		}
-		icsFilesFacade := icsfiles.NewFacade(icsFilesFacadeConfig)
-
-		icsFileManagerConfig := icsfilemanager.Config{
-			ICSFilesFacade: icsFilesFacade,
-		}
-		icsFileManager := icsfilemanager.New(icsFileManagerConfig)
-
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
 		}
@@ -253,7 +239,6 @@ func main() {
 			AdminService:       adminService,
 			CertificateManager: certificateManager,
 			GameResultManager:  gameResultManager,
-			ICSFileManager:     icsFileManager,
 
 			GamesFacade:      gamesFacade,
 			GamePhotosFacade: gamePhotosFacade,

@@ -34,13 +34,6 @@ var (
 	ErrInvalidPrice            = errors.New("invalid price")
 )
 
-// ICS files facade errors
-var (
-	ErrICSFileForGameAlreadyExists = errors.New("ICS file for game already exists")
-	ErrICSFileNameAlreadyExists    = errors.New("ICS file name already exists")
-	ErrICSFileNotFound             = errors.New("ICS file not found")
-)
-
 // Leagues facade errors
 var (
 	ErrLeagueNotFound = errors.New("league not found")

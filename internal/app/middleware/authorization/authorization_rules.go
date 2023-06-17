@@ -57,24 +57,6 @@ var grpcRules = map[string]roles{
 		Management: struct{}{},
 	},
 	//
-	// ics_file_manager
-	//
-	"/ics_file_manager.Service/CreateICSFile": {
-		Public: struct{}{},
-	},
-	"/ics_file_manager.Service/DeleteICSFile": {
-		Public: struct{}{},
-	},
-	"/ics_file_manager.Service/GetICSFile": {
-		Public: struct{}{},
-	},
-	"/ics_file_manager.Service/GetICSFileByGameID": {
-		Public: struct{}{},
-	},
-	"/ics_file_manager.Service/ListICSFiles": {
-		Public: struct{}{},
-	},
-	//
 	// users
 	//
 	"/users.CroupierService/GetLotteryStatus": {
