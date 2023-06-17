@@ -16,7 +16,7 @@ import (
 type UserRole struct {
 	ID        int          `json:"id"`         // id
 	FkUserID  int          `json:"fk_user_id"` // fk_user_id
-	Role      string       `json:"role"`       // role
+	Role      Role         `json:"role"`       // role
 	CreatedAt sql.NullTime `json:"created_at"` // created_at
 	DeletedAt sql.NullTime `json:"deleted_at"` // deleted_at
 }

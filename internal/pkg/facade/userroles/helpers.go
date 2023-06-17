@@ -9,7 +9,7 @@ func convertModelUserRoleToDBUserRole(modelUserRole model.UserRole) database.Use
 	return database.UserRole{
 		ID:       int(modelUserRole.ID),
 		FkUserID: int(modelUserRole.UserID),
-		Role:     modelUserRole.Role.String(),
+		Role:     database.Role(modelUserRole.Role),
 	}
 }
 
@@ -17,6 +17,6 @@ func convertDBUserRoleToModelUserRole(dbUserRole database.UserRole) model.UserRo
 	return model.UserRole{
 		ID:     int32(dbUserRole.ID),
 		UserID: int32(dbUserRole.FkUserID),
-		Role:   model.RoleFromString(dbUserRole.Role),
+		Role:   model.Role(dbUserRole.Role),
 	}
 }

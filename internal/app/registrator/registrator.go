@@ -22,6 +22,7 @@ import (
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
+	icsfilemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/ics_file_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -93,6 +94,7 @@ type Registrator struct {
 	adminService       adminpb.ServiceServer
 	certificateManager certificatemanagerpb.ServiceServer
 	gameResultManager  gameresultmanagerpb.ServiceServer
+	icsFileManager     icsfilemanagerpb.ServiceServer
 
 	gamesFacade      GamesFacade
 	gamePhotosFacade GamePhotosFacade
@@ -120,6 +122,7 @@ type Config struct {
 	AdminService       adminpb.ServiceServer
 	CertificateManager certificatemanagerpb.ServiceServer
 	GameResultManager  gameresultmanagerpb.ServiceServer
+	ICSFileManager     icsfilemanagerpb.ServiceServer
 
 	GamesFacade      GamesFacade
 	GamePhotosFacade GamePhotosFacade
@@ -138,6 +141,7 @@ func New(cfg Config) *Registrator {
 		adminService:       cfg.AdminService,
 		certificateManager: cfg.CertificateManager,
 		gameResultManager:  cfg.GameResultManager,
+		icsFileManager:     cfg.ICSFileManager,
 
 		gamesFacade:      cfg.GamesFacade,
 		gamePhotosFacade: cfg.GamePhotosFacade,
@@ -159,6 +163,7 @@ func New(cfg Config) *Registrator {
 	adminpb.RegisterServiceServer(s, registrator.adminService)
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManager)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManager)
+	icsfilemanagerpb.RegisterServiceServer(s, registrator.icsFileManager)
 	registratorpb.RegisterCroupierServiceServer(s, registrator)
 	registratorpb.RegisterPhotographerServiceServer(s, registrator)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)

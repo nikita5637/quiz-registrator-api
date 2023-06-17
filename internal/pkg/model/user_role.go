@@ -35,22 +35,6 @@ func (r Role) String() string {
 	return invalid
 }
 
-// RoleFromString ...
-func RoleFromString(s string) Role {
-	switch s {
-	case invalid:
-		return RoleInvalid
-	case admin:
-		return RoleAdmin
-	case management:
-		return RoleManagement
-	case user:
-		return RoleUser
-	}
-
-	return RoleInvalid
-}
-
 // UserRole ...
 type UserRole struct {
 	ID     int32

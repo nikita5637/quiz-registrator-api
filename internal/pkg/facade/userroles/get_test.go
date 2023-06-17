@@ -37,12 +37,12 @@ func TestFacade_GetUserRolesByUserID(t *testing.T) {
 			{
 				ID:       1,
 				FkUserID: 1,
-				Role:     model.RoleAdmin.String(),
+				Role:     database.Role(model.RoleAdmin),
 			},
 			{
 				ID:       2,
 				FkUserID: 1,
-				Role:     model.RoleManagement.String(),
+				Role:     database.Role(model.RoleManagement),
 			},
 		}, nil)
 

@@ -18,7 +18,7 @@ func (f *Facade) CreateUserRole(ctx context.Context, newUserRole model.UserRole)
 		}
 
 		for _, existedUserRole := range existedUserRoles {
-			if existedUserRole.Role == newUserRole.Role.String() {
+			if existedUserRole.Role.String() == newUserRole.Role.String() {
 				return model.ErrUserRoleAlreadyExists
 			}
 		}

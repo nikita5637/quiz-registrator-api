@@ -41,12 +41,12 @@ func TestFacade_CreateUserRole(t *testing.T) {
 			{
 				ID:       1,
 				FkUserID: 1,
-				Role:     model.RoleAdmin.String(),
+				Role:     database.Role(model.RoleAdmin),
 			},
 			{
 				ID:       2,
 				FkUserID: 1,
-				Role:     model.RoleUser.String(),
+				Role:     database.Role(model.RoleUser),
 			},
 		}, nil)
 
@@ -70,7 +70,7 @@ func TestFacade_CreateUserRole(t *testing.T) {
 		fx.userRoleStorage.EXPECT().GetUserRolesByUserID(mock.Anything, int(1)).Return([]database.UserRole{}, nil)
 		fx.userRoleStorage.EXPECT().Insert(mock.Anything, database.UserRole{
 			FkUserID: 1,
-			Role:     model.RoleAdmin.String(),
+			Role:     database.Role(model.RoleAdmin),
 		}).Return(0, &mysql.MySQLError{
 			Number: 1452,
 		})
@@ -95,7 +95,7 @@ func TestFacade_CreateUserRole(t *testing.T) {
 		fx.userRoleStorage.EXPECT().GetUserRolesByUserID(mock.Anything, int(1)).Return([]database.UserRole{}, nil)
 		fx.userRoleStorage.EXPECT().Insert(mock.Anything, database.UserRole{
 			FkUserID: 1,
-			Role:     model.RoleAdmin.String(),
+			Role:     database.Role(model.RoleAdmin),
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.facade.CreateUserRole(fx.ctx, model.UserRole{
@@ -118,7 +118,7 @@ func TestFacade_CreateUserRole(t *testing.T) {
 		fx.userRoleStorage.EXPECT().GetUserRolesByUserID(mock.Anything, int(1)).Return([]database.UserRole{}, nil)
 		fx.userRoleStorage.EXPECT().Insert(mock.Anything, database.UserRole{
 			FkUserID: 1,
-			Role:     model.RoleAdmin.String(),
+			Role:     database.Role(model.RoleAdmin),
 		}).Return(1, nil)
 
 		got, err := fx.facade.CreateUserRole(fx.ctx, model.UserRole{
