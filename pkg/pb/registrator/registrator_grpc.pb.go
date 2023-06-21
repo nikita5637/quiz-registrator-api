@@ -19,170 +19,6 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// PhotographerServiceClient is the client API for PhotographerService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type PhotographerServiceClient interface {
-	// AddGamePhotos adds game photos
-	AddGamePhotos(ctx context.Context, in *AddGamePhotosRequest, opts ...grpc.CallOption) (*AddGamePhotosResponse, error)
-	// GetGamesWithPhotos returns list of games with photos
-	GetGamesWithPhotos(ctx context.Context, in *GetGamesWithPhotosRequest, opts ...grpc.CallOption) (*GetGamesWithPhotosResponse, error)
-	// GetPhotosByGameID returns all photos by game ID
-	GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error)
-}
-
-type photographerServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewPhotographerServiceClient(cc grpc.ClientConnInterface) PhotographerServiceClient {
-	return &photographerServiceClient{cc}
-}
-
-func (c *photographerServiceClient) AddGamePhotos(ctx context.Context, in *AddGamePhotosRequest, opts ...grpc.CallOption) (*AddGamePhotosResponse, error) {
-	out := new(AddGamePhotosResponse)
-	err := c.cc.Invoke(ctx, "/users.PhotographerService/AddGamePhotos", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *photographerServiceClient) GetGamesWithPhotos(ctx context.Context, in *GetGamesWithPhotosRequest, opts ...grpc.CallOption) (*GetGamesWithPhotosResponse, error) {
-	out := new(GetGamesWithPhotosResponse)
-	err := c.cc.Invoke(ctx, "/users.PhotographerService/GetGamesWithPhotos", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *photographerServiceClient) GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error) {
-	out := new(GetPhotosByGameIDResponse)
-	err := c.cc.Invoke(ctx, "/users.PhotographerService/GetPhotosByGameID", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// PhotographerServiceServer is the server API for PhotographerService service.
-// All implementations must embed UnimplementedPhotographerServiceServer
-// for forward compatibility
-type PhotographerServiceServer interface {
-	// AddGamePhotos adds game photos
-	AddGamePhotos(context.Context, *AddGamePhotosRequest) (*AddGamePhotosResponse, error)
-	// GetGamesWithPhotos returns list of games with photos
-	GetGamesWithPhotos(context.Context, *GetGamesWithPhotosRequest) (*GetGamesWithPhotosResponse, error)
-	// GetPhotosByGameID returns all photos by game ID
-	GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error)
-	mustEmbedUnimplementedPhotographerServiceServer()
-}
-
-// UnimplementedPhotographerServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedPhotographerServiceServer struct {
-}
-
-func (UnimplementedPhotographerServiceServer) AddGamePhotos(context.Context, *AddGamePhotosRequest) (*AddGamePhotosResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AddGamePhotos not implemented")
-}
-func (UnimplementedPhotographerServiceServer) GetGamesWithPhotos(context.Context, *GetGamesWithPhotosRequest) (*GetGamesWithPhotosResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGamesWithPhotos not implemented")
-}
-func (UnimplementedPhotographerServiceServer) GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPhotosByGameID not implemented")
-}
-func (UnimplementedPhotographerServiceServer) mustEmbedUnimplementedPhotographerServiceServer() {}
-
-// UnsafePhotographerServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to PhotographerServiceServer will
-// result in compilation errors.
-type UnsafePhotographerServiceServer interface {
-	mustEmbedUnimplementedPhotographerServiceServer()
-}
-
-func RegisterPhotographerServiceServer(s grpc.ServiceRegistrar, srv PhotographerServiceServer) {
-	s.RegisterService(&PhotographerService_ServiceDesc, srv)
-}
-
-func _PhotographerService_AddGamePhotos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AddGamePhotosRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PhotographerServiceServer).AddGamePhotos(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.PhotographerService/AddGamePhotos",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PhotographerServiceServer).AddGamePhotos(ctx, req.(*AddGamePhotosRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PhotographerService_GetGamesWithPhotos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGamesWithPhotosRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PhotographerServiceServer).GetGamesWithPhotos(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.PhotographerService/GetGamesWithPhotos",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PhotographerServiceServer).GetGamesWithPhotos(ctx, req.(*GetGamesWithPhotosRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _PhotographerService_GetPhotosByGameID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPhotosByGameIDRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(PhotographerServiceServer).GetPhotosByGameID(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/users.PhotographerService/GetPhotosByGameID",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PhotographerServiceServer).GetPhotosByGameID(ctx, req.(*GetPhotosByGameIDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// PhotographerService_ServiceDesc is the grpc.ServiceDesc for PhotographerService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var PhotographerService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "users.PhotographerService",
-	HandlerType: (*PhotographerServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "AddGamePhotos",
-			Handler:    _PhotographerService_AddGamePhotos_Handler,
-		},
-		{
-			MethodName: "GetGamesWithPhotos",
-			Handler:    _PhotographerService_GetGamesWithPhotos_Handler,
-		},
-		{
-			MethodName: "GetPhotosByGameID",
-			Handler:    _PhotographerService_GetPhotosByGameID_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "registrator/registrator.proto",
-}
-
 // RegistratorServiceClient is the client API for RegistratorService service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
@@ -247,7 +83,7 @@ func NewRegistratorServiceClient(cc grpc.ClientConnInterface) RegistratorService
 
 func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameRequest, opts ...grpc.CallOption) (*AddGameResponse, error) {
 	out := new(AddGameResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGame", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/AddGame", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -256,7 +92,7 @@ func (c *registratorServiceClient) AddGame(ctx context.Context, in *AddGameReque
 
 func (c *registratorServiceClient) AddGames(ctx context.Context, in *AddGamesRequest, opts ...grpc.CallOption) (*AddGamesResponse, error) {
 	out := new(AddGamesResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/AddGames", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/AddGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -265,7 +101,7 @@ func (c *registratorServiceClient) AddGames(ctx context.Context, in *AddGamesReq
 
 func (c *registratorServiceClient) CreateUser(ctx context.Context, in *CreateUserRequest, opts ...grpc.CallOption) (*CreateUserResponse, error) {
 	out := new(CreateUserResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/CreateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/CreateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -274,7 +110,7 @@ func (c *registratorServiceClient) CreateUser(ctx context.Context, in *CreateUse
 
 func (c *registratorServiceClient) DeleteGame(ctx context.Context, in *DeleteGameRequest, opts ...grpc.CallOption) (*DeleteGameResponse, error) {
 	out := new(DeleteGameResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/DeleteGame", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/DeleteGame", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -283,7 +119,7 @@ func (c *registratorServiceClient) DeleteGame(ctx context.Context, in *DeleteGam
 
 func (c *registratorServiceClient) GetGameByID(ctx context.Context, in *GetGameByIDRequest, opts ...grpc.CallOption) (*GetGameByIDResponse, error) {
 	out := new(GetGameByIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetGameByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetGameByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -292,7 +128,7 @@ func (c *registratorServiceClient) GetGameByID(ctx context.Context, in *GetGameB
 
 func (c *registratorServiceClient) GetGames(ctx context.Context, in *GetGamesRequest, opts ...grpc.CallOption) (*GetGamesResponse, error) {
 	out := new(GetGamesResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetGames", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -301,7 +137,7 @@ func (c *registratorServiceClient) GetGames(ctx context.Context, in *GetGamesReq
 
 func (c *registratorServiceClient) GetLeagueByID(ctx context.Context, in *GetLeagueByIDRequest, opts ...grpc.CallOption) (*GetLeagueByIDResponse, error) {
 	out := new(GetLeagueByIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetLeagueByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetLeagueByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -310,7 +146,7 @@ func (c *registratorServiceClient) GetLeagueByID(ctx context.Context, in *GetLea
 
 func (c *registratorServiceClient) GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error) {
 	out := new(GetPlaceByIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlaceByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetPlaceByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +155,7 @@ func (c *registratorServiceClient) GetPlaceByID(ctx context.Context, in *GetPlac
 
 func (c *registratorServiceClient) GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error) {
 	out := new(GetPlaceByNameAndAddressResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlaceByNameAndAddress", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetPlaceByNameAndAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -328,7 +164,7 @@ func (c *registratorServiceClient) GetPlaceByNameAndAddress(ctx context.Context,
 
 func (c *registratorServiceClient) GetPlayersByGameID(ctx context.Context, in *GetPlayersByGameIDRequest, opts ...grpc.CallOption) (*GetPlayersByGameIDResponse, error) {
 	out := new(GetPlayersByGameIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetPlayersByGameID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetPlayersByGameID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -337,7 +173,7 @@ func (c *registratorServiceClient) GetPlayersByGameID(ctx context.Context, in *G
 
 func (c *registratorServiceClient) GetRegisteredGames(ctx context.Context, in *GetRegisteredGamesRequest, opts ...grpc.CallOption) (*GetRegisteredGamesResponse, error) {
 	out := new(GetRegisteredGamesResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetRegisteredGames", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetRegisteredGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -346,7 +182,7 @@ func (c *registratorServiceClient) GetRegisteredGames(ctx context.Context, in *G
 
 func (c *registratorServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
 	out := new(GetUserResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -355,7 +191,7 @@ func (c *registratorServiceClient) GetUser(ctx context.Context, in *GetUserReque
 
 func (c *registratorServiceClient) GetUserByID(ctx context.Context, in *GetUserByIDRequest, opts ...grpc.CallOption) (*GetUserByIDResponse, error) {
 	out := new(GetUserByIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUserByID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetUserByID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -364,7 +200,7 @@ func (c *registratorServiceClient) GetUserByID(ctx context.Context, in *GetUserB
 
 func (c *registratorServiceClient) GetUserByTelegramID(ctx context.Context, in *GetUserByTelegramIDRequest, opts ...grpc.CallOption) (*GetUserByTelegramIDResponse, error) {
 	out := new(GetUserByTelegramIDResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUserByTelegramID", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetUserByTelegramID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -373,7 +209,7 @@ func (c *registratorServiceClient) GetUserByTelegramID(ctx context.Context, in *
 
 func (c *registratorServiceClient) GetUserGames(ctx context.Context, in *GetUserGamesRequest, opts ...grpc.CallOption) (*GetUserGamesResponse, error) {
 	out := new(GetUserGamesResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/GetUserGames", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetUserGames", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -382,7 +218,7 @@ func (c *registratorServiceClient) GetUserGames(ctx context.Context, in *GetUser
 
 func (c *registratorServiceClient) RegisterGame(ctx context.Context, in *RegisterGameRequest, opts ...grpc.CallOption) (*RegisterGameResponse, error) {
 	out := new(RegisterGameResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/RegisterGame", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/RegisterGame", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -391,7 +227,7 @@ func (c *registratorServiceClient) RegisterGame(ctx context.Context, in *Registe
 
 func (c *registratorServiceClient) RegisterPlayer(ctx context.Context, in *RegisterPlayerRequest, opts ...grpc.CallOption) (*RegisterPlayerResponse, error) {
 	out := new(RegisterPlayerResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/RegisterPlayer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/RegisterPlayer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -400,7 +236,7 @@ func (c *registratorServiceClient) RegisterPlayer(ctx context.Context, in *Regis
 
 func (c *registratorServiceClient) UnregisterGame(ctx context.Context, in *UnregisterGameRequest, opts ...grpc.CallOption) (*UnregisterGameResponse, error) {
 	out := new(UnregisterGameResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UnregisterGame", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UnregisterGame", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -409,7 +245,7 @@ func (c *registratorServiceClient) UnregisterGame(ctx context.Context, in *Unreg
 
 func (c *registratorServiceClient) UnregisterPlayer(ctx context.Context, in *UnregisterPlayerRequest, opts ...grpc.CallOption) (*UnregisterPlayerResponse, error) {
 	out := new(UnregisterPlayerResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UnregisterPlayer", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UnregisterPlayer", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -418,7 +254,7 @@ func (c *registratorServiceClient) UnregisterPlayer(ctx context.Context, in *Unr
 
 func (c *registratorServiceClient) UpdateUserEmail(ctx context.Context, in *UpdateUserEmailRequest, opts ...grpc.CallOption) (*UpdateUserEmailResponse, error) {
 	out := new(UpdateUserEmailResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserEmail", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UpdateUserEmail", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -427,7 +263,7 @@ func (c *registratorServiceClient) UpdateUserEmail(ctx context.Context, in *Upda
 
 func (c *registratorServiceClient) UpdateUserName(ctx context.Context, in *UpdateUserNameRequest, opts ...grpc.CallOption) (*UpdateUserNameResponse, error) {
 	out := new(UpdateUserNameResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserName", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UpdateUserName", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -436,7 +272,7 @@ func (c *registratorServiceClient) UpdateUserName(ctx context.Context, in *Updat
 
 func (c *registratorServiceClient) UpdateUserPhone(ctx context.Context, in *UpdateUserPhoneRequest, opts ...grpc.CallOption) (*UpdateUserPhoneResponse, error) {
 	out := new(UpdateUserPhoneResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserPhone", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UpdateUserPhone", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -445,7 +281,7 @@ func (c *registratorServiceClient) UpdateUserPhone(ctx context.Context, in *Upda
 
 func (c *registratorServiceClient) UpdateUserState(ctx context.Context, in *UpdateUserStateRequest, opts ...grpc.CallOption) (*UpdateUserStateResponse, error) {
 	out := new(UpdateUserStateResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdateUserState", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UpdateUserState", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -454,7 +290,7 @@ func (c *registratorServiceClient) UpdateUserState(ctx context.Context, in *Upda
 
 func (c *registratorServiceClient) UpdatePayment(ctx context.Context, in *UpdatePaymentRequest, opts ...grpc.CallOption) (*UpdatePaymentResponse, error) {
 	out := new(UpdatePaymentResponse)
-	err := c.cc.Invoke(ctx, "/users.RegistratorService/UpdatePayment", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/UpdatePayment", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -615,7 +451,7 @@ func _RegistratorService_AddGame_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/AddGame",
+		FullMethod: "/registrator.RegistratorService/AddGame",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).AddGame(ctx, req.(*AddGameRequest))
@@ -633,7 +469,7 @@ func _RegistratorService_AddGames_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/AddGames",
+		FullMethod: "/registrator.RegistratorService/AddGames",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).AddGames(ctx, req.(*AddGamesRequest))
@@ -651,7 +487,7 @@ func _RegistratorService_CreateUser_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/CreateUser",
+		FullMethod: "/registrator.RegistratorService/CreateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).CreateUser(ctx, req.(*CreateUserRequest))
@@ -669,7 +505,7 @@ func _RegistratorService_DeleteGame_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/DeleteGame",
+		FullMethod: "/registrator.RegistratorService/DeleteGame",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).DeleteGame(ctx, req.(*DeleteGameRequest))
@@ -687,7 +523,7 @@ func _RegistratorService_GetGameByID_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetGameByID",
+		FullMethod: "/registrator.RegistratorService/GetGameByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetGameByID(ctx, req.(*GetGameByIDRequest))
@@ -705,7 +541,7 @@ func _RegistratorService_GetGames_Handler(srv interface{}, ctx context.Context, 
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetGames",
+		FullMethod: "/registrator.RegistratorService/GetGames",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetGames(ctx, req.(*GetGamesRequest))
@@ -723,7 +559,7 @@ func _RegistratorService_GetLeagueByID_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetLeagueByID",
+		FullMethod: "/registrator.RegistratorService/GetLeagueByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetLeagueByID(ctx, req.(*GetLeagueByIDRequest))
@@ -741,7 +577,7 @@ func _RegistratorService_GetPlaceByID_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetPlaceByID",
+		FullMethod: "/registrator.RegistratorService/GetPlaceByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetPlaceByID(ctx, req.(*GetPlaceByIDRequest))
@@ -759,7 +595,7 @@ func _RegistratorService_GetPlaceByNameAndAddress_Handler(srv interface{}, ctx c
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetPlaceByNameAndAddress",
+		FullMethod: "/registrator.RegistratorService/GetPlaceByNameAndAddress",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, req.(*GetPlaceByNameAndAddressRequest))
@@ -777,7 +613,7 @@ func _RegistratorService_GetPlayersByGameID_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetPlayersByGameID",
+		FullMethod: "/registrator.RegistratorService/GetPlayersByGameID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetPlayersByGameID(ctx, req.(*GetPlayersByGameIDRequest))
@@ -795,7 +631,7 @@ func _RegistratorService_GetRegisteredGames_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetRegisteredGames",
+		FullMethod: "/registrator.RegistratorService/GetRegisteredGames",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetRegisteredGames(ctx, req.(*GetRegisteredGamesRequest))
@@ -813,7 +649,7 @@ func _RegistratorService_GetUser_Handler(srv interface{}, ctx context.Context, d
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetUser",
+		FullMethod: "/registrator.RegistratorService/GetUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUser(ctx, req.(*GetUserRequest))
@@ -831,7 +667,7 @@ func _RegistratorService_GetUserByID_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetUserByID",
+		FullMethod: "/registrator.RegistratorService/GetUserByID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUserByID(ctx, req.(*GetUserByIDRequest))
@@ -849,7 +685,7 @@ func _RegistratorService_GetUserByTelegramID_Handler(srv interface{}, ctx contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetUserByTelegramID",
+		FullMethod: "/registrator.RegistratorService/GetUserByTelegramID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUserByTelegramID(ctx, req.(*GetUserByTelegramIDRequest))
@@ -867,7 +703,7 @@ func _RegistratorService_GetUserGames_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/GetUserGames",
+		FullMethod: "/registrator.RegistratorService/GetUserGames",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetUserGames(ctx, req.(*GetUserGamesRequest))
@@ -885,7 +721,7 @@ func _RegistratorService_RegisterGame_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/RegisterGame",
+		FullMethod: "/registrator.RegistratorService/RegisterGame",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).RegisterGame(ctx, req.(*RegisterGameRequest))
@@ -903,7 +739,7 @@ func _RegistratorService_RegisterPlayer_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/RegisterPlayer",
+		FullMethod: "/registrator.RegistratorService/RegisterPlayer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).RegisterPlayer(ctx, req.(*RegisterPlayerRequest))
@@ -921,7 +757,7 @@ func _RegistratorService_UnregisterGame_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UnregisterGame",
+		FullMethod: "/registrator.RegistratorService/UnregisterGame",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UnregisterGame(ctx, req.(*UnregisterGameRequest))
@@ -939,7 +775,7 @@ func _RegistratorService_UnregisterPlayer_Handler(srv interface{}, ctx context.C
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UnregisterPlayer",
+		FullMethod: "/registrator.RegistratorService/UnregisterPlayer",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UnregisterPlayer(ctx, req.(*UnregisterPlayerRequest))
@@ -957,7 +793,7 @@ func _RegistratorService_UpdateUserEmail_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UpdateUserEmail",
+		FullMethod: "/registrator.RegistratorService/UpdateUserEmail",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UpdateUserEmail(ctx, req.(*UpdateUserEmailRequest))
@@ -975,7 +811,7 @@ func _RegistratorService_UpdateUserName_Handler(srv interface{}, ctx context.Con
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UpdateUserName",
+		FullMethod: "/registrator.RegistratorService/UpdateUserName",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UpdateUserName(ctx, req.(*UpdateUserNameRequest))
@@ -993,7 +829,7 @@ func _RegistratorService_UpdateUserPhone_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UpdateUserPhone",
+		FullMethod: "/registrator.RegistratorService/UpdateUserPhone",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UpdateUserPhone(ctx, req.(*UpdateUserPhoneRequest))
@@ -1011,7 +847,7 @@ func _RegistratorService_UpdateUserState_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UpdateUserState",
+		FullMethod: "/registrator.RegistratorService/UpdateUserState",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UpdateUserState(ctx, req.(*UpdateUserStateRequest))
@@ -1029,7 +865,7 @@ func _RegistratorService_UpdatePayment_Handler(srv interface{}, ctx context.Cont
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.RegistratorService/UpdatePayment",
+		FullMethod: "/registrator.RegistratorService/UpdatePayment",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).UpdatePayment(ctx, req.(*UpdatePaymentRequest))
@@ -1041,7 +877,7 @@ func _RegistratorService_UpdatePayment_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var RegistratorService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "users.RegistratorService",
+	ServiceName: "registrator.RegistratorService",
 	HandlerType: (*RegistratorServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

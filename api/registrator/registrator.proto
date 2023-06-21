@@ -1,88 +1,11 @@
 syntax = "proto3";
 
-package users;
+package registrator;
 
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator;registrator";
 
+import "common/common.proto";
 import "google/protobuf/timestamp.proto";
-
-enum GameType {
-	GAME_TYPE_INVALID = 0;
-	GAME_TYPE_CLASSIC = 1;
-	GAME_TYPE_THEMATIC = 2;
-	GAME_TYPE_MOVIES_AND_MUSIC = 5;
-	GAME_TYPE_CLOSED = 6;
-	GAME_TYPE_THEMATIC_MOVIES_AND_MUSIC = 9;
-}
-
-enum Payment {
-	PAYMENT_INVALID = 0;
-	PAYMENT_CASH = 1;
-	PAYMENT_CERTIFICATE = 2;
-	PAYMENT_MIXED = 3;
-}
-
-message Game {
-	int32 id = 1;
-	int32 external_id = 2;
-	int32 league_id = 3;
-	GameType type = 4;
-	string number = 5;
-	string name = 6;
-	int32 place_id = 7;
-	google.protobuf.Timestamp date = 8;
-	uint32 price = 9;
-	string payment_type = 10; // cash, card
-	uint32 max_players = 11;
-	Payment payment = 12;
-	bool registered = 13;
-	// additional info
-	bool my = 14;
-	uint32 number_of_my_legioners = 15;
-	uint32 number_of_legioners = 16;
-	uint32 number_of_players = 17;
-	uint32 result_place = 18;
-}
-
-service PhotographerService {
-	// AddGamePhotos adds game photos
-	rpc AddGamePhotos(AddGamePhotosRequest) returns (AddGamePhotosResponse) {
-	}
-
-	// GetGamesWithPhotos returns list of games with photos
-	rpc GetGamesWithPhotos(GetGamesWithPhotosRequest) returns (GetGamesWithPhotosResponse) {
-	}
-
-	// GetPhotosByGameID returns all photos by game ID
-	rpc GetPhotosByGameID(GetPhotosByGameIDRequest) returns (GetPhotosByGameIDResponse) {
-	}
-}
-
-message AddGamePhotosRequest {
-	int32 game_id = 1;
-	repeated string urls = 2;
-}
-
-message AddGamePhotosResponse {
-}
-
-message GetGamesWithPhotosRequest {
-	uint32 limit = 1;
-	uint32 offset = 2;
-}
-
-message GetGamesWithPhotosResponse {
-	repeated Game games = 1;
-	uint32 total = 2;
-}
-
-message GetPhotosByGameIDRequest {
-	int32 game_id = 1;
-}
-
-message GetPhotosByGameIDResponse {
-	repeated string urls = 1;
-}
 
 message League {
 	int32 id = 1;
@@ -203,7 +126,7 @@ service RegistratorService {
 message AddGameRequest {
 	int32 external_id = 1;
 	int32 league_id = 2;
-	GameType type = 3;
+	common.GameType type = 3;
 	string number = 4;
 	string name = 5;
 	int32 place_id = 6;
@@ -221,7 +144,7 @@ message AddGamesRequest {
 	message Game {
 		int32 external_id = 1;
 		int32 league_id = 2;
-		GameType type = 3;
+		common.GameType type = 3;
 		string number = 4;
 		string name = 5;
 		int32 place_id = 6;
@@ -268,7 +191,7 @@ message GetGameByIDRequest {
 }
   
 message GetGameByIDResponse {
-	Game game = 1;
+	common.Game game = 1;
 }
 
 message GetGamesRequest {
@@ -276,7 +199,7 @@ message GetGamesRequest {
 }
   
 message GetGamesResponse {
-	repeated Game games = 1;
+	repeated common.Game games = 1;
 }
 
 message GetLeagueByIDRequest {
@@ -323,7 +246,7 @@ message GetRegisteredGamesRequest {
 }
   
 message GetRegisteredGamesResponse {
-	repeated Game games = 1;
+	repeated common.Game games = 1;
 }
 
 message User {
@@ -364,7 +287,7 @@ message GetUserGamesRequest {
 }
   
 message GetUserGamesResponse {
-	repeated Game games = 1;
+	repeated common.Game games = 1;
 }
 
 enum RegisterGameStatus {
@@ -440,7 +363,7 @@ message UnregisterPlayerResponse {
   
 message UpdatePaymentRequest {
 	int32 game_id = 1;
-	Payment payment = 2;
+	common.Payment payment = 2;
 }
 
 message UpdatePaymentResponse {

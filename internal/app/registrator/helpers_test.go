@@ -11,30 +11,27 @@ type fixture struct {
 	ctx         context.Context
 	registrator *Registrator
 
-	gamesFacade      *mocks.GamesFacade
-	gamePhotosFacade *mocks.GamePhotosFacade
-	leaguesFacade    *mocks.LeaguesFacade
-	placesFacade     *mocks.PlacesFacade
-	usersFacade      *mocks.UsersFacade
+	gamesFacade   *mocks.GamesFacade
+	leaguesFacade *mocks.LeaguesFacade
+	placesFacade  *mocks.PlacesFacade
+	usersFacade   *mocks.UsersFacade
 }
 
 func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		gamesFacade:      mocks.NewGamesFacade(t),
-		gamePhotosFacade: mocks.NewGamePhotosFacade(t),
-		leaguesFacade:    mocks.NewLeaguesFacade(t),
-		placesFacade:     mocks.NewPlacesFacade(t),
-		usersFacade:      mocks.NewUsersFacade(t),
+		gamesFacade:   mocks.NewGamesFacade(t),
+		leaguesFacade: mocks.NewLeaguesFacade(t),
+		placesFacade:  mocks.NewPlacesFacade(t),
+		usersFacade:   mocks.NewUsersFacade(t),
 	}
 
 	fx.registrator = &Registrator{
-		gamesFacade:      fx.gamesFacade,
-		gamePhotosFacade: fx.gamePhotosFacade,
-		leaguesFacade:    fx.leaguesFacade,
-		placesFacade:     fx.placesFacade,
-		usersFacade:      fx.usersFacade,
+		gamesFacade:   fx.gamesFacade,
+		leaguesFacade: fx.leaguesFacade,
+		placesFacade:  fx.placesFacade,
+		usersFacade:   fx.usersFacade,
 	}
 
 	t.Cleanup(func() {})

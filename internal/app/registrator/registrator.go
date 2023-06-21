@@ -1,5 +1,4 @@
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
-//go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
 //go:generate mockery --case underscore --name LeaguesFacade --with-expecter
 //go:generate mockery --case underscore --name PlacesFacade --with-expecter
 //go:generate mockery --case underscore --name UsersFacade --with-expecter
@@ -22,6 +21,7 @@ import (
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
+	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -43,14 +43,6 @@ type GamesFacade interface {
 	UnregisterGame(ctx context.Context, gameID int32) (model.UnregisterGameStatus, error)
 	UnregisterPlayer(ctx context.Context, gameID, userID, deletedBy int32) (model.UnregisterPlayerStatus, error)
 	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
-}
-
-// GamePhotosFacade ...
-type GamePhotosFacade interface {
-	AddGamePhotos(ctx context.Context, gameID int32, urls []string) error
-	GetGamesWithPhotos(ctx context.Context, limit, offset uint32) ([]model.Game, error)
-	GetNumberOfGamesWithPhotos(ctx context.Context) (uint32, error)
-	GetPhotosByGameID(ctx context.Context, gameID int32) ([]string, error)
 }
 
 // LeaguesFacade ...
@@ -86,14 +78,13 @@ type Registrator struct {
 	certificateManagerService certificatemanagerpb.ServiceServer
 	croupierService           croupierpb.ServiceServer
 	gameResultManagerService  gameresultmanagerpb.ServiceServer
+	photoManagerService       photomanagerpb.ServiceServer
 
-	gamesFacade      GamesFacade
-	gamePhotosFacade GamePhotosFacade
-	leaguesFacade    LeaguesFacade
-	placesFacade     PlacesFacade
-	usersFacade      UsersFacade
+	gamesFacade   GamesFacade
+	leaguesFacade LeaguesFacade
+	placesFacade  PlacesFacade
+	usersFacade   UsersFacade
 
-	registratorpb.UnimplementedPhotographerServiceServer
 	registratorpb.UnimplementedRegistratorServiceServer
 }
 
@@ -111,12 +102,12 @@ type Config struct {
 	CertificateManagerService certificatemanagerpb.ServiceServer
 	CroupierService           croupierpb.ServiceServer
 	GameResultManagerService  gameresultmanagerpb.ServiceServer
+	PhotoManagerService       photomanagerpb.ServiceServer
 
-	GamesFacade      GamesFacade
-	GamePhotosFacade GamePhotosFacade
-	LeaguesFacade    LeaguesFacade
-	PlacesFacade     PlacesFacade
-	UsersFacade      UsersFacade
+	GamesFacade   GamesFacade
+	LeaguesFacade LeaguesFacade
+	PlacesFacade  PlacesFacade
+	UsersFacade   UsersFacade
 }
 
 // New ...
@@ -128,12 +119,12 @@ func New(cfg Config) *Registrator {
 		certificateManagerService: cfg.CertificateManagerService,
 		croupierService:           cfg.CroupierService,
 		gameResultManagerService:  cfg.GameResultManagerService,
+		photoManagerService:       cfg.PhotoManagerService,
 
-		gamesFacade:      cfg.GamesFacade,
-		gamePhotosFacade: cfg.GamePhotosFacade,
-		leaguesFacade:    cfg.LeaguesFacade,
-		placesFacade:     cfg.PlacesFacade,
-		usersFacade:      cfg.UsersFacade,
+		gamesFacade:   cfg.GamesFacade,
+		leaguesFacade: cfg.LeaguesFacade,
+		placesFacade:  cfg.PlacesFacade,
+		usersFacade:   cfg.UsersFacade,
 	}
 
 	var opts []grpc.ServerOption
@@ -150,7 +141,7 @@ func New(cfg Config) *Registrator {
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManagerService)
 	croupierpb.RegisterServiceServer(s, registrator.croupierService)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
-	registratorpb.RegisterPhotographerServiceServer(s, registrator)
+	photomanagerpb.RegisterServiceServer(s, registrator.photoManagerService)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)
 
 	registrator.grpcServer = s

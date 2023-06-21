@@ -1,0 +1,46 @@
+
+syntax = "proto3";
+
+package common;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/common;common";
+
+import "google/protobuf/timestamp.proto";
+
+enum GameType {
+	GAME_TYPE_INVALID = 0;
+	GAME_TYPE_CLASSIC = 1;
+	GAME_TYPE_THEMATIC = 2;
+	GAME_TYPE_MOVIES_AND_MUSIC = 5;
+	GAME_TYPE_CLOSED = 6;
+	GAME_TYPE_THEMATIC_MOVIES_AND_MUSIC = 9;
+}
+
+enum Payment {
+	PAYMENT_INVALID = 0;
+	PAYMENT_CASH = 1;
+	PAYMENT_CERTIFICATE = 2;
+	PAYMENT_MIXED = 3;
+}
+
+message Game {
+	int32 id = 1;
+	int32 external_id = 2;
+	int32 league_id = 3;
+	GameType type = 4;
+	string number = 5;
+	string name = 6;
+	int32 place_id = 7;
+	google.protobuf.Timestamp date = 8;
+	uint32 price = 9;
+	string payment_type = 10; // cash, card
+	uint32 max_players = 11;
+	Payment payment = 12;
+	bool registered = 13;
+	// additional info
+	bool my = 14;
+	uint32 number_of_my_legioners = 15;
+	uint32 number_of_legioners = 16;
+	uint32 number_of_players = 17;
+	uint32 result_place = 18;
+}

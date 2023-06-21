@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -19,7 +20,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
-			Payment: registrator.Payment_PAYMENT_CERTIFICATE,
+			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})
 		assert.Nil(t, got)
 		assert.Error(t, err)
@@ -36,7 +37,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
-			Payment: registrator.Payment_PAYMENT_CERTIFICATE,
+			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})
 		assert.Nil(t, got)
 		assert.Error(t, err)
@@ -53,7 +54,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
-			Payment: registrator.Payment_PAYMENT_CERTIFICATE,
+			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})
 		assert.NotNil(t, got)
 		assert.Equal(t, &registrator.UpdatePaymentResponse{}, got)

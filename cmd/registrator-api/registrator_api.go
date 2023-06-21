@@ -18,6 +18,7 @@ import (
 	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
+	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
@@ -215,7 +216,12 @@ func main() {
 		gameResultManagerServiceConfig := gameresultmanagerservice.Config{
 			GameResultsFacade: gameResultsFacade,
 		}
-		gameResultServiceManager := gameresultmanagerservice.New(gameResultManagerServiceConfig)
+		gameResultManagerService := gameresultmanagerservice.New(gameResultManagerServiceConfig)
+
+		photoManagerServiceConfig := photomanagerservice.Config{
+			GamePhotosFacade: gamePhotosFacade,
+		}
+		photoManagerService := photomanagerservice.New(photoManagerServiceConfig)
 
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
@@ -252,13 +258,13 @@ func main() {
 			AdminService:              adminService,
 			CertificateManagerService: certificateManagerService,
 			CroupierService:           croupierService,
-			GameResultManagerService:  gameResultServiceManager,
+			GameResultManagerService:  gameResultManagerService,
+			PhotoManagerService:       photoManagerService,
 
-			GamesFacade:      gamesFacade,
-			GamePhotosFacade: gamePhotosFacade,
-			LeaguesFacade:    leaguesFacade,
-			PlacesFacade:     placesFacade,
-			UsersFacade:      usersFacade,
+			GamesFacade:   gamesFacade,
+			LeaguesFacade: leaguesFacade,
+			PlacesFacade:  placesFacade,
+			UsersFacade:   usersFacade,
 		}
 
 		reg := registrator.New(registratorConfig)

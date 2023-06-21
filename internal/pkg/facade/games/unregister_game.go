@@ -8,7 +8,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 )
 
 // UnregisterGame ...
@@ -34,7 +34,7 @@ func (f *Facade) UnregisterGame(ctx context.Context, gameID int32) (model.Unregi
 		}
 
 		game.Registered = false
-		game.Payment = int32(registrator.Payment_PAYMENT_INVALID)
+		game.Payment = int32(commonpb.Payment_PAYMENT_INVALID)
 
 		if err = f.gameStorage.Update(ctx, game); err != nil {
 			return fmt.Errorf("update game error: %w", err)

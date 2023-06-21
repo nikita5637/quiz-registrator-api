@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -20,7 +20,7 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, errors.New("some errror"))
 
-		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(registrator.Payment_PAYMENT_CERTIFICATE))
+		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
 	})
 
@@ -29,7 +29,7 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, sql.ErrNoRows)
 
-		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(registrator.Payment_PAYMENT_CERTIFICATE))
+		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, model.ErrGameNotFound)
 	})
@@ -39,7 +39,7 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, nil)
 
-		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(registrator.Payment_PAYMENT_CERTIFICATE))
+		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, model.ErrGameNotFound)
 	})
@@ -49,15 +49,15 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
 			Date:    model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment: int32(registrator.Payment_PAYMENT_CASH),
+			Payment: int32(commonpb.Payment_PAYMENT_CASH),
 		}, nil)
 
 		fx.gameStorage.EXPECT().Update(fx.ctx, model.Game{
 			Date:    model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment: int32(registrator.Payment_PAYMENT_CERTIFICATE),
+			Payment: int32(commonpb.Payment_PAYMENT_CERTIFICATE),
 		}).Return(errors.New("some error"))
 
-		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(registrator.Payment_PAYMENT_CERTIFICATE))
+		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
 	})
 
@@ -66,15 +66,15 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
 			Date:    model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment: int32(registrator.Payment_PAYMENT_CASH),
+			Payment: int32(commonpb.Payment_PAYMENT_CASH),
 		}, nil)
 
 		fx.gameStorage.EXPECT().Update(fx.ctx, model.Game{
 			Date:    model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment: int32(registrator.Payment_PAYMENT_CERTIFICATE),
+			Payment: int32(commonpb.Payment_PAYMENT_CERTIFICATE),
 		}).Return(nil)
 
-		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(registrator.Payment_PAYMENT_CERTIFICATE))
+		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.NoError(t, err)
 	})
 }

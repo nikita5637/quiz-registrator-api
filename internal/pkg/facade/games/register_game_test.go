@@ -8,7 +8,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -79,7 +79,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 
 		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
 			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(registrator.Payment_PAYMENT_CASH),
+			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
 			Registered: true,
 		}).Return(errors.New("some error"))
 
@@ -125,7 +125,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
 			ID:         1,
 			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(registrator.Payment_PAYMENT_CASH),
+			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
 			Registered: true,
 		}).Return(nil)
 
@@ -157,7 +157,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
 			ID:         1,
 			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(registrator.Payment_PAYMENT_CASH),
+			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
 			Registered: true,
 		}).Return(nil)
 

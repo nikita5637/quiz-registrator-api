@@ -6,6 +6,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -212,7 +213,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       registrator.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -226,7 +227,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       registrator.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -278,7 +279,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       registrator.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -292,7 +293,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       registrator.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -337,7 +338,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       registrator.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -347,7 +348,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       registrator.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -456,7 +457,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 			Price:       400,
 			PaymentType: "cash,card",
 			MaxPlayers:  9,
-			Payment:     int32(registrator.Payment_PAYMENT_CASH),
+			Payment:     int32(commonpb.Payment_PAYMENT_CASH),
 			Registered:  true,
 		}
 
@@ -472,11 +473,11 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 		})
 		assert.NotNil(t, got)
 		assert.Equal(t, &registrator.GetGameByIDResponse{
-			Game: &registrator.Game{
+			Game: &commonpb.Game{
 				Id:                  1,
 				ExternalId:          2,
 				LeagueId:            pkgmodel.LeagueQuizPlease,
-				Type:                registrator.GameType_GAME_TYPE_CLASSIC,
+				Type:                commonpb.GameType_GAME_TYPE_CLASSIC,
 				Number:              "number",
 				Name:                "name",
 				PlaceId:             3,
@@ -484,7 +485,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 				Price:               400,
 				PaymentType:         "cash,card",
 				MaxPlayers:          9,
-				Payment:             registrator.Payment_PAYMENT_CASH,
+				Payment:             commonpb.Payment_PAYMENT_CASH,
 				Registered:          true,
 				My:                  true,
 				NumberOfMyLegioners: 3,
@@ -617,7 +618,7 @@ func Test_convertModelGameToPBGame(t *testing.T) {
 		game.ResultPlace = 1
 
 		got := convertModelGameToPBGame(game)
-		assert.Equal(t, &registrator.Game{
+		assert.Equal(t, &commonpb.Game{
 			Id:                  1,
 			ExternalId:          2,
 			LeagueId:            pkgmodel.LeagueQuizPlease,

@@ -8,8 +8,8 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
-	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/timestamppb"
@@ -186,7 +186,7 @@ func (r *Registrator) GetGames(ctx context.Context, req *registrator.GetGamesReq
 		}
 	}
 
-	pbGames := make([]*registrator.Game, 0, len(games))
+	pbGames := make([]*commonpb.Game, 0, len(games))
 	for _, game := range games {
 		pbGames = append(pbGames, convertModelGameToPBGame(game))
 	}
@@ -242,7 +242,7 @@ func (r *Registrator) GetRegisteredGames(ctx context.Context, req *registrator.G
 
 	}
 
-	pbGames := make([]*registrator.Game, 0, len(games))
+	pbGames := make([]*commonpb.Game, 0, len(games))
 	for _, game := range games {
 		pbGames = append(pbGames, convertModelGameToPBGame(game))
 	}
@@ -271,7 +271,7 @@ func (r *Registrator) GetUserGames(ctx context.Context, req *registrator.GetUser
 
 	}
 
-	pbGames := make([]*registrator.Game, 0, len(games))
+	pbGames := make([]*commonpb.Game, 0, len(games))
 	for _, game := range games {
 		pbGames = append(pbGames, convertModelGameToPBGame(game))
 	}
@@ -281,12 +281,12 @@ func (r *Registrator) GetUserGames(ctx context.Context, req *registrator.GetUser
 	}, nil
 }
 
-func convertModelGameToPBGame(game model.Game) *registratorpb.Game {
-	pbGame := &registratorpb.Game{
+func convertModelGameToPBGame(game model.Game) *commonpb.Game {
+	pbGame := &commonpb.Game{
 		Id:          game.ID,
 		ExternalId:  game.ExternalID,
 		LeagueId:    game.LeagueID,
-		Type:        registratorpb.GameType(game.Type),
+		Type:        commonpb.GameType(game.Type),
 		Number:      game.Number,
 		Name:        game.Name,
 		PlaceId:     game.PlaceID,
@@ -294,7 +294,7 @@ func convertModelGameToPBGame(game model.Game) *registratorpb.Game {
 		Price:       game.Price,
 		PaymentType: game.PaymentType,
 		MaxPlayers:  game.MaxPlayers,
-		Payment:     registratorpb.Payment(game.Payment),
+		Payment:     commonpb.Payment(game.Payment),
 		Registered:  game.Registered,
 	}
 

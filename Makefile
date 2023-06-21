@@ -71,12 +71,22 @@ generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/common/common.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/croupier/croupier.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/game_result_manager/game_result_manager.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/photo_manager/photo_manager.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \

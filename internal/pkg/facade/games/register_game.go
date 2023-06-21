@@ -8,7 +8,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 )
 
 // RegisterGame ...
@@ -34,7 +34,7 @@ func (f *Facade) RegisterGame(ctx context.Context, gameID int32) (model.Register
 		}
 
 		game.Registered = true
-		game.Payment = int32(registrator.Payment_PAYMENT_CASH)
+		game.Payment = int32(commonpb.Payment_PAYMENT_CASH)
 
 		err = f.gameStorage.Update(ctx, game)
 		if err != nil {
