@@ -66,87 +66,90 @@ var grpcRules = map[string]roles{
 		Management: struct{}{},
 	},
 	//
+	// photo_manager
+	//
+	"/photo_manager.Service/AddGamePhotos": {
+		Management: struct{}{},
+	},
+	"/photo_manager.Service/GetGamesWithPhotos": {
+		Public: struct{}{},
+	},
+	"/photo_manager.Service/GetPhotosByGameID": {
+		Public: struct{}{},
+	},
+	//
 	// users
 	//
-	"/users.PhotographerService/AddGamePhotos": {
+	"/registrator.RegistratorService/AddGame": {
 		Management: struct{}{},
 	},
-	"/users.PhotographerService/GetGamesWithPhotos": {
+	"/registrator.RegistratorService/AddGames": {
 		Public: struct{}{},
 	},
-	"/users.PhotographerService/GetPhotosByGameID": {
+	"/registrator.RegistratorService/CreateUser": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/AddGame": {
+	"/registrator.RegistratorService/DeleteGame": {
 		Management: struct{}{},
 	},
-	"/users.RegistratorService/AddGames": {
+	"/registrator.RegistratorService/GetGameByID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/CreateUser": {
+	"/registrator.RegistratorService/GetGames": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/DeleteGame": {
-		Management: struct{}{},
-	},
-	"/users.RegistratorService/GetGameByID": {
+	"/registrator.RegistratorService/GetLeagueByID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetGames": {
+	"/registrator.RegistratorService/GetPlaceByID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetLeagueByID": {
+	"/registrator.RegistratorService/GetPlaceByNameAndAddress": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetPlaceByID": {
+	"/registrator.RegistratorService/GetPlayersByGameID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetPlaceByNameAndAddress": {
+	"/registrator.RegistratorService/GetRegisteredGames": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetPlayersByGameID": {
-		Public: struct{}{},
-	},
-	"/users.RegistratorService/GetRegisteredGames": {
-		Public: struct{}{},
-	},
-	"/users.RegistratorService/GetUser": {
+	"/registrator.RegistratorService/GetUser": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/GetUserByID": {
+	"/registrator.RegistratorService/GetUserByID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetUserByTelegramID": {
+	"/registrator.RegistratorService/GetUserByTelegramID": {
 		Public: struct{}{},
 	},
-	"/users.RegistratorService/GetUserGames": {
+	"/registrator.RegistratorService/GetUserGames": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/RegisterGame": {
+	"/registrator.RegistratorService/RegisterGame": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/RegisterPlayer": {
+	"/registrator.RegistratorService/RegisterPlayer": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UnregisterGame": {
+	"/registrator.RegistratorService/UnregisterGame": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UnregisterPlayer": {
+	"/registrator.RegistratorService/UnregisterPlayer": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UpdateUserEmail": {
+	"/registrator.RegistratorService/UpdateUserEmail": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UpdateUserName": {
+	"/registrator.RegistratorService/UpdateUserName": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UpdateUserPhone": {
+	"/registrator.RegistratorService/UpdateUserPhone": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UpdateUserState": {
+	"/registrator.RegistratorService/UpdateUserState": {
 		User: struct{}{},
 	},
-	"/users.RegistratorService/UpdatePayment": {
+	"/registrator.RegistratorService/UpdatePayment": {
 		User: struct{}{},
 	},
 }
