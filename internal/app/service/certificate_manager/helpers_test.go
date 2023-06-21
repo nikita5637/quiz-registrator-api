@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"

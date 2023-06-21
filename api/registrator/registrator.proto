@@ -6,32 +6,6 @@ option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrat
 
 import "google/protobuf/timestamp.proto";
 
-service CroupierService {
-	// GetLotteryStatus returns lottery status by game id
-	rpc GetLotteryStatus(GetLotteryStatusRequest) returns (GetLotteryStatusResponse) {
-	}
-
-	// RegisterForLottery registers player for lottery
-	rpc RegisterForLottery(RegisterForLotteryRequest) returns (RegisterForLotteryResponse) {
-	}
-}
-
-message GetLotteryStatusRequest {
-	int32 game_id = 1;
-}
-
-message GetLotteryStatusResponse {
-	bool active = 1;
-}
-
-message RegisterForLotteryRequest {
-	int32 game_id = 1;
-}
-
-message RegisterForLotteryResponse {
-	int32 number = 1;
-}
-
 enum GameType {
 	GAME_TYPE_INVALID = 0;
 	GAME_TYPE_CLASSIC = 1;

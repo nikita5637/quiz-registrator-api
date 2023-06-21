@@ -549,14 +549,14 @@ func TestRegistrator_GetPlayersByGameID(t *testing.T) {
 			{
 				ID:           1,
 				FkGameID:     1,
-				FkUserID:     1,
+				FkUserID:     model.NewMaybeInt32(1),
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
 			},
 			{
 				ID:           2,
 				FkGameID:     1,
-				FkUserID:     2,
+				FkUserID:     model.NewMaybeInt32(2),
 				RegisteredBy: 2,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},

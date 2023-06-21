@@ -86,10 +86,10 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
@@ -158,19 +158,19 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: 3,
+				FkUserID: model.NewMaybeInt32(3),
 			},
 			{
-				FkUserID: 4,
+				FkUserID: model.NewMaybeInt32(4),
 			},
 		}, nil)
 
@@ -212,19 +212,19 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: 3,
+				FkUserID: model.NewMaybeInt32(3),
 			},
 			{
-				FkUserID: 4,
+				FkUserID: model.NewMaybeInt32(4),
 			},
 		}, nil)
 

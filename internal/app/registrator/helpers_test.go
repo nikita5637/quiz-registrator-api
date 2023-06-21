@@ -11,8 +11,6 @@ type fixture struct {
 	ctx         context.Context
 	registrator *Registrator
 
-	croupier *mocks.Croupier
-
 	gamesFacade      *mocks.GamesFacade
 	gamePhotosFacade *mocks.GamePhotosFacade
 	leaguesFacade    *mocks.LeaguesFacade
@@ -24,8 +22,6 @@ func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		croupier: mocks.NewCroupier(t),
-
 		gamesFacade:      mocks.NewGamesFacade(t),
 		gamePhotosFacade: mocks.NewGamePhotosFacade(t),
 		leaguesFacade:    mocks.NewLeaguesFacade(t),
@@ -34,8 +30,6 @@ func tearUp(t *testing.T) *fixture {
 	}
 
 	fx.registrator = &Registrator{
-		croupier: fx.croupier,
-
 		gamesFacade:      fx.gamesFacade,
 		gamePhotosFacade: fx.gamePhotosFacade,
 		leaguesFacade:    fx.leaguesFacade,

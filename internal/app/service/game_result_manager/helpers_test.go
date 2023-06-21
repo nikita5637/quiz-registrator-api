@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 )

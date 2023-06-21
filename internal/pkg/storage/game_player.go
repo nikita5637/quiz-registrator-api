@@ -9,13 +9,14 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GamePlayerStorage ...
 type GamePlayerStorage interface {
 	Delete(ctx context.Context, id int32) error
-	Find(ctx context.Context, q builder.Cond) ([]model.GamePlayer, error)
+	Find(ctx context.Context, q builder.Cond) ([]database.GamePlayer, error)
 	Insert(ctx context.Context, gamePlayer model.GamePlayer) (int32, error)
 }
 

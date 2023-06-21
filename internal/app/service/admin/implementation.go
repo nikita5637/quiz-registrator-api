@@ -1,6 +1,6 @@
 //go:generate mockery --case underscore --name UserRolesFacade --with-expecter
 
-package adminservice
+package admin
 
 import (
 	"context"

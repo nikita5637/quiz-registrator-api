@@ -45,6 +45,15 @@ var grpcRules = map[string]roles{
 		Management: struct{}{},
 	},
 	//
+	// croupier
+	//
+	"/croupier.Service/GetLotteryStatus": {
+		Public: struct{}{},
+	},
+	"/croupier.Service/RegisterForLottery": {
+		User: struct{}{},
+	},
+	//
 	// game_result_manager
 	//
 	"/game_result_manager.Service/CreateGameResult": {
@@ -59,12 +68,6 @@ var grpcRules = map[string]roles{
 	//
 	// users
 	//
-	"/users.CroupierService/GetLotteryStatus": {
-		Public: struct{}{},
-	},
-	"/users.CroupierService/RegisterForLottery": {
-		User: struct{}{},
-	},
 	"/users.PhotographerService/AddGamePhotos": {
 		Management: struct{}{},
 	},

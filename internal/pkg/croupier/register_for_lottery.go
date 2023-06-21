@@ -31,14 +31,6 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 		return 0, fmt.Errorf("%w", model.ErrLotteryNotAvailable)
 	}
 
-	if !game.My {
-		return 0, fmt.Errorf("%w", model.ErrLotteryPermissionDenied)
-	}
-
-	if user.Email == "" || user.Name == "" || user.Phone == "" {
-		return 0, fmt.Errorf("%w", model.ErrLotteryPermissionDenied)
-	}
-
 	switch game.LeagueID {
 	case pkgmodel.LeagueQuizPlease:
 		number, err := c.quizPleaseCroupier.RegisterForLottery(ctx, game, user)

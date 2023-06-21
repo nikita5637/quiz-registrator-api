@@ -87,8 +87,8 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		playerIDs := make([]int32, 0, len(players))
 		for _, player := range players {
-			if player.FkUserID != 0 {
-				playerIDs = append(playerIDs, player.FkUserID)
+			if player.FkUserID.Value != 0 {
+				playerIDs = append(playerIDs, player.FkUserID.Value)
 			}
 		}
 

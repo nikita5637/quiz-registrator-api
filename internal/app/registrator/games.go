@@ -212,7 +212,7 @@ func (r *Registrator) GetPlayersByGameID(ctx context.Context, req *registrator.G
 	pbPlayers := make([]*registrator.Player, 0, len(players))
 	for _, player := range players {
 		pbPlayers = append(pbPlayers, &registrator.Player{
-			UserId:       player.FkUserID,
+			UserId:       player.FkUserID.Value,
 			RegisteredBy: player.RegisteredBy,
 			Degree:       registrator.Degree(player.Degree),
 		})

@@ -7,6 +7,7 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
 // RegisterPlayer ...
@@ -25,8 +26,8 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 	}
 
 	if fkUserID != 0 {
-		var records []model.GamePlayer
-		records, err = f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
+		var dbGamePlayers []database.GamePlayer
+		dbGamePlayers, err = f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
 			builder.Eq{
 				"fk_game_id": fkGameID,
 				"fk_user_id": fkUserID,
@@ -39,7 +40,7 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 			return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", err)
 		}
 
-		if len(records) > 0 {
+		if len(dbGamePlayers) > 0 {
 			return model.RegisterPlayerStatusAlreadyRegistered, nil
 		}
 	}
@@ -50,7 +51,7 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 
 	_, err = f.gamePlayerStorage.Insert(ctx, model.GamePlayer{
 		FkGameID:     fkGameID,
-		FkUserID:     fkUserID,
+		FkUserID:     model.NewMaybeInt32(fkUserID),
 		RegisteredBy: registeredBy,
 		Degree:       degree,
 	})

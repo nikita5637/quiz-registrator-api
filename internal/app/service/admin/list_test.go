@@ -1,4 +1,4 @@
-package adminservice
+package admin
 
 import (
 	"errors"

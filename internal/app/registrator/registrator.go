@@ -1,4 +1,3 @@
-//go:generate mockery --case underscore --name Croupier --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
 //go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
 //go:generate mockery --case underscore --name LeaguesFacade --with-expecter
@@ -21,17 +20,12 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
+	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
-
-// Croupier ...
-type Croupier interface {
-	GetIsLotteryActive(ctx context.Context, game model.Game) bool
-	RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error)
-}
 
 // GamesFacade ...
 type GamesFacade interface {
@@ -87,12 +81,11 @@ type Registrator struct {
 	bindAddr   string
 	grpcServer *grpc.Server
 
-	croupier Croupier
-
 	// services
-	adminService       adminpb.ServiceServer
-	certificateManager certificatemanagerpb.ServiceServer
-	gameResultManager  gameresultmanagerpb.ServiceServer
+	adminService              adminpb.ServiceServer
+	certificateManagerService certificatemanagerpb.ServiceServer
+	croupierService           croupierpb.ServiceServer
+	gameResultManagerService  gameresultmanagerpb.ServiceServer
 
 	gamesFacade      GamesFacade
 	gamePhotosFacade GamePhotosFacade
@@ -100,7 +93,6 @@ type Registrator struct {
 	placesFacade     PlacesFacade
 	usersFacade      UsersFacade
 
-	registratorpb.UnimplementedCroupierServiceServer
 	registratorpb.UnimplementedPhotographerServiceServer
 	registratorpb.UnimplementedRegistratorServiceServer
 }
@@ -109,17 +101,16 @@ type Registrator struct {
 type Config struct {
 	BindAddr string
 
-	Croupier Croupier
-
 	// middlewares
 	AuthenticationMiddleware *authentication.Middleware
 	AuthorizationMiddleware  *authorization.Middleware
 	LogMiddleware            *log.Middleware
 
 	// services
-	AdminService       adminpb.ServiceServer
-	CertificateManager certificatemanagerpb.ServiceServer
-	GameResultManager  gameresultmanagerpb.ServiceServer
+	AdminService              adminpb.ServiceServer
+	CertificateManagerService certificatemanagerpb.ServiceServer
+	CroupierService           croupierpb.ServiceServer
+	GameResultManagerService  gameresultmanagerpb.ServiceServer
 
 	GamesFacade      GamesFacade
 	GamePhotosFacade GamePhotosFacade
@@ -133,11 +124,10 @@ func New(cfg Config) *Registrator {
 	registrator := &Registrator{
 		bindAddr: cfg.BindAddr,
 
-		croupier: cfg.Croupier,
-
-		adminService:       cfg.AdminService,
-		certificateManager: cfg.CertificateManager,
-		gameResultManager:  cfg.GameResultManager,
+		adminService:              cfg.AdminService,
+		certificateManagerService: cfg.CertificateManagerService,
+		croupierService:           cfg.CroupierService,
+		gameResultManagerService:  cfg.GameResultManagerService,
 
 		gamesFacade:      cfg.GamesFacade,
 		gamePhotosFacade: cfg.GamePhotosFacade,
@@ -157,9 +147,9 @@ func New(cfg Config) *Registrator {
 	reflection.Register(s)
 
 	adminpb.RegisterServiceServer(s, registrator.adminService)
-	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManager)
-	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManager)
-	registratorpb.RegisterCroupierServiceServer(s, registrator)
+	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManagerService)
+	croupierpb.RegisterServiceServer(s, registrator.croupierService)
+	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
 	registratorpb.RegisterPhotographerServiceServer(s, registrator)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)
 

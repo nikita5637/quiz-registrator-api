@@ -26,7 +26,7 @@ func (f *Facade) UnregisterPlayer(ctx context.Context, gameID, userID, deletedBy
 		return model.UnregisterPlayerStatusInvalid, fmt.Errorf("unregister player error: %w", model.ErrGameNotFound)
 	}
 
-	records, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().Or(
+	dbGamePlayers, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().Or(
 		builder.NewCond().And(
 			builder.Eq{
 				"fk_game_id":    gameID,
@@ -54,13 +54,13 @@ func (f *Facade) UnregisterPlayer(ctx context.Context, gameID, userID, deletedBy
 		return model.UnregisterPlayerStatusInvalid, fmt.Errorf("unregister player error: %w", err)
 	}
 
-	if len(records) == 0 {
+	if len(dbGamePlayers) == 0 {
 		return model.UnregisterPlayerStatusNotRegistered, nil
 	}
 
-	for _, record := range records {
-		if userID == record.FkUserID {
-			err = f.gamePlayerStorage.Delete(ctx, record.ID)
+	for _, dbGamePlayer := range dbGamePlayers {
+		if userID == int32(dbGamePlayer.FkUserID.Int64) {
+			err = f.gamePlayerStorage.Delete(ctx, int32(dbGamePlayer.ID))
 			if err != nil {
 				return model.UnregisterPlayerStatusInvalid, fmt.Errorf("unregister player error: %w", err)
 			}

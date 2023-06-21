@@ -7,9 +7,6 @@ import (
 	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
-	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/admin_service"
-	certificatemanager "github.com/nikita5637/quiz-registrator-api/internal/app/certificate_manager"
-	gameresultmanager "github.com/nikita5637/quiz-registrator-api/internal/app/game_result_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
@@ -17,6 +14,10 @@ import (
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
 	lottery_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/lottery"
+	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/admin"
+	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
+	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
+	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
@@ -24,6 +25,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameplayers"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
@@ -178,10 +180,23 @@ func main() {
 		}
 		adminService := adminservice.New(adminServiceConfig)
 
-		certificateManagerConfig := certificatemanager.Config{
+		certificateManagerServiceConfig := certificatemanagerservice.Config{
 			CertificatesFacade: certificatesFacade,
 		}
-		certificateManager := certificatemanager.New(certificateManagerConfig)
+		certificateManagerService := certificatemanagerservice.New(certificateManagerServiceConfig)
+
+		gamePlayersFacadeConfig := gameplayers.Config{
+			GamePlayerStorage: gamePlayerStorage,
+			TxManager:         txManager,
+		}
+		gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
+
+		croupierServiceConfig := croupierservice.Config{
+			Croupier:          croupier,
+			GamePlayersFacade: gamePlayersFacade,
+			GamesFacade:       gamesFacade,
+		}
+		croupierService := croupierservice.New(croupierServiceConfig)
 
 		gamePhotosFacadeConfig := gamephotos.Config{
 			GameStorage:       gameStorage,
@@ -197,10 +212,10 @@ func main() {
 		}
 		gameResultsFacade := gameresults.NewFacade(gameResultsFacadeConfig)
 
-		gameResultManagerConfig := gameresultmanager.Config{
+		gameResultManagerServiceConfig := gameresultmanagerservice.Config{
 			GameResultsFacade: gameResultsFacade,
 		}
-		gameResultManager := gameresultmanager.New(gameResultManagerConfig)
+		gameResultServiceManager := gameresultmanagerservice.New(gameResultManagerServiceConfig)
 
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
@@ -230,15 +245,14 @@ func main() {
 		registratorConfig := registrator.Config{
 			BindAddr: config.GetBindAddress(),
 
-			Croupier: croupier,
-
 			AuthenticationMiddleware: authenticationMiddleware,
 			AuthorizationMiddleware:  authorizationMiddleware,
 			LogMiddleware:            logMiddleware,
 
-			AdminService:       adminService,
-			CertificateManager: certificateManager,
-			GameResultManager:  gameResultManager,
+			AdminService:              adminService,
+			CertificateManagerService: certificateManagerService,
+			CroupierService:           croupierService,
+			GameResultManagerService:  gameResultServiceManager,
 
 			GamesFacade:      gamesFacade,
 			GamePhotosFacade: gamePhotosFacade,

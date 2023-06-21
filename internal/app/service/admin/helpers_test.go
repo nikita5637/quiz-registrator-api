@@ -1,10 +1,10 @@
-package adminservice
+package admin
 
 import (
 	"context"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/app/admin_service/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/service/admin/mocks"
 )
 
 type fixture struct {

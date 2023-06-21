@@ -41,9 +41,8 @@ var (
 
 // Lottery errors
 var (
-	ErrLotteryNotAvailable     = errors.New("lottery not available")
-	ErrLotteryNotImplemented   = errors.New("lottery not implemented")
-	ErrLotteryPermissionDenied = errors.New("permission denied for lottery registration")
+	ErrLotteryNotAvailable   = errors.New("lottery not available")
+	ErrLotteryNotImplemented = errors.New("lottery not implemented")
 )
 
 // Places facade errors
