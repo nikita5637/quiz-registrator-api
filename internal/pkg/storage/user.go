@@ -20,8 +20,8 @@ type UserStorage interface {
 }
 
 // NewUserStorage ...
-func NewUserStorage(txManager *tx.Manager) UserStorage {
-	switch config.GetValue("Driver").String() {
+func NewUserStorage(driver string, txManager *tx.Manager) UserStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewUserStorageAdapter(txManager)
 	}

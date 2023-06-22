@@ -21,8 +21,8 @@ type UserRoleStorage interface {
 }
 
 // NewUserRoleStorage ...
-func NewUserRoleStorage(txManager *tx.Manager) UserRoleStorage {
-	switch config.GetValue("Driver").String() {
+func NewUserRoleStorage(driver string, txManager *tx.Manager) UserRoleStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewUserRoleStorageAdapter(txManager)
 	}

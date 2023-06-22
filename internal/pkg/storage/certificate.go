@@ -21,8 +21,8 @@ type CertificateStorage interface {
 }
 
 // NewCertificateStorage ...
-func NewCertificateStorage(txManager *tx.Manager) CertificateStorage {
-	switch config.GetValue("Driver").String() {
+func NewCertificateStorage(driver string, txManager *tx.Manager) CertificateStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewCertificateStorageAdapter(txManager)
 	}

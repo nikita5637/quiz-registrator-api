@@ -80,7 +80,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 
 		fn := fx.middleware.Authorization()
 		got, err := fn(ctx, nil, &grpc.UnaryServerInfo{
-			FullMethod: "/users.RegistratorService/GetRegisteredGames",
+			FullMethod: "/registrator.RegistratorService/GetRegisteredGames",
 		}, okHandler)
 		assert.Nil(t, got)
 		assert.Error(t, err)
@@ -113,7 +113,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 
 		fn := fx.middleware.Authorization()
 		got, err := fn(ctx, nil, &grpc.UnaryServerInfo{
-			FullMethod: "/users.RegistratorService/GetRegisteredGames",
+			FullMethod: "/registrator.RegistratorService/GetRegisteredGames",
 		}, okHandler)
 		assert.Nil(t, got)
 		assert.NoError(t, err)
@@ -137,7 +137,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 
 		fn := fx.middleware.Authorization()
 		got, err := fn(ctx, nil, &grpc.UnaryServerInfo{
-			FullMethod: "/users.RegistratorService/UpdateUserName",
+			FullMethod: "/registrator.RegistratorService/UpdateUserName",
 		}, okHandler)
 		assert.Nil(t, got)
 		assert.Error(t, err)
@@ -170,7 +170,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 
 		fn := fx.middleware.Authorization()
 		got, err := fn(ctx, nil, &grpc.UnaryServerInfo{
-			FullMethod: "/users.RegistratorService/UpdateUserName",
+			FullMethod: "/registrator.RegistratorService/UpdateUserName",
 		}, okHandler)
 		assert.Nil(t, got)
 		assert.NoError(t, err)

@@ -85,7 +85,8 @@ func main() {
 	)))
 	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
 
-	db, err := storage.NewDB()
+	driverName := config.GetValue("Driver").String()
+	db, err := storage.NewDB(ctx, driverName)
 	if err != nil {
 		logger.Fatalf(ctx, "new DB initialization error: %s", err.Error())
 	}
@@ -116,8 +117,8 @@ func main() {
 
 	txManager := tx.NewManager(db)
 
-	gameStorage := storage.NewGameStorage(txManager)
-	gamePlayerStorage := storage.NewGamePlayerStorage(txManager)
+	gameStorage := storage.NewGameStorage(driverName, txManager)
+	gamePlayerStorage := storage.NewGamePlayerStorage(driverName, txManager)
 
 	icsRabbitMQProducerConfig := rabbitmqproducer.Config{
 		QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
@@ -156,13 +157,13 @@ func main() {
 
 	g, ctx := errgroup.WithContext(ctx)
 	g.Go(func() error {
-		certificateStorage := storage.NewCertificateStorage(txManager)
-		gamePhotoStorage := storage.NewGamePhotoStorage(txManager)
-		gameResultStorage := storage.NewGameResultStorage(txManager)
-		leagueStorage := storage.NewLeagueStorage(txManager)
-		placeStorage := storage.NewPlaceStorage(txManager)
-		userStorage := storage.NewUserStorage(txManager)
-		userRoleStorage := storage.NewUserRoleStorage(txManager)
+		certificateStorage := storage.NewCertificateStorage(driverName, txManager)
+		gamePhotoStorage := storage.NewGamePhotoStorage(driverName, txManager)
+		gameResultStorage := storage.NewGameResultStorage(driverName, txManager)
+		leagueStorage := storage.NewLeagueStorage(driverName, txManager)
+		placeStorage := storage.NewPlaceStorage(driverName, txManager)
+		userStorage := storage.NewUserStorage(driverName, txManager)
+		userRoleStorage := storage.NewUserRoleStorage(driverName, txManager)
 
 		certificatesFacadeConfig := certificates.Config{
 			CertificateStorage: certificateStorage,

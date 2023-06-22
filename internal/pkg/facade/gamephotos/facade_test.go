@@ -10,7 +10,7 @@ import (
 
 func TestNewFacade(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		gps := storage.NewGamePhotoStorage(nil)
+		gps := storage.NewGamePhotoStorage("driver", nil)
 		txManager := tx.NewManager(nil)
 		cfg := Config{
 			GamePhotoStorage: gps,

@@ -19,8 +19,8 @@ type GamePhotoStorage interface {
 }
 
 // NewGamePhotoStorage ...
-func NewGamePhotoStorage(txManager *tx.Manager) GamePhotoStorage {
-	switch config.GetValue("Driver").String() {
+func NewGamePhotoStorage(driver string, txManager *tx.Manager) GamePhotoStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewGamePhotoStorageAdapter(txManager)
 	}
