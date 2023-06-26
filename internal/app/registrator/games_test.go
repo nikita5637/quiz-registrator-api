@@ -448,7 +448,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 		game := model.Game{
 			ID:          1,
 			ExternalID:  2,
-			LeagueID:    pkgmodel.LeagueQuizPlease,
+			LeagueID:    model.LeagueQuizPlease,
 			Type:        pkgmodel.GameTypeClassic,
 			Number:      "number",
 			Name:        "name",
@@ -476,7 +476,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 			Game: &commonpb.Game{
 				Id:                  1,
 				ExternalId:          2,
-				LeagueId:            pkgmodel.LeagueQuizPlease,
+				LeagueId:            model.LeagueQuizPlease,
 				Type:                commonpb.GameType_GAME_TYPE_CLASSIC,
 				Number:              "number",
 				Name:                "name",
@@ -598,7 +598,7 @@ func Test_convertModelGameToPBGame(t *testing.T) {
 		game := model.Game{
 			ID:          1,
 			ExternalID:  2,
-			LeagueID:    pkgmodel.LeagueQuizPlease,
+			LeagueID:    model.LeagueQuizPlease,
 			Type:        1,
 			Number:      "1",
 			Name:        "name",
@@ -621,7 +621,7 @@ func Test_convertModelGameToPBGame(t *testing.T) {
 		assert.Equal(t, &commonpb.Game{
 			Id:                  1,
 			ExternalId:          2,
-			LeagueId:            pkgmodel.LeagueQuizPlease,
+			LeagueId:            model.LeagueQuizPlease,
 			Type:                1,
 			Number:              "1",
 			Name:                "name",

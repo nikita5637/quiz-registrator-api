@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -73,7 +72,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		fx.certificatesFacade.EXPECT().PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
@@ -108,7 +107,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		fx.certificatesFacade.EXPECT().PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
@@ -143,7 +142,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		fx.certificatesFacade.EXPECT().PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
@@ -178,13 +177,13 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		fx.certificatesFacade.EXPECT().PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
 		}, []string{"type", "spent_on"}).Return(model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   100,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("some valid json"),
@@ -296,7 +295,7 @@ func Test_validatePatchCertificateRequest(t *testing.T) {
 				ctx: context.Background(),
 				req: &certificatemanagerpb.PatchCertificateRequest{
 					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType(pkgmodel.NumberOfCertificateTypes),
+						Type: certificatemanagerpb.CertificateType(100),
 						Info: "{}",
 					},
 				},

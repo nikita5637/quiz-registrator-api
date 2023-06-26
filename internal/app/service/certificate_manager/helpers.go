@@ -8,7 +8,6 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 )
 
@@ -55,7 +54,7 @@ func validateCertificate(ctx context.Context, certificate *certificatemanagerpb.
 		return errInvalidJSONInfoValue
 	}
 
-	err := validation.Validate(certificate.GetType(), validation.Required, validation.Min(int32(1)), validation.Max(int32(pkgmodel.NumberOfCertificateTypes-1)))
+	err := validation.Validate(model.CertificateType(certificate.GetType()), validation.Required, validation.By(model.ValidateCertificateType))
 	if err != nil {
 		return errInvalidCertificateType
 	}

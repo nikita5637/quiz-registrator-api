@@ -5,18 +5,18 @@ import (
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
-func convertModelUserRoleToDBUserRole(modelUserRole model.UserRole) database.UserRole {
-	return database.UserRole{
-		ID:       int(modelUserRole.ID),
-		FkUserID: int(modelUserRole.UserID),
-		Role:     database.Role(modelUserRole.Role),
+func convertDBUserRoleToModelUserRole(userRole database.UserRole) model.UserRole {
+	return model.UserRole{
+		ID:     int32(userRole.ID),
+		UserID: int32(userRole.FkUserID),
+		Role:   model.Role(userRole.Role),
 	}
 }
 
-func convertDBUserRoleToModelUserRole(dbUserRole database.UserRole) model.UserRole {
-	return model.UserRole{
-		ID:     int32(dbUserRole.ID),
-		UserID: int32(dbUserRole.FkUserID),
-		Role:   model.Role(dbUserRole.Role),
+func convertModelUserRoleToDBUserRole(userRole model.UserRole) database.UserRole {
+	return database.UserRole{
+		ID:       int(userRole.ID),
+		FkUserID: int(userRole.UserID),
+		Role:     database.Role(userRole.Role),
 	}
 }

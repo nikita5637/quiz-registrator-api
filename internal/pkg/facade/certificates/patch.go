@@ -39,15 +39,9 @@ func (f *Facade) PatchCertificate(ctx context.Context, certificate model.Certifi
 			case fieldNameWonOn:
 				patchedDBCertificate.WonOn = int(certificate.WonOn)
 			case fieldNameSpentOn:
-				patchedDBCertificate.SpentOn = sql.NullInt64{
-					Valid: certificate.SpentOn.Valid,
-					Int64: int64(certificate.SpentOn.Value),
-				}
+				patchedDBCertificate.SpentOn = certificate.SpentOn.ToSQLNullInt64()
 			case fieldNameInfo:
-				patchedDBCertificate.Info = sql.NullString{
-					Valid:  certificate.Info.Valid,
-					String: certificate.Info.Value,
-				}
+				patchedDBCertificate.Info = certificate.Info.ToSQL()
 			}
 		}
 
@@ -72,7 +66,7 @@ func (f *Facade) PatchCertificate(ctx context.Context, certificate model.Certifi
 
 	})
 	if err != nil {
-		return model.Certificate{}, fmt.Errorf("patch certificate error: %w", err)
+		return model.Certificate{}, err
 	}
 
 	return patchedCert, nil

@@ -13,11 +13,11 @@ import (
 
 // CertificateStorage ...
 type CertificateStorage interface {
-	CreateCertificate(ctx context.Context, dbCertificate database.Certificate) (int, error)
+	CreateCertificate(ctx context.Context, certificate database.Certificate) (int, error)
 	DeleteCertificate(ctx context.Context, id int) error
 	GetCertificateByID(ctx context.Context, id int) (*database.Certificate, error)
 	GetCertificates(ctx context.Context) ([]database.Certificate, error)
-	PatchCertificate(ctx context.Context, dbCertificate database.Certificate) error
+	PatchCertificate(ctx context.Context, certificate database.Certificate) error
 }
 
 // NewCertificateStorage ...

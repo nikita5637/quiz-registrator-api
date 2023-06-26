@@ -10,7 +10,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	db "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +26,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   3,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -51,7 +50,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   3,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -103,7 +102,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   -10,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -156,7 +155,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(-10),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -206,7 +205,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(-10),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -255,7 +254,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		got, err := fx.facade.PatchCertificate(fx.ctx, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),
@@ -263,7 +262,7 @@ func TestFacade_PatchCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   3,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\":5000}"),

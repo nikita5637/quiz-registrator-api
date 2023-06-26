@@ -9,7 +9,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -42,7 +41,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			My:       true,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
@@ -68,14 +67,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 		}
 		game.My = true
 
 		user := model.User{
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(0, errors.New("some error"))
@@ -141,14 +140,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 		}
 		game.My = true
 
 		user := model.User{
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(100, nil)

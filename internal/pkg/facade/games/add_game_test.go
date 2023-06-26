@@ -27,7 +27,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     0,
 			Number:   "1",
 		})
@@ -40,7 +40,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     3,
 			Number:   "1",
 		})
@@ -53,7 +53,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     pkgmodel.GameTypeClassic,
 		})
 		assert.Equal(t, int32(0), got)
@@ -65,7 +65,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 		})
@@ -78,7 +78,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
@@ -92,7 +92,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
@@ -107,7 +107,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: model.LeagueQuizPlease,
 			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
@@ -125,7 +125,7 @@ func TestFacade_AddGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
+			LeagueID:   model.LeagueQuizPlease,
 			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
@@ -135,7 +135,7 @@ func TestFacade_AddGame(t *testing.T) {
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
+			LeagueID:   model.LeagueQuizPlease,
 			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
@@ -153,7 +153,7 @@ func TestFacade_AddGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
+			LeagueID:   model.LeagueQuizPlease,
 			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
@@ -163,7 +163,7 @@ func TestFacade_AddGame(t *testing.T) {
 		}).Return(1, nil)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
+			LeagueID:   model.LeagueQuizPlease,
 			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,

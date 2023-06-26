@@ -38,7 +38,7 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	}
 
 	user := usersutils.UserFromContext(ctx)
-	if user.Email == "" || user.Name == "" || user.Phone == "" {
+	if user.Email.Value == "" || user.Name == "" || user.Phone.Value == "" {
 		reason := fmt.Sprintf("permission denied for lottery registration for user %d", user.ID)
 		err := errors.New("permission denied for lottery registration")
 		st := model.GetStatus(ctx, codes.PermissionDenied, err, reason, lotteryPermissionDenied)

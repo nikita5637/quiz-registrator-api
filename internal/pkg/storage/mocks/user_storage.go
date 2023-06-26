@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	mysql "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -23,18 +23,20 @@ func (_m *UserStorage) EXPECT() *UserStorage_Expecter {
 }
 
 // GetUserByID provides a mock function with given fields: ctx, userID
-func (_m *UserStorage) GetUserByID(ctx context.Context, userID int32) (model.User, error) {
+func (_m *UserStorage) GetUserByID(ctx context.Context, userID int) (*mysql.User, error) {
 	ret := _m.Called(ctx, userID)
 
-	var r0 model.User
-	if rf, ok := ret.Get(0).(func(context.Context, int32) model.User); ok {
+	var r0 *mysql.User
+	if rf, ok := ret.Get(0).(func(context.Context, int) *mysql.User); ok {
 		r0 = rf(ctx, userID)
 	} else {
-		r0 = ret.Get(0).(model.User)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*mysql.User)
+		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
 		r1 = rf(ctx, userID)
 	} else {
 		r1 = ret.Error(1)
@@ -50,32 +52,34 @@ type UserStorage_GetUserByID_Call struct {
 
 // GetUserByID is a helper method to define mock.On call
 //  - ctx context.Context
-//  - userID int32
+//  - userID int
 func (_e *UserStorage_Expecter) GetUserByID(ctx interface{}, userID interface{}) *UserStorage_GetUserByID_Call {
 	return &UserStorage_GetUserByID_Call{Call: _e.mock.On("GetUserByID", ctx, userID)}
 }
 
-func (_c *UserStorage_GetUserByID_Call) Run(run func(ctx context.Context, userID int32)) *UserStorage_GetUserByID_Call {
+func (_c *UserStorage_GetUserByID_Call) Run(run func(ctx context.Context, userID int)) *UserStorage_GetUserByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
 
-func (_c *UserStorage_GetUserByID_Call) Return(_a0 model.User, _a1 error) *UserStorage_GetUserByID_Call {
+func (_c *UserStorage_GetUserByID_Call) Return(_a0 *mysql.User, _a1 error) *UserStorage_GetUserByID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
 // GetUserByTelegramID provides a mock function with given fields: ctx, telegramID
-func (_m *UserStorage) GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error) {
+func (_m *UserStorage) GetUserByTelegramID(ctx context.Context, telegramID int64) (*mysql.User, error) {
 	ret := _m.Called(ctx, telegramID)
 
-	var r0 model.User
-	if rf, ok := ret.Get(0).(func(context.Context, int64) model.User); ok {
+	var r0 *mysql.User
+	if rf, ok := ret.Get(0).(func(context.Context, int64) *mysql.User); ok {
 		r0 = rf(ctx, telegramID)
 	} else {
-		r0 = ret.Get(0).(model.User)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*mysql.User)
+		}
 	}
 
 	var r1 error
@@ -107,24 +111,24 @@ func (_c *UserStorage_GetUserByTelegramID_Call) Run(run func(ctx context.Context
 	return _c
 }
 
-func (_c *UserStorage_GetUserByTelegramID_Call) Return(_a0 model.User, _a1 error) *UserStorage_GetUserByTelegramID_Call {
+func (_c *UserStorage_GetUserByTelegramID_Call) Return(_a0 *mysql.User, _a1 error) *UserStorage_GetUserByTelegramID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
 // Insert provides a mock function with given fields: ctx, user
-func (_m *UserStorage) Insert(ctx context.Context, user model.User) (int32, error) {
+func (_m *UserStorage) Insert(ctx context.Context, user mysql.User) (int, error) {
 	ret := _m.Called(ctx, user)
 
-	var r0 int32
-	if rf, ok := ret.Get(0).(func(context.Context, model.User) int32); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.User) int); ok {
 		r0 = rf(ctx, user)
 	} else {
-		r0 = ret.Get(0).(int32)
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, model.User) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, mysql.User) error); ok {
 		r1 = rf(ctx, user)
 	} else {
 		r1 = ret.Error(1)
@@ -140,29 +144,29 @@ type UserStorage_Insert_Call struct {
 
 // Insert is a helper method to define mock.On call
 //  - ctx context.Context
-//  - user model.User
+//  - user mysql.User
 func (_e *UserStorage_Expecter) Insert(ctx interface{}, user interface{}) *UserStorage_Insert_Call {
 	return &UserStorage_Insert_Call{Call: _e.mock.On("Insert", ctx, user)}
 }
 
-func (_c *UserStorage_Insert_Call) Run(run func(ctx context.Context, user model.User)) *UserStorage_Insert_Call {
+func (_c *UserStorage_Insert_Call) Run(run func(ctx context.Context, user mysql.User)) *UserStorage_Insert_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.User))
+		run(args[0].(context.Context), args[1].(mysql.User))
 	})
 	return _c
 }
 
-func (_c *UserStorage_Insert_Call) Return(_a0 int32, _a1 error) *UserStorage_Insert_Call {
+func (_c *UserStorage_Insert_Call) Return(_a0 int, _a1 error) *UserStorage_Insert_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
 // Update provides a mock function with given fields: ctx, user
-func (_m *UserStorage) Update(ctx context.Context, user model.User) error {
+func (_m *UserStorage) Update(ctx context.Context, user mysql.User) error {
 	ret := _m.Called(ctx, user)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, model.User) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.User) error); ok {
 		r0 = rf(ctx, user)
 	} else {
 		r0 = ret.Error(0)
@@ -178,14 +182,14 @@ type UserStorage_Update_Call struct {
 
 // Update is a helper method to define mock.On call
 //  - ctx context.Context
-//  - user model.User
+//  - user mysql.User
 func (_e *UserStorage_Expecter) Update(ctx interface{}, user interface{}) *UserStorage_Update_Call {
 	return &UserStorage_Update_Call{Call: _e.mock.On("Update", ctx, user)}
 }
 
-func (_c *UserStorage_Update_Call) Run(run func(ctx context.Context, user model.User)) *UserStorage_Update_Call {
+func (_c *UserStorage_Update_Call) Run(run func(ctx context.Context, user mysql.User)) *UserStorage_Update_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.User))
+		run(args[0].(context.Context), args[1].(mysql.User))
 	})
 	return _c
 }

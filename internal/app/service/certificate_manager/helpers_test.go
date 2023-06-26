@@ -7,7 +7,6 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 )
 
@@ -49,7 +48,7 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			args: args{
 				certificate: model.Certificate{
 					ID:      1,
-					Type:    pkgmodel.CertificateTypeFreePass,
+					Type:    model.CertificateTypeFreePass,
 					WonOn:   2,
 					SpentOn: model.NewMaybeInt32(100),
 					Info:    model.NewMaybeString("{}"),
@@ -68,7 +67,7 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			args: args{
 				certificate: model.Certificate{
 					ID:    1,
-					Type:  pkgmodel.CertificateTypeFreePass,
+					Type:  model.CertificateTypeFreePass,
 					WonOn: 2,
 					Info:  model.NewMaybeString("{}"),
 				},
@@ -85,7 +84,7 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			args: args{
 				certificate: model.Certificate{
 					ID:    1,
-					Type:  pkgmodel.CertificateTypeFreePass,
+					Type:  model.CertificateTypeFreePass,
 					WonOn: 2,
 				},
 			},

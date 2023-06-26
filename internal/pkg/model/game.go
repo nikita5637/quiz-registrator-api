@@ -57,7 +57,7 @@ func (g *Game) IsActive() bool {
 
 // ValidateGame ...
 func ValidateGame(game Game) error {
-	err := validation.Validate(game.LeagueID, validation.Required, validation.Min(1), validation.Max(pkgmodel.NumberOfLeagues-1))
+	err := validation.Validate(game.LeagueID, validation.Required, validation.Min(1), validation.Max(numberOfLeagues-1))
 	if err != nil {
 		return ErrInvalidLeagueID
 	}

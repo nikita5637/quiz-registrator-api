@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
@@ -44,7 +45,7 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 		if errors.Is(err, model.ErrUserRoleAlreadyExists) {
 			reason := fmt.Sprintf("role %s already exists for user %d", req.GetUserRole().GetRole(), req.GetUserRole().GetUserId())
 			st = model.GetStatus(ctx, codes.AlreadyExists, err, reason, userRoleAlreayExistsLexeme)
-		} else if errors.Is(err, model.ErrUserNotFound) {
+		} else if errors.Is(err, userroles.ErrUserNotFound) {
 			reason := fmt.Sprintf("user %d not found", req.GetUserRole().GetUserId())
 			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, i18n.UserNotFoundLexeme)
 		}

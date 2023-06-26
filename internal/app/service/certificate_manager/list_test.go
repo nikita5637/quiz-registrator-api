@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -34,14 +33,14 @@ func TestRegistrator_ListCertificates(t *testing.T) {
 		fx.certificatesFacade.EXPECT().ListCertificates(fx.ctx).Return([]model.Certificate{
 			{
 				ID:      1,
-				Type:    pkgmodel.CertificateTypeFreePass,
+				Type:    model.CertificateTypeFreePass,
 				WonOn:   1,
 				SpentOn: model.NewMaybeInt32(2),
 				Info:    model.NewMaybeString("{}"),
 			},
 			{
 				ID:      2,
-				Type:    pkgmodel.CertificateTypeBarBillPayment,
+				Type:    model.CertificateTypeBarBillPayment,
 				WonOn:   3,
 				SpentOn: model.NewMaybeInt32(2),
 				Info:    model.NewMaybeString("{}"),

@@ -32,11 +32,11 @@ service Service {
 	rpc DeleteCertificate(DeleteCertificateRequest) returns (google.protobuf.Empty) {
 	}
 
-	// Returns certificates
+	// ListCertificates returns certificates
 	rpc ListCertificates(google.protobuf.Empty) returns (ListCertificatesResponse) {
 	}
 
-	// Patches certificate
+	// PatchCertificate patches certificate
 	rpc PatchCertificate(PatchCertificateRequest) returns (Certificate) {
 	}
 }

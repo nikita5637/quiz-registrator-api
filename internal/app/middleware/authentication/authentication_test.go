@@ -39,12 +39,12 @@ func TestMiddleware_Authentication(t *testing.T) {
 		assert.Equal(t, codes.Unauthenticated, st.Code())
 	})
 
-	t.Run("error. authentication type telegram ID. invalid telegram ID", func(t *testing.T) {
+	t.Run("error. authentication type Telegram ID. invalid Telegram ID", func(t *testing.T) {
 		fx := tearUp(t)
 
 		ctx := metadata.NewIncomingContext(fx.ctx, metadata.New(
 			map[string]string{
-				telegramClientIDHeader: "invalid telegram ID",
+				telegramClientIDHeader: "invalid Telegram ID",
 			},
 		))
 
@@ -56,7 +56,7 @@ func TestMiddleware_Authentication(t *testing.T) {
 		assert.Equal(t, codes.Unauthenticated, st.Code())
 	})
 
-	t.Run("error. authentication type telegram ID. get user by telegram ID error", func(t *testing.T) {
+	t.Run("error. authentication type Telegram ID. get user by Telegram ID error", func(t *testing.T) {
 		fx := tearUp(t)
 
 		ctx := metadata.NewIncomingContext(fx.ctx, metadata.New(
@@ -75,7 +75,7 @@ func TestMiddleware_Authentication(t *testing.T) {
 		assert.Equal(t, codes.Unauthenticated, st.Code())
 	})
 
-	t.Run("ok. authentication type telegram ID", func(t *testing.T) {
+	t.Run("ok. authentication type Telegram ID", func(t *testing.T) {
 		fx := tearUp(t)
 
 		ctx := metadata.NewIncomingContext(fx.ctx, metadata.New(

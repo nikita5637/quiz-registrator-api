@@ -28,9 +28,9 @@ type ServiceClient interface {
 	CreateCertificate(ctx context.Context, in *CreateCertificateRequest, opts ...grpc.CallOption) (*Certificate, error)
 	// DeleteCertificate deletes new certificate
 	DeleteCertificate(ctx context.Context, in *DeleteCertificateRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// Returns certificates
+	// ListCertificates returns certificates
 	ListCertificates(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListCertificatesResponse, error)
-	// Patches certificate
+	// PatchCertificate patches certificate
 	PatchCertificate(ctx context.Context, in *PatchCertificateRequest, opts ...grpc.CallOption) (*Certificate, error)
 }
 
@@ -86,9 +86,9 @@ type ServiceServer interface {
 	CreateCertificate(context.Context, *CreateCertificateRequest) (*Certificate, error)
 	// DeleteCertificate deletes new certificate
 	DeleteCertificate(context.Context, *DeleteCertificateRequest) (*emptypb.Empty, error)
-	// Returns certificates
+	// ListCertificates returns certificates
 	ListCertificates(context.Context, *emptypb.Empty) (*ListCertificatesResponse, error)
-	// Patches certificate
+	// PatchCertificate patches certificate
 	PatchCertificate(context.Context, *PatchCertificateRequest) (*Certificate, error)
 	mustEmbedUnimplementedServiceServer()
 }

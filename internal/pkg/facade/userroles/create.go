@@ -28,7 +28,7 @@ func (f *Facade) CreateUserRole(ctx context.Context, newUserRole model.UserRole)
 		if err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
-					return fmt.Errorf("create user role error: %w", model.ErrUserNotFound)
+					return fmt.Errorf("create user role error: %w", ErrUserNotFound)
 				}
 			}
 

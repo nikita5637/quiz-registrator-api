@@ -24,7 +24,7 @@ func Test_getAuthenticationType(t *testing.T) {
 			want: "",
 		},
 		{
-			name: "authentication type telegram ID",
+			name: "authentication type Telegram ID",
 			args: args{
 				ctx: metadata.NewIncomingContext(context.Background(), metadata.New(
 					map[string]string{

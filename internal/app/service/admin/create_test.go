@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	"github.com/stretchr/testify/assert"
@@ -57,7 +58,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		fx.userRolesFacade.EXPECT().CreateUserRole(fx.ctx, model.UserRole{
 			UserID: 1,
 			Role:   model.RoleAdmin,
-		}).Return(model.UserRole{}, model.ErrUserNotFound)
+		}).Return(model.UserRole{}, userroles.ErrUserNotFound)
 
 		got, err := fx.implementation.CreateUserRole(fx.ctx, &adminpb.CreateUserRoleRequest{
 			UserRole: &adminpb.UserRole{

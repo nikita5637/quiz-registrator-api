@@ -19,6 +19,7 @@ import (
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
+	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
@@ -236,8 +237,14 @@ func main() {
 
 		usersFacadeConfig := users.Config{
 			UserStorage: userStorage,
+			TxManager:   txManager,
 		}
 		usersFacade := users.NewFacade(usersFacadeConfig)
+
+		userManagerServiceConfig := usermanagerservice.Config{
+			UsersFacade: usersFacade,
+		}
+		userManagerService := usermanagerservice.New(userManagerServiceConfig)
 
 		authenticationMiddleware := authentication.New(authentication.Config{
 			UsersFacade: usersFacade,
@@ -261,11 +268,11 @@ func main() {
 			CroupierService:           croupierService,
 			GameResultManagerService:  gameResultManagerService,
 			PhotoManagerService:       photoManagerService,
+			UserManagerService:        userManagerService,
 
 			GamesFacade:   gamesFacade,
 			LeaguesFacade: leaguesFacade,
 			PlacesFacade:  placesFacade,
-			UsersFacade:   usersFacade,
 		}
 
 		reg := registrator.New(registratorConfig)

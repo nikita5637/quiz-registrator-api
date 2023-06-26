@@ -13,133 +13,14 @@ import (
 )
 
 func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
-	/*
-		t.Run("validate register for lottery request error. gameID lt 1", func(t *testing.T) {
-			fx := tearUp(t)
-
-			got, err := fx.implementation.RegisterForLottery(fx.ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 0,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.InvalidArgument, st.Code())
-			assert.Len(t, st.Details(), 0)
-		})
-
-		t.Run("error. empty user.Email", func(t *testing.T) {
-			fx := tearUp(t)
-
-			ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
-				Name:  "user name",
-				Phone: "user phone",
-			})
-
-			got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 1,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.PermissionDenied, st.Code())
-			assert.Len(t, st.Details(), 2)
-		})
-
-		t.Run("error. empty user.Name", func(t *testing.T) {
-			fx := tearUp(t)
-
-			ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
-				Email: "user email",
-				Phone: "user phone",
-			})
-
-			got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 1,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.PermissionDenied, st.Code())
-			assert.Len(t, st.Details(), 2)
-		})
-
-		t.Run("error. empty user.Phone", func(t *testing.T) {
-			fx := tearUp(t)
-
-			ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
-				Email: "user email",
-				Name:  "user name",
-			})
-
-			got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 1,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.PermissionDenied, st.Code())
-			assert.Len(t, st.Details(), 2)
-		})
-
-		t.Run("error. gamePlayersFacade error", func(t *testing.T) {
-			fx := tearUp(t)
-
-			ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
-				ID:    777,
-				Email: "user email",
-				Name:  "user name",
-				Phone: "user phone",
-			})
-
-			fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(false, errors.New("some error"))
-
-			got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 1,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.Internal, st.Code())
-			assert.Len(t, st.Details(), 0)
-		})
-
-		t.Run("error. user not registered for a game", func(t *testing.T) {
-			fx := tearUp(t)
-
-			ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
-				ID:    777,
-				Email: "user email",
-				Name:  "user name",
-				Phone: "user phone",
-			})
-
-			fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(false, nil)
-
-			got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
-				GameId: 1,
-			})
-			assert.Nil(t, got)
-			assert.Error(t, err)
-
-			st := status.Convert(err)
-			assert.Equal(t, codes.PermissionDenied, st.Code())
-			assert.Len(t, st.Details(), 2)
-		})
-	*/
-
 	t.Run("error while get game", func(t *testing.T) {
 		fx := tearUp(t)
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -162,9 +43,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -186,9 +67,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -201,9 +82,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 			ID: 1,
 		}, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}).Return(0, model.ErrLotteryNotAvailable)
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
@@ -222,9 +103,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -237,9 +118,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 			ID: 1,
 		}, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}).Return(0, model.ErrLotteryNotImplemented)
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
@@ -258,9 +139,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -273,9 +154,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 			ID: 1,
 		}, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
@@ -294,9 +175,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -309,9 +190,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 			ID: 1,
 		}, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}).Return(100, nil)
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
@@ -328,9 +209,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 
 		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		})
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
@@ -343,9 +224,9 @@ func TestRegistrator_RegistRegisteredByerForLottery(t *testing.T) {
 			ID: 1,
 		}, model.User{
 			ID:    777,
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}).Return(0, nil)
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{

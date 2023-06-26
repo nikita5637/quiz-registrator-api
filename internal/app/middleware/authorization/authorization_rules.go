@@ -78,15 +78,12 @@ var grpcRules = map[string]roles{
 		Public: struct{}{},
 	},
 	//
-	// users
+	// registrator
 	//
 	"/registrator.RegistratorService/AddGame": {
 		Management: struct{}{},
 	},
 	"/registrator.RegistratorService/AddGames": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/CreateUser": {
 		Public: struct{}{},
 	},
 	"/registrator.RegistratorService/DeleteGame": {
@@ -113,15 +110,6 @@ var grpcRules = map[string]roles{
 	"/registrator.RegistratorService/GetRegisteredGames": {
 		Public: struct{}{},
 	},
-	"/registrator.RegistratorService/GetUser": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/GetUserByID": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetUserByTelegramID": {
-		Public: struct{}{},
-	},
 	"/registrator.RegistratorService/GetUserGames": {
 		User: struct{}{},
 	},
@@ -137,19 +125,22 @@ var grpcRules = map[string]roles{
 	"/registrator.RegistratorService/UnregisterPlayer": {
 		User: struct{}{},
 	},
-	"/registrator.RegistratorService/UpdateUserEmail": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UpdateUserName": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UpdateUserPhone": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UpdateUserState": {
-		User: struct{}{},
-	},
 	"/registrator.RegistratorService/UpdatePayment": {
 		User: struct{}{},
+	},
+	//
+	// user_manager
+	//
+	"/user_manager.Service/CreateUser": {
+		Public: struct{}{},
+	},
+	"/user_manager.Service/GetUser": {
+		Public: struct{}{},
+	},
+	"/user_manager.Service/GetUserByTelegramID": {
+		Public: struct{}{},
+	},
+	"/user_manager.Service/PatchUser": {
+		Public: struct{}{},
 	},
 }

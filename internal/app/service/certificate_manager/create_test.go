@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -36,7 +35,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type: certificatemanagerpb.CertificateType(pkgmodel.NumberOfCertificateTypes),
+				Type: certificatemanagerpb.CertificateType(100),
 				Info: "{}",
 			},
 		})
@@ -52,7 +51,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
@@ -79,7 +78,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
@@ -106,7 +105,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
@@ -133,13 +132,13 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}).Return(model.Certificate{
 			ID:      777,
-			Type:    pkgmodel.CertificateTypeFreePass,
+			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
@@ -244,7 +243,7 @@ func Test_validateCreateCertificateRequest(t *testing.T) {
 				ctx: context.Background(),
 				req: &certificatemanagerpb.CreateCertificateRequest{
 					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType(pkgmodel.NumberOfCertificateTypes),
+						Type: certificatemanagerpb.CertificateType(100),
 						Info: "{}",
 					},
 				},

@@ -26,6 +26,14 @@ func (v MaybeInt32) ToSQL() sql.NullInt32 {
 	}
 }
 
+// ToSQLNullInt64 ...
+func (v MaybeInt32) ToSQLNullInt64() sql.NullInt64 {
+	return sql.NullInt64{
+		Valid: v.Valid,
+		Int64: int64(v.Value),
+	}
+}
+
 // MaybeString ...
 type MaybeString struct {
 	Valid bool

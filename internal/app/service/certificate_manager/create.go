@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -28,7 +27,7 @@ func (m *CertificateManager) CreateCertificate(ctx context.Context, req *certifi
 	}
 
 	certificate, err := m.certificatesFacade.CreateCertificate(ctx, model.Certificate{
-		Type:    pkgmodel.CertificateType(req.GetCertificate().GetType()),
+		Type:    model.CertificateType(req.GetCertificate().GetType()),
 		WonOn:   req.GetCertificate().GetWonOn(),
 		SpentOn: model.NewMaybeInt32(req.GetCertificate().GetSpentOn()),
 		Info:    model.NewMaybeString(req.GetCertificate().GetInfo()),
