@@ -279,7 +279,7 @@ func Test_validateCreateUserRequest(t *testing.T) {
 			},
 		})
 		assert.Error(t, err)
-		assert.Equal(t, errInvalidTelegramID, err)
+		assert.Equal(t, errUserTelegramIDIsRequired, err)
 	})
 
 	t.Run("invalid email", func(t *testing.T) {

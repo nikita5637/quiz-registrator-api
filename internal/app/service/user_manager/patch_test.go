@@ -37,29 +37,6 @@ func TestImplementation_PatchUser(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
-	t.Run("validation error. user name is required", func(t *testing.T) {
-		fx := tearUp(t)
-
-		got, err := fx.implementation.PatchUser(fx.ctx, &usermanagerpb.PatchUserRequest{
-			User: &usermanagerpb.User{
-				Id:   1,
-				Name: "",
-			},
-			UpdateMask: &fieldmaskpb.FieldMask{
-				Paths: []string{
-					"name",
-					"telegram_id",
-				},
-			},
-		})
-		assert.Nil(t, got)
-		assert.Error(t, err)
-
-		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
-		assert.Len(t, st.Details(), 2)
-	})
-
 	t.Run("validation error. user name length gt 100", func(t *testing.T) {
 		fx := tearUp(t)
 
@@ -374,8 +351,7 @@ func Test_validatePatchUserRequest(t *testing.T) {
 				TelegramId: 111,
 			},
 		})
-		assert.Error(t, err)
-		assert.Equal(t, errUserNameIsRequired, err)
+		assert.NoError(t, err)
 	})
 
 	t.Run("name with invalid characters", func(t *testing.T) {
@@ -444,6 +420,20 @@ func Test_validatePatchUserRequest(t *testing.T) {
 			},
 		})
 		assert.NoError(t, err)
+	})
+
+	t.Run("user state eq 100", func(t *testing.T) {
+		err := validatePatchUserRequest(&usermanagerpb.PatchUserRequest{
+			User: &usermanagerpb.User{
+				Name:       "Имя",
+				TelegramId: 111,
+				Email:      "email@email.ru",
+				Phone:      "+79998887766",
+				State:      100,
+			},
+		})
+		assert.Error(t, err)
+		assert.Equal(t, errInvalidUserState, err)
 	})
 
 	t.Run("ok", func(t *testing.T) {

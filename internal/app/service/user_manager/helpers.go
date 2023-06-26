@@ -11,22 +11,12 @@ import (
 var (
 	errInvalidEmailFormat = errors.New("invalid email format")
 	errInvalidPhoneFormat = errors.New("invalid phone format")
-	errInvalidTelegramID  = errors.New("invalid Telegram ID")
 	errInvalidUserState   = errors.New("invalid user state")
 	errUserNameLength     = errors.New("name length must be between 1 and 100 characters")
-	errUserNameIsRequired = errors.New("user name is required")
 
 	errNameLengthValidateLexeme = i18n.Lexeme{
 		Key:      "err_name_length_validation",
 		FallBack: "Name length must be between 1 and 100 characters",
-	}
-	errNameRequiredhValidateLexeme = i18n.Lexeme{
-		Key:      "err_name_required_validation",
-		FallBack: "User name is required",
-	}
-	invalidTelegramIDLexeme = i18n.Lexeme{
-		Key:      "invalid_telegram_id",
-		FallBack: "Invalid Telegram ID",
 	}
 	invalidEmailLexeme = i18n.Lexeme{
 		Key:      "invalid_email",

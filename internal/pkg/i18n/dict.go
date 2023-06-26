@@ -36,7 +36,6 @@ var dictionary = map[string]map[string]string{
 		"invalid_price":                               "Некорректная цена",
 		"invalid_role":                                "Некорректная роль",
 		"invalid_state":                               "Некорректный стейт пользователя",
-		"invalid_telegram_id":                         "Некорректный Telegram ID",
 		"league_not_found":                            "Лига не найдена",
 		"lottery_not_available":                       "Лотерея не доступна",
 		"lottery_not_implemented":                     "Лотерея не реализована для этой лиги",
@@ -56,6 +55,7 @@ var dictionary = map[string]map[string]string{
 		// errors
 		"err_name_alphabet_validation": "Допустим только русский набор букв",
 		"err_name_length_validation":   "Длина имени должна быть от 1 до 100 символов",
-		"err_name_required_validation": "Имя пользователя обязательно",
+		"err_name_is_required":         "Имя пользователя обязательно",
+		"err_telegram_id_is_required":  "Telegram ID обязателен",
 	},
 }

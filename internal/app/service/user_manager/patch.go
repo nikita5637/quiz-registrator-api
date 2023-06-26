@@ -30,13 +30,10 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 	if err := validatePatchUserRequest(req); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 		if errors.Is(err, errUserNameAlphabet) ||
-			errors.Is(err, errUserNameIsRequired) ||
 			errors.Is(err, errUserNameLength) {
 			lexeme := i18n.Lexeme{}
 			if errors.Is(err, errUserNameAlphabet) {
 				lexeme = errNameAlphabetValidateLexeme
-			} else if errors.Is(err, errUserNameIsRequired) {
-				lexeme = errNameRequiredhValidateLexeme
 			} else if errors.Is(err, errUserNameLength) {
 				lexeme = errNameLengthValidateLexeme
 			}
@@ -85,15 +82,11 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 }
 
 func validatePatchUserRequest(req *usermanagerpb.PatchUserRequest) error {
-	if err := validation.Validate(req.GetUser().GetName(), validation.Required); err != nil {
-		return errUserNameIsRequired
-	}
-
-	if err := validation.Validate(req.GetUser().GetName(), validation.Match(regexp.MustCompile("^[а-яА-Я ]+$"))); err != nil {
+	if err := validation.Validate(req.GetUser().GetName(), validation.When(len(req.GetUser().GetName()) > 0, validation.Match(regexp.MustCompile("^[а-яА-Я ]+$")))); err != nil {
 		return errUserNameAlphabet
 	}
 
-	if err := validation.Validate(req.GetUser().GetName(), validation.Length(1, 100)); err != nil {
+	if err := validation.Validate(req.GetUser().GetName(), validation.When(len(req.GetUser().GetName()) > 0, validation.Length(1, 100))); err != nil {
 		return errUserNameLength
 	}
 
@@ -105,7 +98,7 @@ func validatePatchUserRequest(req *usermanagerpb.PatchUserRequest) error {
 		return errInvalidPhoneFormat
 	}
 
-	if err := validation.Validate(model.UserState(req.GetUser().GetState()), validation.By(model.ValidateUserState)); err != nil {
+	if err := validation.Validate(model.UserState(req.GetUser().GetState()), validation.When(req.GetUser().GetState() != usermanagerpb.UserState_USER_STATE_INVALID, validation.By(model.ValidateUserState))); err != nil {
 		return errInvalidUserState
 	}
 
