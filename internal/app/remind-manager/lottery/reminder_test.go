@@ -11,6 +11,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -201,11 +202,11 @@ func TestReminder_Run(t *testing.T) {
 		fx.croupier.EXPECT().GetGamesWithActiveLottery(ctx).Return([]model.Game{
 			{
 				ID:       1,
-				LeagueID: model.LeagueQuizPlease,
+				LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			},
 			{
 				ID:       2,
-				LeagueID: model.LeagueSquiz,
+				LeagueID: int32(leaguepb.LeagueID_SQUIZ),
 			},
 		}, nil)
 

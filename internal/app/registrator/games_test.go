@@ -7,6 +7,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -448,7 +449,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 		game := model.Game{
 			ID:          1,
 			ExternalID:  2,
-			LeagueID:    model.LeagueQuizPlease,
+			LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:        pkgmodel.GameTypeClassic,
 			Number:      "number",
 			Name:        "name",
@@ -476,7 +477,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 			Game: &commonpb.Game{
 				Id:                  1,
 				ExternalId:          2,
-				LeagueId:            model.LeagueQuizPlease,
+				LeagueId:            int32(leaguepb.LeagueID_QUIZ_PLEASE),
 				Type:                commonpb.GameType_GAME_TYPE_CLASSIC,
 				Number:              "number",
 				Name:                "name",
@@ -598,7 +599,7 @@ func Test_convertModelGameToPBGame(t *testing.T) {
 		game := model.Game{
 			ID:          1,
 			ExternalID:  2,
-			LeagueID:    model.LeagueQuizPlease,
+			LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:        1,
 			Number:      "1",
 			Name:        "name",
@@ -621,7 +622,7 @@ func Test_convertModelGameToPBGame(t *testing.T) {
 		assert.Equal(t, &commonpb.Game{
 			Id:                  1,
 			ExternalId:          2,
-			LeagueId:            model.LeagueQuizPlease,
+			LeagueId:            int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:                1,
 			Number:              "1",
 			Name:                "name",

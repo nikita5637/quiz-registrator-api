@@ -5,16 +5,16 @@ package league;
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/league;league";
 
 enum LeagueID {
-	LEAGUE_ID_INVALID = 0;
-	LEAGUE_ID_QUIZ_PLEASE = 1;
-	LEAGUE_ID_SQUIZ = 2;
-	LEAGUE_ID_SIXTY_SECONDS = 3;
-	LEAGUE_ID_SHAKER = 4;
-	LEAGUE_ID_WOW = 5;
-	LEAGUE_ID_MOZGOBOYNYA = 6;
-	LEAGUE_ID_NASH_QUIZ = 7;
-	LEAGUE_ID_SMUZI = 8;
-	LEAGUE_ID_QUIZ_PEACE = 9;
+	INVALID = 0;
+	QUIZ_PLEASE = 1;
+	SQUIZ = 2;
+	SIXTY_SECONDS = 3;
+	SHAKER = 4;
+	WOW = 5;
+	MOZGOBOYNYA = 6;
+	NASH_QUIZ = 7;
+	SMUZI = 8;
+	QUIZ_PEACE = 9;
 }
 
 message League {

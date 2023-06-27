@@ -7,6 +7,7 @@ import (
 	"context"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 )
 
 // GamesFacade ...
@@ -39,8 +40,8 @@ func New(cfg Config) *Croupier {
 	return &Croupier{
 		gamesFacade: cfg.GamesFacade,
 		leaguesWithLottery: []int32{
-			model.LeagueQuizPlease,
-			model.LeagueSquiz,
+			int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			int32(leaguepb.LeagueID_SQUIZ),
 		},
 		quizPleaseCroupier: cfg.QuizPleaseCroupier,
 		squizCroupier:      cfg.SquizCroupier,

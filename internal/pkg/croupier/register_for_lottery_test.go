@@ -9,6 +9,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -41,7 +42,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			My:       true,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
@@ -67,7 +68,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 		}
 		game.My = true
 
@@ -140,7 +141,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: model.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 		}
 		game.My = true
 
