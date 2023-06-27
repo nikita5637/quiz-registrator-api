@@ -47,6 +47,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrWonOnGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -86,6 +87,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrSpentOnGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

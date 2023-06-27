@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +23,7 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrCertificateNotFound)
+		assert.ErrorIs(t, err, ErrCertificateNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -63,7 +62,7 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrCertificateNotFound)
+		assert.ErrorIs(t, err, ErrCertificateNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

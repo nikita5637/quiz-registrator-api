@@ -5,8 +5,6 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
 // DeleteCertificate ...
@@ -15,14 +13,14 @@ func (f *Facade) DeleteCertificate(ctx context.Context, id int32) error {
 		dbCertificate, err := f.certificateStorage.GetCertificateByID(ctx, int(id))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return fmt.Errorf("get certificate by ID error: %w", model.ErrCertificateNotFound)
+				return fmt.Errorf("get certificate by ID error: %w", ErrCertificateNotFound)
 			}
 
 			return fmt.Errorf("get certificate by ID error: %w", err)
 		}
 
 		if dbCertificate.DeletedAt.Valid {
-			return fmt.Errorf("get certificate by ID error: %w", model.ErrCertificateNotFound)
+			return fmt.Errorf("get certificate by ID error: %w", ErrCertificateNotFound)
 		}
 
 		return f.certificateStorage.DeleteCertificate(ctx, int(id))

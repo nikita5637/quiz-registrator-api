@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"google.golang.org/grpc/codes"
@@ -35,13 +36,13 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 	}, req.GetUpdateMask().GetPaths())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, model.ErrCertificateNotFound) {
+		if errors.Is(err, certificates.ErrCertificateNotFound) {
 			reason := fmt.Sprintf("certificate with ID %d not found", req.GetCertificate().GetId())
 			st = model.GetStatus(ctx, codes.NotFound, err, reason, certificateNotFoundLexeme)
-		} else if errors.Is(err, model.ErrWonOnGameNotFound) {
+		} else if errors.Is(err, certificates.ErrWonOnGameNotFound) {
 			reason := fmt.Sprintf("won on game with id %d not found", req.GetCertificate().GetWonOn())
 			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, wonOnGameNotFoundLexeme)
-		} else if errors.Is(err, model.ErrSpentOnGameNotFound) {
+		} else if errors.Is(err, certificates.ErrSpentOnGameNotFound) {
 			reason := fmt.Sprintf("spent on game with id %d not found", req.GetCertificate().GetSpentOn())
 			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, spentOnGameNotFoundLexeme)
 		}

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
@@ -76,7 +77,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
-		}, []string{"type", "spent_on"}).Return(model.Certificate{}, model.ErrCertificateNotFound)
+		}, []string{"type", "spent_on"}).Return(model.Certificate{}, certificates.ErrCertificateNotFound)
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
@@ -111,7 +112,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
-		}, []string{"type", "spent_on"}).Return(model.Certificate{}, model.ErrWonOnGameNotFound)
+		}, []string{"type", "spent_on"}).Return(model.Certificate{}, certificates.ErrWonOnGameNotFound)
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
@@ -146,7 +147,7 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 			WonOn:   10,
 			SpentOn: model.NewMaybeInt32(190),
 			Info:    model.NewMaybeString("{}"),
-		}, []string{"type", "spent_on"}).Return(model.Certificate{}, model.ErrSpentOnGameNotFound)
+		}, []string{"type", "spent_on"}).Return(model.Certificate{}, certificates.ErrSpentOnGameNotFound)
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{

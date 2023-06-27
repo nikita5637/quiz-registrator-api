@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -16,7 +16,7 @@ func TestImplementation_DeleteUserRole(t *testing.T) {
 	t.Run("error. role not found while delete user role", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.userRolesFacade.EXPECT().DeleteUserRole(fx.ctx, int32(1)).Return(model.ErrUserRoleNotFound)
+		fx.userRolesFacade.EXPECT().DeleteUserRole(fx.ctx, int32(1)).Return(userroles.ErrUserRoleNotFound)
 
 		got, err := fx.implementation.DeleteUserRole(fx.ctx, &admin.DeleteUserRoleRequest{
 			Id: 1,

@@ -36,7 +36,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		fx.userRolesFacade.EXPECT().CreateUserRole(fx.ctx, model.UserRole{
 			UserID: 1,
 			Role:   model.RoleAdmin,
-		}).Return(model.UserRole{}, model.ErrUserRoleAlreadyExists)
+		}).Return(model.UserRole{}, userroles.ErrUserRoleAlreadyExists)
 
 		got, err := fx.implementation.CreateUserRole(fx.ctx, &adminpb.CreateUserRoleRequest{
 			UserRole: &adminpb.UserRole{

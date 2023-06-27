@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -16,7 +16,7 @@ func TestRegistrator_DeleteCertificate(t *testing.T) {
 	t.Run("error certificate not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.certificatesFacade.EXPECT().DeleteCertificate(fx.ctx, int32(1)).Return(model.ErrCertificateNotFound)
+		fx.certificatesFacade.EXPECT().DeleteCertificate(fx.ctx, int32(1)).Return(certificates.ErrCertificateNotFound)
 
 		got, err := fx.certificateManager.DeleteCertificate(fx.ctx, &certificatemanagerpb.DeleteCertificateRequest{
 			Id: 1,

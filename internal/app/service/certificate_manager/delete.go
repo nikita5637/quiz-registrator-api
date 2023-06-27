@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"google.golang.org/grpc/codes"
@@ -17,7 +18,7 @@ func (m *CertificateManager) DeleteCertificate(ctx context.Context, req *certifi
 	err := m.certificatesFacade.DeleteCertificate(ctx, req.GetId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, model.ErrCertificateNotFound) {
+		if errors.Is(err, certificates.ErrCertificateNotFound) {
 			reason := fmt.Sprintf("certificate with ID %d not found", req.GetId())
 			st = model.GetStatus(ctx, codes.NotFound, err, reason, certificateNotFoundLexeme)
 		}

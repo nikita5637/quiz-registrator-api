@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
@@ -25,7 +26,7 @@ func (i *Implementation) DeleteUserRole(ctx context.Context, req *adminpb.Delete
 	err := i.userRolesFacade.DeleteUserRole(ctx, req.GetId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, model.ErrUserRoleNotFound) {
+		if errors.Is(err, userroles.ErrUserRoleNotFound) {
 			reason := fmt.Sprintf("user role with ID %d not found", req.GetId())
 			st = model.GetStatus(ctx, codes.NotFound, err, reason, userRoleNotFoundLexeme)
 		}

@@ -42,7 +42,7 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 	})
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, model.ErrUserRoleAlreadyExists) {
+		if errors.Is(err, userroles.ErrUserRoleAlreadyExists) {
 			reason := fmt.Sprintf("role %s already exists for user %d", req.GetUserRole().GetRole(), req.GetUserRole().GetUserId())
 			st = model.GetStatus(ctx, codes.AlreadyExists, err, reason, userRoleAlreayExistsLexeme)
 		} else if errors.Is(err, userroles.ErrUserNotFound) {

@@ -6,7 +6,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -24,7 +23,7 @@ func TestFacade_DeleteUserRole(t *testing.T) {
 
 		err := fx.facade.DeleteUserRole(fx.ctx, 1)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrUserRoleNotFound)
+		assert.ErrorIs(t, err, ErrUserRoleNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -61,7 +60,7 @@ func TestFacade_DeleteUserRole(t *testing.T) {
 
 		err := fx.facade.DeleteUserRole(fx.ctx, 1)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrUserRoleNotFound)
+		assert.ErrorIs(t, err, ErrUserRoleNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

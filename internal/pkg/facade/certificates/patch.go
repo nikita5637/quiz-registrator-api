@@ -25,7 +25,7 @@ func (f *Facade) PatchCertificate(ctx context.Context, certificate model.Certifi
 		originalDBCertificate, err := f.certificateStorage.GetCertificateByID(ctx, int(certificate.ID))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return fmt.Errorf("get original certificate error: %w", model.ErrCertificateNotFound)
+				return fmt.Errorf("get original certificate error: %w", ErrCertificateNotFound)
 			}
 
 			return fmt.Errorf("get original certificate error: %w", err)
@@ -50,10 +50,10 @@ func (f *Facade) PatchCertificate(ctx context.Context, certificate model.Certifi
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
 					if i := strings.Index(err.Message, gameIDFK1ConstraintName); i != -1 {
-						return fmt.Errorf("patch certificate error: %w", model.ErrWonOnGameNotFound)
+						return fmt.Errorf("patch certificate error: %w", ErrWonOnGameNotFound)
 					}
 
-					return fmt.Errorf("patch certificate error: %w", model.ErrSpentOnGameNotFound)
+					return fmt.Errorf("patch certificate error: %w", ErrSpentOnGameNotFound)
 				}
 			}
 

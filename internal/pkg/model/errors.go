@@ -10,13 +10,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// Certificate facade errors
-var (
-	ErrCertificateNotFound = errors.New("certificate not found")
-	ErrWonOnGameNotFound   = errors.New("won on game not found")
-	ErrSpentOnGameNotFound = errors.New("spent on game not found")
-)
-
 // Games facade errors
 var (
 	ErrGameNoFreeSlots         = errors.New("game no free slots")
@@ -38,14 +31,6 @@ var (
 var (
 	ErrLotteryNotAvailable   = errors.New("lottery not available")
 	ErrLotteryNotImplemented = errors.New("lottery not implemented")
-)
-
-// User roles facade errors
-var (
-	// ErrUserRoleAlreadyExists ...
-	ErrUserRoleAlreadyExists = errors.New("user role already exists")
-	// ErrUserRoleNotFound ...
-	ErrUserRoleNotFound = errors.New("user role not found")
 )
 
 // GetStatus ...

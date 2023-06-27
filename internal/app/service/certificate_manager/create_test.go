@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
@@ -55,7 +56,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
-		}).Return(model.Certificate{}, model.ErrWonOnGameNotFound)
+		}).Return(model.Certificate{}, certificates.ErrWonOnGameNotFound)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
@@ -82,7 +83,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
-		}).Return(model.Certificate{}, model.ErrSpentOnGameNotFound)
+		}).Return(model.Certificate{}, certificates.ErrSpentOnGameNotFound)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
