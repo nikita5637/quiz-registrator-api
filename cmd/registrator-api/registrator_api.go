@@ -20,6 +20,7 @@ import (
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
+	placeservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/place"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
@@ -241,6 +242,11 @@ func main() {
 		}
 		placesFacade := places.NewFacade(placesFacadeConfig)
 
+		placeServiceConfig := placeservice.Config{
+			PlacesFacade: placesFacade,
+		}
+		placeService := placeservice.New(placeServiceConfig)
+
 		usersFacadeConfig := users.Config{
 			UserStorage: userStorage,
 			TxManager:   txManager,
@@ -275,10 +281,10 @@ func main() {
 			GameResultManagerService:  gameResultManagerService,
 			LeagueService:             leagueService,
 			PhotoManagerService:       photoManagerService,
+			PlaceService:              placeService,
 			UserManagerService:        userManagerService,
 
-			GamesFacade:  gamesFacade,
-			PlacesFacade: placesFacade,
+			GamesFacade: gamesFacade,
 		}
 
 		reg := registrator.New(registratorConfig)

@@ -33,10 +33,6 @@ type RegistratorServiceClient interface {
 	GetGameByID(ctx context.Context, in *GetGameByIDRequest, opts ...grpc.CallOption) (*GetGameByIDResponse, error)
 	// GetGames returns games
 	GetGames(ctx context.Context, in *GetGamesRequest, opts ...grpc.CallOption) (*GetGamesResponse, error)
-	// GetPlaceByID returns place by place ID
-	GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error)
-	// GetPlaceByNameAndAddress returns place by name and address
-	GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(ctx context.Context, in *GetPlayersByGameIDRequest, opts ...grpc.CallOption) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
@@ -102,24 +98,6 @@ func (c *registratorServiceClient) GetGameByID(ctx context.Context, in *GetGameB
 func (c *registratorServiceClient) GetGames(ctx context.Context, in *GetGamesRequest, opts ...grpc.CallOption) (*GetGamesResponse, error) {
 	out := new(GetGamesResponse)
 	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetGames", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *registratorServiceClient) GetPlaceByID(ctx context.Context, in *GetPlaceByIDRequest, opts ...grpc.CallOption) (*GetPlaceByIDResponse, error) {
-	out := new(GetPlaceByIDResponse)
-	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetPlaceByID", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *registratorServiceClient) GetPlaceByNameAndAddress(ctx context.Context, in *GetPlaceByNameAndAddressRequest, opts ...grpc.CallOption) (*GetPlaceByNameAndAddressResponse, error) {
-	out := new(GetPlaceByNameAndAddressResponse)
-	err := c.cc.Invoke(ctx, "/registrator.RegistratorService/GetPlaceByNameAndAddress", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -212,10 +190,6 @@ type RegistratorServiceServer interface {
 	GetGameByID(context.Context, *GetGameByIDRequest) (*GetGameByIDResponse, error)
 	// GetGames returns games
 	GetGames(context.Context, *GetGamesRequest) (*GetGamesResponse, error)
-	// GetPlaceByID returns place by place ID
-	GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error)
-	// GetPlaceByNameAndAddress returns place by name and address
-	GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error)
 	// GetPlayersByGameID returns list of players by game ID
 	GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error)
 	// GetRegisteredGames returns registered games
@@ -253,12 +227,6 @@ func (UnimplementedRegistratorServiceServer) GetGameByID(context.Context, *GetGa
 }
 func (UnimplementedRegistratorServiceServer) GetGames(context.Context, *GetGamesRequest) (*GetGamesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGames not implemented")
-}
-func (UnimplementedRegistratorServiceServer) GetPlaceByID(context.Context, *GetPlaceByIDRequest) (*GetPlaceByIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByID not implemented")
-}
-func (UnimplementedRegistratorServiceServer) GetPlaceByNameAndAddress(context.Context, *GetPlaceByNameAndAddressRequest) (*GetPlaceByNameAndAddressResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetPlaceByNameAndAddress not implemented")
 }
 func (UnimplementedRegistratorServiceServer) GetPlayersByGameID(context.Context, *GetPlayersByGameIDRequest) (*GetPlayersByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPlayersByGameID not implemented")
@@ -383,42 +351,6 @@ func _RegistratorService_GetGames_Handler(srv interface{}, ctx context.Context, 
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RegistratorServiceServer).GetGames(ctx, req.(*GetGamesRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RegistratorService_GetPlaceByID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPlaceByIDRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegistratorServiceServer).GetPlaceByID(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/registrator.RegistratorService/GetPlaceByID",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistratorServiceServer).GetPlaceByID(ctx, req.(*GetPlaceByIDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _RegistratorService_GetPlaceByNameAndAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetPlaceByNameAndAddressRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/registrator.RegistratorService/GetPlaceByNameAndAddress",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(RegistratorServiceServer).GetPlaceByNameAndAddress(ctx, req.(*GetPlaceByNameAndAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -593,14 +525,6 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGames",
 			Handler:    _RegistratorService_GetGames_Handler,
-		},
-		{
-			MethodName: "GetPlaceByID",
-			Handler:    _RegistratorService_GetPlaceByID_Handler,
-		},
-		{
-			MethodName: "GetPlaceByNameAndAddress",
-			Handler:    _RegistratorService_GetPlaceByNameAndAddress_Handler,
 		},
 		{
 			MethodName: "GetPlayersByGameID",

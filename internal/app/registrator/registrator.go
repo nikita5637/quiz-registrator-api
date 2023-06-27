@@ -1,5 +1,4 @@
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
-//go:generate mockery --case underscore --name PlacesFacade --with-expecter
 
 package registrator
 
@@ -21,6 +20,7 @@ import (
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
+	placepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/place"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
 	"google.golang.org/grpc"
@@ -45,12 +45,6 @@ type GamesFacade interface {
 	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
 }
 
-// PlacesFacade ...
-type PlacesFacade interface {
-	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
-	GetPlaceByNameAndAddress(ctx context.Context, name, address string) (model.Place, error)
-}
-
 // Registrator ...
 type Registrator struct {
 	bindAddr   string
@@ -63,10 +57,10 @@ type Registrator struct {
 	gameResultManagerService  gameresultmanagerpb.ServiceServer
 	leagueService             leaguepb.ServiceServer
 	photoManagerService       photomanagerpb.ServiceServer
+	placeService              placepb.ServiceServer
 	userManagerService        usermanagerpb.ServiceServer
 
-	gamesFacade  GamesFacade
-	placesFacade PlacesFacade
+	gamesFacade GamesFacade
 
 	registratorpb.UnimplementedRegistratorServiceServer
 }
@@ -87,10 +81,10 @@ type Config struct {
 	GameResultManagerService  gameresultmanagerpb.ServiceServer
 	LeagueService             leaguepb.ServiceServer
 	PhotoManagerService       photomanagerpb.ServiceServer
+	PlaceService              placepb.ServiceServer
 	UserManagerService        usermanagerpb.ServiceServer
 
-	GamesFacade  GamesFacade
-	PlacesFacade PlacesFacade
+	GamesFacade GamesFacade
 }
 
 // New ...
@@ -104,10 +98,10 @@ func New(cfg Config) *Registrator {
 		gameResultManagerService:  cfg.GameResultManagerService,
 		leagueService:             cfg.LeagueService,
 		photoManagerService:       cfg.PhotoManagerService,
+		placeService:              cfg.PlaceService,
 		userManagerService:        cfg.UserManagerService,
 
-		gamesFacade:  cfg.GamesFacade,
-		placesFacade: cfg.PlacesFacade,
+		gamesFacade: cfg.GamesFacade,
 	}
 
 	var opts []grpc.ServerOption
@@ -126,6 +120,7 @@ func New(cfg Config) *Registrator {
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
 	leaguepb.RegisterServiceServer(s, registrator.leagueService)
 	photomanagerpb.RegisterServiceServer(s, registrator.photoManagerService)
+	placepb.RegisterServiceServer(s, registrator.placeService)
 	usermanagerpb.RegisterServiceServer(s, registrator.userManagerService)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)
 

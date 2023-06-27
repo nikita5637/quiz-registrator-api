@@ -11,21 +11,18 @@ type fixture struct {
 	ctx         context.Context
 	registrator *Registrator
 
-	gamesFacade  *mocks.GamesFacade
-	placesFacade *mocks.PlacesFacade
+	gamesFacade *mocks.GamesFacade
 }
 
 func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		gamesFacade:  mocks.NewGamesFacade(t),
-		placesFacade: mocks.NewPlacesFacade(t),
+		gamesFacade: mocks.NewGamesFacade(t),
 	}
 
 	fx.registrator = &Registrator{
-		gamesFacade:  fx.gamesFacade,
-		placesFacade: fx.placesFacade,
+		gamesFacade: fx.gamesFacade,
 	}
 
 	t.Cleanup(func() {})

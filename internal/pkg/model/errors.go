@@ -40,11 +40,6 @@ var (
 	ErrLotteryNotImplemented = errors.New("lottery not implemented")
 )
 
-// Places facade errors
-var (
-	ErrPlaceNotFound = errors.New("place not found")
-)
-
 // User roles facade errors
 var (
 	// ErrUserRoleAlreadyExists ...

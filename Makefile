@@ -96,6 +96,11 @@ generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/place/place.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/registrator/registrator.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \

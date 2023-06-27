@@ -7,5 +7,5 @@ import (
 )
 
 func TestAuthorizationGRPCRulesNumber(t *testing.T) {
-	assert.Len(t, grpcRules, 36)
+	assert.Len(t, grpcRules, 35)
 }

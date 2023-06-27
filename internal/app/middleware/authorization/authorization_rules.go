@@ -84,6 +84,12 @@ var grpcRules = map[string]roles{
 		Public: struct{}{},
 	},
 	//
+	// place
+	//
+	"/place.Service/GetPlace": {
+		Public: struct{}{},
+	},
+	//
 	// registrator
 	//
 	"/registrator.RegistratorService/AddGame": {
@@ -99,12 +105,6 @@ var grpcRules = map[string]roles{
 		Public: struct{}{},
 	},
 	"/registrator.RegistratorService/GetGames": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetPlaceByID": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetPlaceByNameAndAddress": {
 		Public: struct{}{},
 	},
 	"/registrator.RegistratorService/GetPlayersByGameID": {

@@ -7,16 +7,6 @@ option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrat
 import "common/common.proto";
 import "google/protobuf/timestamp.proto";
 
-message Place {
-	int32 id = 1;
-	string address = 2;
-	string name = 3;
-	string short_name = 4;
-	float latitude = 5;
-	float longitude = 6;
-	string menu_link = 7;
-}
-
 service RegistratorService {
 	// AddGame creates a new game
 	rpc AddGame(AddGameRequest) returns (AddGameResponse) {
@@ -36,14 +26,6 @@ service RegistratorService {
 
 	// GetGames returns games
 	rpc GetGames(GetGamesRequest) returns (GetGamesResponse) {
-	}
-
-	// GetPlaceByID returns place by place ID
-	rpc GetPlaceByID(GetPlaceByIDRequest) returns (GetPlaceByIDResponse) {
-	}
-
-	// GetPlaceByNameAndAddress returns place by name and address
-	rpc GetPlaceByNameAndAddress(GetPlaceByNameAndAddressRequest) returns (GetPlaceByNameAndAddressResponse) {
 	}
 
 	// GetPlayersByGameID returns list of players by game ID
@@ -136,23 +118,6 @@ message GetGamesRequest {
   
 message GetGamesResponse {
 	repeated common.Game games = 1;
-}
-
-message GetPlaceByIDRequest {
-	int32 id = 1;
-}
-  
-message GetPlaceByIDResponse {
-	Place place = 1;
-}
-
-message GetPlaceByNameAndAddressRequest {
-	string name = 1;
-	string address = 2;
-}
-  
-message GetPlaceByNameAndAddressResponse {
-	Place place = 1;
 }
 
 message Player {
