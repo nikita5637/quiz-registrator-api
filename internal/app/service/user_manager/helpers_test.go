@@ -24,9 +24,9 @@ func tearUp(t *testing.T) *fixture {
 		usersFacade: mocks.NewUsersFacade(t),
 	}
 
-	fx.implementation = New(Config{
-		UsersFacade: fx.usersFacade,
-	})
+	fx.implementation = &Implementation{
+		usersFacade: fx.usersFacade,
+	}
 
 	return fx
 }

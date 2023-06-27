@@ -1,5 +1,4 @@
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
-//go:generate mockery --case underscore --name LeaguesFacade --with-expecter
 //go:generate mockery --case underscore --name PlacesFacade --with-expecter
 
 package registrator
@@ -20,6 +19,7 @@ import (
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -45,11 +45,6 @@ type GamesFacade interface {
 	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
 }
 
-// LeaguesFacade ...
-type LeaguesFacade interface {
-	GetLeagueByID(ctx context.Context, leagueID int32) (model.League, error)
-}
-
 // PlacesFacade ...
 type PlacesFacade interface {
 	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
@@ -66,12 +61,12 @@ type Registrator struct {
 	certificateManagerService certificatemanagerpb.ServiceServer
 	croupierService           croupierpb.ServiceServer
 	gameResultManagerService  gameresultmanagerpb.ServiceServer
+	leagueService             leaguepb.ServiceServer
 	photoManagerService       photomanagerpb.ServiceServer
 	userManagerService        usermanagerpb.ServiceServer
 
-	gamesFacade   GamesFacade
-	leaguesFacade LeaguesFacade
-	placesFacade  PlacesFacade
+	gamesFacade  GamesFacade
+	placesFacade PlacesFacade
 
 	registratorpb.UnimplementedRegistratorServiceServer
 }
@@ -90,12 +85,12 @@ type Config struct {
 	CertificateManagerService certificatemanagerpb.ServiceServer
 	CroupierService           croupierpb.ServiceServer
 	GameResultManagerService  gameresultmanagerpb.ServiceServer
+	LeagueService             leaguepb.ServiceServer
 	PhotoManagerService       photomanagerpb.ServiceServer
 	UserManagerService        usermanagerpb.ServiceServer
 
-	GamesFacade   GamesFacade
-	LeaguesFacade LeaguesFacade
-	PlacesFacade  PlacesFacade
+	GamesFacade  GamesFacade
+	PlacesFacade PlacesFacade
 }
 
 // New ...
@@ -107,12 +102,12 @@ func New(cfg Config) *Registrator {
 		certificateManagerService: cfg.CertificateManagerService,
 		croupierService:           cfg.CroupierService,
 		gameResultManagerService:  cfg.GameResultManagerService,
+		leagueService:             cfg.LeagueService,
 		photoManagerService:       cfg.PhotoManagerService,
 		userManagerService:        cfg.UserManagerService,
 
-		gamesFacade:   cfg.GamesFacade,
-		leaguesFacade: cfg.LeaguesFacade,
-		placesFacade:  cfg.PlacesFacade,
+		gamesFacade:  cfg.GamesFacade,
+		placesFacade: cfg.PlacesFacade,
 	}
 
 	var opts []grpc.ServerOption
@@ -129,6 +124,7 @@ func New(cfg Config) *Registrator {
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManagerService)
 	croupierpb.RegisterServiceServer(s, registrator.croupierService)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
+	leaguepb.RegisterServiceServer(s, registrator.leagueService)
 	photomanagerpb.RegisterServiceServer(s, registrator.photoManagerService)
 	usermanagerpb.RegisterServiceServer(s, registrator.userManagerService)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)

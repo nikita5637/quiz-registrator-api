@@ -34,11 +34,6 @@ var (
 	ErrInvalidPrice            = errors.New("invalid price")
 )
 
-// Leagues facade errors
-var (
-	ErrLeagueNotFound = errors.New("league not found")
-)
-
 // Lottery errors
 var (
 	ErrLotteryNotAvailable   = errors.New("lottery not available")

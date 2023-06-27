@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package league;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/league;league";
+
+enum LeagueID {
+	LEAGUE_ID_INVALID = 0;
+	LEAGUE_ID_QUIZ_PLEASE = 1;
+	LEAGUE_ID_SQUIZ = 2;
+	LEAGUE_ID_SIXTY_SECONDS = 3;
+	LEAGUE_ID_SHAKER = 4;
+	LEAGUE_ID_WOW = 5;
+	LEAGUE_ID_MOZGOBOYNYA = 6;
+	LEAGUE_ID_NASH_QUIZ = 7;
+	LEAGUE_ID_SMUZI = 8;
+	LEAGUE_ID_QUIZ_PEACE = 9;
+}
+
+message League {
+	int32 id = 1;
+	string name = 2;
+	string short_name = 3;
+	string logo_link = 4;
+	string web_site = 5;
+}
+
+service Service {
+	// GetLeague returns league by league ID
+	rpc GetLeague(GetLeagueRequest) returns (League) {
+	}
+}
+
+message GetLeagueRequest {
+	int32 id = 1;
+}

@@ -18,6 +18,7 @@ import (
 	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
+	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
@@ -220,15 +221,20 @@ func main() {
 		}
 		gameResultManagerService := gameresultmanagerservice.New(gameResultManagerServiceConfig)
 
-		photoManagerServiceConfig := photomanagerservice.Config{
-			GamePhotosFacade: gamePhotosFacade,
-		}
-		photoManagerService := photomanagerservice.New(photoManagerServiceConfig)
-
 		leaguesFacadeConfig := leagues.Config{
 			LeagueStorage: leagueStorage,
 		}
 		leaguesFacade := leagues.NewFacade(leaguesFacadeConfig)
+
+		leagueServiceConfig := leagueservice.Config{
+			LeaguesFacade: leaguesFacade,
+		}
+		leagueService := leagueservice.New(leagueServiceConfig)
+
+		photoManagerServiceConfig := photomanagerservice.Config{
+			GamePhotosFacade: gamePhotosFacade,
+		}
+		photoManagerService := photomanagerservice.New(photoManagerServiceConfig)
 
 		placesFacadeConfig := places.Config{
 			PlaceStorage: placeStorage,
@@ -267,12 +273,12 @@ func main() {
 			CertificateManagerService: certificateManagerService,
 			CroupierService:           croupierService,
 			GameResultManagerService:  gameResultManagerService,
+			LeagueService:             leagueService,
 			PhotoManagerService:       photoManagerService,
 			UserManagerService:        userManagerService,
 
-			GamesFacade:   gamesFacade,
-			LeaguesFacade: leaguesFacade,
-			PlacesFacade:  placesFacade,
+			GamesFacade:  gamesFacade,
+			PlacesFacade: placesFacade,
 		}
 
 		reg := registrator.New(registratorConfig)

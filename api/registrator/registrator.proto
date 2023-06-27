@@ -7,14 +7,6 @@ option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrat
 import "common/common.proto";
 import "google/protobuf/timestamp.proto";
 
-message League {
-	int32 id = 1;
-	string name = 2;
-	string short_name = 3;
-	string logo_link = 4;
-	string web_site = 5;
-}
-
 message Place {
 	int32 id = 1;
 	string address = 2;
@@ -46,10 +38,6 @@ service RegistratorService {
 	rpc GetGames(GetGamesRequest) returns (GetGamesResponse) {
 	}
 
-	// GetLeagueByID returns league by league ID
-	rpc GetLeagueByID(GetLeagueByIDRequest) returns (GetLeagueByIDResponse) {
-	}
-	
 	// GetPlaceByID returns place by place ID
 	rpc GetPlaceByID(GetPlaceByIDRequest) returns (GetPlaceByIDResponse) {
 	}
@@ -148,14 +136,6 @@ message GetGamesRequest {
   
 message GetGamesResponse {
 	repeated common.Game games = 1;
-}
-
-message GetLeagueByIDRequest {
-	int32 id = 1;
-}
-  
-message GetLeagueByIDResponse {
-	League league = 1;
 }
 
 message GetPlaceByIDRequest {

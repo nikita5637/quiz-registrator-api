@@ -66,6 +66,12 @@ var grpcRules = map[string]roles{
 		Management: struct{}{},
 	},
 	//
+	// league
+	//
+	"/league.Service/GetLeague": {
+		Public: struct{}{},
+	},
+	//
 	// photo_manager
 	//
 	"/photo_manager.Service/AddGamePhotos": {
@@ -93,9 +99,6 @@ var grpcRules = map[string]roles{
 		Public: struct{}{},
 	},
 	"/registrator.RegistratorService/GetGames": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetLeagueByID": {
 		Public: struct{}{},
 	},
 	"/registrator.RegistratorService/GetPlaceByID": {

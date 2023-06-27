@@ -1,16 +1,16 @@
-package photomanager
+package league
 
 import (
 	"context"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/service/league/mocks"
 )
 
 type fixture struct {
 	ctx context.Context
 
-	gamePhotosFacade *mocks.GamePhotosFacade
+	leaguesFacade *mocks.LeaguesFacade
 
 	implementation *Implementation
 }
@@ -19,11 +19,11 @@ func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		gamePhotosFacade: mocks.NewGamePhotosFacade(t),
+		leaguesFacade: mocks.NewLeaguesFacade(t),
 	}
 
 	fx.implementation = &Implementation{
-		gamePhotosFacade: fx.gamePhotosFacade,
+		leaguesFacade: fx.leaguesFacade,
 	}
 
 	t.Cleanup(func() {})

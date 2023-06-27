@@ -22,9 +22,9 @@ func tearUp(t *testing.T) *fixture {
 		userRolesFacade: mocks.NewUserRolesFacade(t),
 	}
 
-	fx.implementation = New(Config{
-		UserRolesFacade: fx.userRolesFacade,
-	})
+	fx.implementation = &Implementation{
+		userRolesFacade: fx.userRolesFacade,
+	}
 
 	t.Cleanup(func() {})
 
