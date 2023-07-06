@@ -18,11 +18,15 @@ func Translate(ctx context.Context, key string, defaultString string) string {
 var dictionary = map[string]map[string]string{
 	"ru": {
 		"certificate_not_found":                       "Сертификат не найден",
+		"certificate_spent_on_game_not_found":         "Игра, на которой потратили сертификат, не найдена",
+		"certificate_won_on_game_not_found":           "Игра, на которой выиграли сертификат, не найдена",
 		"game_not_found":                              "Игра не найдена",
 		"game_result_already_exists_lexeme":           "Результат игры уже есть",
 		"game_result_not_found_lexeme":                "Результат игры не найден",
-		"invalid_certificate_info_json_value":         "Некорректное значение информации о сертификате",
+		"invalid_certificate_info":                    "Некорректное значение информации о сертификате",
 		"invalid_certificate_type":                    "Некорректный тип сертификата",
+		"invalid_certificate_spent_on_game_id":        "Некорректное значение ID игры, на которой потратили сертификат",
+		"invalid_certificate_won_on_game_id":          "Некорректное значение ID игры, на которой выиграли сертификат",
 		"invalid_date":                                "Некорректная дата",
 		"invalid_email":                               "Некорректный адрес электронной почты",
 		"invalid_game_number":                         "Некорректный номер игры",
@@ -43,13 +47,11 @@ var dictionary = map[string]map[string]string{
 		"no_free_slots":                               "Нет мест",
 		"permission_denied":                           "Доступ запрещен",
 		"place_not_found":                             "Место не найдено",
-		"spent_on_game_not_found":                     "Игра, на которой потратили сертификат, не найдена",
 		"unauthenticated_request":                     "Неавторизованный запрос",
 		"user_not_found":                              "Пользователь не найден",
 		"user_already_exists":                         "Пользователь уже существует",
 		"user_role_already_exists":                    "У пользователя уже есть данная роль",
 		"user_role_not_found":                         "Роль пользователя на найдена",
-		"won_on_game_not_found":                       "Игра, на которой выиграли сертификат, не найдена",
 		"you_are_banned":                              "Вы заблокированы",
 
 		// errors
