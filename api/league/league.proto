@@ -15,6 +15,8 @@ enum LeagueID {
 	NASH_QUIZ = 7;
 	SMUZI = 8;
 	QUIZ_PEACE = 9;
+	JACK_QUIZ = 10;
+	OWL_CUP = 11;
 }
 
 message League {
