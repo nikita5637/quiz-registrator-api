@@ -105,6 +105,51 @@ func (_c *CertificatesFacade_DeleteCertificate_Call) Return(_a0 error) *Certific
 	return _c
 }
 
+// GetCertificate provides a mock function with given fields: ctx, id
+func (_m *CertificatesFacade) GetCertificate(ctx context.Context, id int32) (model.Certificate, error) {
+	ret := _m.Called(ctx, id)
+
+	var r0 model.Certificate
+	if rf, ok := ret.Get(0).(func(context.Context, int32) model.Certificate); ok {
+		r0 = rf(ctx, id)
+	} else {
+		r0 = ret.Get(0).(model.Certificate)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+		r1 = rf(ctx, id)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// CertificatesFacade_GetCertificate_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetCertificate'
+type CertificatesFacade_GetCertificate_Call struct {
+	*mock.Call
+}
+
+// GetCertificate is a helper method to define mock.On call
+//  - ctx context.Context
+//  - id int32
+func (_e *CertificatesFacade_Expecter) GetCertificate(ctx interface{}, id interface{}) *CertificatesFacade_GetCertificate_Call {
+	return &CertificatesFacade_GetCertificate_Call{Call: _e.mock.On("GetCertificate", ctx, id)}
+}
+
+func (_c *CertificatesFacade_GetCertificate_Call) Run(run func(ctx context.Context, id int32)) *CertificatesFacade_GetCertificate_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(int32))
+	})
+	return _c
+}
+
+func (_c *CertificatesFacade_GetCertificate_Call) Return(_a0 model.Certificate, _a1 error) *CertificatesFacade_GetCertificate_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 // ListCertificates provides a mock function with given fields: ctx
 func (_m *CertificatesFacade) ListCertificates(ctx context.Context) ([]model.Certificate, error) {
 	ret := _m.Called(ctx)
@@ -151,20 +196,20 @@ func (_c *CertificatesFacade_ListCertificates_Call) Return(_a0 []model.Certifica
 	return _c
 }
 
-// PatchCertificate provides a mock function with given fields: ctx, certificate, paths
-func (_m *CertificatesFacade) PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error) {
-	ret := _m.Called(ctx, certificate, paths)
+// PatchCertificate provides a mock function with given fields: ctx, certificate
+func (_m *CertificatesFacade) PatchCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error) {
+	ret := _m.Called(ctx, certificate)
 
 	var r0 model.Certificate
-	if rf, ok := ret.Get(0).(func(context.Context, model.Certificate, []string) model.Certificate); ok {
-		r0 = rf(ctx, certificate, paths)
+	if rf, ok := ret.Get(0).(func(context.Context, model.Certificate) model.Certificate); ok {
+		r0 = rf(ctx, certificate)
 	} else {
 		r0 = ret.Get(0).(model.Certificate)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, model.Certificate, []string) error); ok {
-		r1 = rf(ctx, certificate, paths)
+	if rf, ok := ret.Get(1).(func(context.Context, model.Certificate) error); ok {
+		r1 = rf(ctx, certificate)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -180,14 +225,13 @@ type CertificatesFacade_PatchCertificate_Call struct {
 // PatchCertificate is a helper method to define mock.On call
 //  - ctx context.Context
 //  - certificate model.Certificate
-//  - paths []string
-func (_e *CertificatesFacade_Expecter) PatchCertificate(ctx interface{}, certificate interface{}, paths interface{}) *CertificatesFacade_PatchCertificate_Call {
-	return &CertificatesFacade_PatchCertificate_Call{Call: _e.mock.On("PatchCertificate", ctx, certificate, paths)}
+func (_e *CertificatesFacade_Expecter) PatchCertificate(ctx interface{}, certificate interface{}) *CertificatesFacade_PatchCertificate_Call {
+	return &CertificatesFacade_PatchCertificate_Call{Call: _e.mock.On("PatchCertificate", ctx, certificate)}
 }
 
-func (_c *CertificatesFacade_PatchCertificate_Call) Run(run func(ctx context.Context, certificate model.Certificate, paths []string)) *CertificatesFacade_PatchCertificate_Call {
+func (_c *CertificatesFacade_PatchCertificate_Call) Run(run func(ctx context.Context, certificate model.Certificate)) *CertificatesFacade_PatchCertificate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.Certificate), args[2].([]string))
+		run(args[0].(context.Context), args[1].(model.Certificate))
 	})
 	return _c
 }

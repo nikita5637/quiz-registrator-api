@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func TestRegistrator_ListCertificates(t *testing.T) {
@@ -45,24 +46,52 @@ func TestRegistrator_ListCertificates(t *testing.T) {
 				SpentOn: model.NewMaybeInt32(2),
 				Info:    model.NewMaybeString("{}"),
 			},
+			{
+				ID:    3,
+				Type:  model.CertificateTypeBarBillPayment,
+				WonOn: 4,
+				SpentOn: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
+				Info: model.MaybeString{
+					Valid: false,
+					Value: "",
+				},
+			},
 		}, nil)
 
 		got, err := fx.certificateManager.ListCertificates(fx.ctx, &emptypb.Empty{})
 		assert.ElementsMatch(t,
 			[]*certificatemanagerpb.Certificate{
 				{
-					Id:      1,
-					Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-					WonOn:   1,
-					SpentOn: 2,
-					Info:    "{}",
+					Id:    1,
+					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+					WonOn: 1,
+					SpentOn: &wrapperspb.Int32Value{
+						Value: 2,
+					},
+					Info: &wrapperspb.StringValue{
+						Value: "{}",
+					},
 				},
 				{
-					Id:      2,
+					Id:    2,
+					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+					WonOn: 3,
+					SpentOn: &wrapperspb.Int32Value{
+						Value: 2,
+					},
+					Info: &wrapperspb.StringValue{
+						Value: "{}",
+					},
+				},
+				{
+					Id:      3,
 					Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-					WonOn:   3,
-					SpentOn: 2,
-					Info:    "{}",
+					WonOn:   4,
+					SpentOn: nil,
+					Info:    nil,
 				},
 			},
 			got.GetCertificates())

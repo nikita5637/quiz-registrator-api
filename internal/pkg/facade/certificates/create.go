@@ -35,7 +35,7 @@ func (f *Facade) CreateCertificate(ctx context.Context, certificate model.Certif
 		return nil
 	})
 	if err != nil {
-		return model.Certificate{}, fmt.Errorf("create certificate error: %w", err)
+		return model.Certificate{}, fmt.Errorf("CreateCertificate error: %w", err)
 	}
 
 	return createdModelCert, nil

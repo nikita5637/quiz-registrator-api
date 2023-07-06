@@ -1,7 +1,6 @@
 package certificatemanager
 
 import (
-	"context"
 	"errors"
 	"testing"
 
@@ -11,16 +10,16 @@ import (
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func TestRegistrator_CreateCertificate(t *testing.T) {
-	t.Run("request validation error. invalid info JSON value", func(t *testing.T) {
+	t.Run("validation error. invalid certificate type", func(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				Info: "invalid json",
+				Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_INVALID,
 			},
 		})
 		assert.Nil(t, got)
@@ -31,13 +30,122 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
-	t.Run("request validation error. invalid certificate type", func(t *testing.T) {
+	t.Run("validation error. invalid certificate type", func(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type: certificatemanagerpb.CertificateType(100),
-				Info: "{}",
+				Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT + 1,
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("validation error. invalid won on", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn: 0,
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("validation error. invalid won on", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn: -1,
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("validation error. invalid spent on", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   1,
+				SpentOn: &wrapperspb.Int32Value{},
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("validation error. invalid spent on", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn: 1,
+				SpentOn: &wrapperspb.Int32Value{
+					Value: -1,
+				},
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("request validation error. invalid info", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				Info:  &wrapperspb.StringValue{},
+			},
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
+	t.Run("request validation error. invalid info", func(t *testing.T) {
+		fx := tearUp(t)
+
+		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
+			Certificate: &certificatemanagerpb.Certificate{
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				Info: &wrapperspb.StringValue{
+					Value: "invalid JSON",
+				},
 			},
 		})
 		assert.Nil(t, got)
@@ -60,10 +168,14 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn:   1,
-				SpentOn: 2,
-				Info:    "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				SpentOn: &wrapperspb.Int32Value{
+					Value: 2,
+				},
+				Info: &wrapperspb.StringValue{
+					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				},
 			},
 		})
 
@@ -87,10 +199,14 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn:   1,
-				SpentOn: 2,
-				Info:    "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				SpentOn: &wrapperspb.Int32Value{
+					Value: 2,
+				},
+				Info: &wrapperspb.StringValue{
+					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				},
 			},
 		})
 
@@ -114,10 +230,14 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn:   1,
-				SpentOn: 2,
-				Info:    "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				SpentOn: &wrapperspb.Int32Value{
+					Value: 2,
+				},
+				Info: &wrapperspb.StringValue{
+					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				},
 			},
 		})
 
@@ -147,28 +267,35 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn:   1,
-				SpentOn: 2,
-				Info:    "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn: 1,
+				SpentOn: &wrapperspb.Int32Value{
+					Value: 2,
+				},
+				Info: &wrapperspb.StringValue{
+					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+				},
 			},
 		})
 
 		assert.Equal(t, &certificatemanagerpb.Certificate{
-			Id:      777,
-			Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-			WonOn:   1,
-			SpentOn: 2,
-			Info:    "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+			Id:    777,
+			Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+			WonOn: 1,
+			SpentOn: &wrapperspb.Int32Value{
+				Value: 2,
+			},
+			Info: &wrapperspb.StringValue{
+				Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
+			},
 		}, got)
 		assert.NoError(t, err)
 	})
 }
 
-func Test_validateCreateCertificateRequest(t *testing.T) {
+func Test_validateCreatedCertificate(t *testing.T) {
 	type args struct {
-		ctx context.Context
-		req *certificatemanagerpb.CreateCertificateRequest
+		certificate model.Certificate
 	}
 	tests := []struct {
 		name    string
@@ -176,89 +303,168 @@ func Test_validateCreateCertificateRequest(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "invalid JSON",
+			name: "no ID",
 			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Info: "invalid JSON",
+				certificate: model.Certificate{
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "no type",
+			args: args{
+				certificate: model.Certificate{
+					ID: 1,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "no won_on",
+			args: args{
+				certificate: model.Certificate{
+					ID:   1,
+					Type: model.CertificateTypeFreePass,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "won_on eq minWonOn and valid",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: minWonOn,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "no spent_on",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "spent_on eq 0 and valid",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: true,
+						Value: 0,
 					},
 				},
 			},
 			wantErr: true,
 		},
 		{
-			name: "empty json string",
+			name: "spent_on eq minSpentOn and valid",
 			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Info: "",
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: true,
+						Value: minSpentOn,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "spent_on eq 0 and not valid",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: false,
+						Value: 0,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "spent_on eq minSpentOn and not valid",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: false,
+						Value: minSpentOn,
+					},
+				},
+			},
+			wantErr: false,
+		},
+		{
+			name: "info is empty and valid",
+			args: args{
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: true,
+						Value: minSpentOn,
+					},
+					Info: model.MaybeString{
+						Valid: true,
+						Value: "",
 					},
 				},
 			},
 			wantErr: true,
 		},
 		{
-			name: "len of JSON string gt 256",
+			name: "info is empty and not valid",
 			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-						Info: "{\"a\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: true,
+						Value: minSpentOn,
+					},
+					Info: model.MaybeString{
+						Valid: false,
+						Value: "",
 					},
 				},
 			},
-			wantErr: true,
-		},
-		{
-			name: "invalid certifcate type. eq 0",
-			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_INVALID,
-						Info: "{}",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "invalid certifcate type. lt 1 and neq 0",
-			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Type: -1,
-						Info: "{}",
-					},
-				},
-			},
-			wantErr: true,
-		},
-		{
-			name: "invalid certifcate type. gt number of certificate types",
-			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType(100),
-						Info: "{}",
-					},
-				},
-			},
-			wantErr: true,
+			wantErr: false,
 		},
 		{
 			name: "ok",
 			args: args{
-				ctx: context.Background(),
-				req: &certificatemanagerpb.CreateCertificateRequest{
-					Certificate: &certificatemanagerpb.Certificate{
-						Type: certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-						Info: "{}",
+				certificate: model.Certificate{
+					ID:    1,
+					Type:  model.CertificateTypeFreePass,
+					WonOn: 1,
+					SpentOn: model.MaybeInt32{
+						Valid: true,
+						Value: minSpentOn,
+					},
+					Info: model.MaybeString{
+						Valid: true,
+						Value: "{}",
 					},
 				},
 			},
@@ -267,8 +473,8 @@ func Test_validateCreateCertificateRequest(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := validateCreateCertificateRequest(tt.args.ctx, tt.args.req); (err != nil) != tt.wantErr {
-				t.Errorf("validateCreateCertificateRequest() error = %v, wantErr %v", err, tt.wantErr)
+			if err := validateCreatedCertificate(tt.args.certificate); (err != nil) != tt.wantErr {
+				t.Errorf("validateCreatedCertificate() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}

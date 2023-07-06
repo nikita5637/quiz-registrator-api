@@ -132,20 +132,29 @@ func TestFacade_GetPlayersByGameID(t *testing.T) {
 
 		expected := []model.GamePlayer{
 			{
-				ID:           1,
-				FkUserID:     model.NewMaybeInt32(0),
+				ID: 1,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
 			},
 			{
-				ID:           2,
-				FkUserID:     model.NewMaybeInt32(0),
+				ID: 2,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},
 			{
-				ID:           3,
-				FkUserID:     model.NewMaybeInt32(0),
+				ID: 3,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
 				RegisteredBy: 3,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},

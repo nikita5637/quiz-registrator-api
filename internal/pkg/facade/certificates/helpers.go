@@ -12,11 +12,17 @@ const (
 
 func convertDBCertificateToModelCertificate(certificate database.Certificate) model.Certificate {
 	return model.Certificate{
-		ID:      int32(certificate.ID),
-		Type:    model.CertificateType(certificate.Type),
-		WonOn:   int32(certificate.WonOn),
-		SpentOn: model.NewMaybeInt32(int32(certificate.SpentOn.Int64)),
-		Info:    model.NewMaybeString(certificate.Info.String),
+		ID:    int32(certificate.ID),
+		Type:  model.CertificateType(certificate.Type),
+		WonOn: int32(certificate.WonOn),
+		SpentOn: model.MaybeInt32{
+			Valid: certificate.SpentOn.Valid,
+			Value: int32(certificate.SpentOn.Int64),
+		},
+		Info: model.MaybeString{
+			Valid: certificate.Info.Valid,
+			Value: certificate.Info.String,
+		},
 	}
 }
 

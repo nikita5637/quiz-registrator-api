@@ -13,7 +13,7 @@ type MaybeInt32 struct {
 // NewMaybeInt32 ...
 func NewMaybeInt32(value int32) MaybeInt32 {
 	return MaybeInt32{
-		Valid: value != 0,
+		Valid: true,
 		Value: value,
 	}
 }
@@ -43,7 +43,7 @@ type MaybeString struct {
 // NewMaybeString ...
 func NewMaybeString(value string) MaybeString {
 	return MaybeString{
-		Valid: value != "",
+		Valid: true,
 		Value: value,
 	}
 }

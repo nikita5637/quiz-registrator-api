@@ -6,6 +6,7 @@ option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/certifica
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/wrappers.proto";
 
 enum CertificateType {
 	CERTIFICATE_TYPE_INVALID = 0;
@@ -19,8 +20,8 @@ message Certificate {
 	// game id ...
 	int32 won_on = 3;
 	// game id ...
-	int32 spent_on = 4;
-	string info = 5;
+	google.protobuf.Int32Value spent_on = 4;
+	google.protobuf.StringValue info = 5;
 }
 
 service Service {

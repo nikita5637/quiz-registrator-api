@@ -10,9 +10,15 @@ func convertDBUserToModelUser(user database.User) model.User {
 		ID:         int32(user.ID),
 		Name:       user.Name,
 		TelegramID: user.TelegramID,
-		Email:      model.NewMaybeString(user.Email.String),
-		Phone:      model.NewMaybeString(user.Phone.String),
-		State:      model.UserState(user.State),
+		Email: model.MaybeString{
+			Valid: user.Email.Valid,
+			Value: user.Email.String,
+		},
+		Phone: model.MaybeString{
+			Valid: user.Phone.Valid,
+			Value: user.Phone.String,
+		},
+		State: model.UserState(user.State),
 	}
 }
 

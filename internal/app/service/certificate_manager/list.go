@@ -19,13 +19,7 @@ func (m *CertificateManager) ListCertificates(ctx context.Context, _ *emptypb.Em
 
 	respCertificates := make([]*certificatemanagerpb.Certificate, 0, len(certificates))
 	for _, certificate := range certificates {
-		respCertificates = append(respCertificates, &certificatemanagerpb.Certificate{
-			Id:      certificate.ID,
-			Type:    certificatemanagerpb.CertificateType(certificate.Type),
-			WonOn:   certificate.WonOn,
-			SpentOn: certificate.SpentOn.Value,
-			Info:    certificate.Info.Value,
-		})
+		respCertificates = append(respCertificates, convertModelCertificateToProtoCertificate(certificate))
 	}
 
 	return &certificatemanagerpb.ListCertificatesResponse{

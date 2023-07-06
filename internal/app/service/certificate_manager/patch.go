@@ -5,46 +5,95 @@ import (
 	"errors"
 	"fmt"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
+const (
+	minID = int32(1)
+)
+
 // PatchCertificate ...
 func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certificatemanagerpb.PatchCertificateRequest) (*certificatemanagerpb.Certificate, error) {
-	if err := validatePatchCertificateRequest(ctx, req); err != nil {
-		st := status.New(codes.InvalidArgument, err.Error())
-		if errors.Is(err, errInvalidJSONInfoValue) {
-			reason := fmt.Sprintf("invalid certificate info JSON value: \"%s\"", req.GetCertificate().GetInfo())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidCertificateInfoJSONValueLexeme)
-		} else if errors.Is(err, errInvalidCertificateType) {
-			reason := fmt.Sprintf("invalid certificate type: \"%d\"", req.GetCertificate().GetType())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidCertificateTypeLexeme)
+	originalCertificate, err := m.certificatesFacade.GetCertificate(ctx, req.GetCertificate().GetId())
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+		if errors.Is(err, certificates.ErrCertificateNotFound) {
+			st = status.New(codes.NotFound, err.Error())
+			errorInfo := &errdetails.ErrorInfo{
+				Reason: "CERTIFICATE_NOT_FOUND",
+			}
+			localizedMessage := &errdetails.LocalizedMessage{
+				Locale:  i18n.GetLangFromContext(ctx),
+				Message: i18n.GetTranslator(certificateNotFoundLexeme)(ctx),
+			}
+			st, _ = st.WithDetails(errorInfo, localizedMessage)
 		}
 
 		return nil, st.Err()
 	}
 
-	certificate, err := m.certificatesFacade.PatchCertificate(ctx, model.Certificate{
-		ID:      req.GetCertificate().GetId(),
-		Type:    model.CertificateType(req.GetCertificate().GetType()),
-		WonOn:   req.GetCertificate().GetWonOn(),
-		SpentOn: model.NewMaybeInt32(req.GetCertificate().GetSpentOn()),
-		Info:    model.NewMaybeString(req.GetCertificate().GetInfo()),
-	}, req.GetUpdateMask().GetPaths())
+	patchedCertificate := originalCertificate
+	for _, path := range req.GetUpdateMask().GetPaths() {
+		switch path {
+		case "type":
+			patchedCertificate.Type = model.CertificateType(req.GetCertificate().GetType())
+		case "won_on":
+			patchedCertificate.WonOn = req.GetCertificate().GetWonOn()
+		case "spent_on":
+			patchedCertificate.SpentOn = model.MaybeInt32{
+				Valid: req.GetCertificate().GetSpentOn() != nil,
+				Value: req.GetCertificate().GetSpentOn().GetValue(),
+			}
+		case "info":
+			patchedCertificate.Info = model.MaybeString{
+				Valid: req.GetCertificate().GetInfo() != nil,
+				Value: req.GetCertificate().GetInfo().GetValue(),
+			}
+		}
+	}
+
+	err = validatePatchedCertificate(patchedCertificate)
+	if err != nil {
+		st := status.New(codes.InvalidArgument, err.Error())
+		if validationErrors, ok := err.(validation.Errors); ok && len(validationErrors) > 0 {
+			keys := make([]string, 0, len(validationErrors))
+			for k := range validationErrors {
+				keys = append(keys, k)
+			}
+
+			if ed, ok := errorDetailsByField[keys[0]]; ok {
+				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
+				errorInfo := &errdetails.ErrorInfo{
+					Reason: ed.Reason,
+					Metadata: map[string]string{
+						"error": err.Error(),
+					},
+				}
+				localizedMessage := &errdetails.LocalizedMessage{
+					Locale:  i18n.GetLangFromContext(ctx),
+					Message: i18n.GetTranslator(ed.Lexeme)(ctx),
+				}
+				st, _ = st.WithDetails(errorInfo, localizedMessage)
+			}
+		}
+
+		return nil, st.Err()
+	}
+
+	certificate, err := m.certificatesFacade.PatchCertificate(ctx, patchedCertificate)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, certificates.ErrCertificateNotFound) {
-			reason := fmt.Sprintf("certificate with ID %d not found", req.GetCertificate().GetId())
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, certificateNotFoundLexeme)
-		} else if errors.Is(err, certificates.ErrWonOnGameNotFound) {
-			reason := fmt.Sprintf("won on game with id %d not found", req.GetCertificate().GetWonOn())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, wonOnGameNotFoundLexeme)
+		if errors.Is(err, certificates.ErrWonOnGameNotFound) {
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, certificateWonOnGameNotFoundReason, certificateWonOnGameNotFoundLexeme)
 		} else if errors.Is(err, certificates.ErrSpentOnGameNotFound) {
-			reason := fmt.Sprintf("spent on game with id %d not found", req.GetCertificate().GetSpentOn())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, spentOnGameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, certificateSpentOnGameNotFoundReason, certificateSpentOnGameNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -53,6 +102,12 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 	return convertModelCertificateToProtoCertificate(certificate), nil
 }
 
-func validatePatchCertificateRequest(ctx context.Context, req *certificatemanagerpb.PatchCertificateRequest) error {
-	return validateCertificate(ctx, req.GetCertificate())
+func validatePatchedCertificate(certificate model.Certificate) error {
+	return validation.ValidateStruct(&certificate,
+		validation.Field(&certificate.ID, validation.Required, validation.Min(minID)),
+		validation.Field(&certificate.Type, validation.Required, validation.By(model.ValidateCertificateType)),
+		validation.Field(&certificate.WonOn, validation.Required, validation.Min(minWonOn)),
+		validation.Field(&certificate.SpentOn, validation.By(validateSpentOn)),
+		validation.Field(&certificate.Info, validation.By(validateCertificateInfo)),
+	)
 }

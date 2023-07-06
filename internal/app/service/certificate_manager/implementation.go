@@ -13,8 +13,9 @@ import (
 type CertificatesFacade interface {
 	CreateCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error)
 	DeleteCertificate(ctx context.Context, id int32) error
+	GetCertificate(ctx context.Context, id int32) (model.Certificate, error)
 	ListCertificates(ctx context.Context) ([]model.Certificate, error)
-	PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error)
+	PatchCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error)
 }
 
 // CertificateManager ...

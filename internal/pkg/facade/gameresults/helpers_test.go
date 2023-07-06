@@ -94,7 +94,10 @@ func Test_convertDBGameResultToModelGameResult(t *testing.T) {
 				ID:          1,
 				FkGameID:    2,
 				ResultPlace: 3,
-				RoundPoints: model.NewMaybeString(""),
+				RoundPoints: model.MaybeString{
+					Valid: false,
+					Value: "",
+				},
 			},
 		},
 	}
@@ -143,7 +146,10 @@ func Test_convertModelGameResultToDBGameResult(t *testing.T) {
 					ID:          1,
 					FkGameID:    2,
 					ResultPlace: 3,
-					RoundPoints: model.NewMaybeString(""),
+					RoundPoints: model.MaybeString{
+						Valid: false,
+						Value: "",
+					},
 				},
 			},
 			want: database.GameResult{

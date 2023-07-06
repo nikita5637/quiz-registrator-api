@@ -26,7 +26,7 @@ func (f *Facade) DeleteCertificate(ctx context.Context, id int32) error {
 		return f.certificateStorage.DeleteCertificate(ctx, int(id))
 	})
 	if err != nil {
-		return fmt.Errorf("delete certificate error: %w", err)
+		return fmt.Errorf("DeleteCertificate error: %w", err)
 	}
 
 	return nil
