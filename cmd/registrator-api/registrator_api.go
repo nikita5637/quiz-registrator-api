@@ -9,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
+	errorwrap "github.com/nikita5637/quiz-registrator-api/internal/app/middleware/error_wrap"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
@@ -266,6 +267,8 @@ func main() {
 			UserRolesFacade: userRolesFacade,
 		})
 
+		errorWrapMiddleware := errorwrap.New()
+
 		logMiddleware := log.New()
 
 		registratorConfig := registrator.Config{
@@ -273,6 +276,7 @@ func main() {
 
 			AuthenticationMiddleware: authenticationMiddleware,
 			AuthorizationMiddleware:  authorizationMiddleware,
+			ErrorWrapMiddleware:      errorWrapMiddleware,
 			LogMiddleware:            logMiddleware,
 
 			AdminService:              adminService,

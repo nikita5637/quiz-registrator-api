@@ -55,6 +55,7 @@ var dictionary = map[string]map[string]string{
 		"you_are_banned":                              "Вы заблокированы",
 
 		// errors
+		"err_internal_error":           "Внутренняя ошибка сервиса",
 		"err_name_alphabet_validation": "Допустим только русский набор букв",
 		"err_name_length_validation":   "Длина имени должна быть от 1 до 100 символов",
 		"err_name_is_required":         "Имя пользователя обязательно",

@@ -11,6 +11,7 @@ import (
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
+	errorwrap "github.com/nikita5637/quiz-registrator-api/internal/app/middleware/error_wrap"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -72,6 +73,7 @@ type Config struct {
 	// middlewares
 	AuthenticationMiddleware *authentication.Middleware
 	AuthorizationMiddleware  *authorization.Middleware
+	ErrorWrapMiddleware      *errorwrap.Middleware
 	LogMiddleware            *log.Middleware
 
 	// services
@@ -108,6 +110,7 @@ func New(cfg Config) *Registrator {
 	opts = append(opts, grpc.ChainUnaryInterceptor(
 		grpc_recovery.UnaryServerInterceptor(),
 		cfg.LogMiddleware.Log(),
+		cfg.ErrorWrapMiddleware.ErrorWrap(),
 		grpc_auth.UnaryServerInterceptor(cfg.AuthenticationMiddleware.Authentication()),
 		cfg.AuthorizationMiddleware.Authorization(),
 	))
