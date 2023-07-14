@@ -1,156 +1,13 @@
 syntax = "proto3";
 
-package users;
+package registrator;
 
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator;registrator";
 
-import "google/protobuf/empty.proto";
-import "google/protobuf/field_mask.proto";
+import "common/common.proto";
 import "google/protobuf/timestamp.proto";
 
-service CroupierService {
-	// GetLotteryStatus returns lottery status by game id
-	rpc GetLotteryStatus(GetLotteryStatusRequest) returns (GetLotteryStatusResponse) {
-	}
-
-	// RegisterForLottery registers player for lottery
-	rpc RegisterForLottery(RegisterForLotteryRequest) returns (RegisterForLotteryResponse) {
-	}
-}
-
-message GetLotteryStatusRequest {
-	int32 game_id = 1;
-}
-
-message GetLotteryStatusResponse {
-	bool active = 1;
-}
-
-message RegisterForLotteryRequest {
-	int32 game_id = 1;
-}
-
-message RegisterForLotteryResponse {
-	int32 number = 1;
-}
-
-enum CertificateType {
-	CERTIFICATE_TYPE_INVALID = 0;
-	CERTIFICATE_TYPE_FREE_PASS = 1;
-	CERTIFICATE_TYPE_BAR_BILL_PAYMENT = 2;
-}
-
-enum GameType {
-	GAME_TYPE_INVALID = 0;
-	GAME_TYPE_CLASSIC = 1;
-	GAME_TYPE_THEMATIC = 2;
-	GAME_TYPE_MOVIES_AND_MUSIC = 5;
-	GAME_TYPE_CLOSED = 6;
-	GAME_TYPE_THEMATIC_MOVIES_AND_MUSIC = 9;
-}
-
-enum Payment {
-	PAYMENT_INVALID = 0;
-	PAYMENT_CASH = 1;
-	PAYMENT_CERTIFICATE = 2;
-	PAYMENT_MIXED = 3;
-}
-
-message Game {
-	int32 id = 1;
-	int32 external_id = 2;
-	int32 league_id = 3;
-	GameType type = 4;
-	string number = 5;
-	string name = 6;
-	int32 place_id = 7;
-	google.protobuf.Timestamp date = 8;
-	uint32 price = 9;
-	string payment_type = 10; // cash, card
-	uint32 max_players = 11;
-	Payment payment = 12;
-	bool registered = 13;
-	// additional info
-	bool my = 14;
-	uint32 number_of_my_legioners = 15;
-	uint32 number_of_legioners = 16;
-	uint32 number_of_players = 17;
-	uint32 result_place = 18;
-}
-
-service PhotographerService {
-	// AddGamePhotos adds game photos
-	rpc AddGamePhotos(AddGamePhotosRequest) returns (AddGamePhotosResponse) {
-	}
-
-	// GetGamesWithPhotos returns list of games with photos
-	rpc GetGamesWithPhotos(GetGamesWithPhotosRequest) returns (GetGamesWithPhotosResponse) {
-	}
-
-	// GetPhotosByGameID returns all photos by game ID
-	rpc GetPhotosByGameID(GetPhotosByGameIDRequest) returns (GetPhotosByGameIDResponse) {
-	}
-}
-
-message AddGamePhotosRequest {
-	int32 game_id = 1;
-	repeated string urls = 2;
-}
-
-message AddGamePhotosResponse {
-}
-
-message Certificate {
-	int32 id = 1;
-	CertificateType type = 2;
-	// game id ...
-	int32 won_on = 3;
-	// game id ...
-	int32 spent_on = 4;
-	string info = 5;
-}
-
-message GetGamesWithPhotosRequest {
-	uint32 limit = 1;
-	uint32 offset = 2;
-}
-
-message GetGamesWithPhotosResponse {
-	repeated Game games = 1;
-	uint32 total = 2;
-}
-
-message GetPhotosByGameIDRequest {
-	int32 game_id = 1;
-}
-
-message GetPhotosByGameIDResponse {
-	repeated string urls = 1;
-}
-
-message League {
-	int32 id = 1;
-	string name = 2;
-	string short_name = 3;
-	string logo_link = 4;
-	string web_site = 5;
-}
-
-message Place {
-	int32 id = 1;
-	string address = 2;
-	string name = 3;
-	string short_name = 4;
-	float latitude = 5;
-	float longitude = 6;
-	string menu_link = 7;
-}
-
 service RegistratorService {
-	// CreateCertificate adds new certificate
-	rpc CreateCertificate(CreateCertificateRequest) returns (Certificate) {
-	}
-
 	// AddGame creates a new game
 	rpc AddGame(AddGameRequest) returns (AddGameResponse) {
 	}
@@ -159,20 +16,8 @@ service RegistratorService {
 	rpc AddGames(AddGamesRequest) returns (AddGamesResponse) {
 	}
 
-	// CreateUser creates new user
-	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {
-	}
-
-	// DeleteCertificate deletes new certificate
-	rpc DeleteCertificate(DeleteCertificateRequest) returns (google.protobuf.Empty) {
-	}
-
 	// DeleteGame deletes a game by game ID
 	rpc DeleteGame(DeleteGameRequest) returns (DeleteGameResponse) {
-	}
-
-	// Returns certificates
-	rpc ListCertificates(google.protobuf.Empty) returns (ListCertificatesResponse) {
 	}
 
 	// Returns game or Not Found
@@ -183,36 +28,12 @@ service RegistratorService {
 	rpc GetGames(GetGamesRequest) returns (GetGamesResponse) {
 	}
 
-	// GetLeagueByID returns league by league ID
-	rpc GetLeagueByID(GetLeagueByIDRequest) returns (GetLeagueByIDResponse) {
-	}
-	
-	// GetPlaceByID returns place by place ID
-	rpc GetPlaceByID(GetPlaceByIDRequest) returns (GetPlaceByIDResponse) {
-	}
-
-	// GetPlaceByNameAndAddress returns place by name and address
-	rpc GetPlaceByNameAndAddress(GetPlaceByNameAndAddressRequest) returns (GetPlaceByNameAndAddressResponse) {
-	}
-
 	// GetPlayersByGameID returns list of players by game ID
 	rpc GetPlayersByGameID(GetPlayersByGameIDRequest) returns (GetPlayersByGameIDResponse) {
 	}
 
 	// GetRegisteredGames returns registered games
 	rpc GetRegisteredGames(GetRegisteredGamesRequest) returns (GetRegisteredGamesResponse) {
-	}
-
-	// GetUser returns user by headers from context
-	rpc GetUser(GetUserRequest) returns (GetUserResponse) {
-	}
-
-	// GetUserByID returns user by user ID
-	rpc GetUserByID(GetUserByIDRequest) returns (GetUserByIDResponse) {
-	}
-
-	// GetUserByTelegramID returns a user by telegram ID
-	rpc GetUserByTelegramID(GetUserByTelegramIDRequest) returns (GetUserByTelegramIDResponse) {
 	}
 
 	// GetUserGames returns games by user ID
@@ -235,39 +56,15 @@ service RegistratorService {
 	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (UnregisterPlayerResponse) {
 	}
 
-	// Patches certificate
-	rpc PatchCertificate(PatchCertificateRequest) returns (Certificate) {
-	}
-
-	// UpdateUserEmail updates a user email
-	rpc UpdateUserEmail(UpdateUserEmailRequest) returns (UpdateUserEmailResponse) {
-	}
-
-	// UpdateUserName updates a user's name
-	rpc UpdateUserName(UpdateUserNameRequest) returns (UpdateUserNameResponse) {
-	}
-
-	// UpdateUserPhone updates a user's phone
-	rpc UpdateUserPhone(UpdateUserPhoneRequest) returns (UpdateUserPhoneResponse) {
-	}
-
-	// UpdateUserState updates a user's state
-	rpc UpdateUserState(UpdateUserStateRequest) returns (UpdateUserStateResponse) {
-	}
-
 	// UpdatePayment updates payment
 	rpc UpdatePayment(UpdatePaymentRequest) returns (UpdatePaymentResponse) {
 	}
 }
 
-message CreateCertificateRequest {
-	Certificate certificate = 1;
-}
-
 message AddGameRequest {
 	int32 external_id = 1;
 	int32 league_id = 2;
-	GameType type = 3;
+	common.GameType type = 3;
 	string number = 4;
 	string name = 5;
 	int32 place_id = 6;
@@ -285,7 +82,7 @@ message AddGamesRequest {
 	message Game {
 		int32 external_id = 1;
 		int32 league_id = 2;
-		GameType type = 3;
+		common.GameType type = 3;
 		string number = 4;
 		string name = 5;
 		int32 place_id = 6;
@@ -300,30 +97,6 @@ message AddGamesRequest {
 message AddGamesResponse {
 }
 
-enum UserState {
-	USER_STATE_INVALID = 0;
-	USER_STATE_WELCOME = 1;
-	USER_STATE_REGISTERED = 2;
-	USER_STATE_CHANGING_EMAIL = 3;
-	USER_STATE_CHANGING_NAME = 4;
-	USER_STATE_CHANGING_PHONE = 5;
-	USER_STATE_CHANGING_STATE = 6;
-}
-
-message CreateUserRequest {
-	string name = 1;
-	int64 telegram_id = 2;
-	UserState state = 3;
-}
-  
-message CreateUserResponse {
-	int32 id = 1;
-}
-  
-message DeleteCertificateRequest {
-	int32 id = 1;
-}
-
 message DeleteGameRequest {
 	int32 id = 1;
 }
@@ -331,16 +104,12 @@ message DeleteGameRequest {
 message DeleteGameResponse {
 }
 
-message ListCertificatesResponse {
-	repeated Certificate certificates = 1;
-}
-
 message GetGameByIDRequest {
 	int32 game_id = 1;
 }
   
 message GetGameByIDResponse {
-	Game game = 1;
+	common.Game game = 1;
 }
 
 message GetGamesRequest {
@@ -348,32 +117,7 @@ message GetGamesRequest {
 }
   
 message GetGamesResponse {
-	repeated Game games = 1;
-}
-
-message GetLeagueByIDRequest {
-	int32 id = 1;
-}
-  
-message GetLeagueByIDResponse {
-	League league = 1;
-}
-
-message GetPlaceByIDRequest {
-	int32 id = 1;
-}
-  
-message GetPlaceByIDResponse {
-	Place place = 1;
-}
-
-message GetPlaceByNameAndAddressRequest {
-	string name = 1;
-	string address = 2;
-}
-  
-message GetPlaceByNameAndAddressResponse {
-	Place place = 1;
+	repeated common.Game games = 1;
 }
 
 message Player {
@@ -395,39 +139,7 @@ message GetRegisteredGamesRequest {
 }
   
 message GetRegisteredGamesResponse {
-	repeated Game games = 1;
-}
-
-message User {
-	int32 id = 1;
-	string name = 2;
-	int64 telegram_id = 3;
-	string email = 4;
-	string phone = 5;
-	UserState state = 6;
-}
-
-message GetUserRequest {
-}
-  
-message GetUserResponse {
-	User user = 1;
-}
-
-message GetUserByIDRequest {
-	int32 id = 1;
-}
-  
-message GetUserByIDResponse {
-	User user = 1;
-}
-
-message GetUserByTelegramIDRequest {
-	int64 telegram_id = 1;
-}
-  
-message GetUserByTelegramIDResponse {
-	User user = 1;
+	repeated common.Game games = 1;
 }
 
 message GetUserGamesRequest {
@@ -436,7 +148,7 @@ message GetUserGamesRequest {
 }
   
 message GetUserGamesResponse {
-	repeated Game games = 1;
+	repeated common.Game games = 1;
 }
 
 enum RegisterGameStatus {
@@ -512,46 +224,8 @@ message UnregisterPlayerResponse {
   
 message UpdatePaymentRequest {
 	int32 game_id = 1;
-	Payment payment = 2;
+	common.Payment payment = 2;
 }
 
 message UpdatePaymentResponse {
-}
-
-message PatchCertificateRequest {
-	Certificate certificate = 1;
-
-	google.protobuf.FieldMask update_mask = 2;
-}
-
-message UpdateUserEmailRequest {
-	int32 user_id = 1;
-	string email = 2;
-}
-
-message UpdateUserEmailResponse {
-}
-
-message UpdateUserNameRequest {
-	int32 user_id = 1;
-	string name = 2;
-}
-
-message UpdateUserNameResponse {
-}
-
-message UpdateUserPhoneRequest {
-	int32 user_id = 1;
-	string phone = 2;
-}
-
-message UpdateUserPhoneResponse {
-}
-
-message UpdateUserStateRequest {
-	int32 user_id = 1;
-	UserState state = 2;
-}
-
-message UpdateUserStateResponse {
 }

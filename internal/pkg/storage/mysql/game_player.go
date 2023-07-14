@@ -27,18 +27,8 @@ func (a *GamePlayerStorageAdapter) Delete(ctx context.Context, id int32) error {
 }
 
 // Find ...
-func (a *GamePlayerStorageAdapter) Find(ctx context.Context, q builder.Cond) ([]model.GamePlayer, error) {
-	dbGamePlayers, err := a.gamePlayerStorage.Find(ctx, q, "")
-	if err != nil {
-		return nil, err
-	}
-
-	modelGamePlayers := make([]model.GamePlayer, 0, len(dbGamePlayers))
-	for _, dbGamePlayer := range dbGamePlayers {
-		modelGamePlayers = append(modelGamePlayers, convertDBGamePlayerToModelGamePlayer(dbGamePlayer))
-	}
-
-	return modelGamePlayers, nil
+func (a *GamePlayerStorageAdapter) Find(ctx context.Context, q builder.Cond) ([]GamePlayer, error) {
+	return a.gamePlayerStorage.Find(ctx, q, "")
 }
 
 // Insert ...
@@ -51,29 +41,16 @@ func (a *GamePlayerStorageAdapter) Insert(ctx context.Context, gamePlayer model.
 	return int32(id), nil
 }
 
-func convertDBGamePlayerToModelGamePlayer(gamePlayer GamePlayer) model.GamePlayer {
-	return model.GamePlayer{
-		ID:           int32(gamePlayer.ID),
-		FkGameID:     int32(gamePlayer.FkGameID),
-		FkUserID:     int32(gamePlayer.FkUserID.Int64),
-		RegisteredBy: int32(gamePlayer.RegisteredBy),
-		Degree:       int32(gamePlayer.Degree),
-	}
-}
-
 func convertModelGamePlayerToDBGamePlayer(gamePlayer model.GamePlayer) GamePlayer {
 	ret := GamePlayer{
-		ID:           int(gamePlayer.ID),
-		FkGameID:     int(gamePlayer.FkGameID),
+		ID:       int(gamePlayer.ID),
+		FkGameID: int(gamePlayer.FkGameID),
+		FkUserID: sql.NullInt64{
+			Int64: int64(gamePlayer.FkUserID.Value),
+			Valid: gamePlayer.FkUserID.Valid,
+		},
 		RegisteredBy: int(gamePlayer.RegisteredBy),
 		Degree:       uint8(gamePlayer.Degree),
-	}
-
-	if gamePlayer.FkUserID > 0 {
-		ret.FkUserID = sql.NullInt64{
-			Int64: int64(gamePlayer.FkUserID),
-			Valid: true,
-		}
 	}
 
 	return ret

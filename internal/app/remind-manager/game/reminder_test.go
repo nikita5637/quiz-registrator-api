@@ -10,8 +10,8 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -28,13 +28,9 @@ func TestNew(t *testing.T) {
 		{
 			name: "test case 1",
 			args: args{
-				cfg: Config{
-					QueueName: "queue",
-				},
+				cfg: Config{},
 			},
-			want: &Reminder{
-				queueName: "queue",
-			},
+			want: &Reminder{},
 		},
 	}
 	for _, tt := range tests {
@@ -47,19 +43,6 @@ func TestNew(t *testing.T) {
 }
 
 func TestReminder_Run(t *testing.T) {
-	t.Run("queue declare error", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
-		}
-
-		fx := tearUp(t)
-
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, errors.New("some error"))
-
-		err := fx.reminder.Run(fx.ctx)
-		assert.Error(t, err)
-	})
-
 	t.Run("get todays games error", func(t *testing.T) {
 		time_utils.TimeNow = func() time.Time {
 			return time_utils.ConvertTime("2022-02-10 10:00")
@@ -71,7 +54,6 @@ func TestReminder_Run(t *testing.T) {
 			zap.String("reminder_name", "game reminder"),
 		)))
 
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return(nil, errors.New("some error"))
 
 		err := fx.reminder.Run(fx.ctx)
@@ -89,7 +71,6 @@ func TestReminder_Run(t *testing.T) {
 			zap.String("reminder_name", "game reminder"),
 		)))
 
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
@@ -101,18 +82,18 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{}, errors.New("some error"))
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
+		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Game{
+			GameID:    1,
+			PlayerIDs: []int32{1, 2},
 		}).Return(nil)
 
 		err := fx.reminder.Run(fx.ctx)
@@ -130,7 +111,6 @@ func TestReminder_Run(t *testing.T) {
 			zap.String("reminder_name", "game reminder"),
 		)))
 
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
@@ -163,7 +143,6 @@ func TestReminder_Run(t *testing.T) {
 			zap.String("reminder_name", "game reminder"),
 		)))
 
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
@@ -175,30 +154,30 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: 3,
+				FkUserID: model.NewMaybeInt32(3),
 			},
 			{
-				FkUserID: 4,
+				FkUserID: model.NewMaybeInt32(4),
 			},
 		}, nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
+		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Game{
+			GameID:    1,
+			PlayerIDs: []int32{1, 2},
 		}).Return(nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(`{"game_id":2,"player_ids":[3,4]}`),
+		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Game{
+			GameID:    2,
+			PlayerIDs: []int32{3, 4},
 		}).Return(errors.New("some error"))
 
 		err := fx.reminder.Run(fx.ctx)
@@ -216,7 +195,6 @@ func TestReminder_Run(t *testing.T) {
 			zap.String("reminder_name", "game reminder"),
 		)))
 
-		fx.rabbitMQChannel.EXPECT().QueueDeclare("queue", false, false, false, false, amqp.Table(nil)).Return(amqp.Queue{}, nil)
 		fx.gamesFacade.EXPECT().GetTodaysGames(ctx).Return([]model.Game{
 			{
 				ID: 1,
@@ -228,30 +206,30 @@ func TestReminder_Run(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: 1,
+				FkUserID: model.NewMaybeInt32(1),
 			},
 			{
-				FkUserID: 2,
+				FkUserID: model.NewMaybeInt32(2),
 			},
 		}, nil)
 
 		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: 3,
+				FkUserID: model.NewMaybeInt32(3),
 			},
 			{
-				FkUserID: 4,
+				FkUserID: model.NewMaybeInt32(4),
 			},
 		}, nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(`{"game_id":1,"player_ids":[1,2]}`),
+		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Game{
+			GameID:    1,
+			PlayerIDs: []int32{1, 2},
 		}).Return(nil)
 
-		fx.rabbitMQChannel.EXPECT().PublishWithContext(ctx, "", "queue", false, false, amqp.Publishing{
-			ContentType: "application/json",
-			Body:        []byte(`{"game_id":2,"player_ids":[3,4]}`),
+		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Game{
+			GameID:    2,
+			PlayerIDs: []int32{3, 4},
 		}).Return(nil)
 
 		err := fx.reminder.Run(fx.ctx)

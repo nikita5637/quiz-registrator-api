@@ -1,18 +1,16 @@
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
-//go:generate mockery --case underscore --name RabbitMQChannel --with-expecter
+//go:generate mockery --case underscore --name RabbitMQProducer --with-expecter
 
 package game
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
-	amqp "github.com/rabbitmq/amqp091-go"
 	"go.uber.org/zap"
 )
 
@@ -22,32 +20,28 @@ type GamesFacade interface {
 	GetTodaysGames(ctx context.Context) ([]model.Game, error)
 }
 
-// RabbitMQChannel ...
-type RabbitMQChannel interface {
-	PublishWithContext(ctx context.Context, exchange, key string, mandatory, immediate bool, msg amqp.Publishing) error
-	QueueDeclare(name string, durable, autoDelete, exclusive, noWait bool, args amqp.Table) (amqp.Queue, error)
+// RabbitMQProducer ...
+type RabbitMQProducer interface {
+	Send(ctx context.Context, message interface{}) error
 }
 
 // Reminder ...
 type Reminder struct {
-	gamesFacade     GamesFacade
-	queueName       string
-	rabbitMQChannel RabbitMQChannel
+	gamesFacade      GamesFacade
+	rabbitMQProducer RabbitMQProducer
 }
 
 // Config ...
 type Config struct {
-	GamesFacade     GamesFacade
-	QueueName       string
-	RabbitMQChannel RabbitMQChannel
+	GamesFacade      GamesFacade
+	RabbitMQProducer RabbitMQProducer
 }
 
 // New ...
 func New(cfg Config) *Reminder {
 	return &Reminder{
-		gamesFacade:     cfg.GamesFacade,
-		queueName:       cfg.QueueName,
-		rabbitMQChannel: cfg.RabbitMQChannel,
+		gamesFacade:      cfg.GamesFacade,
+		rabbitMQProducer: cfg.RabbitMQProducer,
 	}
 }
 
@@ -74,18 +68,6 @@ func (r *Reminder) Run(ctx context.Context) error {
 }
 
 func (r *Reminder) run(ctx context.Context) error {
-	_, err := r.rabbitMQChannel.QueueDeclare(
-		r.queueName,
-		false,
-		false,
-		false,
-		false,
-		nil,
-	)
-	if err != nil {
-		return fmt.Errorf("queue declare error: %w", err)
-	}
-
 	games, err := r.gamesFacade.GetTodaysGames(ctx)
 	if err != nil {
 		return fmt.Errorf("get todays games error: %w", err)
@@ -105,8 +87,8 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		playerIDs := make([]int32, 0, len(players))
 		for _, player := range players {
-			if player.FkUserID != 0 {
-				playerIDs = append(playerIDs, player.FkUserID)
+			if player.FkUserID.Value != 0 {
+				playerIDs = append(playerIDs, player.FkUserID.Value)
 			}
 		}
 
@@ -120,23 +102,9 @@ func (r *Reminder) run(ctx context.Context) error {
 			PlayerIDs: playerIDs,
 		}
 
-		body, err := json.Marshal(reminder)
+		err = r.rabbitMQProducer.Send(ctx, reminder)
 		if err != nil {
-			logger.Errorf(ctx, "reminder marshal error: %s", err.Error())
-			continue
-		}
-
-		err = r.rabbitMQChannel.PublishWithContext(ctx,
-			"",
-			r.queueName,
-			false,
-			false,
-			amqp.Publishing{
-				ContentType: "application/json",
-				Body:        body,
-			})
-		if err != nil {
-			logger.Errorf(ctx, "message publish error: %s", err.Error())
+			logger.Errorf(ctx, "send message error: %s", err.Error())
 			continue
 		}
 

@@ -24,7 +24,7 @@ func (f *Facade) ListCertificates(ctx context.Context) ([]model.Certificate, err
 		return nil
 	})
 	if err != nil {
-		return nil, fmt.Errorf("list certificates error: %w", err)
+		return nil, fmt.Errorf("ListCertificates error: %w", err)
 	}
 
 	return modelCertificates, nil

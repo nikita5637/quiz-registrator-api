@@ -6,6 +6,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -27,7 +28,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:     0,
 			Number:   "1",
 		})
@@ -40,7 +41,7 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:     3,
 			Number:   "1",
 		})
@@ -53,8 +54,8 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 		})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -65,8 +66,8 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 		})
 		assert.Equal(t, int32(0), got)
@@ -78,8 +79,8 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 		})
@@ -92,8 +93,8 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     model.DateTime(time_utils.TimeNow()),
@@ -107,8 +108,8 @@ func TestFacade_AddGame(t *testing.T) {
 		fx := tearUp(t)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     model.GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     model.DateTime(time_utils.TimeNow()),
@@ -125,8 +126,8 @@ func TestFacade_AddGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -135,8 +136,8 @@ func TestFacade_AddGame(t *testing.T) {
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -153,8 +154,8 @@ func TestFacade_AddGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),
@@ -163,8 +164,8 @@ func TestFacade_AddGame(t *testing.T) {
 		}).Return(1, nil)
 
 		got, err := fx.facade.AddGame(fx.ctx, model.Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       model.GameTypeClassic,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       model.DateTime(timeNow),

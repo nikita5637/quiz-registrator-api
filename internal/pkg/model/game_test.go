@@ -6,6 +6,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -85,7 +86,7 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("game type validation error case 1", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:     0,
 			Number:   "1",
 		})
@@ -95,7 +96,7 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("game type validation error case 2", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Type:     3,
 			Number:   "1",
 		})
@@ -105,8 +106,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("game number validation error. game type is classic", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 		})
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, ErrInvalidGameNumber)
@@ -114,8 +115,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("place id validation error", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 		})
 		assert.Error(t, err)
@@ -124,8 +125,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("date validation error", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 		})
@@ -135,8 +136,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("price validation error", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     DateTime(time_utils.TimeNow()),
@@ -147,8 +148,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 
 	t.Run("max players validation error", func(t *testing.T) {
 		err := ValidateGame(Game{
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			Type:     GameTypeClassic,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:     pkgmodel.GameTypeClassic,
 			Number:   "1",
 			PlaceID:  1,
 			Date:     DateTime(time_utils.TimeNow()),
@@ -162,8 +163,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		err := ValidateGame(Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       GameTypeClassic,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClassic,
 			Number:     "1",
 			PlaceID:    1,
 			Date:       DateTime(timeNow),
@@ -177,8 +178,8 @@ func TestFacade_ValidateGame(t *testing.T) {
 		timeNow := time_utils.TimeNow()
 
 		err := ValidateGame(Game{
-			LeagueID:   pkgmodel.LeagueQuizPlease,
-			Type:       GameTypeClosed,
+			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Type:       pkgmodel.GameTypeClosed,
 			Number:     "",
 			PlaceID:    1,
 			Date:       DateTime(timeNow),

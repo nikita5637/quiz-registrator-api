@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -88,24 +89,33 @@ func TestFacade_GetPlayersByGameID(t *testing.T) {
 			Date: model.DateTime(time_utils.TimeNow().Add(24 * time.Hour)),
 		}, nil)
 
-		players := []model.GamePlayer{
+		players := []database.GamePlayer{
 			{
-				ID:           1,
-				FkUserID:     0,
+				ID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 0,
+					Valid: false,
+				},
 				RegisteredBy: 1,
-				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
+				Degree:       uint8(registrator.Degree_DEGREE_LIKELY),
 			},
 			{
-				ID:           2,
-				FkUserID:     0,
+				ID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 0,
+					Valid: false,
+				},
 				RegisteredBy: 1,
-				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
+				Degree:       uint8(registrator.Degree_DEGREE_UNLIKELY),
 			},
 			{
-				ID:           3,
-				FkUserID:     0,
+				ID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 0,
+					Valid: false,
+				},
 				RegisteredBy: 3,
-				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
+				Degree:       uint8(registrator.Degree_DEGREE_UNLIKELY),
 			},
 		}
 
@@ -119,7 +129,38 @@ func TestFacade_GetPlayersByGameID(t *testing.T) {
 		)).Return(players, nil)
 
 		got, err := fx.facade.GetPlayersByGameID(fx.ctx, 1)
-		assert.Equal(t, players, got)
+
+		expected := []model.GamePlayer{
+			{
+				ID: 1,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
+				RegisteredBy: 1,
+				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
+			},
+			{
+				ID: 2,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
+				RegisteredBy: 1,
+				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
+			},
+			{
+				ID: 3,
+				FkUserID: model.MaybeInt32{
+					Valid: false,
+					Value: 0,
+				},
+				RegisteredBy: 3,
+				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
+			},
+		}
+
+		assert.Equal(t, expected, got)
 		assert.NoError(t, err)
 	})
 }

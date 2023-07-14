@@ -22,20 +22,20 @@ func (_m *CertificateStorage) EXPECT() *CertificateStorage_Expecter {
 	return &CertificateStorage_Expecter{mock: &_m.Mock}
 }
 
-// CreateCertificate provides a mock function with given fields: ctx, dbCertificate
-func (_m *CertificateStorage) CreateCertificate(ctx context.Context, dbCertificate mysql.Certificate) (int32, error) {
-	ret := _m.Called(ctx, dbCertificate)
+// CreateCertificate provides a mock function with given fields: ctx, certificate
+func (_m *CertificateStorage) CreateCertificate(ctx context.Context, certificate mysql.Certificate) (int, error) {
+	ret := _m.Called(ctx, certificate)
 
-	var r0 int32
-	if rf, ok := ret.Get(0).(func(context.Context, mysql.Certificate) int32); ok {
-		r0 = rf(ctx, dbCertificate)
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.Certificate) int); ok {
+		r0 = rf(ctx, certificate)
 	} else {
-		r0 = ret.Get(0).(int32)
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
 	if rf, ok := ret.Get(1).(func(context.Context, mysql.Certificate) error); ok {
-		r1 = rf(ctx, dbCertificate)
+		r1 = rf(ctx, certificate)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -50,29 +50,29 @@ type CertificateStorage_CreateCertificate_Call struct {
 
 // CreateCertificate is a helper method to define mock.On call
 //  - ctx context.Context
-//  - dbCertificate mysql.Certificate
-func (_e *CertificateStorage_Expecter) CreateCertificate(ctx interface{}, dbCertificate interface{}) *CertificateStorage_CreateCertificate_Call {
-	return &CertificateStorage_CreateCertificate_Call{Call: _e.mock.On("CreateCertificate", ctx, dbCertificate)}
+//  - certificate mysql.Certificate
+func (_e *CertificateStorage_Expecter) CreateCertificate(ctx interface{}, certificate interface{}) *CertificateStorage_CreateCertificate_Call {
+	return &CertificateStorage_CreateCertificate_Call{Call: _e.mock.On("CreateCertificate", ctx, certificate)}
 }
 
-func (_c *CertificateStorage_CreateCertificate_Call) Run(run func(ctx context.Context, dbCertificate mysql.Certificate)) *CertificateStorage_CreateCertificate_Call {
+func (_c *CertificateStorage_CreateCertificate_Call) Run(run func(ctx context.Context, certificate mysql.Certificate)) *CertificateStorage_CreateCertificate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(mysql.Certificate))
 	})
 	return _c
 }
 
-func (_c *CertificateStorage_CreateCertificate_Call) Return(_a0 int32, _a1 error) *CertificateStorage_CreateCertificate_Call {
+func (_c *CertificateStorage_CreateCertificate_Call) Return(_a0 int, _a1 error) *CertificateStorage_CreateCertificate_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
 // DeleteCertificate provides a mock function with given fields: ctx, id
-func (_m *CertificateStorage) DeleteCertificate(ctx context.Context, id int32) error {
+func (_m *CertificateStorage) DeleteCertificate(ctx context.Context, id int) error {
 	ret := _m.Called(ctx, id)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int) error); ok {
 		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Error(0)
@@ -88,14 +88,14 @@ type CertificateStorage_DeleteCertificate_Call struct {
 
 // DeleteCertificate is a helper method to define mock.On call
 //  - ctx context.Context
-//  - id int32
+//  - id int
 func (_e *CertificateStorage_Expecter) DeleteCertificate(ctx interface{}, id interface{}) *CertificateStorage_DeleteCertificate_Call {
 	return &CertificateStorage_DeleteCertificate_Call{Call: _e.mock.On("DeleteCertificate", ctx, id)}
 }
 
-func (_c *CertificateStorage_DeleteCertificate_Call) Run(run func(ctx context.Context, id int32)) *CertificateStorage_DeleteCertificate_Call {
+func (_c *CertificateStorage_DeleteCertificate_Call) Run(run func(ctx context.Context, id int)) *CertificateStorage_DeleteCertificate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
@@ -106,11 +106,11 @@ func (_c *CertificateStorage_DeleteCertificate_Call) Return(_a0 error) *Certific
 }
 
 // GetCertificateByID provides a mock function with given fields: ctx, id
-func (_m *CertificateStorage) GetCertificateByID(ctx context.Context, id int32) (*mysql.Certificate, error) {
+func (_m *CertificateStorage) GetCertificateByID(ctx context.Context, id int) (*mysql.Certificate, error) {
 	ret := _m.Called(ctx, id)
 
 	var r0 *mysql.Certificate
-	if rf, ok := ret.Get(0).(func(context.Context, int32) *mysql.Certificate); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int) *mysql.Certificate); ok {
 		r0 = rf(ctx, id)
 	} else {
 		if ret.Get(0) != nil {
@@ -119,7 +119,7 @@ func (_m *CertificateStorage) GetCertificateByID(ctx context.Context, id int32) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
 		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
@@ -135,14 +135,14 @@ type CertificateStorage_GetCertificateByID_Call struct {
 
 // GetCertificateByID is a helper method to define mock.On call
 //  - ctx context.Context
-//  - id int32
+//  - id int
 func (_e *CertificateStorage_Expecter) GetCertificateByID(ctx interface{}, id interface{}) *CertificateStorage_GetCertificateByID_Call {
 	return &CertificateStorage_GetCertificateByID_Call{Call: _e.mock.On("GetCertificateByID", ctx, id)}
 }
 
-func (_c *CertificateStorage_GetCertificateByID_Call) Run(run func(ctx context.Context, id int32)) *CertificateStorage_GetCertificateByID_Call {
+func (_c *CertificateStorage_GetCertificateByID_Call) Run(run func(ctx context.Context, id int)) *CertificateStorage_GetCertificateByID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
@@ -198,13 +198,13 @@ func (_c *CertificateStorage_GetCertificates_Call) Return(_a0 []mysql.Certificat
 	return _c
 }
 
-// PatchCertificate provides a mock function with given fields: ctx, dbCertificate
-func (_m *CertificateStorage) PatchCertificate(ctx context.Context, dbCertificate mysql.Certificate) error {
-	ret := _m.Called(ctx, dbCertificate)
+// PatchCertificate provides a mock function with given fields: ctx, certificate
+func (_m *CertificateStorage) PatchCertificate(ctx context.Context, certificate mysql.Certificate) error {
+	ret := _m.Called(ctx, certificate)
 
 	var r0 error
 	if rf, ok := ret.Get(0).(func(context.Context, mysql.Certificate) error); ok {
-		r0 = rf(ctx, dbCertificate)
+		r0 = rf(ctx, certificate)
 	} else {
 		r0 = ret.Error(0)
 	}
@@ -219,12 +219,12 @@ type CertificateStorage_PatchCertificate_Call struct {
 
 // PatchCertificate is a helper method to define mock.On call
 //  - ctx context.Context
-//  - dbCertificate mysql.Certificate
-func (_e *CertificateStorage_Expecter) PatchCertificate(ctx interface{}, dbCertificate interface{}) *CertificateStorage_PatchCertificate_Call {
-	return &CertificateStorage_PatchCertificate_Call{Call: _e.mock.On("PatchCertificate", ctx, dbCertificate)}
+//  - certificate mysql.Certificate
+func (_e *CertificateStorage_Expecter) PatchCertificate(ctx interface{}, certificate interface{}) *CertificateStorage_PatchCertificate_Call {
+	return &CertificateStorage_PatchCertificate_Call{Call: _e.mock.On("PatchCertificate", ctx, certificate)}
 }
 
-func (_c *CertificateStorage_PatchCertificate_Call) Run(run func(ctx context.Context, dbCertificate mysql.Certificate)) *CertificateStorage_PatchCertificate_Call {
+func (_c *CertificateStorage_PatchCertificate_Call) Run(run func(ctx context.Context, certificate mysql.Certificate)) *CertificateStorage_PatchCertificate_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(mysql.Certificate))
 	})

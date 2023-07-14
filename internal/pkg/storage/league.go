@@ -17,8 +17,8 @@ type LeagueStorage interface {
 }
 
 // NewLeagueStorage ...
-func NewLeagueStorage(txManager *tx.Manager) LeagueStorage {
-	switch config.GetValue("Driver").String() {
+func NewLeagueStorage(driver string, txManager *tx.Manager) LeagueStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewLeagueStorageAdapter(txManager)
 	}

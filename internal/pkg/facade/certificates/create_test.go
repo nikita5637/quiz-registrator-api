@@ -8,7 +8,6 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -40,7 +39,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		})
 
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{}"),
@@ -48,6 +47,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrWonOnGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -79,7 +79,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		})
 
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{}"),
@@ -87,6 +87,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrSpentOnGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -115,7 +116,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{}"),
@@ -151,7 +152,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		}).Return(1, nil)
 
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{}"),
@@ -159,7 +160,7 @@ func TestFacade_CreateCertificate(t *testing.T) {
 
 		assert.Equal(t, model.Certificate{
 			ID:      1,
-			Type:    pkgmodel.CertificateTypeBarBillPayment,
+			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
 			SpentOn: model.NewMaybeInt32(2),
 			Info:    model.NewMaybeString("{}"),

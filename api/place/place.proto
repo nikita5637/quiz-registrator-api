@@ -1,0 +1,26 @@
+
+syntax = "proto3";
+
+package place;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/place;place";
+
+message Place {
+	int32 id = 1;
+	string address = 2;
+	string name = 3;
+	string short_name = 4;
+	float latitude = 5;
+	float longitude = 6;
+	string menu_link = 7;
+}
+
+service Service {
+	// GetPlace returns place by place ID
+	rpc GetPlace(GetPlaceRequest) returns (Place) {
+	}
+}
+
+message GetPlaceRequest {
+	int32 id = 1;
+}

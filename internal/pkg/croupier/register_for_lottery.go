@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 )
 
 // RegisterForLottery ...
@@ -19,7 +19,7 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	}
 
 	// TODO fix squiz lottery registration
-	if game.LeagueID == pkgmodel.LeagueSquiz {
+	if game.LeagueID == int32(leaguepb.LeagueID_SQUIZ) {
 		implemented = false
 	}
 
@@ -31,23 +31,15 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 		return 0, fmt.Errorf("%w", model.ErrLotteryNotAvailable)
 	}
 
-	if !game.My {
-		return 0, fmt.Errorf("%w", model.ErrLotteryPermissionDenied)
-	}
-
-	if user.Email == "" || user.Name == "" || user.Phone == "" {
-		return 0, fmt.Errorf("%w", model.ErrLotteryPermissionDenied)
-	}
-
 	switch game.LeagueID {
-	case pkgmodel.LeagueQuizPlease:
+	case int32(leaguepb.LeagueID_QUIZ_PLEASE):
 		number, err := c.quizPleaseCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("quiz please lottery registration error: %w", err)
 		}
 
 		return number, nil
-	case pkgmodel.LeagueSquiz:
+	case int32(leaguepb.LeagueID_SQUIZ):
 		_, err := c.squizCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("squiz lottery registration error: %w", err)

@@ -13,7 +13,7 @@ type MaybeInt32 struct {
 // NewMaybeInt32 ...
 func NewMaybeInt32(value int32) MaybeInt32 {
 	return MaybeInt32{
-		Valid: value != 0,
+		Valid: true,
 		Value: value,
 	}
 }
@@ -26,6 +26,14 @@ func (v MaybeInt32) ToSQL() sql.NullInt32 {
 	}
 }
 
+// ToSQLNullInt64 ...
+func (v MaybeInt32) ToSQLNullInt64() sql.NullInt64 {
+	return sql.NullInt64{
+		Valid: v.Valid,
+		Int64: int64(v.Value),
+	}
+}
+
 // MaybeString ...
 type MaybeString struct {
 	Valid bool
@@ -35,7 +43,7 @@ type MaybeString struct {
 // NewMaybeString ...
 func NewMaybeString(value string) MaybeString {
 	return MaybeString{
-		Valid: value != "",
+		Valid: true,
 		Value: value,
 	}
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,22 +56,22 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			{
 				ID:       1,
 				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),
-				LeagueID: pkgmodel.LeagueShaker,
+				LeagueID: int32(leaguepb.LeagueID_SHAKER),
 			},
 			{
 				ID:       2,
 				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
-				LeagueID: pkgmodel.LeagueShaker,
+				LeagueID: int32(leaguepb.LeagueID_SHAKER),
 			},
 			{
 				ID:       3,
 				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID: pkgmodel.LeagueShaker,
+				LeagueID: int32(leaguepb.LeagueID_SHAKER),
 			},
 			{
 				ID:       4,
 				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 16:30")),
-				LeagueID: pkgmodel.LeagueShaker,
+				LeagueID: int32(leaguepb.LeagueID_SHAKER),
 			},
 		}, nil)
 
@@ -91,31 +91,31 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			{
 				ID:         1,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),
-				LeagueID:   pkgmodel.LeagueSquiz,
+				LeagueID:   int32(leaguepb.LeagueID_SQUIZ),
 				Registered: true,
 			},
 			{
 				ID:         2,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
-				LeagueID:   pkgmodel.LeagueQuizPlease,
+				LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
 				Registered: true,
 			},
 			{
 				ID:         3,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID:   pkgmodel.LeagueSquiz,
+				LeagueID:   int32(leaguepb.LeagueID_SQUIZ),
 				Registered: true,
 			},
 			{
 				ID:         4,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID:   pkgmodel.LeagueSquiz,
+				LeagueID:   int32(leaguepb.LeagueID_SQUIZ),
 				Registered: false,
 			},
 			{
 				ID:         5,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:30")),
-				LeagueID:   pkgmodel.LeagueQuizPlease,
+				LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
 				Registered: true,
 			},
 		}, nil)
@@ -125,13 +125,13 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			{
 				ID:         2,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 16:00")),
-				LeagueID:   pkgmodel.LeagueQuizPlease,
+				LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
 				Registered: true,
 			},
 			{
 				ID:         3,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 14:30")),
-				LeagueID:   pkgmodel.LeagueSquiz,
+				LeagueID:   int32(leaguepb.LeagueID_SQUIZ),
 				Registered: true,
 			},
 		}, got)

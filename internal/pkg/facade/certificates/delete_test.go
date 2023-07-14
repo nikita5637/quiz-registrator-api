@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -19,12 +18,12 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&database.Certificate{}, sql.ErrNoRows)
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&database.Certificate{}, sql.ErrNoRows)
 
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrCertificateNotFound)
+		assert.ErrorIs(t, err, ErrCertificateNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -36,7 +35,7 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&database.Certificate{}, errors.New("some error"))
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&database.Certificate{}, errors.New("some error"))
 
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
@@ -52,7 +51,7 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&database.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&database.Certificate{
 			ID: 1,
 			DeletedAt: sql.NullTime{
 				Valid: true,
@@ -63,7 +62,7 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrCertificateNotFound)
+		assert.ErrorIs(t, err, ErrCertificateNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -75,11 +74,11 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&database.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&database.Certificate{
 			ID: 1,
 		}, nil)
 
-		fx.certificateStorage.EXPECT().DeleteCertificate(mock.Anything, int32(1)).Return(errors.New("some error"))
+		fx.certificateStorage.EXPECT().DeleteCertificate(mock.Anything, 1).Return(errors.New("some error"))
 
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 
@@ -95,11 +94,11 @@ func TestFacade_DeleteCertificate(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
-		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, int32(1)).Return(&database.Certificate{
+		fx.certificateStorage.EXPECT().GetCertificateByID(mock.Anything, 1).Return(&database.Certificate{
 			ID: 1,
 		}, nil)
 
-		fx.certificateStorage.EXPECT().DeleteCertificate(mock.Anything, int32(1)).Return(nil)
+		fx.certificateStorage.EXPECT().DeleteCertificate(mock.Anything, 1).Return(nil)
 
 		err := fx.facade.DeleteCertificate(fx.ctx, 1)
 

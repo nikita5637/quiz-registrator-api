@@ -9,7 +9,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
@@ -42,119 +42,12 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			My:       true,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
 		assert.Equal(t, model.ErrLotteryNotAvailable, errors.Unwrap(err))
-	})
-
-	t.Run("game is not my", func(t *testing.T) {
-		croupier := New(Config{})
-
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
-
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 13:39")
-		}
-
-		ctx := context.Background()
-
-		got, err := croupier.RegisterForLottery(ctx, model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
-			My:       false,
-		}, model.User{})
-		assert.Equal(t, int32(0), got)
-		assert.Error(t, err)
-		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
-	})
-
-	t.Run("empty user.Email", func(t *testing.T) {
-		croupier := New(Config{})
-
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
-
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 15:31")
-		}
-
-		ctx := context.Background()
-
-		game := model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
-		}
-		game.My = true
-
-		got, err := croupier.RegisterForLottery(ctx, game, model.User{
-			Name:  "user name",
-			Phone: "user phone",
-		})
-		assert.Equal(t, int32(0), got)
-		assert.Error(t, err)
-		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
-	})
-
-	t.Run("empty user.Name", func(t *testing.T) {
-		croupier := New(Config{})
-
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
-
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 15:31")
-		}
-
-		ctx := context.Background()
-
-		game := model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
-		}
-		game.My = true
-
-		got, err := croupier.RegisterForLottery(ctx, game, model.User{
-			Email: "user email",
-			Phone: "user phone",
-		})
-		assert.Equal(t, int32(0), got)
-		assert.Error(t, err)
-		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
-	})
-
-	t.Run("empty user.Phone", func(t *testing.T) {
-		croupier := New(Config{})
-
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
-
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 15:31")
-		}
-
-		ctx := context.Background()
-
-		game := model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
-		}
-		game.My = true
-
-		got, err := croupier.RegisterForLottery(ctx, game, model.User{
-			Email: "user email",
-			Name:  "user name",
-		})
-		assert.Equal(t, int32(0), got)
-		assert.Error(t, err)
-		assert.Equal(t, model.ErrLotteryPermissionDenied, errors.Unwrap(err))
 	})
 
 	t.Run("error while registration, quiz please", func(t *testing.T) {
@@ -175,14 +68,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 		}
 		game.My = true
 
 		user := model.User{
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(0, errors.New("some error"))
@@ -248,14 +141,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: pkgmodel.LeagueQuizPlease,
+			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 		}
 		game.My = true
 
 		user := model.User{
-			Email: "user email",
 			Name:  "user name",
-			Phone: "user phone",
+			Email: model.NewMaybeString("user email"),
+			Phone: model.NewMaybeString("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(100, nil)

@@ -19,23 +19,23 @@ func (f *Facade) CreateCertificate(ctx context.Context, certificate model.Certif
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
 					if i := strings.Index(err.Message, gameIDFK1ConstraintName); i != -1 {
-						return fmt.Errorf("create certificate error: %w", model.ErrWonOnGameNotFound)
+						return fmt.Errorf("create certificate error: %w", ErrWonOnGameNotFound)
 					}
 
-					return fmt.Errorf("create certificate error: %w", model.ErrSpentOnGameNotFound)
+					return fmt.Errorf("create certificate error: %w", ErrSpentOnGameNotFound)
 				}
 			}
 
 			return fmt.Errorf("create certificate error: %w", err)
 		}
 
-		newDBCertificate.ID = int(id)
+		newDBCertificate.ID = id
 		createdModelCert = convertDBCertificateToModelCertificate(newDBCertificate)
 
 		return nil
 	})
 	if err != nil {
-		return model.Certificate{}, fmt.Errorf("create certificate error: %w", err)
+		return model.Certificate{}, fmt.Errorf("CreateCertificate error: %w", err)
 	}
 
 	return createdModelCert, nil

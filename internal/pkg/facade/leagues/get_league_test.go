@@ -18,7 +18,7 @@ func TestFacade_GetLeagueByID(t *testing.T) {
 		got, err := fx.facade.GetLeagueByID(fx.ctx, 1)
 		assert.Equal(t, model.League{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrLeagueNotFound)
+		assert.ErrorIs(t, err, ErrLeagueNotFound)
 	})
 
 	t.Run("internal error", func(t *testing.T) {

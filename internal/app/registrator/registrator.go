@@ -1,10 +1,4 @@
-//go:generate mockery --case underscore --name Croupier --with-expecter
-//go:generate mockery --case underscore --name CertificatesFacade --with-expecter
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
-//go:generate mockery --case underscore --name GamePhotosFacade --with-expecter
-//go:generate mockery --case underscore --name LeaguesFacade --with-expecter
-//go:generate mockery --case underscore --name PlacesFacade --with-expecter
-//go:generate mockery --case underscore --name UsersFacade --with-expecter
 
 package registrator
 
@@ -15,26 +9,24 @@ import (
 
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	grpc_recovery "github.com/grpc-ecosystem/go-grpc-middleware/recovery"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
+	errorwrap "github.com/nikita5637/quiz-registrator-api/internal/app/middleware/error_wrap"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
+	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
+	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
+	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
+	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
+	placepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/place"
 	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
+	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
-
-// Croupier ...
-type Croupier interface {
-	GetIsLotteryActive(ctx context.Context, game model.Game) bool
-	RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error)
-}
-
-// CertificatesFacade ...
-type CertificatesFacade interface {
-	CreateCertificate(ctx context.Context, certificate model.Certificate) (model.Certificate, error)
-	DeleteCertificate(ctx context.Context, id int32) error
-	ListCertificates(ctx context.Context) ([]model.Certificate, error)
-	PatchCertificate(ctx context.Context, certificate model.Certificate, paths []string) (model.Certificate, error)
-}
 
 // GamesFacade ...
 type GamesFacade interface {
@@ -54,68 +46,47 @@ type GamesFacade interface {
 	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
 }
 
-// GamePhotosFacade ...
-type GamePhotosFacade interface {
-	AddGamePhotos(ctx context.Context, gameID int32, urls []string) error
-	GetGamesWithPhotos(ctx context.Context, limit, offset uint32) ([]model.Game, error)
-	GetNumberOfGamesWithPhotos(ctx context.Context) (uint32, error)
-	GetPhotosByGameID(ctx context.Context, gameID int32) ([]string, error)
-}
-
-// LeaguesFacade ...
-type LeaguesFacade interface {
-	GetLeagueByID(ctx context.Context, leagueID int32) (model.League, error)
-}
-
-// PlacesFacade ...
-type PlacesFacade interface {
-	GetPlaceByID(ctx context.Context, placeID int32) (model.Place, error)
-	GetPlaceByNameAndAddress(ctx context.Context, name, address string) (model.Place, error)
-}
-
 // Registrator ...
 type Registrator struct {
 	bindAddr   string
 	grpcServer *grpc.Server
 
-	croupier Croupier
+	// services
+	adminService              adminpb.ServiceServer
+	certificateManagerService certificatemanagerpb.ServiceServer
+	croupierService           croupierpb.ServiceServer
+	gameResultManagerService  gameresultmanagerpb.ServiceServer
+	leagueService             leaguepb.ServiceServer
+	photoManagerService       photomanagerpb.ServiceServer
+	placeService              placepb.ServiceServer
+	userManagerService        usermanagerpb.ServiceServer
 
-	certificatesFacade CertificatesFacade
-	gamesFacade        GamesFacade
-	gamePhotosFacade   GamePhotosFacade
-	leaguesFacade      LeaguesFacade
-	placesFacade       PlacesFacade
-	usersFacade        UsersFacade
+	gamesFacade GamesFacade
 
-	registratorpb.UnimplementedCroupierServiceServer
-	registratorpb.UnimplementedPhotographerServiceServer
 	registratorpb.UnimplementedRegistratorServiceServer
-}
-
-// UsersFacade ...
-type UsersFacade interface {
-	CreateUser(ctx context.Context, user model.User) (int32, error)
-	GetUser(ctx context.Context) (model.User, error)
-	GetUserByID(ctx context.Context, userID int32) (model.User, error)
-	GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error)
-	UpdateUserEmail(ctx context.Context, userID int32, email string) error
-	UpdateUserName(ctx context.Context, userID int32, name string) error
-	UpdateUserPhone(ctx context.Context, userID int32, phone string) error
-	UpdateUserState(ctx context.Context, userID int32, state model.UserState) error
 }
 
 // Config ...
 type Config struct {
 	BindAddr string
 
-	Croupier Croupier
+	// middlewares
+	AuthenticationMiddleware *authentication.Middleware
+	AuthorizationMiddleware  *authorization.Middleware
+	ErrorWrapMiddleware      *errorwrap.Middleware
+	LogMiddleware            *log.Middleware
 
-	CertificatesFacade CertificatesFacade
-	GamesFacade        GamesFacade
-	GamePhotosFacade   GamePhotosFacade
-	LeaguesFacade      LeaguesFacade
-	PlacesFacade       PlacesFacade
-	UsersFacade        UsersFacade
+	// services
+	AdminService              adminpb.ServiceServer
+	CertificateManagerService certificatemanagerpb.ServiceServer
+	CroupierService           croupierpb.ServiceServer
+	GameResultManagerService  gameresultmanagerpb.ServiceServer
+	LeagueService             leaguepb.ServiceServer
+	PhotoManagerService       photomanagerpb.ServiceServer
+	PlaceService              placepb.ServiceServer
+	UserManagerService        usermanagerpb.ServiceServer
+
+	GamesFacade GamesFacade
 }
 
 // New ...
@@ -123,28 +94,37 @@ func New(cfg Config) *Registrator {
 	registrator := &Registrator{
 		bindAddr: cfg.BindAddr,
 
-		croupier: cfg.Croupier,
+		adminService:              cfg.AdminService,
+		certificateManagerService: cfg.CertificateManagerService,
+		croupierService:           cfg.CroupierService,
+		gameResultManagerService:  cfg.GameResultManagerService,
+		leagueService:             cfg.LeagueService,
+		photoManagerService:       cfg.PhotoManagerService,
+		placeService:              cfg.PlaceService,
+		userManagerService:        cfg.UserManagerService,
 
-		certificatesFacade: cfg.CertificatesFacade,
-		gamesFacade:        cfg.GamesFacade,
-		gamePhotosFacade:   cfg.GamePhotosFacade,
-		leaguesFacade:      cfg.LeaguesFacade,
-		placesFacade:       cfg.PlacesFacade,
-		usersFacade:        cfg.UsersFacade,
+		gamesFacade: cfg.GamesFacade,
 	}
 
 	var opts []grpc.ServerOption
 	opts = append(opts, grpc.ChainUnaryInterceptor(
 		grpc_recovery.UnaryServerInterceptor(),
-		logInterceptor,
-		grpc_auth.UnaryServerInterceptor(nil),
-		userStateInterceptor,
+		cfg.LogMiddleware.Log(),
+		cfg.ErrorWrapMiddleware.ErrorWrap(),
+		grpc_auth.UnaryServerInterceptor(cfg.AuthenticationMiddleware.Authentication()),
+		cfg.AuthorizationMiddleware.Authorization(),
 	))
 	s := grpc.NewServer(opts...)
 	reflection.Register(s)
 
-	registratorpb.RegisterCroupierServiceServer(s, registrator)
-	registratorpb.RegisterPhotographerServiceServer(s, registrator)
+	adminpb.RegisterServiceServer(s, registrator.adminService)
+	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManagerService)
+	croupierpb.RegisterServiceServer(s, registrator.croupierService)
+	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
+	leaguepb.RegisterServiceServer(s, registrator.leagueService)
+	photomanagerpb.RegisterServiceServer(s, registrator.photoManagerService)
+	placepb.RegisterServiceServer(s, registrator.placeService)
+	usermanagerpb.RegisterServiceServer(s, registrator.userManagerService)
 	registratorpb.RegisterRegistratorServiceServer(s, registrator)
 
 	registrator.grpcServer = s

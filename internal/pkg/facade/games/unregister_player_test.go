@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -77,7 +78,7 @@ func TestFacade_UnregisterPlayer(t *testing.T) {
 					"fk_user_id",
 				},
 			),
-		)).Return([]model.GamePlayer{}, errors.New("some error"))
+		)).Return([]database.GamePlayer{}, errors.New("some error"))
 
 		got, err := fx.facade.UnregisterPlayer(fx.ctx, 1, 1, 1)
 		assert.Equal(t, model.UnregisterPlayerStatusInvalid, got)
@@ -114,7 +115,7 @@ func TestFacade_UnregisterPlayer(t *testing.T) {
 					"fk_user_id",
 				},
 			),
-		)).Return([]model.GamePlayer{}, nil)
+		)).Return([]database.GamePlayer{}, nil)
 
 		got, err := fx.facade.UnregisterPlayer(fx.ctx, 1, 1, 1)
 		assert.Equal(t, model.UnregisterPlayerStatusNotRegistered, got)
@@ -151,11 +152,14 @@ func TestFacade_UnregisterPlayer(t *testing.T) {
 					"fk_user_id",
 				},
 			),
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
-				ID:           2,
-				FkGameID:     2,
-				FkUserID:     1,
+				ID:       2,
+				FkGameID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
 				RegisteredBy: 1,
 			},
 		}, nil)
@@ -197,11 +201,14 @@ func TestFacade_UnregisterPlayer(t *testing.T) {
 					"fk_user_id",
 				},
 			),
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
-				ID:           2,
-				FkGameID:     2,
-				FkUserID:     1,
+				ID:       2,
+				FkGameID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
 				RegisteredBy: 1,
 			},
 		}, nil)
@@ -243,11 +250,14 @@ func TestFacade_UnregisterPlayer(t *testing.T) {
 					"fk_user_id",
 				},
 			),
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
-				ID:           3,
-				FkGameID:     3,
-				FkUserID:     2,
+				ID:       3,
+				FkGameID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 2,
+					Valid: true,
+				},
 				RegisteredBy: 1,
 			},
 		}, nil)

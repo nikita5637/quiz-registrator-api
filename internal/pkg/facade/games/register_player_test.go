@@ -1,11 +1,13 @@
 package games
 
 import (
+	"database/sql"
 	"testing"
 	"time"
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
@@ -49,18 +51,27 @@ func TestFacade_RegisterPlayer(t *testing.T) {
 			builder.IsNull{
 				"deleted_at",
 			},
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
-				ID:       1,
-				FkUserID: 1,
+				ID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
 			},
 			{
-				ID:       2,
-				FkUserID: 2,
+				ID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 2,
+					Valid: true,
+				},
 			},
 			{
-				ID:       3,
-				FkUserID: 3,
+				ID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 3,
+					Valid: true,
+				},
 			},
 		}, nil)
 
@@ -72,11 +83,14 @@ func TestFacade_RegisterPlayer(t *testing.T) {
 			builder.IsNull{
 				"deleted_at",
 			},
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
 				ID:       1,
 				FkGameID: 1,
-				FkUserID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
 			},
 		}, nil)
 
@@ -100,18 +114,27 @@ func TestFacade_RegisterPlayer(t *testing.T) {
 			builder.IsNull{
 				"deleted_at",
 			},
-		)).Return([]model.GamePlayer{
+		)).Return([]database.GamePlayer{
 			{
-				ID:       2,
-				FkUserID: 2,
+				ID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 2,
+					Valid: true,
+				},
 			},
 			{
-				ID:       3,
-				FkUserID: 3,
+				ID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 3,
+					Valid: true,
+				},
 			},
 			{
-				ID:       4,
-				FkUserID: 4,
+				ID: 4,
+				FkUserID: sql.NullInt64{
+					Int64: 4,
+					Valid: true,
+				},
 			},
 		}, nil)
 
@@ -123,7 +146,7 @@ func TestFacade_RegisterPlayer(t *testing.T) {
 			builder.IsNull{
 				"deleted_at",
 			},
-		)).Return([]model.GamePlayer{}, nil)
+		)).Return([]database.GamePlayer{}, nil)
 
 		got, err := fx.facade.RegisterPlayer(fx.ctx, 1, 1, 1, int32(registrator.Degree_DEGREE_LIKELY))
 		assert.Equal(t, model.RegisterPlayerStatus(model.RegisterPlayerStatusInvalid), got)

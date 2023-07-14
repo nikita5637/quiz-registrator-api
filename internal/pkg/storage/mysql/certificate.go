@@ -20,23 +20,23 @@ func NewCertificateStorageAdapter(txManager *tx.Manager) *CertificateStorageAdap
 }
 
 // CreateCertificate ...
-func (a *CertificateStorageAdapter) CreateCertificate(ctx context.Context, dbCertificate Certificate) (int32, error) {
+func (a *CertificateStorageAdapter) CreateCertificate(ctx context.Context, dbCertificate Certificate) (int, error) {
 	id, err := a.certificateStorage.Insert(ctx, dbCertificate)
 	if err != nil {
 		return 0, err
 	}
 
-	return int32(id), nil
+	return id, nil
 }
 
 // DeleteCertificate ...
-func (a *CertificateStorageAdapter) DeleteCertificate(ctx context.Context, id int32) error {
-	return a.certificateStorage.Delete(ctx, int(id))
+func (a *CertificateStorageAdapter) DeleteCertificate(ctx context.Context, id int) error {
+	return a.certificateStorage.Delete(ctx, id)
 }
 
 // GetCertificateByID ...
-func (a *CertificateStorageAdapter) GetCertificateByID(ctx context.Context, id int32) (*Certificate, error) {
-	return a.certificateStorage.GetCertificateByID(ctx, int(id))
+func (a *CertificateStorageAdapter) GetCertificateByID(ctx context.Context, id int) (*Certificate, error) {
+	return a.certificateStorage.GetCertificateByID(ctx, id)
 }
 
 // GetCertificates ...

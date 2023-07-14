@@ -60,15 +60,15 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 4,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 1,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 3,
-			Place:    2,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    3,
+			ResultPlace: 2,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 2, 2)
@@ -109,10 +109,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 4,
 		}, errors.New("some error"))
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 1,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 2, 2)
@@ -131,15 +131,15 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 5,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 4,
-			Place:    4,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    4,
+			ResultPlace: 4,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(5)).Return(model.GameResult{
-			ID:       5,
-			FkGameID: 5,
-			Place:    5,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 5).Return(model.GameResult{
+			ID:          5,
+			FkGameID:    5,
+			ResultPlace: 5,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 2, 3)
@@ -170,15 +170,15 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 5,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 4,
-			Place:    4,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    4,
+			ResultPlace: 4,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(5)).Return(model.GameResult{
-			ID:       5,
-			FkGameID: 5,
-			Place:    5,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 5).Return(model.GameResult{
+			ID:          5,
+			FkGameID:    5,
+			ResultPlace: 5,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 5, 3)
@@ -207,10 +207,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		}, nil)
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{}, errors.New("some error"))
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 4,
-			Place:    4,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    4,
+			ResultPlace: 4,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 5, 3)
@@ -232,20 +232,20 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 3,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(1)).Return(model.GameResult{
-			ID:       1,
-			FkGameID: 1,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 1).Return(model.GameResult{
+			ID:          1,
+			FkGameID:    1,
+			ResultPlace: 1,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(2)).Return(model.GameResult{
-			ID:       2,
-			FkGameID: 2,
-			Place:    2,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 2).Return(model.GameResult{
+			ID:          2,
+			FkGameID:    2,
+			ResultPlace: 2,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    3,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 3,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 3, 0)
@@ -289,31 +289,30 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 5,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(1)).Return(model.GameResult{
-			ID:       1,
-			FkGameID: 1,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 1).Return(model.GameResult{
+			ID:          1,
+			FkGameID:    1,
+			ResultPlace: 1,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx,
-			int32(2)).Return(model.GameResult{
-			ID:       2,
-			FkGameID: 2,
-			Place:    2,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 2).Return(model.GameResult{
+			ID:          2,
+			FkGameID:    2,
+			ResultPlace: 2,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    3,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 3,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 4,
-			Place:    4,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    4,
+			ResultPlace: 4,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(5)).Return(model.GameResult{
-			ID:       5,
-			FkGameID: 5,
-			Place:    5,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 5).Return(model.GameResult{
+			ID:          5,
+			FkGameID:    5,
+			ResultPlace: 5,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 30, 0)
@@ -360,20 +359,20 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		}, nil)
 		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{}, errors.New("some error"))
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(1)).Return(model.GameResult{
-			ID:       1,
-			FkGameID: 1,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 1).Return(model.GameResult{
+			ID:          1,
+			FkGameID:    1,
+			ResultPlace: 1,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(2)).Return(model.GameResult{
-			ID:       2,
-			FkGameID: 2,
-			Place:    2,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 2).Return(model.GameResult{
+			ID:          2,
+			FkGameID:    2,
+			ResultPlace: 2,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    3,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 3,
 		}, nil)
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 30, 0)
@@ -401,27 +400,27 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 			ID: 5,
 		}, nil)
 
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(1)).Return(model.GameResult{
-			ID:       1,
-			FkGameID: 1,
-			Place:    1,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 1).Return(model.GameResult{
+			ID:          1,
+			FkGameID:    1,
+			ResultPlace: 1,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(2)).Return(model.GameResult{
-			ID:       2,
-			FkGameID: 2,
-			Place:    2,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 2).Return(model.GameResult{
+			ID:          2,
+			FkGameID:    2,
+			ResultPlace: 2,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(3)).Return(model.GameResult{
-			ID:       3,
-			FkGameID: 3,
-			Place:    3,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 3).Return(model.GameResult{
+			ID:          3,
+			FkGameID:    3,
+			ResultPlace: 3,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(4)).Return(model.GameResult{
-			ID:       4,
-			FkGameID: 4,
-			Place:    4,
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
+			ID:          4,
+			FkGameID:    4,
+			ResultPlace: 4,
 		}, nil)
-		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, int32(5)).Return(model.GameResult{}, errors.New("some error"))
+		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 5).Return(model.GameResult{}, errors.New("some error"))
 
 		got, err := fx.facade.GetGamesWithPhotos(fx.ctx, 30, 0)
 		assert.Error(t, err)

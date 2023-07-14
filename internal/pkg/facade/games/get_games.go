@@ -7,6 +7,8 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
 
@@ -15,8 +17,8 @@ import (
 
 var (
 	availibilityGameTypes = []int32{
-		model.GameTypeClassic,
-		model.GameTypeThematic,
+		pkgmodel.GameTypeClassic,
+		pkgmodel.GameTypeThematic,
 	}
 )
 
@@ -55,14 +57,14 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 	var myLegioners uint32
 
 	for _, player := range players {
-		if player.FkUserID == 0 {
+		if player.FkUserID.Int64 == 0 {
 			numberLegioners++
-			if player.RegisteredBy == user.ID {
+			if int32(player.RegisteredBy) == user.ID {
 				myLegioners++
 			}
 		} else {
 			numberPlayers++
-			if player.FkUserID == user.ID {
+			if int32(player.FkUserID.Int64) == user.ID {
 				my = true
 			}
 		}
@@ -93,7 +95,7 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 	}
 
 	for i, game := range games {
-		var players []model.GamePlayer
+		var players []database.GamePlayer
 		players, err = f.gamePlayerStorage.Find(ctx, builder.And(
 			builder.Eq{
 				"fk_game_id": game.ID,
@@ -107,14 +109,14 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 		}
 
 		for _, player := range players {
-			if player.FkUserID > 0 {
-				if player.FkUserID == user.ID {
+			if player.FkUserID.Int64 > 0 {
+				if int32(player.FkUserID.Int64) == user.ID {
 					games[i].My = true
 				}
 				games[i].NumberOfPlayers++
 			} else {
 				games[i].NumberOfLegioners++
-				if player.RegisteredBy == user.ID {
+				if int32(player.RegisteredBy) == user.ID {
 					games[i].NumberOfMyLegioners++
 				}
 			}
@@ -141,7 +143,7 @@ func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Ga
 
 	playerGameIDs := make([]int32, 0, len(playerGames))
 	for _, playerGame := range playerGames {
-		playerGameIDs = append(playerGameIDs, playerGame.FkGameID)
+		playerGameIDs = append(playerGameIDs, int32(playerGame.FkGameID))
 	}
 
 	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs), "date")
@@ -167,7 +169,7 @@ func (f *Facade) GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.
 		return nil, fmt.Errorf("get players by game by id error: %w", model.ErrGameNotFound)
 	}
 
-	players, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
+	dbGamePlayers, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
 			"fk_game_id": gameID,
 		},
@@ -179,7 +181,12 @@ func (f *Facade) GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.
 		return nil, fmt.Errorf("get players by game id error: %w", err)
 	}
 
-	return players, nil
+	modelGamePlayers := make([]model.GamePlayer, 0, len(dbGamePlayers))
+	for _, dbGamePlayer := range dbGamePlayers {
+		modelGamePlayers = append(modelGamePlayers, convertDBGamePlayerToModelGamePlayer(dbGamePlayer))
+	}
+
+	return modelGamePlayers, nil
 }
 
 // GetRegisteredGames ...
@@ -201,7 +208,7 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 	}
 
 	for i, game := range games {
-		var players []model.GamePlayer
+		var players []database.GamePlayer
 		players, err = f.gamePlayerStorage.Find(ctx, builder.And(
 			builder.Eq{
 				"fk_game_id": game.ID,
@@ -215,14 +222,14 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 		}
 
 		for _, player := range players {
-			if player.FkUserID > 0 {
-				if player.FkUserID == user.ID {
+			if player.FkUserID.Int64 > 0 {
+				if int32(player.FkUserID.Int64) == user.ID {
 					games[i].My = true
 				}
 				games[i].NumberOfPlayers++
 			} else {
 				games[i].NumberOfLegioners++
-				if player.RegisteredBy == user.ID {
+				if int32(player.RegisteredBy) == user.ID {
 					games[i].NumberOfMyLegioners++
 				}
 			}

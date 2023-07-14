@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package user_manager;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager;usermanager";
+
+import "google/protobuf/field_mask.proto";
+
+enum UserState {
+	USER_STATE_INVALID = 0;
+	USER_STATE_WELCOME = 1;
+	USER_STATE_REGISTERED = 2;
+	USER_STATE_CHANGING_EMAIL = 3;
+	USER_STATE_CHANGING_NAME = 4;
+	USER_STATE_CHANGING_PHONE = 5;
+	USER_STATE_CHANGING_BANNED = 6;
+}
+
+message User {
+	int32 id = 1;
+	string name = 2;
+	int64 telegram_id = 3;
+	string email = 4;
+	string phone = 5;
+	UserState state = 6;
+}
+
+service Service {
+	// CreateUser adds new user
+	rpc CreateUser(CreateUserRequest) returns (User) {
+	}
+
+	// GetUser returns user by user ID
+	rpc GetUser(GetUserRequest) returns (User) {
+	}
+
+	// GetUserByTelegramID returns a user by Telegram ID
+	rpc GetUserByTelegramID(GetUserByTelegramIDRequest) returns (User) {
+	}
+
+	// PatchUser patches user
+	rpc PatchUser(PatchUserRequest) returns (User) {
+	}
+}
+
+message CreateUserRequest {
+	User user = 1;
+}
+
+message GetUserRequest {
+	int32 id = 1;
+}
+  
+message GetUserByTelegramIDRequest {
+	int64 telegram_id = 1;
+}
+  
+message PatchUserRequest {
+	User user = 1;
+
+	google.protobuf.FieldMask update_mask = 2;
+}

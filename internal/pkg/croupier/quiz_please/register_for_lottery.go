@@ -44,11 +44,11 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 		},
 		{
 			name:  "LotteryPlayer[email]",
-			value: strings.NewReader(user.Email),
+			value: strings.NewReader(user.Email.Value),
 		},
 		{
 			name:  "LotteryPlayer[phone]",
-			value: strings.NewReader(user.Phone),
+			value: strings.NewReader(user.Phone.Value),
 		},
 	}
 

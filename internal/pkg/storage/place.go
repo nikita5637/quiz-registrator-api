@@ -19,8 +19,8 @@ type PlaceStorage interface {
 }
 
 // NewPlaceStorage ...
-func NewPlaceStorage(txManager *tx.Manager) PlaceStorage {
-	switch config.GetValue("Driver").String() {
+func NewPlaceStorage(driver string, txManager *tx.Manager) PlaceStorage {
+	switch driver {
 	case config.DriverMySQL:
 		return mysql.NewPlaceStorageAdapter(txManager)
 	}

@@ -28,9 +28,7 @@ const (
 type GamePlayer struct {
 	ID           int32
 	FkGameID     int32
-	FkUserID     int32
+	FkUserID     MaybeInt32
 	RegisteredBy int32
 	Degree       int32
-	CreatedAt    DateTime
-	DeletedAt    DateTime
 }

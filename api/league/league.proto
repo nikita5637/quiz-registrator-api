@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package league;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/league;league";
+
+enum LeagueID {
+	INVALID = 0;
+	QUIZ_PLEASE = 1;
+	SQUIZ = 2;
+	SIXTY_SECONDS = 3;
+	SHAKER = 4;
+	WOW = 5;
+	MOZGOBOYNYA = 6;
+	NASH_QUIZ = 7;
+	SMUZI = 8;
+	QUIZ_PEACE = 9;
+	JACK_QUIZ = 10;
+	OWL_CUP = 11;
+}
+
+message League {
+	int32 id = 1;
+	string name = 2;
+	string short_name = 3;
+	string logo_link = 4;
+	string web_site = 5;
+}
+
+service Service {
+	// GetLeague returns league by league ID
+	rpc GetLeague(GetLeagueRequest) returns (League) {
+	}
+}
+
+message GetLeagueRequest {
+	int32 id = 1;
+}

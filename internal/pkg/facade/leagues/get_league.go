@@ -13,7 +13,7 @@ func (f *Facade) GetLeagueByID(ctx context.Context, leagueID int32) (model.Leagu
 	league, err := f.leagueStorage.GetLeagueByID(ctx, leagueID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.League{}, model.ErrLeagueNotFound
+			return model.League{}, ErrLeagueNotFound
 		}
 
 		return model.League{}, err

@@ -68,8 +68,8 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 			ExternalID: 777,
 		}, model.User{
 			Name:  "Имя",
-			Email: "Email",
-			Phone: "Номер телефона",
+			Email: model.NewMaybeString("Email"),
+			Phone: model.NewMaybeString("Номер телефона"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
