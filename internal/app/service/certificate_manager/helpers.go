@@ -11,6 +11,11 @@ import (
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
+type errorDetails struct {
+	Reason string
+	Lexeme i18n.Lexeme
+}
+
 const (
 	certificateWonOnGameNotFoundReason   = "WON_ON_GAME_NOT_FOUND"
 	certificateSpentOnGameNotFoundReason = "SPENT_ON_GAME_NOT_FOUND"

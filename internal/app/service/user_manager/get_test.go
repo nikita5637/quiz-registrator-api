@@ -8,8 +8,10 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/types/known/wrapperspb"
 )
 
 func TestImplementation_GetUser(t *testing.T) {
@@ -43,6 +45,9 @@ func TestImplementation_GetUser(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.NotFound, st.Code())
 		assert.Len(t, st.Details(), 2)
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, reasonUserNotFound, errorInfo.Reason)
 	})
 
 	t.Run("ok", func(t *testing.T) {
@@ -66,9 +71,13 @@ func TestImplementation_GetUser(t *testing.T) {
 			Id:         1,
 			Name:       "name",
 			TelegramId: 1,
-			Email:      "email",
-			Phone:      "phone",
-			State:      usermanagerpb.UserState(model.UserStateChangingName),
+			Email: &wrapperspb.StringValue{
+				Value: "email",
+			},
+			Phone: &wrapperspb.StringValue{
+				Value: "phone",
+			},
+			State: usermanagerpb.UserState(model.UserStateChangingName),
 		}, got)
 		assert.NoError(t, err)
 	})
@@ -105,6 +114,9 @@ func TestImplementation_GetUserByTelegramID(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.NotFound, st.Code())
 		assert.Len(t, st.Details(), 2)
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, reasonUserNotFound, errorInfo.Reason)
 	})
 
 	t.Run("ok", func(t *testing.T) {
@@ -128,9 +140,13 @@ func TestImplementation_GetUserByTelegramID(t *testing.T) {
 			Id:         1,
 			Name:       "name",
 			TelegramId: 1,
-			Email:      "email",
-			Phone:      "phone",
-			State:      usermanagerpb.UserState(model.UserStateChangingName),
+			Email: &wrapperspb.StringValue{
+				Value: "email",
+			},
+			Phone: &wrapperspb.StringValue{
+				Value: "phone",
+			},
+			State: usermanagerpb.UserState(model.UserStateChangingName),
 		}, got)
 		assert.NoError(t, err)
 	})

@@ -161,8 +161,8 @@ func (_c *UserStorage_Insert_Call) Return(_a0 int, _a1 error) *UserStorage_Inser
 	return _c
 }
 
-// Update provides a mock function with given fields: ctx, user
-func (_m *UserStorage) Update(ctx context.Context, user mysql.User) error {
+// PatchUser provides a mock function with given fields: ctx, user
+func (_m *UserStorage) PatchUser(ctx context.Context, user mysql.User) error {
 	ret := _m.Called(ctx, user)
 
 	var r0 error
@@ -175,26 +175,26 @@ func (_m *UserStorage) Update(ctx context.Context, user mysql.User) error {
 	return r0
 }
 
-// UserStorage_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
-type UserStorage_Update_Call struct {
+// UserStorage_PatchUser_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchUser'
+type UserStorage_PatchUser_Call struct {
 	*mock.Call
 }
 
-// Update is a helper method to define mock.On call
+// PatchUser is a helper method to define mock.On call
 //  - ctx context.Context
 //  - user mysql.User
-func (_e *UserStorage_Expecter) Update(ctx interface{}, user interface{}) *UserStorage_Update_Call {
-	return &UserStorage_Update_Call{Call: _e.mock.On("Update", ctx, user)}
+func (_e *UserStorage_Expecter) PatchUser(ctx interface{}, user interface{}) *UserStorage_PatchUser_Call {
+	return &UserStorage_PatchUser_Call{Call: _e.mock.On("PatchUser", ctx, user)}
 }
 
-func (_c *UserStorage_Update_Call) Run(run func(ctx context.Context, user mysql.User)) *UserStorage_Update_Call {
+func (_c *UserStorage_PatchUser_Call) Run(run func(ctx context.Context, user mysql.User)) *UserStorage_PatchUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(mysql.User))
 	})
 	return _c
 }
 
-func (_c *UserStorage_Update_Call) Return(_a0 error) *UserStorage_Update_Call {
+func (_c *UserStorage_PatchUser_Call) Return(_a0 error) *UserStorage_PatchUser_Call {
 	_c.Call.Return(_a0)
 	return _c
 }

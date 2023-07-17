@@ -24,6 +24,10 @@ const (
 	UserStateChangingPhone
 	// UserStateBanned ...
 	UserStateBanned
+	// UserStateChangingBirthdate ...
+	UserStateChangingBirthdate
+	// UserStateChangingSex ...
+	UserStateChangingSex
 
 	numberOfUserStates
 )
@@ -40,7 +44,31 @@ func ValidateUserState(value interface{}) error {
 		return errors.New("must be UserState")
 	}
 
-	return validation.Validate(v, validation.Max(numberOfUserStates-1))
+	return validation.Validate(v, validation.Required, validation.Min(UserStateWelcome), validation.Max(numberOfUserStates-1))
+}
+
+// Sex ...
+type Sex int32
+
+const (
+	// SexInvalid ...
+	SexInvalid Sex = iota
+	// SexMale ...
+	SexMale
+	// SexFemale ...
+	SexFemale
+
+	numberOfSexes
+)
+
+// ValidateSex ...
+func ValidateSex(value interface{}) error {
+	v, ok := value.(Sex)
+	if !ok {
+		return errors.New("must be Sex")
+	}
+
+	return validation.Validate(v, validation.Required, validation.Min(SexMale), validation.Max(numberOfSexes-1))
 }
 
 // User ...
@@ -51,4 +79,6 @@ type User struct {
 	Email      MaybeString
 	Phone      MaybeString
 	State      UserState
+	Birthdate  MaybeString
+	Sex        MaybeInt32
 }

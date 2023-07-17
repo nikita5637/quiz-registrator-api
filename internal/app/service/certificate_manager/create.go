@@ -15,11 +15,6 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-type errorDetails struct {
-	Reason string
-	Lexeme i18n.Lexeme
-}
-
 // CreateCertificate ...
 func (m *CertificateManager) CreateCertificate(ctx context.Context, req *certificatemanagerpb.CreateCertificateRequest) (*certificatemanagerpb.Certificate, error) {
 	createdCertificate := model.Certificate{
