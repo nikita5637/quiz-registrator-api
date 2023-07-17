@@ -50,8 +50,11 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 	}
 
 	_, err = f.gamePlayerStorage.Insert(ctx, model.GamePlayer{
-		FkGameID:     fkGameID,
-		FkUserID:     model.NewMaybeInt32(fkUserID),
+		FkGameID: fkGameID,
+		FkUserID: model.MaybeInt32{
+			Valid: fkUserID != 0,
+			Value: fkUserID,
+		},
 		RegisteredBy: registeredBy,
 		Degree:       degree,
 	})
