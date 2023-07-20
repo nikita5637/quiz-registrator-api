@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
@@ -36,13 +37,13 @@ func TestRegistrator_ListGameResults(t *testing.T) {
 					ID:          1,
 					FkGameID:    2,
 					ResultPlace: 1,
-					RoundPoints: model.NewMaybeString("{}"),
+					RoundPoints: maybe.Just("{}"),
 				},
 				{
 					ID:          2,
 					FkGameID:    3,
 					ResultPlace: 2,
-					RoundPoints: model.NewMaybeString("{}"),
+					RoundPoints: maybe.Just("{}"),
 				},
 			},
 			nil)

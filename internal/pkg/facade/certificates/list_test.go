@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -47,10 +48,14 @@ func TestFacade_ListCertificates(t *testing.T) {
 
 		assert.ElementsMatch(t, []model.Certificate{
 			{
-				ID: 1,
+				ID:      1,
+				SpentOn: maybe.Nothing[int32](),
+				Info:    maybe.Nothing[string](),
 			},
 			{
-				ID: 2,
+				ID:      2,
+				SpentOn: maybe.Nothing[int32](),
+				Info:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)

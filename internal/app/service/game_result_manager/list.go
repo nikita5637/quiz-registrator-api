@@ -23,7 +23,7 @@ func (m *GameResultManager) ListGameResults(ctx context.Context, _ *emptypb.Empt
 			Id:          gameResult.ID,
 			GameId:      gameResult.FkGameID,
 			ResultPlace: gameResult.ResultPlace,
-			RoundPoints: gameResult.RoundPoints.Value,
+			RoundPoints: gameResult.RoundPoints.Value(),
 		})
 	}
 

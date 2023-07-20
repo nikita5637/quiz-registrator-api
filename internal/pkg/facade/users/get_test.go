@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -83,11 +84,11 @@ func TestFacade_GetUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      1,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}, got)
 		assert.NoError(t, err)
 
@@ -167,11 +168,11 @@ func TestFacade_GetUserByTelegramID(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      1,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}, got)
 		assert.NoError(t, err)
 

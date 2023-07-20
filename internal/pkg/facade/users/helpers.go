@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
@@ -13,26 +14,27 @@ func convertDBUserToModelUser(user database.User) model.User {
 		ID:         int32(user.ID),
 		Name:       user.Name,
 		TelegramID: user.TelegramID,
-		Email: model.MaybeString{
-			Valid: user.Email.Valid,
-			Value: user.Email.String,
-		},
-		Phone: model.MaybeString{
-			Valid: user.Phone.Valid,
-			Value: user.Phone.String,
-		},
-		State: model.UserState(user.State),
-		Sex: model.MaybeInt32{
-			Valid: user.Sex.Valid,
-			Value: int32(user.Sex.Int64),
-		},
+		Email:      maybe.Nothing[string](),
+		Phone:      maybe.Nothing[string](),
+		State:      model.UserState(user.State),
+		Birthdate:  maybe.Nothing[string](),
+		Sex:        maybe.Nothing[model.Sex](),
+	}
+
+	if user.Email.Valid {
+		ret.Email = maybe.Just(user.Email.String)
+	}
+
+	if user.Phone.Valid {
+		ret.Phone = maybe.Just(user.Phone.String)
 	}
 
 	if user.Birthdate.Valid {
-		ret.Birthdate = model.MaybeString{
-			Valid: user.Birthdate.Valid,
-			Value: user.Birthdate.Time.Format("2006-01-02"),
-		}
+		ret.Birthdate = maybe.Just(user.Birthdate.Time.Format("2006-01-02"))
+	}
+
+	if user.Sex.Valid {
+		ret.Sex = maybe.Just(model.Sex(user.Sex.Int64))
 	}
 
 	return ret
@@ -43,14 +45,23 @@ func convertModelUserToDBUser(user model.User) database.User {
 		ID:         int(user.ID),
 		Name:       user.Name,
 		TelegramID: user.TelegramID,
-		Email:      user.Email.ToSQL(),
-		Phone:      user.Phone.ToSQL(),
-		State:      user.State.ToSQL(),
-		Sex:        user.Sex.ToSQLNullInt64(),
+		Email: sql.NullString{
+			String: user.Email.Value(),
+			Valid:  user.Email.IsPresent(),
+		},
+		Phone: sql.NullString{
+			String: user.Phone.Value(),
+			Valid:  user.Phone.IsPresent(),
+		},
+		State: user.State.ToSQL(),
+		Sex: sql.NullInt64{
+			Int64: int64(user.Sex.Value()),
+			Valid: user.Sex.IsPresent(),
+		},
 	}
 
-	if user.Birthdate.Valid {
-		date, err := time.Parse("2006-01-02", user.Birthdate.Value)
+	if v, ok := user.Birthdate.Get(); ok {
+		date, err := time.Parse("2006-01-02", v)
 		valid := err == nil && !date.IsZero()
 		ret.Birthdate = sql.NullTime{
 			Time:  date,

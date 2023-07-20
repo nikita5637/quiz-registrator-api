@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
@@ -30,7 +31,7 @@ func (m *GameResultManager) CreateGameResult(ctx context.Context, req *gameresul
 	gameResult, err := m.gameResultsFacade.CreateGameResult(ctx, model.GameResult{
 		FkGameID:    req.GetGameResult().GetGameId(),
 		ResultPlace: req.GetGameResult().GetResultPlace(),
-		RoundPoints: model.NewMaybeString(req.GetGameResult().GetRoundPoints()),
+		RoundPoints: maybe.Just(req.GetGameResult().GetRoundPoints()),
 	})
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())

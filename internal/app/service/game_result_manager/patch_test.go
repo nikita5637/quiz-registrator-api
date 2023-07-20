@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
@@ -74,7 +75,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, []string{
 			"game_id",
 			"result_place",
@@ -112,7 +113,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, []string{
 			"game_id",
 			"result_place",
@@ -150,7 +151,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, []string{
 			"game_id",
 			"result_place",
@@ -188,7 +189,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, []string{
 			"game_id",
 			"result_place",
@@ -226,7 +227,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, []string{
 			"game_id",
 			"result_place",
@@ -235,7 +236,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 3,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, nil)
 
 		got, err := fx.gameResultManager.PatchGameResult(fx.ctx, &gameresultmanagerpb.PatchGameResultRequest{

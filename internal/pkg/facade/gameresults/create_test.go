@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -33,7 +34,7 @@ func TestFacade_CreateGameResult(t *testing.T) {
 		got, err := fx.facade.CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.GameResult{}, got)
@@ -62,7 +63,7 @@ func TestFacade_CreateGameResult(t *testing.T) {
 		got, err := fx.facade.CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.GameResult{}, got)
@@ -90,14 +91,14 @@ func TestFacade_CreateGameResult(t *testing.T) {
 		got, err := fx.facade.CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.GameResult{
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, got)
 		assert.NoError(t, err)
 

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -47,20 +48,17 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 		case "won_on":
 			patchedCertificate.WonOn = req.GetCertificate().GetWonOn()
 		case "spent_on":
-			patchedCertificate.SpentOn = model.MaybeInt32{
-				Valid: req.GetCertificate().GetSpentOn() != nil,
-				Value: req.GetCertificate().GetSpentOn().GetValue(),
+			if req.GetCertificate().GetSpentOn() != nil {
+				patchedCertificate.SpentOn = maybe.Just(req.GetCertificate().GetSpentOn().GetValue())
 			}
 		case "info":
-			patchedCertificate.Info = model.MaybeString{
-				Valid: req.GetCertificate().GetInfo() != nil,
-				Value: req.GetCertificate().GetInfo().GetValue(),
+			if req.GetCertificate().GetInfo() != nil {
+				patchedCertificate.Info = maybe.Just(req.GetCertificate().GetInfo().GetValue())
 			}
 		}
 	}
 
-	err = validatePatchedCertificate(patchedCertificate)
-	if err != nil {
+	if err = validatePatchedCertificate(patchedCertificate); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 		if validationErrors, ok := err.(validation.Errors); ok && len(validationErrors) > 0 {
 			keys := make([]string, 0, len(validationErrors))

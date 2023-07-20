@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
@@ -37,7 +38,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -46,6 +47,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, model.ErrGameResultNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -72,7 +74,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -119,7 +121,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -128,6 +130,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, model.ErrGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -166,7 +169,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -175,6 +178,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
+		assert.ErrorIs(t, err, model.ErrGameResultAlreadyExists)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -213,7 +217,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -258,7 +262,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -303,7 +307,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, []string{
 			fieldNameGameID,
 			fieldNameResultPlace,
@@ -314,7 +318,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 			ID:          1,
 			FkGameID:    2,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{\"round1\":6}"),
+			RoundPoints: maybe.Just("{\"round1\":6}"),
 		}, got)
 		assert.NoError(t, err)
 

@@ -18,27 +18,7 @@ import (
 
 // CreateUser ...
 func (i *Implementation) CreateUser(ctx context.Context, req *usermanagerpb.CreateUserRequest) (*usermanagerpb.User, error) {
-	createdUser := model.User{
-		Name:       req.GetUser().GetName(),
-		TelegramID: req.GetUser().GetTelegramId(),
-		Email: model.MaybeString{
-			Valid: req.GetUser().GetEmail() != nil,
-			Value: req.GetUser().GetEmail().GetValue(),
-		},
-		Phone: model.MaybeString{
-			Valid: req.GetUser().GetPhone() != nil,
-			Value: req.GetUser().GetPhone().GetValue(),
-		},
-		State: model.UserState(req.GetUser().GetState()),
-		Birthdate: model.MaybeString{
-			Valid: req.GetUser().GetBirthdate() != nil,
-			Value: req.GetUser().GetBirthdate().GetValue(),
-		},
-		Sex: model.MaybeInt32{
-			Valid: req.GetUser().Sex != nil,
-			Value: int32(req.GetUser().GetSex()),
-		},
-	}
+	createdUser := convertProtoUserToModelUser(req.GetUser())
 
 	logger.Debugf(ctx, "trying to create new user: %#v", createdUser)
 

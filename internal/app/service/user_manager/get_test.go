@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	users "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -53,13 +54,17 @@ func TestImplementation_GetUser(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
+		pbSex := usermanagerpb.Sex_SEX_MALE
+
 		user := model.User{
 			ID:         1,
 			Name:       "name",
 			TelegramID: 1,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      model.UserStateChangingName,
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}
 
 		fx.usersFacade.EXPECT().GetUser(fx.ctx, int32(1)).Return(user, nil)
@@ -78,6 +83,10 @@ func TestImplementation_GetUser(t *testing.T) {
 				Value: "phone",
 			},
 			State: usermanagerpb.UserState(model.UserStateChangingName),
+			Birthdate: &wrapperspb.StringValue{
+				Value: "1990-01-30",
+			},
+			Sex: &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})
@@ -122,13 +131,17 @@ func TestImplementation_GetUserByTelegramID(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
+		pbSex := usermanagerpb.Sex_SEX_FEMALE
+
 		user := model.User{
 			ID:         1,
 			Name:       "name",
 			TelegramID: 1,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      model.UserStateChangingName,
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexFemale),
 		}
 
 		fx.usersFacade.EXPECT().GetUserByTelegramID(fx.ctx, int64(1)).Return(user, nil)
@@ -147,6 +160,10 @@ func TestImplementation_GetUserByTelegramID(t *testing.T) {
 				Value: "phone",
 			},
 			State: usermanagerpb.UserState(model.UserStateChangingName),
+			Birthdate: &wrapperspb.StringValue{
+				Value: "1990-01-30",
+			},
+			Sex: &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})

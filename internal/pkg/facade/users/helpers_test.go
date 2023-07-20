@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
@@ -73,9 +74,11 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
+			Birthdate:  maybe.Nothing[string](),
+			Sex:        maybe.Nothing[model.Sex](),
 		}, got)
 	})
 
@@ -107,17 +110,15 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Birthdate: model.MaybeString{
-				Valid: true,
-				Value: "1990-01-30",
-			},
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Nothing[model.Sex](),
 		}, got)
 	})
 
-	t.Run("tc2", func(t *testing.T) {
+	t.Run("tc3", func(t *testing.T) {
 		got := convertDBUserToModelUser(
 			database.User{
 				ID:         1,
@@ -142,14 +143,15 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Nothing[string](),
+			Sex:        maybe.Just(model.SexMale),
 		}, got)
 	})
 
-	t.Run("tc3", func(t *testing.T) {
+	t.Run("tc4", func(t *testing.T) {
 		got := convertDBUserToModelUser(
 			database.User{
 				ID:         1,
@@ -174,10 +176,11 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+			Birthdate:  maybe.Nothing[string](),
+			Sex:        maybe.Just(model.SexFemale),
 		}, got)
 	})
 }
@@ -191,11 +194,11 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString(birthDate),
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Just(birthDate),
+			Sex:        maybe.Just(model.SexMale),
 		})
 		assert.Equal(t, database.User{
 			ID:         1,
@@ -228,11 +231,11 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString(birthDate),
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Just(birthDate),
+			Sex:        maybe.Just(model.SexMale),
 		})
 		assert.Equal(t, database.User{
 			ID:         1,
@@ -266,14 +269,11 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString(birthDate),
-			Sex: model.MaybeInt32{
-				Valid: false,
-				Value: 0,
-			},
+			Birthdate:  maybe.Just(birthDate),
+			Sex:        maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, database.User{
 			ID:         1,
@@ -307,10 +307,11 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email@email.ru"),
-			Phone:      model.NewMaybeString("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString(birthDate),
+			Birthdate:  maybe.Just(birthDate),
+			Sex:        maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, database.User{
 			ID:         1,

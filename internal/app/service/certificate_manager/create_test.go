@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
@@ -162,8 +163,8 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}).Return(model.Certificate{}, certificates.ErrWonOnGameNotFound)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
@@ -193,8 +194,8 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}).Return(model.Certificate{}, certificates.ErrSpentOnGameNotFound)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
@@ -224,8 +225,8 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}).Return(model.Certificate{}, errors.New("some error"))
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
@@ -255,14 +256,14 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 		fx.certificatesFacade.EXPECT().CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}).Return(model.Certificate{
 			ID:      777,
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}, nil)
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
@@ -306,8 +307,10 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "no ID",
 			args: args{
 				certificate: model.Certificate{
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -316,7 +319,10 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "no type",
 			args: args{
 				certificate: model.Certificate{
-					ID: 1,
+					ID:      1,
+					WonOn:   1,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: true,
@@ -325,8 +331,10 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "no won_on",
 			args: args{
 				certificate: model.Certificate{
-					ID:   1,
-					Type: model.CertificateTypeFreePass,
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: true,
@@ -335,9 +343,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "won_on eq minWonOn and valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: minWonOn,
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   minWonOn,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -346,9 +356,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "no spent_on",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -357,13 +369,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "spent_on eq 0 and valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: true,
-						Value: 0,
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Just(int32(0)),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: true,
@@ -372,13 +382,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "spent_on eq minSpentOn and valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: true,
-						Value: minSpentOn,
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Just(minSpentOn),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -387,28 +395,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "spent_on eq 0 and not valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: false,
-						Value: 0,
-					},
-				},
-			},
-			wantErr: false,
-		},
-		{
-			name: "spent_on eq minSpentOn and not valid",
-			args: args{
-				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: false,
-						Value: minSpentOn,
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -417,17 +408,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "info is empty and valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: true,
-						Value: minSpentOn,
-					},
-					Info: model.MaybeString{
-						Valid: true,
-						Value: "",
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Just(minSpentOn),
+					Info:    maybe.Just(""),
 				},
 			},
 			wantErr: true,
@@ -436,17 +421,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "info is empty and not valid",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: true,
-						Value: minSpentOn,
-					},
-					Info: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Just(minSpentOn),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			wantErr: false,
@@ -455,17 +434,11 @@ func Test_validateCreatedCertificate(t *testing.T) {
 			name: "ok",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 1,
-					SpentOn: model.MaybeInt32{
-						Valid: true,
-						Value: minSpentOn,
-					},
-					Info: model.MaybeString{
-						Valid: true,
-						Value: "{}",
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   1,
+					SpentOn: maybe.Just(minSpentOn),
+					Info:    maybe.Just("{}"),
 				},
 			},
 			wantErr: false,

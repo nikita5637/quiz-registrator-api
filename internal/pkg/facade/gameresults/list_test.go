@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -63,13 +64,13 @@ func TestFacade_ListGameResults(t *testing.T) {
 				ID:          1,
 				FkGameID:    1,
 				ResultPlace: 1,
-				RoundPoints: model.NewMaybeString("{}"),
+				RoundPoints: maybe.Just("{}"),
 			},
 			{
 				ID:          2,
 				FkGameID:    2,
 				ResultPlace: 2,
-				RoundPoints: model.NewMaybeString("{}"),
+				RoundPoints: maybe.Just("{}"),
 			},
 		}, got)
 		assert.NoError(t, err)

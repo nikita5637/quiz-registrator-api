@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
@@ -152,5 +153,59 @@ func TestFacade_RegisterPlayer(t *testing.T) {
 		assert.Equal(t, model.RegisterPlayerStatus(model.RegisterPlayerStatusInvalid), got)
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, model.ErrGameNoFreeSlots)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+			Date:       model.DateTime(time_utils.TimeNow().Add(1 * time.Hour)),
+			MaxPlayers: 3,
+		}, nil)
+
+		fx.gamePlayerStorage.EXPECT().Find(fx.ctx, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{
+			{
+				ID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 2,
+					Valid: true,
+				},
+			},
+			{
+				ID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 3,
+					Valid: true,
+				},
+			},
+		}, nil)
+
+		fx.gamePlayerStorage.EXPECT().Find(fx.ctx, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id": int32(1),
+				"fk_user_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{}, nil)
+
+		fx.gamePlayerStorage.EXPECT().Insert(fx.ctx, model.GamePlayer{
+			FkGameID:     1,
+			FkUserID:     maybe.Just(int32(1)),
+			RegisteredBy: 1,
+			Degree:       1,
+		}).Return(1, nil)
+
+		got, err := fx.facade.RegisterPlayer(fx.ctx, 1, 1, 1, int32(registrator.Degree_DEGREE_LIKELY))
+		assert.Equal(t, model.RegisterPlayerStatus(model.RegisterPlayerStatusOK), got)
+		assert.NoError(t, err)
 	})
 }

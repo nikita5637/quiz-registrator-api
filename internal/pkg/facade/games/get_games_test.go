@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
@@ -132,29 +133,20 @@ func TestFacade_GetPlayersByGameID(t *testing.T) {
 
 		expected := []model.GamePlayer{
 			{
-				ID: 1,
-				FkUserID: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
+				ID:           1,
+				FkUserID:     maybe.Nothing[int32](),
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
 			},
 			{
-				ID: 2,
-				FkUserID: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
+				ID:           2,
+				FkUserID:     maybe.Nothing[int32](),
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},
 			{
-				ID: 3,
-				FkUserID: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
+				ID:           3,
+				FkUserID:     maybe.Nothing[int32](),
 				RegisteredBy: 3,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},

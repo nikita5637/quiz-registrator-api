@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -41,8 +42,8 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -81,8 +82,8 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -118,8 +119,8 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -154,16 +155,16 @@ func TestFacade_CreateCertificate(t *testing.T) {
 		got, err := fx.facade.CreateCertificate(fx.ctx, model.Certificate{
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{}"),
 		})
 
 		assert.Equal(t, model.Certificate{
 			ID:      1,
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   1,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{}"),
 		}, got)
 		assert.NoError(t, err)
 

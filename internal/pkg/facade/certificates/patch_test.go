@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	db "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -40,8 +41,8 @@ func TestFacade_PatchCertificate(t *testing.T) {
 			ID:      1,
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   -10,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\":5000}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\":5000}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -79,8 +80,8 @@ func TestFacade_PatchCertificate(t *testing.T) {
 			ID:      1,
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   10,
-			SpentOn: model.NewMaybeInt32(-10),
-			Info:    model.NewMaybeString("{\"sum\":5000}"),
+			SpentOn: maybe.Just(int32(-10)),
+			Info:    maybe.Just("{\"sum\":5000}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -115,8 +116,8 @@ func TestFacade_PatchCertificate(t *testing.T) {
 			ID:      1,
 			Type:    model.CertificateTypeFreePass,
 			WonOn:   10,
-			SpentOn: model.NewMaybeInt32(-10),
-			Info:    model.NewMaybeString("{\"sum\":5000}"),
+			SpentOn: maybe.Just(int32(-10)),
+			Info:    maybe.Just("{\"sum\":5000}"),
 		})
 
 		assert.Equal(t, model.Certificate{}, got)
@@ -150,16 +151,16 @@ func TestFacade_PatchCertificate(t *testing.T) {
 			ID:      1,
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   3,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\":5000}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\":5000}"),
 		})
 
 		assert.Equal(t, model.Certificate{
 			ID:      1,
 			Type:    model.CertificateTypeBarBillPayment,
 			WonOn:   3,
-			SpentOn: model.NewMaybeInt32(2),
-			Info:    model.NewMaybeString("{\"sum\":5000}"),
+			SpentOn: maybe.Just(int32(2)),
+			Info:    maybe.Just("{\"sum\":5000}"),
 		}, got)
 		assert.NoError(t, err)
 

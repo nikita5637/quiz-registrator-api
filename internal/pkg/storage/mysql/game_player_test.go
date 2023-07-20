@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -31,7 +32,7 @@ func Test_convertModelGamePlayerToDBGamePlayer(t *testing.T) {
 				gamePlayer: model.GamePlayer{
 					ID:           1,
 					FkGameID:     2,
-					FkUserID:     model.NewMaybeInt32(3),
+					FkUserID:     maybe.Just(int32(3)),
 					RegisteredBy: 4,
 					Degree:       1,
 				},
@@ -53,6 +54,7 @@ func Test_convertModelGamePlayerToDBGamePlayer(t *testing.T) {
 				gamePlayer: model.GamePlayer{
 					ID:           1,
 					FkGameID:     2,
+					FkUserID:     maybe.Nothing[int32](),
 					RegisteredBy: 4,
 					Degree:       1,
 				},

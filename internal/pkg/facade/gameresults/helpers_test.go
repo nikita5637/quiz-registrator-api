@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
@@ -74,7 +75,7 @@ func Test_convertDBGameResultToModelGameResult(t *testing.T) {
 				ID:          1,
 				FkGameID:    2,
 				ResultPlace: 3,
-				RoundPoints: model.NewMaybeString("{}"),
+				RoundPoints: maybe.Just("{}"),
 			},
 		},
 		{
@@ -94,10 +95,7 @@ func Test_convertDBGameResultToModelGameResult(t *testing.T) {
 				ID:          1,
 				FkGameID:    2,
 				ResultPlace: 3,
-				RoundPoints: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				RoundPoints: maybe.Nothing[string](),
 			},
 		},
 	}
@@ -126,7 +124,7 @@ func Test_convertModelGameResultToDBGameResult(t *testing.T) {
 					ID:          1,
 					FkGameID:    2,
 					ResultPlace: 3,
-					RoundPoints: model.NewMaybeString("{}"),
+					RoundPoints: maybe.Just("{}"),
 				},
 			},
 			want: database.GameResult{
@@ -146,10 +144,7 @@ func Test_convertModelGameResultToDBGameResult(t *testing.T) {
 					ID:          1,
 					FkGameID:    2,
 					ResultPlace: 3,
-					RoundPoints: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					RoundPoints: maybe.Nothing[string](),
 				},
 			},
 			want: database.GameResult{

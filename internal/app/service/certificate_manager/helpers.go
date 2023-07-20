@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
@@ -76,40 +77,60 @@ func convertModelCertificateToProtoCertificate(certificate model.Certificate) *c
 		Type:  certificatemanagerpb.CertificateType(certificate.Type),
 		WonOn: certificate.WonOn,
 	}
-	if certificate.SpentOn.Valid {
+	if v, ok := certificate.SpentOn.Get(); ok {
 		ret.SpentOn = &wrapperspb.Int32Value{
-			Value: certificate.SpentOn.Value,
+			Value: v,
 		}
 	}
-	if certificate.Info.Valid {
+	if v, ok := certificate.Info.Get(); ok {
 		ret.Info = &wrapperspb.StringValue{
-			Value: certificate.Info.Value,
+			Value: v,
 		}
 	}
 
 	return ret
 }
 
-func validateSpentOn(value interface{}) error {
-	v, ok := value.(model.MaybeInt32)
-	if !ok {
-		return errors.New("must be MaybeInt32")
+func convertProtoCertificateToModelCertificate(certificate *certificatemanagerpb.Certificate) model.Certificate {
+	ret := model.Certificate{
+		ID:      certificate.GetId(),
+		Type:    model.CertificateType(certificate.GetType()),
+		WonOn:   certificate.GetWonOn(),
+		SpentOn: maybe.Nothing[int32](),
+		Info:    maybe.Nothing[string](),
 	}
 
-	return validation.Validate(v.Value, validation.When(v.Valid, validation.Required, validation.Min(minSpentOn)))
+	if certificate.GetSpentOn() != nil {
+		ret.SpentOn = maybe.Just(certificate.GetSpentOn().GetValue())
+	}
+
+	if certificate.GetInfo() != nil {
+		ret.Info = maybe.Just(certificate.GetInfo().GetValue())
+	}
+
+	return ret
+}
+
+func validateSpentOn(value interface{}) error {
+	v, ok := value.(maybe.Maybe[int32])
+	if !ok {
+		return errors.New("must be Maybe[int32]")
+	}
+
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Min(minSpentOn)))
 }
 
 func validateCertificateInfo(value interface{}) error {
-	v, ok := value.(model.MaybeString)
+	v, ok := value.(maybe.Maybe[string])
 	if !ok {
-		return errors.New("must be MaybeString")
+		return errors.New("must be Maybe[string]")
 	}
 
-	if err := validation.Validate(v.Value, validation.When(v.Valid, validation.Required, validation.Length(1, 256))); err != nil {
+	if err := validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Length(1, 256))); err != nil {
 		return err
 	}
 
-	if valid := json.Valid([]byte(v.Value)); !valid && v.Valid {
+	if valid := json.Valid([]byte(v.Value())); !valid && v.IsPresent() {
 		return validation.NewError("validation_invalid_json_value", "must be a valid JSON")
 	}
 

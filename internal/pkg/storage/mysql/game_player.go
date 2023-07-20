@@ -42,16 +42,14 @@ func (a *GamePlayerStorageAdapter) Insert(ctx context.Context, gamePlayer model.
 }
 
 func convertModelGamePlayerToDBGamePlayer(gamePlayer model.GamePlayer) GamePlayer {
-	ret := GamePlayer{
+	return GamePlayer{
 		ID:       int(gamePlayer.ID),
 		FkGameID: int(gamePlayer.FkGameID),
 		FkUserID: sql.NullInt64{
-			Int64: int64(gamePlayer.FkUserID.Value),
-			Valid: gamePlayer.FkUserID.Valid,
+			Int64: int64(gamePlayer.FkUserID.Value()),
+			Valid: gamePlayer.FkUserID.IsPresent(),
 		},
 		RegisteredBy: int(gamePlayer.RegisteredBy),
 		Degree:       uint8(gamePlayer.Degree),
 	}
-
-	return ret
 }

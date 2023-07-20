@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
@@ -56,7 +57,7 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		fx.gameResultsFacade.EXPECT().CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    1,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}).Return(model.GameResult{}, model.ErrGameNotFound)
 
 		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{
@@ -81,7 +82,7 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		fx.gameResultsFacade.EXPECT().CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    1,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}).Return(model.GameResult{}, model.ErrGameResultAlreadyExists)
 
 		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{
@@ -106,12 +107,12 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		fx.gameResultsFacade.EXPECT().CreateGameResult(fx.ctx, model.GameResult{
 			FkGameID:    1,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}).Return(model.GameResult{
 			ID:          1,
 			FkGameID:    1,
 			ResultPlace: 1,
-			RoundPoints: model.NewMaybeString("{}"),
+			RoundPoints: maybe.Just("{}"),
 		}, nil)
 
 		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{

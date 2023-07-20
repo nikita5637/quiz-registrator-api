@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 
 	"github.com/stretchr/testify/assert"
@@ -68,8 +69,8 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 			ExternalID: 777,
 		}, model.User{
 			Name:  "Имя",
-			Email: model.NewMaybeString("Email"),
-			Phone: model.NewMaybeString("Номер телефона"),
+			Email: maybe.Just("Email"),
+			Phone: maybe.Just("Номер телефона"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)

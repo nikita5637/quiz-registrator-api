@@ -17,18 +17,7 @@ import (
 
 // CreateCertificate ...
 func (m *CertificateManager) CreateCertificate(ctx context.Context, req *certificatemanagerpb.CreateCertificateRequest) (*certificatemanagerpb.Certificate, error) {
-	createdCertificate := model.Certificate{
-		Type:  model.CertificateType(req.GetCertificate().GetType()),
-		WonOn: req.GetCertificate().GetWonOn(),
-		SpentOn: model.MaybeInt32{
-			Valid: req.GetCertificate().GetSpentOn() != nil,
-			Value: req.GetCertificate().GetSpentOn().GetValue(),
-		},
-		Info: model.MaybeString{
-			Valid: req.GetCertificate().GetInfo() != nil,
-			Value: req.GetCertificate().GetInfo().GetValue(),
-		},
-	}
+	createdCertificate := convertProtoCertificateToModelCertificate(req.GetCertificate())
 	if err := validateCreatedCertificate(createdCertificate); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 		if validationErrors, ok := err.(validation.Errors); ok && len(validationErrors) > 0 {

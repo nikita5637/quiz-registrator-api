@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -26,7 +27,11 @@ func TestFacade_CreateUser(t *testing.T) {
 		})
 
 		got, err := fx.facade.CreateUser(fx.ctx, model.User{
-			Name: "name",
+			Name:      "name",
+			Email:     maybe.Nothing[string](),
+			Phone:     maybe.Nothing[string](),
+			Birthdate: maybe.Nothing[string](),
+			Sex:       maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, model.User{}, got)
 		assert.Error(t, err)
@@ -50,7 +55,11 @@ func TestFacade_CreateUser(t *testing.T) {
 		})
 
 		got, err := fx.facade.CreateUser(fx.ctx, model.User{
-			Name: "name",
+			Name:      "name",
+			Email:     maybe.Nothing[string](),
+			Phone:     maybe.Nothing[string](),
+			Birthdate: maybe.Nothing[string](),
+			Sex:       maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, model.User{}, got)
 		assert.Error(t, err)
@@ -71,7 +80,11 @@ func TestFacade_CreateUser(t *testing.T) {
 		}).Return(0, errors.New("some error"))
 
 		got, err := fx.facade.CreateUser(fx.ctx, model.User{
-			Name: "name",
+			Name:      "name",
+			Email:     maybe.Nothing[string](),
+			Phone:     maybe.Nothing[string](),
+			Birthdate: maybe.Nothing[string](),
+			Sex:       maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, model.User{}, got)
 		assert.Error(t, err)
@@ -91,11 +104,19 @@ func TestFacade_CreateUser(t *testing.T) {
 		}).Return(1, nil)
 
 		got, err := fx.facade.CreateUser(fx.ctx, model.User{
-			Name: "name",
+			Name:      "name",
+			Email:     maybe.Nothing[string](),
+			Phone:     maybe.Nothing[string](),
+			Birthdate: maybe.Nothing[string](),
+			Sex:       maybe.Nothing[model.Sex](),
 		})
 		assert.Equal(t, model.User{
-			ID:   1,
-			Name: "name",
+			ID:        1,
+			Name:      "name",
+			Email:     maybe.Nothing[string](),
+			Phone:     maybe.Nothing[string](),
+			Birthdate: maybe.Nothing[string](),
+			Sex:       maybe.Nothing[model.Sex](),
 		}, got)
 		assert.NoError(t, err)
 

@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -49,11 +50,11 @@ func Test_convertModelUserToProtoUser(t *testing.T) {
 					ID:         1,
 					Name:       "name",
 					TelegramID: 111,
-					Email:      model.NewMaybeString("email"),
-					Phone:      model.NewMaybeString("phone"),
+					Email:      maybe.Just("email"),
+					Phone:      maybe.Just("phone"),
 					State:      model.UserStateRegistered,
-					Birthdate:  model.NewMaybeString("1990-01-30"),
-					Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+					Birthdate:  maybe.Just("1990-01-30"),
+					Sex:        maybe.Just(model.SexMale),
 				},
 			},
 			want: &usermanagerpb.User{
@@ -83,6 +84,57 @@ func Test_convertModelUserToProtoUser(t *testing.T) {
 	}
 }
 
+func Test_convertProtoUserToModelUser(t *testing.T) {
+	pbSex := usermanagerpb.Sex_SEX_MALE
+	type args struct {
+		user *usermanagerpb.User
+	}
+	tests := []struct {
+		name string
+		args args
+		want model.User
+	}{
+		{
+			name: "tc1",
+			args: args{
+				user: &usermanagerpb.User{
+					Id:         1,
+					Name:       "name",
+					TelegramId: 100,
+					Email: &wrapperspb.StringValue{
+						Value: "email",
+					},
+					Phone: &wrapperspb.StringValue{
+						Value: "phone",
+					},
+					State: usermanagerpb.UserState_USER_STATE_CHANGING_EMAIL,
+					Birthdate: &wrapperspb.StringValue{
+						Value: "1990-01-30",
+					},
+					Sex: &pbSex,
+				},
+			},
+			want: model.User{
+				ID:         1,
+				Name:       "name",
+				TelegramID: 100,
+				Email:      maybe.Just("email"),
+				Phone:      maybe.Just("phone"),
+				State:      model.UserStateChangingEmail,
+				Birthdate:  maybe.Just("1990-01-30"),
+				Sex:        maybe.Just(model.SexMale),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := convertProtoUserToModelUser(tt.args.user); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("convertProtoUserToModelUser() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_validateBirthdate(t *testing.T) {
 	type args struct {
 		value interface{}
@@ -102,40 +154,28 @@ func Test_validateBirthdate(t *testing.T) {
 		{
 			name: "not valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				value: maybe.Nothing[string](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "",
-				},
+				value: maybe.Just(""),
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid and has invalid value",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "invalid value",
-				},
+				value: maybe.Just("invalid value"),
 			},
 			wantErr: true,
 		},
 		{
 			name: "ok",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "1990-01-30",
-				},
+				value: maybe.Just("1990-01-30"),
 			},
 			wantErr: false,
 		},
@@ -168,40 +208,28 @@ func Test_validateEmail(t *testing.T) {
 		{
 			name: "not valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				value: maybe.Nothing[string](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "",
-				},
+				value: maybe.Just(""),
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid and has invalid value",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "invalid value",
-				},
+				value: maybe.Just("invalid value"),
 			},
 			wantErr: true,
 		},
 		{
 			name: "ok",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "email@email.ru",
-				},
+				value: maybe.Just("email@email.ru"),
 			},
 			wantErr: false,
 		},
@@ -234,40 +262,28 @@ func Test_validatePhone(t *testing.T) {
 		{
 			name: "not valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				value: maybe.Nothing[string](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid and empty",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "",
-				},
+				value: maybe.Just(""),
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid and has invalid value",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "invalid value",
-				},
+				value: maybe.Just("invalid value"),
 			},
 			wantErr: true,
 		},
 		{
 			name: "ok",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "+79998887766",
-				},
+				value: maybe.Just("+79998887766"),
 			},
 			wantErr: false,
 		},
@@ -291,7 +307,7 @@ func Test_validateUserSex(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "not MaybeInt32",
+			name: "not Maybe[int32]",
 			args: args{
 				value: "",
 			},
@@ -300,50 +316,35 @@ func Test_validateUserSex(t *testing.T) {
 		{
 			name: "not valid and empty",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
+				value: maybe.Nothing[model.Sex](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "valid and empty",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: 0,
-				},
+				value: maybe.Just(model.Sex(0)),
 			},
 			wantErr: true,
 		},
 		{
 			name: "valid and has invalid value",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: int32(model.SexInvalid),
-				},
+				value: maybe.Just(model.SexInvalid),
 			},
 			wantErr: true,
 		},
 		{
 			name: "gt numberOfSexes",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: 100,
-				},
+				value: maybe.Just(model.Sex(100)),
 			},
 			wantErr: true,
 		},
 		{
 			name: "ok",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: int32(model.SexMale),
-				},
+				value: maybe.Just(model.SexMale),
 			},
 			wantErr: false,
 		},

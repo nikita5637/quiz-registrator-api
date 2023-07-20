@@ -34,7 +34,7 @@ func convertModelGameResultToProtoGameResult(gameResult model.GameResult) *gamer
 		Id:          gameResult.ID,
 		GameId:      gameResult.FkGameID,
 		ResultPlace: gameResult.ResultPlace,
-		RoundPoints: gameResult.RoundPoints.Value,
+		RoundPoints: gameResult.RoundPoints.Value(),
 	}
 }
 

@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
@@ -51,8 +52,8 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 					ID:      1,
 					Type:    model.CertificateTypeFreePass,
 					WonOn:   2,
-					SpentOn: model.NewMaybeInt32(100),
-					Info:    model.NewMaybeString("{}"),
+					SpentOn: maybe.Just(int32(100)),
+					Info:    maybe.Just("{}"),
 				},
 			},
 			want: &certificatemanagerpb.Certificate{
@@ -71,10 +72,11 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			name: "tc2",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 2,
-					Info:  model.NewMaybeString("{}"),
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   2,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Just("{}"),
 				},
 			},
 			want: &certificatemanagerpb.Certificate{
@@ -90,9 +92,11 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			name: "tc3",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 2,
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   2,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			want: &certificatemanagerpb.Certificate{
@@ -105,17 +109,11 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 			name: "tc4",
 			args: args{
 				certificate: model.Certificate{
-					ID:    1,
-					Type:  model.CertificateTypeFreePass,
-					WonOn: 2,
-					SpentOn: model.MaybeInt32{
-						Valid: false,
-						Value: 0,
-					},
-					Info: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					ID:      1,
+					Type:    model.CertificateTypeFreePass,
+					WonOn:   2,
+					SpentOn: maybe.Nothing[int32](),
+					Info:    maybe.Nothing[string](),
 				},
 			},
 			want: &certificatemanagerpb.Certificate{
@@ -131,6 +129,48 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := convertModelCertificateToProtoCertificate(tt.args.certificate); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("convertModelCertificateToProtoCertificate() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_convertProtoCertificateToModelCertificate(t *testing.T) {
+	type args struct {
+		certificate *certificatemanagerpb.Certificate
+	}
+	tests := []struct {
+		name string
+		args args
+		want model.Certificate
+	}{
+		{
+			name: "tc1",
+			args: args{
+				certificate: &certificatemanagerpb.Certificate{
+					Id:    1,
+					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+					WonOn: 1,
+					SpentOn: &wrapperspb.Int32Value{
+						Value: 2,
+					},
+					Info: &wrapperspb.StringValue{
+						Value: "{}",
+					},
+				},
+			},
+			want: model.Certificate{
+				ID:      1,
+				Type:    model.CertificateTypeBarBillPayment,
+				WonOn:   1,
+				SpentOn: maybe.Just(int32(2)),
+				Info:    maybe.Just("{}"),
+			},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := convertProtoCertificateToModelCertificate(tt.args.certificate); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("convertProtoCertificateToModelCertificate() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -155,50 +195,28 @@ func Test_validateSpentOn(t *testing.T) {
 		{
 			name: "error. eq 0 and valid",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: 0,
-				},
+				value: maybe.Just(0),
 			},
 			wantErr: true,
 		},
 		{
 			name: "no error. eq 0 and not valid",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
+				value: maybe.Nothing[int32](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "error. lt minSpentOn and valid",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: -1,
-				},
+				value: maybe.Just(-1),
 			},
 			wantErr: true,
 		},
 		{
-			name: "no error. lt minSpentOn and not valid",
-			args: args{
-				value: model.MaybeInt32{
-					Valid: false,
-					Value: -1,
-				},
-			},
-			wantErr: false,
-		},
-		{
 			name: "ok",
 			args: args{
-				value: model.MaybeInt32{
-					Valid: true,
-					Value: minSpentOn,
-				},
+				value: maybe.Just(minSpentOn),
 			},
 			wantErr: false,
 		},
@@ -231,70 +249,35 @@ func Test_validateCertificateInfo(t *testing.T) {
 		{
 			name: "error. empty string and valid",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "",
-				},
+				value: maybe.Just(""),
 			},
 			wantErr: true,
 		},
 		{
 			name: "no error. empty string and not valid",
 			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				value: maybe.Nothing[string](),
 			},
 			wantErr: false,
 		},
 		{
 			name: "error. invalid JSON value and valid",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "invalid JSON",
-				},
+				value: maybe.Just("invalid JSON"),
 			},
 			wantErr: true,
-		},
-		{
-			name: "no error. invalid JSON value and not valid",
-			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "invalid JSON",
-				},
-			},
-			wantErr: false,
 		},
 		{
 			name: "error. too long and valid",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "{\"a\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
-				},
+				value: maybe.Just("{\"a\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}"),
 			},
 			wantErr: true,
 		},
 		{
-			name: "error. too long and not valid",
-			args: args{
-				value: model.MaybeString{
-					Valid: false,
-					Value: "{\"a\":\"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\"}",
-				},
-			},
-			wantErr: false,
-		},
-		{
 			name: "ok",
 			args: args{
-				value: model.MaybeString{
-					Valid: true,
-					Value: "{}",
-				},
+				value: maybe.Just("{}"),
 			},
 			wantErr: false,
 		},

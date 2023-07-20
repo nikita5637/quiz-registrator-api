@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 )
 
 // CertificateType ...
@@ -40,6 +41,6 @@ type Certificate struct {
 	ID      int32
 	Type    CertificateType
 	WonOn   int32
-	SpentOn MaybeInt32
-	Info    MaybeString
+	SpentOn maybe.Maybe[int32]
+	Info    maybe.Maybe[string]
 }

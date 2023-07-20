@@ -6,6 +6,7 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-ozzo/ozzo-validation/v4/is"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -95,65 +96,92 @@ func convertModelUserToProtoUser(user model.User) *usermanagerpb.User {
 		TelegramId: user.TelegramID,
 		State:      usermanagerpb.UserState(user.State),
 	}
-
-	if user.Email.Valid {
+	if v, ok := user.Email.Get(); ok {
 		ret.Email = &wrapperspb.StringValue{
-			Value: user.Email.Value,
+			Value: v,
 		}
 	}
-
-	if user.Phone.Valid {
+	if v, ok := user.Phone.Get(); ok {
 		ret.Phone = &wrapperspb.StringValue{
-			Value: user.Phone.Value,
+			Value: v,
 		}
 	}
-
-	if user.Birthdate.Valid {
+	if v, ok := user.Birthdate.Get(); ok {
 		ret.Birthdate = &wrapperspb.StringValue{
-			Value: user.Birthdate.Value,
+			Value: v,
 		}
 	}
-
-	if user.Sex.Valid {
-		sex := usermanagerpb.Sex(user.Sex.Value)
+	if v, ok := user.Sex.Get(); ok {
+		sex := usermanagerpb.Sex(v)
 		ret.Sex = &sex
 	}
 
 	return ret
 }
 
-func validateBirthdate(value interface{}) error {
-	v, ok := value.(model.MaybeString)
-	if !ok {
-		return errors.New("must be MaybeString")
+func convertProtoUserToModelUser(user *usermanagerpb.User) model.User {
+	ret := model.User{
+		ID:         user.GetId(),
+		Name:       user.GetName(),
+		TelegramID: user.GetTelegramId(),
+		Email:      maybe.Nothing[string](),
+		Phone:      maybe.Nothing[string](),
+		State:      model.UserState(user.GetState()),
+		Birthdate:  maybe.Nothing[string](),
+		Sex:        maybe.Nothing[model.Sex](),
 	}
 
-	return validation.Validate(v.Value, validation.When(v.Valid, validation.Required, validation.Date("2006-01-02")))
+	if user.GetEmail() != nil {
+		ret.Email = maybe.Just(user.GetEmail().GetValue())
+	}
+
+	if user.GetPhone() != nil {
+		ret.Phone = maybe.Just(user.GetPhone().GetValue())
+	}
+
+	if user.GetBirthdate() != nil {
+		ret.Birthdate = maybe.Just(user.GetBirthdate().GetValue())
+	}
+
+	if user.Sex != nil {
+		ret.Sex = maybe.Just(model.Sex(user.GetSex()))
+	}
+
+	return ret
+}
+
+func validateBirthdate(value interface{}) error {
+	v, ok := value.(maybe.Maybe[string])
+	if !ok {
+		return errors.New("must be Maybe[string]")
+	}
+
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Date("2006-01-02")))
 }
 
 func validateEmail(value interface{}) error {
-	v, ok := value.(model.MaybeString)
+	v, ok := value.(maybe.Maybe[string])
 	if !ok {
-		return errors.New("must be MaybeString")
+		return errors.New("must be Maybe[string]")
 	}
 
-	return validation.Validate(v.Value, validation.When(v.Valid, validation.Required, is.Email))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, is.Email))
 }
 
 func validatePhone(value interface{}) error {
-	v, ok := value.(model.MaybeString)
+	v, ok := value.(maybe.Maybe[string])
 	if !ok {
-		return errors.New("must be MaybeString")
+		return errors.New("must be Maybe[string]")
 	}
 
-	return validation.Validate(v.Value, validation.When(v.Valid, validation.Required, validation.Match(regexp.MustCompile(`^\+79[0-9]{9}$`))))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Match(regexp.MustCompile(`^\+79[0-9]{9}$`))))
 }
 
 func validateUserSex(value interface{}) error {
-	v, ok := value.(model.MaybeInt32)
+	v, ok := value.(maybe.Maybe[model.Sex])
 	if !ok {
-		return errors.New("must be MaybeInt32")
+		return errors.New("must be Maybe[model.Sex]")
 	}
 
-	return validation.Validate(model.Sex(v.Value), validation.When(v.Valid, validation.By(model.ValidateSex)))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.By(model.ValidateSex)))
 }

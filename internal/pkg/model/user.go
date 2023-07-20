@@ -4,6 +4,7 @@ import (
 	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 )
 
 // UserState ...
@@ -76,9 +77,9 @@ type User struct {
 	ID         int32
 	Name       string
 	TelegramID int64
-	Email      MaybeString
-	Phone      MaybeString
+	Email      maybe.Maybe[string]
+	Phone      maybe.Maybe[string]
 	State      UserState
-	Birthdate  MaybeString
-	Sex        MaybeInt32
+	Birthdate  maybe.Maybe[string]
+	Sex        maybe.Maybe[Sex]
 }

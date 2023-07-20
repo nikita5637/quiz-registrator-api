@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
@@ -551,14 +552,14 @@ func TestRegistrator_GetPlayersByGameID(t *testing.T) {
 			{
 				ID:           1,
 				FkGameID:     1,
-				FkUserID:     model.NewMaybeInt32(1),
+				FkUserID:     maybe.Just(int32(1)),
 				RegisteredBy: 1,
 				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
 			},
 			{
 				ID:           2,
 				FkGameID:     1,
-				FkUserID:     model.NewMaybeInt32(2),
+				FkUserID:     maybe.Just(int32(2)),
 				RegisteredBy: 2,
 				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
 			},
@@ -570,12 +571,12 @@ func TestRegistrator_GetPlayersByGameID(t *testing.T) {
 			GameId: 1,
 		})
 		assert.ElementsMatch(t, []*registrator.Player{
-			&registrator.Player{
+			{
 				UserId:       1,
 				RegisteredBy: 1,
 				Degree:       registrator.Degree_DEGREE_LIKELY,
 			},
-			&registrator.Player{
+			{
 				UserId:       2,
 				RegisteredBy: 2,
 				Degree:       registrator.Degree_DEGREE_UNLIKELY,

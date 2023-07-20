@@ -6,6 +6,7 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
@@ -49,15 +50,18 @@ func (f *Facade) RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registe
 		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", model.ErrGameNoFreeSlots)
 	}
 
-	_, err = f.gamePlayerStorage.Insert(ctx, model.GamePlayer{
-		FkGameID: fkGameID,
-		FkUserID: model.MaybeInt32{
-			Valid: fkUserID != 0,
-			Value: fkUserID,
-		},
+	gamePlayer := model.GamePlayer{
+		FkGameID:     fkGameID,
+		FkUserID:     maybe.Nothing[int32](),
 		RegisteredBy: registeredBy,
 		Degree:       degree,
-	})
+	}
+
+	if fkUserID != 0 {
+		gamePlayer.FkUserID = maybe.Just(fkUserID)
+	}
+
+	_, err = f.gamePlayerStorage.Insert(ctx, gamePlayer)
 	if err != nil {
 		return model.RegisterPlayerStatusInvalid, fmt.Errorf("register player error: %w", err)
 	}

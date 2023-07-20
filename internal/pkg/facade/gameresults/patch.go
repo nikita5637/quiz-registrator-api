@@ -38,8 +38,8 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 				patchedDBGameResult.Place = uint8(gameResult.ResultPlace)
 			case fieldNameRoundPoints:
 				patchedDBGameResult.Points = sql.NullString{
-					Valid:  gameResult.RoundPoints.Valid,
-					String: gameResult.RoundPoints.Value,
+					String: gameResult.RoundPoints.Value(),
+					Valid:  gameResult.RoundPoints.IsPresent(),
 				}
 			}
 		}

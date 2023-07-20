@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	users "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -224,11 +225,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 		fx.usersFacade.EXPECT().CreateUser(fx.ctx, model.User{
 			Name:       "name",
 			TelegramID: -100,
-			Phone:      model.NewMaybeString("+79998887766"),
-			Email:      model.NewMaybeString("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}).Return(model.User{}, errors.New("some error"))
 
 		got, err := fx.implementation.CreateUser(fx.ctx, &usermanagerpb.CreateUserRequest{
@@ -264,11 +265,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 		fx.usersFacade.EXPECT().CreateUser(fx.ctx, model.User{
 			Name:       "name",
 			TelegramID: -100,
-			Phone:      model.NewMaybeString("+79998887766"),
-			Email:      model.NewMaybeString("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexFemale),
 		}).Return(model.User{}, users.ErrUserTelegramIDAlreadyExists)
 
 		got, err := fx.implementation.CreateUser(fx.ctx, &usermanagerpb.CreateUserRequest{
@@ -307,11 +308,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 		fx.usersFacade.EXPECT().CreateUser(fx.ctx, model.User{
 			Name:       "name",
 			TelegramID: -100,
-			Phone:      model.NewMaybeString("+79998887766"),
-			Email:      model.NewMaybeString("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexFemale),
 		}).Return(model.User{}, users.ErrUserEmailAlreadyExists)
 
 		got, err := fx.implementation.CreateUser(fx.ctx, &usermanagerpb.CreateUserRequest{
@@ -350,20 +351,20 @@ func TestImplementation_CreateUser(t *testing.T) {
 		fx.usersFacade.EXPECT().CreateUser(fx.ctx, model.User{
 			Name:       "name",
 			TelegramID: -100,
-			Phone:      model.NewMaybeString("+79998887766"),
-			Email:      model.NewMaybeString("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexFemale),
 		}).Return(model.User{
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Phone:      model.NewMaybeString("+79998887766"),
-			Email:      model.NewMaybeString("email@email.ru"),
+			Phone:      maybe.Just("+79998887766"),
+			Email:      maybe.Just("email@email.ru"),
 			State:      model.UserStateWelcome,
-			Birthdate:  model.NewMaybeString("1990-01-30"),
-			Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexFemale),
 		}, nil)
 
 		got, err := fx.implementation.CreateUser(fx.ctx, &usermanagerpb.CreateUserRequest{
@@ -419,7 +420,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -430,7 +435,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: true,
@@ -441,7 +450,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "abcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdeabcdea",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: true,
@@ -496,11 +509,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 1,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Email: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -511,11 +524,8 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Just(""),
 					State:      model.UserStateWelcome,
-					Email: model.MaybeString{
-						Valid: true,
-						Value: "",
-					},
 				},
 			},
 			wantErr: true,
@@ -526,11 +536,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Just("invalid email"),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Email: model.MaybeString{
-						Valid: true,
-						Value: "invalid email",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: true,
@@ -541,11 +551,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Just("email@mail.ru"),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Email: model.MaybeString{
-						Valid: true,
-						Value: "email@mail.ru",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -556,11 +566,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 1,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Phone: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -571,11 +581,8 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Phone:      maybe.Just(""),
 					State:      model.UserStateWelcome,
-					Phone: model.MaybeString{
-						Valid: true,
-						Value: "",
-					},
 				},
 			},
 			wantErr: true,
@@ -586,11 +593,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Just("invalid phone"),
 					State:      model.UserStateWelcome,
-					Phone: model.MaybeString{
-						Valid: true,
-						Value: "invalid phone",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: true,
@@ -601,11 +608,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Just("+79998887766"),
 					State:      model.UserStateWelcome,
-					Phone: model.MaybeString{
-						Valid: true,
-						Value: "+79998887766",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -616,11 +623,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 1,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Birthdate: model.MaybeString{
-						Valid: false,
-						Value: "",
-					},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -632,10 +639,7 @@ func Test_validateCreatedUser(t *testing.T) {
 					Name:       "name",
 					TelegramID: 100,
 					State:      model.UserStateWelcome,
-					Birthdate: model.MaybeString{
-						Valid: true,
-						Value: "",
-					},
+					Birthdate:  maybe.Just(""),
 				},
 			},
 			wantErr: true,
@@ -647,10 +651,7 @@ func Test_validateCreatedUser(t *testing.T) {
 					Name:       "name",
 					TelegramID: 100,
 					State:      model.UserStateWelcome,
-					Birthdate: model.MaybeString{
-						Valid: true,
-						Value: "invalid birthdate",
-					},
+					Birthdate:  maybe.Just("invalid birthdate"),
 				},
 			},
 			wantErr: true,
@@ -661,11 +662,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Birthdate: model.MaybeString{
-						Valid: true,
-						Value: "1990-12-30",
-					},
+					Birthdate:  maybe.Just("1990-12-30"),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -676,8 +677,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Sex:        model.MaybeInt32{},
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Nothing[model.Sex](),
 				},
 			},
 			wantErr: false,
@@ -689,7 +693,7 @@ func Test_validateCreatedUser(t *testing.T) {
 					Name:       "name",
 					TelegramID: 100,
 					State:      model.UserStateWelcome,
-					Sex:        model.NewMaybeInt32(int32(model.SexInvalid)),
+					Sex:        maybe.Just(model.SexInvalid),
 				},
 			},
 			wantErr: true,
@@ -700,8 +704,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Sex:        model.NewMaybeInt32(int32(model.SexMale)),
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Just(model.SexMale),
 				},
 			},
 			wantErr: false,
@@ -712,8 +719,11 @@ func Test_validateCreatedUser(t *testing.T) {
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
+					Email:      maybe.Nothing[string](),
+					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
-					Sex:        model.NewMaybeInt32(int32(model.SexFemale)),
+					Birthdate:  maybe.Nothing[string](),
+					Sex:        maybe.Just(model.SexFemale),
 				},
 			},
 			wantErr: false,

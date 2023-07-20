@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	"github.com/stretchr/testify/assert"
@@ -36,28 +37,22 @@ func TestRegistrator_ListCertificates(t *testing.T) {
 				ID:      1,
 				Type:    model.CertificateTypeFreePass,
 				WonOn:   1,
-				SpentOn: model.NewMaybeInt32(2),
-				Info:    model.NewMaybeString("{}"),
+				SpentOn: maybe.Just(int32(2)),
+				Info:    maybe.Just("{}"),
 			},
 			{
 				ID:      2,
 				Type:    model.CertificateTypeBarBillPayment,
 				WonOn:   3,
-				SpentOn: model.NewMaybeInt32(2),
-				Info:    model.NewMaybeString("{}"),
+				SpentOn: maybe.Just(int32(2)),
+				Info:    maybe.Just("{}"),
 			},
 			{
-				ID:    3,
-				Type:  model.CertificateTypeBarBillPayment,
-				WonOn: 4,
-				SpentOn: model.MaybeInt32{
-					Valid: false,
-					Value: 0,
-				},
-				Info: model.MaybeString{
-					Valid: false,
-					Value: "",
-				},
+				ID:      3,
+				Type:    model.CertificateTypeBarBillPayment,
+				WonOn:   4,
+				SpentOn: maybe.Nothing[int32](),
+				Info:    maybe.Nothing[string](),
 			},
 		}, nil)
 

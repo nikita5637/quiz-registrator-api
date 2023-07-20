@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 	users "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
@@ -52,26 +53,22 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 		case "telegram_id":
 			patchedUser.TelegramID = req.GetUser().GetTelegramId()
 		case "email":
-			patchedUser.Email = model.MaybeString{
-				Valid: req.GetUser().GetEmail() != nil,
-				Value: req.GetUser().GetEmail().GetValue(),
+			if req.GetUser().GetEmail() != nil {
+				patchedUser.Email = maybe.Just(req.GetUser().GetEmail().GetValue())
 			}
 		case "phone":
-			patchedUser.Phone = model.MaybeString{
-				Valid: req.GetUser().GetPhone() != nil,
-				Value: req.GetUser().GetPhone().GetValue(),
+			if req.GetUser().GetPhone() != nil {
+				patchedUser.Phone = maybe.Just(req.GetUser().GetPhone().GetValue())
 			}
 		case "state":
 			patchedUser.State = model.UserState(req.GetUser().GetState())
 		case "birthdate":
-			patchedUser.Birthdate = model.MaybeString{
-				Valid: req.GetUser().GetBirthdate() != nil,
-				Value: req.GetUser().GetBirthdate().GetValue(),
+			if req.GetUser().GetBirthdate() != nil {
+				patchedUser.Birthdate = maybe.Just(req.GetUser().GetBirthdate().GetValue())
 			}
 		case "sex":
-			patchedUser.Sex = model.MaybeInt32{
-				Valid: req.GetUser().Sex != nil,
-				Value: int32(req.GetUser().GetSex()),
+			if req.GetUser().Sex != nil {
+				patchedUser.Sex = maybe.Just(model.Sex(req.GetUser().GetSex()))
 			}
 		}
 	}
@@ -127,10 +124,10 @@ func validatePatchedUser(user model.User, onlyRussianAlphabet bool) error {
 		validation.Field(&user.ID, validation.Required, validation.Min(minID)),
 		validation.Field(&user.Name, validation.Required, validation.Length(1, 100), validation.When(onlyRussianAlphabet, validation.Match(regexp.MustCompile("^[а-яА-Я ]+$")))),
 		validation.Field(&user.TelegramID, validation.Required),
-		validation.Field(&user.Email, validation.When(user.Email.Valid, validation.By(validateEmail))),
-		validation.Field(&user.Phone, validation.When(user.Phone.Valid, validation.By(validatePhone))),
+		validation.Field(&user.Email, validation.By(validateEmail)),
+		validation.Field(&user.Phone, validation.By(validatePhone)),
 		validation.Field(&user.State, validation.Required, validation.By(model.ValidateUserState)),
-		validation.Field(&user.Birthdate, validation.When(user.Birthdate.Valid, validation.By(validateBirthdate))),
-		validation.Field(&user.Sex, validation.When(user.Sex.Valid, validation.By(validateUserSex))),
+		validation.Field(&user.Birthdate, validation.By(validateBirthdate)),
+		validation.Field(&user.Sex, validation.By(validateUserSex)),
 	)
 }

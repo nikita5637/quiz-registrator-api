@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -54,8 +55,8 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 			LeagueID: 2,
 		}, model.User{
 			Name:  "Имя",
-			Phone: model.NewMaybeString("+79998887766"),
-			Email: model.NewMaybeString("email@email.ru"),
+			Phone: maybe.Just("+79998887766"),
+			Email: maybe.Just("email@email.ru"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.NoError(t, err)
@@ -99,8 +100,8 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 			LeagueID: 2,
 		}, model.User{
 			Name:  "Имя",
-			Phone: model.NewMaybeString("+79998887766"),
-			Email: model.NewMaybeString("email@email.ru"),
+			Phone: maybe.Just("+79998887766"),
+			Email: maybe.Just("email@email.ru"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.NoError(t, err)

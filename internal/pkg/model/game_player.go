@@ -1,5 +1,7 @@
 package model
 
+import "github.com/mono83/maybe"
+
 // RegisterPlayerStatus ...
 type RegisterPlayerStatus int32
 
@@ -28,7 +30,7 @@ const (
 type GamePlayer struct {
 	ID           int32
 	FkGameID     int32
-	FkUserID     MaybeInt32
+	FkUserID     maybe.Maybe[int32]
 	RegisteredBy int32
 	Degree       int32
 }

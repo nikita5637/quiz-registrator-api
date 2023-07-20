@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -74,8 +75,8 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		user := model.User{
 			Name:  "user name",
-			Email: model.NewMaybeString("user email"),
-			Phone: model.NewMaybeString("user phone"),
+			Email: maybe.Just("user email"),
+			Phone: maybe.Just("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(0, errors.New("some error"))
@@ -147,8 +148,8 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		user := model.User{
 			Name:  "user name",
-			Email: model.NewMaybeString("user email"),
-			Phone: model.NewMaybeString("user phone"),
+			Email: maybe.Just("user email"),
+			Phone: maybe.Just("user phone"),
 		}
 
 		quizPleaseCroupierMock.EXPECT().RegisterForLottery(context.Background(), game, user).Return(100, nil)
