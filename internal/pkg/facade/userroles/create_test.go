@@ -56,7 +56,7 @@ func TestFacade_CreateUserRole(t *testing.T) {
 		})
 		assert.Equal(t, model.UserRole{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrUserRoleAlreadyExists)
+		assert.ErrorIs(t, err, ErrRoleIsAlreadyAssigned)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

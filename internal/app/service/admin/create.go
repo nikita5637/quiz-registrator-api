@@ -5,49 +5,54 @@ import (
 	"errors"
 	"fmt"
 
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-var (
-	invalidRoleLexeme = i18n.Lexeme{
-		Key:      "invalid_role",
-		FallBack: "Invalid role",
-	}
-	userRoleAlreayExistsLexeme = i18n.Lexeme{
-		Key:      "user_role_already_exists",
-		FallBack: "User role already exists",
-	}
-)
-
 // CreateUserRole ...
 func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.CreateUserRoleRequest) (*adminpb.UserRole, error) {
-	if err := validateCreateUserRoleRequest(ctx, req); err != nil {
+	createdUserRole := convertProtoUserRoleToModelUserRole(req.GetUserRole())
+	if err := validateCreatedUserRole(createdUserRole); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
-		if errors.Is(err, errInvalidRole) {
-			reason := fmt.Sprintf("invalid role: \"%s\"", req.GetUserRole().GetRole())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidRoleLexeme)
+		if validationErrors, ok := err.(validation.Errors); ok && len(validationErrors) > 0 {
+			keys := make([]string, 0, len(validationErrors))
+			for k := range validationErrors {
+				keys = append(keys, k)
+			}
+
+			if ed, ok := errorDetailsByField[keys[0]]; ok {
+				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
+				errorInfo := &errdetails.ErrorInfo{
+					Reason: ed.Reason,
+					Metadata: map[string]string{
+						"error": err.Error(),
+					},
+				}
+				localizedMessage := &errdetails.LocalizedMessage{
+					Locale:  i18n.GetLangFromContext(ctx),
+					Message: i18n.GetTranslator(ed.Lexeme)(ctx),
+				}
+				st, _ = st.WithDetails(errorInfo, localizedMessage)
+			}
 		}
 
 		return nil, st.Err()
 	}
 
-	userRole, err := i.userRolesFacade.CreateUserRole(ctx, model.UserRole{
-		UserID: req.GetUserRole().GetUserId(),
-		Role:   model.Role(req.GetUserRole().GetRole()),
-	})
+	userRole, err := i.userRolesFacade.CreateUserRole(ctx, createdUserRole)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, userroles.ErrUserRoleAlreadyExists) {
-			reason := fmt.Sprintf("role %s already exists for user %d", req.GetUserRole().GetRole(), req.GetUserRole().GetUserId())
-			st = model.GetStatus(ctx, codes.AlreadyExists, err, reason, userRoleAlreayExistsLexeme)
+		if errors.Is(err, userroles.ErrRoleIsAlreadyAssigned) {
+			st = model.GetStatus(ctx, codes.AlreadyExists, err, roleIsAlreadyAssignReason, roleIsAlreadyAssignedToUserLexeme)
 		} else if errors.Is(err, userroles.ErrUserNotFound) {
-			reason := fmt.Sprintf("user %d not found", req.GetUserRole().GetUserId())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, i18n.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, users.UserNotFoundReason, i18n.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -56,6 +61,8 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 	return convertModelUserRoleToProtoUserRole(userRole), nil
 }
 
-func validateCreateUserRoleRequest(ctx context.Context, req *adminpb.CreateUserRoleRequest) error {
-	return validateUserRole(ctx, req.GetUserRole())
+func validateCreatedUserRole(userRole model.UserRole) error {
+	return validation.ValidateStruct(&userRole,
+		validation.Field(&userRole.UserID, validation.Required),
+		validation.Field(&userRole.Role, validation.Required, validation.By(model.ValidateRole)))
 }

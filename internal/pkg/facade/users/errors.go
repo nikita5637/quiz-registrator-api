@@ -10,3 +10,8 @@ var (
 	// ErrUserEmailAlreadyExists ...
 	ErrUserEmailAlreadyExists = errors.New("user email already exists")
 )
+
+const (
+	// UserNotFoundReason ...
+	UserNotFoundReason = "USER_NOT_FOUND"
+)
