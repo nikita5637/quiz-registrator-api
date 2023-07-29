@@ -34,7 +34,7 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 			}
 			localizedMessage := &errdetails.LocalizedMessage{
 				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(i18n.UserNotFoundLexeme)(ctx),
+				Message: i18n.GetTranslator(users.UserNotFoundLexeme)(ctx),
 			}
 			st, _ = st.WithDetails(errorInfo, localizedMessage)
 		}

@@ -86,7 +86,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		fx.userRolesFacade.EXPECT().CreateUserRole(fx.ctx, model.UserRole{
 			UserID: 1,
 			Role:   model.RoleAdmin,
-		}).Return(model.UserRole{}, userroles.ErrUserNotFound)
+		}).Return(model.UserRole{}, users.ErrUserNotFound)
 
 		got, err := fx.implementation.CreateUserRole(fx.ctx, &adminpb.CreateUserRoleRequest{
 			UserRole: &adminpb.UserRole{
@@ -102,7 +102,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, users.UserNotFoundReason, errorInfo.Reason)
+		assert.Equal(t, users.ReasonUserNotFound, errorInfo.Reason)
 	})
 
 	t.Run("error. internal error while create user role", func(t *testing.T) {

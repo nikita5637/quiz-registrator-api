@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
@@ -369,7 +369,7 @@ func TestRegistrator_DeleteGame(t *testing.T) {
 	t.Run("error \"game not found\" while deleting game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().DeleteGame(fx.ctx, int32(1)).Return(model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().DeleteGame(fx.ctx, int32(1)).Return(games.ErrGameNotFound)
 
 		got, err := fx.registrator.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
 			Id: 1,
@@ -414,7 +414,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 	t.Run("error game not found while get game by id", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameNotFound)
 
 		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
 			GameId: 1,
@@ -501,89 +501,6 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 
 func TestRegistrator_GetGames(t *testing.T) {
 	// TODO tests
-}
-
-func TestRegistrator_GetPlayersByGameID(t *testing.T) {
-	t.Run("error \"game not found\" while getting player list", func(t *testing.T) {
-		fx := tearUp(t)
-
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return(nil, model.ErrGameNotFound)
-
-		got, err := fx.registrator.GetPlayersByGameID(fx.ctx, &registrator.GetPlayersByGameIDRequest{
-			GameId: 1,
-		})
-		assert.Nil(t, got)
-
-		st := status.Convert(err)
-		assert.Equal(t, codes.NotFound, st.Code())
-		assert.Len(t, st.Details(), 2)
-	})
-
-	t.Run("internal error while getting player list", func(t *testing.T) {
-		fx := tearUp(t)
-
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return(nil, errors.New("some error"))
-
-		got, err := fx.registrator.GetPlayersByGameID(fx.ctx, &registrator.GetPlayersByGameIDRequest{
-			GameId: 1,
-		})
-		assert.Nil(t, got)
-		assert.Error(t, err)
-	})
-
-	t.Run("empty players list", func(t *testing.T) {
-		fx := tearUp(t)
-
-		players := []model.GamePlayer{}
-
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return(players, nil)
-
-		got, err := fx.registrator.GetPlayersByGameID(fx.ctx, &registrator.GetPlayersByGameIDRequest{
-			GameId: 1,
-		})
-		assert.ElementsMatch(t, []*registrator.Player{}, got.GetPlayers())
-		assert.NoError(t, err)
-	})
-
-	t.Run("ok", func(t *testing.T) {
-		fx := tearUp(t)
-
-		players := []model.GamePlayer{
-			{
-				ID:           1,
-				FkGameID:     1,
-				FkUserID:     maybe.Just(int32(1)),
-				RegisteredBy: 1,
-				Degree:       int32(registrator.Degree_DEGREE_LIKELY),
-			},
-			{
-				ID:           2,
-				FkGameID:     1,
-				FkUserID:     maybe.Just(int32(2)),
-				RegisteredBy: 2,
-				Degree:       int32(registrator.Degree_DEGREE_UNLIKELY),
-			},
-		}
-
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(fx.ctx, int32(1)).Return(players, nil)
-
-		got, err := fx.registrator.GetPlayersByGameID(fx.ctx, &registrator.GetPlayersByGameIDRequest{
-			GameId: 1,
-		})
-		assert.ElementsMatch(t, []*registrator.Player{
-			{
-				UserId:       1,
-				RegisteredBy: 1,
-				Degree:       registrator.Degree_DEGREE_LIKELY,
-			},
-			{
-				UserId:       2,
-				RegisteredBy: 2,
-				Degree:       registrator.Degree_DEGREE_UNLIKELY,
-			},
-		}, got.GetPlayers())
-		assert.NoError(t, err)
-	})
 }
 
 func TestRegistrator_GetRegisteredGames(t *testing.T) {

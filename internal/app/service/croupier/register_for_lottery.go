@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
@@ -61,7 +62,7 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, model.ErrGameNotFound) {
+		if errors.Is(err, games.ErrGameNotFound) {
 			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
 		}
 		return nil, st.Err()

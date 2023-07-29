@@ -9,6 +9,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
@@ -130,7 +131,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, games.ErrGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

@@ -9,8 +9,6 @@ import (
 
 	mock "github.com/stretchr/testify/mock"
 
-	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-
 	mysql "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
@@ -27,12 +25,57 @@ func (_m *GamePlayerStorage) EXPECT() *GamePlayerStorage_Expecter {
 	return &GamePlayerStorage_Expecter{mock: &_m.Mock}
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *GamePlayerStorage) Delete(ctx context.Context, id int32) error {
+// CreateGamePlayer provides a mock function with given fields: ctx, gamePlayer
+func (_m *GamePlayerStorage) CreateGamePlayer(ctx context.Context, gamePlayer mysql.GamePlayer) (int, error) {
+	ret := _m.Called(ctx, gamePlayer)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.GamePlayer) int); ok {
+		r0 = rf(ctx, gamePlayer)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, mysql.GamePlayer) error); ok {
+		r1 = rf(ctx, gamePlayer)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GamePlayerStorage_CreateGamePlayer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateGamePlayer'
+type GamePlayerStorage_CreateGamePlayer_Call struct {
+	*mock.Call
+}
+
+// CreateGamePlayer is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gamePlayer mysql.GamePlayer
+func (_e *GamePlayerStorage_Expecter) CreateGamePlayer(ctx interface{}, gamePlayer interface{}) *GamePlayerStorage_CreateGamePlayer_Call {
+	return &GamePlayerStorage_CreateGamePlayer_Call{Call: _e.mock.On("CreateGamePlayer", ctx, gamePlayer)}
+}
+
+func (_c *GamePlayerStorage_CreateGamePlayer_Call) Run(run func(ctx context.Context, gamePlayer mysql.GamePlayer)) *GamePlayerStorage_CreateGamePlayer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(mysql.GamePlayer))
+	})
+	return _c
+}
+
+func (_c *GamePlayerStorage_CreateGamePlayer_Call) Return(_a0 int, _a1 error) *GamePlayerStorage_CreateGamePlayer_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+// DeleteGamePlayer provides a mock function with given fields: ctx, id
+func (_m *GamePlayerStorage) DeleteGamePlayer(ctx context.Context, id int) error {
 	ret := _m.Called(ctx, id)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int) error); ok {
 		r0 = rf(ctx, id)
 	} else {
 		r0 = ret.Error(0)
@@ -41,26 +84,26 @@ func (_m *GamePlayerStorage) Delete(ctx context.Context, id int32) error {
 	return r0
 }
 
-// GamePlayerStorage_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
-type GamePlayerStorage_Delete_Call struct {
+// GamePlayerStorage_DeleteGamePlayer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteGamePlayer'
+type GamePlayerStorage_DeleteGamePlayer_Call struct {
 	*mock.Call
 }
 
-// Delete is a helper method to define mock.On call
+// DeleteGamePlayer is a helper method to define mock.On call
 //  - ctx context.Context
-//  - id int32
-func (_e *GamePlayerStorage_Expecter) Delete(ctx interface{}, id interface{}) *GamePlayerStorage_Delete_Call {
-	return &GamePlayerStorage_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
+//  - id int
+func (_e *GamePlayerStorage_Expecter) DeleteGamePlayer(ctx interface{}, id interface{}) *GamePlayerStorage_DeleteGamePlayer_Call {
+	return &GamePlayerStorage_DeleteGamePlayer_Call{Call: _e.mock.On("DeleteGamePlayer", ctx, id)}
 }
 
-func (_c *GamePlayerStorage_Delete_Call) Run(run func(ctx context.Context, id int32)) *GamePlayerStorage_Delete_Call {
+func (_c *GamePlayerStorage_DeleteGamePlayer_Call) Run(run func(ctx context.Context, id int)) *GamePlayerStorage_DeleteGamePlayer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
 
-func (_c *GamePlayerStorage_Delete_Call) Return(_a0 error) *GamePlayerStorage_Delete_Call {
+func (_c *GamePlayerStorage_DeleteGamePlayer_Call) Return(_a0 error) *GamePlayerStorage_DeleteGamePlayer_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
@@ -112,20 +155,22 @@ func (_c *GamePlayerStorage_Find_Call) Return(_a0 []mysql.GamePlayer, _a1 error)
 	return _c
 }
 
-// Insert provides a mock function with given fields: ctx, gamePlayer
-func (_m *GamePlayerStorage) Insert(ctx context.Context, gamePlayer model.GamePlayer) (int32, error) {
-	ret := _m.Called(ctx, gamePlayer)
+// GetGamePlayer provides a mock function with given fields: ctx, id
+func (_m *GamePlayerStorage) GetGamePlayer(ctx context.Context, id int) (*mysql.GamePlayer, error) {
+	ret := _m.Called(ctx, id)
 
-	var r0 int32
-	if rf, ok := ret.Get(0).(func(context.Context, model.GamePlayer) int32); ok {
-		r0 = rf(ctx, gamePlayer)
+	var r0 *mysql.GamePlayer
+	if rf, ok := ret.Get(0).(func(context.Context, int) *mysql.GamePlayer); ok {
+		r0 = rf(ctx, id)
 	} else {
-		r0 = ret.Get(0).(int32)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(*mysql.GamePlayer)
+		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, model.GamePlayer) error); ok {
-		r1 = rf(ctx, gamePlayer)
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
+		r1 = rf(ctx, id)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -133,27 +178,65 @@ func (_m *GamePlayerStorage) Insert(ctx context.Context, gamePlayer model.GamePl
 	return r0, r1
 }
 
-// GamePlayerStorage_Insert_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Insert'
-type GamePlayerStorage_Insert_Call struct {
+// GamePlayerStorage_GetGamePlayer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGamePlayer'
+type GamePlayerStorage_GetGamePlayer_Call struct {
 	*mock.Call
 }
 
-// Insert is a helper method to define mock.On call
+// GetGamePlayer is a helper method to define mock.On call
 //  - ctx context.Context
-//  - gamePlayer model.GamePlayer
-func (_e *GamePlayerStorage_Expecter) Insert(ctx interface{}, gamePlayer interface{}) *GamePlayerStorage_Insert_Call {
-	return &GamePlayerStorage_Insert_Call{Call: _e.mock.On("Insert", ctx, gamePlayer)}
+//  - id int
+func (_e *GamePlayerStorage_Expecter) GetGamePlayer(ctx interface{}, id interface{}) *GamePlayerStorage_GetGamePlayer_Call {
+	return &GamePlayerStorage_GetGamePlayer_Call{Call: _e.mock.On("GetGamePlayer", ctx, id)}
 }
 
-func (_c *GamePlayerStorage_Insert_Call) Run(run func(ctx context.Context, gamePlayer model.GamePlayer)) *GamePlayerStorage_Insert_Call {
+func (_c *GamePlayerStorage_GetGamePlayer_Call) Run(run func(ctx context.Context, id int)) *GamePlayerStorage_GetGamePlayer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.GamePlayer))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
 
-func (_c *GamePlayerStorage_Insert_Call) Return(_a0 int32, _a1 error) *GamePlayerStorage_Insert_Call {
+func (_c *GamePlayerStorage_GetGamePlayer_Call) Return(_a0 *mysql.GamePlayer, _a1 error) *GamePlayerStorage_GetGamePlayer_Call {
 	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+// PatchGamePlayer provides a mock function with given fields: ctx, gamePlayer
+func (_m *GamePlayerStorage) PatchGamePlayer(ctx context.Context, gamePlayer mysql.GamePlayer) error {
+	ret := _m.Called(ctx, gamePlayer)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.GamePlayer) error); ok {
+		r0 = rf(ctx, gamePlayer)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
+// GamePlayerStorage_PatchGamePlayer_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchGamePlayer'
+type GamePlayerStorage_PatchGamePlayer_Call struct {
+	*mock.Call
+}
+
+// PatchGamePlayer is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gamePlayer mysql.GamePlayer
+func (_e *GamePlayerStorage_Expecter) PatchGamePlayer(ctx interface{}, gamePlayer interface{}) *GamePlayerStorage_PatchGamePlayer_Call {
+	return &GamePlayerStorage_PatchGamePlayer_Call{Call: _e.mock.On("PatchGamePlayer", ctx, gamePlayer)}
+}
+
+func (_c *GamePlayerStorage_PatchGamePlayer_Call) Run(run func(ctx context.Context, gamePlayer mysql.GamePlayer)) *GamePlayerStorage_PatchGamePlayer_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(mysql.GamePlayer))
+	})
+	return _c
+}
+
+func (_c *GamePlayerStorage_PatchGamePlayer_Call) Return(_a0 error) *GamePlayerStorage_PatchGamePlayer_Call {
+	_c.Call.Return(_a0)
 	return _c
 }
 

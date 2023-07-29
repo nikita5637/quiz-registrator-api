@@ -18,6 +18,7 @@ import (
 	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/admin"
 	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
+	gameplayerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_player"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
@@ -134,6 +135,12 @@ func main() {
 		logger.Fatalf(ctx, "ICS producer connect error: %s", err.Error())
 	}
 
+	gamePlayersFacadeConfig := gameplayers.Config{
+		GamePlayerStorage: gamePlayerStorage,
+		TxManager:         txManager,
+	}
+	gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
+
 	gamesFacadeConfig := games.Config{
 		GameStorage:       gameStorage,
 		GamePlayerStorage: gamePlayerStorage,
@@ -191,12 +198,6 @@ func main() {
 		}
 		certificateManagerService := certificatemanagerservice.New(certificateManagerServiceConfig)
 
-		gamePlayersFacadeConfig := gameplayers.Config{
-			GamePlayerStorage: gamePlayerStorage,
-			TxManager:         txManager,
-		}
-		gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
-
 		croupierServiceConfig := croupierservice.Config{
 			Croupier:          croupier,
 			GamePlayersFacade: gamePlayersFacade,
@@ -211,6 +212,12 @@ func main() {
 			TxManager:         txManager,
 		}
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+
+		gamePlayerServiceConfig := gameplayerservice.Config{
+			GamesFacade:       gamesFacade,
+			GamePlayersFacade: gamePlayersFacade,
+		}
+		gamePlayerService := gameplayerservice.New(gamePlayerServiceConfig)
 
 		gameResultsFacadeConfig := gameresults.Config{
 			GameResultStorage: gameResultStorage,
@@ -279,14 +286,16 @@ func main() {
 			ErrorWrapMiddleware:      errorWrapMiddleware,
 			LogMiddleware:            logMiddleware,
 
-			AdminService:              adminService,
-			CertificateManagerService: certificateManagerService,
-			CroupierService:           croupierService,
-			GameResultManagerService:  gameResultManagerService,
-			LeagueService:             leagueService,
-			PhotoManagerService:       photoManagerService,
-			PlaceService:              placeService,
-			UserManagerService:        userManagerService,
+			AdminService:                 adminService,
+			CertificateManagerService:    certificateManagerService,
+			CroupierService:              croupierService,
+			GamePlayerService:            gamePlayerService,
+			GamePlayerRegistratorService: gamePlayerService,
+			GameResultManagerService:     gameResultManagerService,
+			LeagueService:                leagueService,
+			PhotoManagerService:          photoManagerService,
+			PlaceService:                 placeService,
+			UserManagerService:           userManagerService,
 
 			GamesFacade: gamesFacade,
 		}
@@ -309,8 +318,9 @@ func main() {
 		}
 
 		gameReminderConfig := game_reminder.Config{
-			GamesFacade:      gamesFacade,
-			RabbitMQProducer: gameReminderRabbitMQProducer,
+			GamesFacade:       gamesFacade,
+			GamePlayersFacade: gamePlayersFacade,
+			RabbitMQProducer:  gameReminderRabbitMQProducer,
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
@@ -325,9 +335,9 @@ func main() {
 		}
 
 		lotteryReminderConfig := lottery_reminder.Config{
-			Croupier:         croupier,
-			GamesFacade:      gamesFacade,
-			RabbitMQProducer: lotteryReminderRabbitMQProducer,
+			Croupier:          croupier,
+			GamePlayersFacade: gamePlayersFacade,
+			RabbitMQProducer:  lotteryReminderRabbitMQProducer,
 		}
 		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)
 

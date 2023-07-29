@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
@@ -28,7 +29,7 @@ func (f *Facade) CreateUserRole(ctx context.Context, newUserRole model.UserRole)
 		if err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
-					return fmt.Errorf("create user role error: %w", ErrUserNotFound)
+					return fmt.Errorf("create user role error: %w", users.ErrUserNotFound)
 				}
 			}
 

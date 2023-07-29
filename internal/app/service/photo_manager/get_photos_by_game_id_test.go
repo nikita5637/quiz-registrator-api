@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
@@ -31,7 +31,7 @@ func TestImplementation_GetPhotosByGameID(t *testing.T) {
 	t.Run("error \"game not found\" while get photos by game id", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotosFacade.EXPECT().GetPhotosByGameID(fx.ctx, int32(1)).Return(nil, model.ErrGameNotFound)
+		fx.gamePhotosFacade.EXPECT().GetPhotosByGameID(fx.ctx, int32(1)).Return(nil, games.ErrGameNotFound)
 
 		got, err := fx.implementation.GetPhotosByGameID(fx.ctx, &photomanagerpb.GetPhotosByGameIDRequest{
 			GameId: 1,

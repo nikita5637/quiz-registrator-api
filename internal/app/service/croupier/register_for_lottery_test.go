@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
@@ -51,7 +52,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 
 		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
 
-		fx.gamesFacade.EXPECT().GetGameByID(ctx, int32(1)).Return(model.Game{}, model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().GetGameByID(ctx, int32(1)).Return(model.Game{}, games.ErrGameNotFound)
 
 		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
 			GameId: 1,

@@ -31,7 +31,7 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, ErrGameNotFound)
 	})
 
 	t.Run("found not active game", func(t *testing.T) {
@@ -41,7 +41,7 @@ func TestFacade_UpdatePayment(t *testing.T) {
 
 		err := fx.facade.UpdatePayment(fx.ctx, int32(1), int32(commonpb.Payment_PAYMENT_CERTIFICATE))
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, ErrGameNotFound)
 	})
 
 	t.Run("internal error while update game", func(t *testing.T) {

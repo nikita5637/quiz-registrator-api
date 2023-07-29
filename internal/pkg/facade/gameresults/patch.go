@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
@@ -48,7 +49,7 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		if err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
-					return fmt.Errorf("patch game result error: %w", model.ErrGameNotFound)
+					return fmt.Errorf("patch game result error: %w", games.ErrGameNotFound)
 				} else if err.Number == 1062 {
 					return fmt.Errorf("patch game result error: %w", model.ErrGameResultAlreadyExists)
 				}

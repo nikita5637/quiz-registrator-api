@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -469,7 +470,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 		got, err := fx.facade.GetPhotosByGameID(fx.ctx, 1)
 		assert.Nil(t, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, games.ErrGameNotFound)
 	})
 
 	t.Run("error while get game photos", func(t *testing.T) {

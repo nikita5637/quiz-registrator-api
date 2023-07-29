@@ -18,6 +18,7 @@ import (
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
+	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
@@ -37,12 +38,9 @@ type GamesFacade interface {
 	GetGameByID(ctx context.Context, id int32) (model.Game, error)
 	GetGames(ctx context.Context) ([]model.Game, error)
 	GetGamesByUserID(ctx context.Context, userID int32) ([]model.Game, error)
-	GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
 	GetRegisteredGames(ctx context.Context) ([]model.Game, error)
 	RegisterGame(ctx context.Context, gameID int32) (model.RegisterGameStatus, error)
-	RegisterPlayer(ctx context.Context, fkGameID, fkUserID, registeredBy, degree int32) (model.RegisterPlayerStatus, error)
 	UnregisterGame(ctx context.Context, gameID int32) (model.UnregisterGameStatus, error)
-	UnregisterPlayer(ctx context.Context, gameID, userID, deletedBy int32) (model.UnregisterPlayerStatus, error)
 	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
 }
 
@@ -52,14 +50,16 @@ type Registrator struct {
 	grpcServer *grpc.Server
 
 	// services
-	adminService              adminpb.ServiceServer
-	certificateManagerService certificatemanagerpb.ServiceServer
-	croupierService           croupierpb.ServiceServer
-	gameResultManagerService  gameresultmanagerpb.ServiceServer
-	leagueService             leaguepb.ServiceServer
-	photoManagerService       photomanagerpb.ServiceServer
-	placeService              placepb.ServiceServer
-	userManagerService        usermanagerpb.ServiceServer
+	adminService                 adminpb.ServiceServer
+	certificateManagerService    certificatemanagerpb.ServiceServer
+	croupierService              croupierpb.ServiceServer
+	gamePlayerService            gameplayerpb.ServiceServer
+	gamePlayerRegistratorService gameplayerpb.RegistratorServiceServer
+	gameResultManagerService     gameresultmanagerpb.ServiceServer
+	leagueService                leaguepb.ServiceServer
+	photoManagerService          photomanagerpb.ServiceServer
+	placeService                 placepb.ServiceServer
+	userManagerService           usermanagerpb.ServiceServer
 
 	gamesFacade GamesFacade
 
@@ -77,14 +77,16 @@ type Config struct {
 	LogMiddleware            *log.Middleware
 
 	// services
-	AdminService              adminpb.ServiceServer
-	CertificateManagerService certificatemanagerpb.ServiceServer
-	CroupierService           croupierpb.ServiceServer
-	GameResultManagerService  gameresultmanagerpb.ServiceServer
-	LeagueService             leaguepb.ServiceServer
-	PhotoManagerService       photomanagerpb.ServiceServer
-	PlaceService              placepb.ServiceServer
-	UserManagerService        usermanagerpb.ServiceServer
+	AdminService                 adminpb.ServiceServer
+	CertificateManagerService    certificatemanagerpb.ServiceServer
+	CroupierService              croupierpb.ServiceServer
+	GamePlayerService            gameplayerpb.ServiceServer
+	GamePlayerRegistratorService gameplayerpb.RegistratorServiceServer
+	GameResultManagerService     gameresultmanagerpb.ServiceServer
+	LeagueService                leaguepb.ServiceServer
+	PhotoManagerService          photomanagerpb.ServiceServer
+	PlaceService                 placepb.ServiceServer
+	UserManagerService           usermanagerpb.ServiceServer
 
 	GamesFacade GamesFacade
 }
@@ -94,14 +96,16 @@ func New(cfg Config) *Registrator {
 	registrator := &Registrator{
 		bindAddr: cfg.BindAddr,
 
-		adminService:              cfg.AdminService,
-		certificateManagerService: cfg.CertificateManagerService,
-		croupierService:           cfg.CroupierService,
-		gameResultManagerService:  cfg.GameResultManagerService,
-		leagueService:             cfg.LeagueService,
-		photoManagerService:       cfg.PhotoManagerService,
-		placeService:              cfg.PlaceService,
-		userManagerService:        cfg.UserManagerService,
+		adminService:                 cfg.AdminService,
+		certificateManagerService:    cfg.CertificateManagerService,
+		croupierService:              cfg.CroupierService,
+		gamePlayerService:            cfg.GamePlayerService,
+		gamePlayerRegistratorService: cfg.GamePlayerRegistratorService,
+		gameResultManagerService:     cfg.GameResultManagerService,
+		leagueService:                cfg.LeagueService,
+		photoManagerService:          cfg.PhotoManagerService,
+		placeService:                 cfg.PlaceService,
+		userManagerService:           cfg.UserManagerService,
 
 		gamesFacade: cfg.GamesFacade,
 	}
@@ -120,6 +124,8 @@ func New(cfg Config) *Registrator {
 	adminpb.RegisterServiceServer(s, registrator.adminService)
 	certificatemanagerpb.RegisterServiceServer(s, registrator.certificateManagerService)
 	croupierpb.RegisterServiceServer(s, registrator.croupierService)
+	gameplayerpb.RegisterServiceServer(s, registrator.gamePlayerService)
+	gameplayerpb.RegisterRegistratorServiceServer(s, registrator.gamePlayerRegistratorService)
 	gameresultmanagerpb.RegisterServiceServer(s, registrator.gameResultManagerService)
 	leaguepb.RegisterServiceServer(s, registrator.leagueService)
 	photomanagerpb.RegisterServiceServer(s, registrator.photoManagerService)

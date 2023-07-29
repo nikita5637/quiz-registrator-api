@@ -27,14 +27,14 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 	game, err := f.gameStorage.GetGameByID(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return model.Game{}, fmt.Errorf("get game by id error: %w", model.ErrGameNotFound)
+			return model.Game{}, fmt.Errorf("get game by id error: %w", ErrGameNotFound)
 		}
 
 		return model.Game{}, fmt.Errorf("get game by id error: %w", err)
 	}
 
 	if !game.IsActive() {
-		return model.Game{}, fmt.Errorf("get game by id error: %w", model.ErrGameNotFound)
+		return model.Game{}, fmt.Errorf("get game by id error: %w", ErrGameNotFound)
 	}
 
 	user := users_utils.UserFromContext(ctx)
@@ -152,41 +152,6 @@ func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Ga
 	}
 
 	return games, nil
-}
-
-// GetPlayersByGameID ...
-func (f *Facade) GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error) {
-	game, err := f.gameStorage.GetGameByID(ctx, gameID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return nil, fmt.Errorf("get players by game by id error: %w", model.ErrGameNotFound)
-		}
-
-		return nil, fmt.Errorf("get players by game by id error: %w", err)
-	}
-
-	if !game.IsActive() {
-		return nil, fmt.Errorf("get players by game by id error: %w", model.ErrGameNotFound)
-	}
-
-	dbGamePlayers, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
-		builder.Eq{
-			"fk_game_id": gameID,
-		},
-		builder.IsNull{
-			"deleted_at",
-		},
-	))
-	if err != nil {
-		return nil, fmt.Errorf("get players by game id error: %w", err)
-	}
-
-	modelGamePlayers := make([]model.GamePlayer, 0, len(dbGamePlayers))
-	for _, dbGamePlayer := range dbGamePlayers {
-		modelGamePlayers = append(modelGamePlayers, convertDBGamePlayerToModelGamePlayer(dbGamePlayer))
-	}
-
-	return modelGamePlayers, nil
 }
 
 // GetRegisteredGames ...

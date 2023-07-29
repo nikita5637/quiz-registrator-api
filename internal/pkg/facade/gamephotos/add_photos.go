@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
@@ -15,7 +16,7 @@ func (f *Facade) AddGamePhotos(ctx context.Context, gameID int32, urls []string)
 	_, err := f.gameStorage.GetGameByID(ctx, gameID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("add game photos error: %w", model.ErrGameNotFound)
+			return fmt.Errorf("add game photos error: %w", games.ErrGameNotFound)
 		}
 
 		return fmt.Errorf("add game photos error: %w", err)

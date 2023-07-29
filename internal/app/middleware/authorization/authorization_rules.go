@@ -54,6 +54,27 @@ var grpcRules = map[string]roles{
 		User: struct{}{},
 	},
 	//
+	// game_player
+	//
+	"/game_player.Service/CreateGamePlayer": {
+		User: struct{}{},
+	},
+	"/game_player.Service/DeleteGamePlayer": {
+		User: struct{}{},
+	},
+	"/game_player.Service/GetGamePlayer": {
+		Public: struct{}{},
+	},
+	"/game_player.Service/GetGamePlayersByGameID": {
+		Public: struct{}{},
+	},
+	"/game_player.Service/PatchGamePlayer": {
+		User: struct{}{},
+	},
+	"/game_player.RegistratorService/RegisterPlayer": {
+		User: struct{}{},
+	},
+	//
 	// game_result_manager
 	//
 	"/game_result_manager.Service/CreateGameResult": {
@@ -107,9 +128,6 @@ var grpcRules = map[string]roles{
 	"/registrator.RegistratorService/GetGames": {
 		Public: struct{}{},
 	},
-	"/registrator.RegistratorService/GetPlayersByGameID": {
-		Public: struct{}{},
-	},
 	"/registrator.RegistratorService/GetRegisteredGames": {
 		Public: struct{}{},
 	},
@@ -119,13 +137,7 @@ var grpcRules = map[string]roles{
 	"/registrator.RegistratorService/RegisterGame": {
 		User: struct{}{},
 	},
-	"/registrator.RegistratorService/RegisterPlayer": {
-		User: struct{}{},
-	},
 	"/registrator.RegistratorService/UnregisterGame": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UnregisterPlayer": {
 		User: struct{}{},
 	},
 	"/registrator.RegistratorService/UpdatePayment": {

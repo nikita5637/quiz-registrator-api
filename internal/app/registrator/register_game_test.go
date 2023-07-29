@@ -4,6 +4,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"github.com/stretchr/testify/assert"
@@ -31,7 +32,7 @@ func TestRegistrator_RegisterGame(t *testing.T) {
 	t.Run("error game not found while register game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().RegisterGame(fx.ctx, int32(1)).Return(model.RegisterGameStatusInvalid, model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().RegisterGame(fx.ctx, int32(1)).Return(model.RegisterGameStatusInvalid, games.ErrGameNotFound)
 
 		got, err := fx.registrator.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
 			GameId: 1,

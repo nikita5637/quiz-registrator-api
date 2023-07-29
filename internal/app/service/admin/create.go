@@ -51,8 +51,8 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, userroles.ErrRoleIsAlreadyAssigned) {
 			st = model.GetStatus(ctx, codes.AlreadyExists, err, roleIsAlreadyAssignReason, roleIsAlreadyAssignedToUserLexeme)
-		} else if errors.Is(err, userroles.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, users.UserNotFoundReason, i18n.UserNotFoundLexeme)
+		} else if errors.Is(err, users.ErrUserNotFound) {
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, users.ReasonUserNotFound, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()

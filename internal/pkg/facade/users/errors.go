@@ -2,6 +2,11 @@ package users
 
 import "errors"
 
+const (
+	// ReasonUserNotFound ...
+	ReasonUserNotFound = "USER_NOT_FOUND"
+)
+
 var (
 	// ErrUserNotFound ...
 	ErrUserNotFound = errors.New("user not found")
@@ -9,9 +14,4 @@ var (
 	ErrUserTelegramIDAlreadyExists = errors.New("user Telegram ID already exists")
 	// ErrUserEmailAlreadyExists ...
 	ErrUserEmailAlreadyExists = errors.New("user email already exists")
-)
-
-const (
-	// UserNotFoundReason ...
-	UserNotFoundReason = "USER_NOT_FOUND"
 )

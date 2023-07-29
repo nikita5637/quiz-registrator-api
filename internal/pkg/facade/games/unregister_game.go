@@ -18,14 +18,14 @@ func (f *Facade) UnregisterGame(ctx context.Context, gameID int32) (model.Unregi
 		game, err := f.gameStorage.GetGameByID(ctx, gameID)
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return fmt.Errorf("get game by ID error: %w", model.ErrGameNotFound)
+				return fmt.Errorf("get game by ID error: %w", ErrGameNotFound)
 			}
 
 			return fmt.Errorf("get game by ID error: %w", err)
 		}
 
 		if !game.IsActive() {
-			return model.ErrGameNotFound
+			return ErrGameNotFound
 		}
 
 		if !game.Registered {

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
@@ -37,7 +38,7 @@ func TestRegistrator_GetLotteryStatus(t *testing.T) {
 	t.Run("error game not found while get game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameNotFound)
 
 		got, err := fx.implementation.GetLotteryStatus(fx.ctx, &croupierpb.GetLotteryStatusRequest{
 			GameId: 1,

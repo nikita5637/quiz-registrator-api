@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package game_player;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player;gameplayer";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/wrappers.proto";
+
+enum Degree {
+	DEGREE_INVALID = 0;
+	DEGREE_LIKELY = 1;
+	DEGREE_UNLIKELY = 2;
+}
+
+message GamePlayer {
+	int32 id = 1;
+	int32 game_id = 2;
+	google.protobuf.Int32Value user_id = 3;
+	int32 registered_by = 4;
+	Degree degree = 5;
+}
+
+service Service {
+	// CreateGamePlayer creates new game player
+	rpc CreateGamePlayer(CreateGamePlayerRequest) returns (GamePlayer) {
+	}
+
+	// DeleteGamePlayer deletes game player
+	rpc DeleteGamePlayer(DeleteGamePlayerRequest) returns (google.protobuf.Empty) {
+	}
+
+	// GetGamePlayer returns game player by ID
+	rpc GetGamePlayer(GetGamePlayerRequest) returns (GamePlayer) {
+	}
+	// GetGamePlayersByGameID returns list of game players by game ID
+	rpc GetGamePlayersByGameID(GetGamePlayersByGameIDRequest) returns (GetGamePlayersByGameIDResponse) {
+	}
+
+	// PatchGamePlayer patches game player
+	rpc PatchGamePlayer(PatchGamePlayerRequest) returns (GamePlayer) {
+	}
+}
+
+message CreateGamePlayerRequest {
+	GamePlayer game_player = 1;
+}
+
+message DeleteGamePlayerRequest {
+	int32 id = 1;
+}
+
+message GetGamePlayerRequest {
+	int32 id = 1;
+}
+
+message GetGamePlayersByGameIDRequest {
+	int32 game_id = 1;
+}
+
+message GetGamePlayersByGameIDResponse {
+	repeated GamePlayer game_players = 1;
+}
+
+
+message PatchGamePlayerRequest {
+	GamePlayer game_player = 1;
+
+	google.protobuf.FieldMask update_mask = 2;
+}
+
+service RegistratorService {
+	// RegisterPlayer registers player for a game
+	rpc RegisterPlayer(RegisterPlayerRequest) returns (google.protobuf.Empty) {
+	}
+}
+
+message RegisterPlayerRequest {
+	GamePlayer game_player = 1;
+}

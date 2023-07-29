@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	"github.com/stretchr/testify/assert"
@@ -33,7 +33,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 	t.Run("game not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().UpdatePayment(fx.ctx, int32(1), int32(2)).Return(model.ErrGameNotFound)
+		fx.gamesFacade.EXPECT().UpdatePayment(fx.ctx, int32(1), int32(2)).Return(games.ErrGameNotFound)
 
 		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,

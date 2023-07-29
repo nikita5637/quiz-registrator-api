@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -69,25 +70,25 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, model.ErrInvalidLeagueID) {
 			reason := fmt.Sprintf("invalid league ID: %d", req.GetLeagueId())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidLeagueIDLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidLeagueIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameType) {
 			reason := fmt.Sprintf("invalid type: %d", req.GetType())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidGameTypeLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameTypeLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameNumber) {
 			reason := fmt.Sprintf("invalid game number: %s", req.GetNumber())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidGameNumberLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameNumberLexeme)
 		} else if errors.Is(err, model.ErrInvalidPlaceID) {
 			reason := fmt.Sprintf("invalid place ID: %d", req.GetPlaceId())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidPlaceIDLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidPlaceIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidDate) {
 			reason := fmt.Sprintf("invalid date: %s", req.GetDate())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidDateLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidDateLexeme)
 		} else if errors.Is(err, model.ErrInvalidPrice) {
 			reason := fmt.Sprintf("invalid price: %d", req.GetPrice())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidPriceLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidPriceLexeme)
 		} else if errors.Is(err, model.ErrInvalidMaxPlayers) {
 			reason := fmt.Sprintf("invalid max players: %d", req.GetMaxPlayers())
-			st = getStatus(ctx, codes.InvalidArgument, err, reason, invalidMaxPlayersLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidMaxPlayersLexeme)
 		}
 
 		return nil, st.Err()
@@ -140,7 +141,7 @@ func (r *Registrator) DeleteGame(ctx context.Context, req *registrator.DeleteGam
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
-		if errors.Is(err, model.ErrGameNotFound) {
+		if errors.Is(err, games.ErrGameNotFound) {
 			st = getGameNotFoundStatus(ctx, err, req.GetId())
 		}
 
@@ -156,7 +157,7 @@ func (r *Registrator) GetGameByID(ctx context.Context, req *registrator.GetGameB
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
-		if errors.Is(err, model.ErrGameNotFound) {
+		if errors.Is(err, games.ErrGameNotFound) {
 			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
 		}
 
@@ -193,33 +194,6 @@ func (r *Registrator) GetGames(ctx context.Context, req *registrator.GetGamesReq
 
 	return &registrator.GetGamesResponse{
 		Games: pbGames,
-	}, nil
-}
-
-// GetPlayersByGameID ...
-func (r *Registrator) GetPlayersByGameID(ctx context.Context, req *registrator.GetPlayersByGameIDRequest) (*registrator.GetPlayersByGameIDResponse, error) {
-	players, err := r.gamesFacade.GetPlayersByGameID(ctx, req.GetGameId())
-	if err != nil {
-		st := status.New(codes.Internal, err.Error())
-
-		if errors.Is(err, model.ErrGameNotFound) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
-		}
-
-		return nil, st.Err()
-	}
-
-	pbPlayers := make([]*registrator.Player, 0, len(players))
-	for _, player := range players {
-		pbPlayers = append(pbPlayers, &registrator.Player{
-			UserId:       player.FkUserID.Value(),
-			RegisteredBy: player.RegisteredBy,
-			Degree:       registrator.Degree(player.Degree),
-		})
-	}
-
-	return &registrator.GetPlayersByGameIDResponse{
-		Players: pbPlayers,
 	}, nil
 }
 

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -27,7 +28,7 @@ func TestFacade_AddGamePhotos(t *testing.T) {
 
 		err := fx.facade.AddGamePhotos(fx.ctx, 1, nil)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, games.ErrGameNotFound)
 	})
 
 	t.Run("error while insert url", func(t *testing.T) {

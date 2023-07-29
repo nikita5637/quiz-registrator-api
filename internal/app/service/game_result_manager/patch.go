@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
@@ -46,9 +47,9 @@ func (m *GameResultManager) PatchGameResult(ctx context.Context, req *gameresult
 		if errors.Is(err, model.ErrGameResultNotFound) {
 			reason := fmt.Sprintf("game result with ID %d not found", req.GetGameResult().GetId())
 			st = model.GetStatus(ctx, codes.NotFound, err, reason, gameResultNotFoundLexeme)
-		} else if errors.Is(err, model.ErrGameNotFound) {
+		} else if errors.Is(err, games.ErrGameNotFound) {
 			reason := fmt.Sprintf("game with id %d not found", req.GetGameResult().GetGameId())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, i18n.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, games.GameNotFoundLexeme)
 		} else if errors.Is(err, model.ErrGameResultAlreadyExists) {
 			reason := fmt.Sprintf("game result for game id %d already exists", req.GetGameResult().GetGameId())
 			st = model.GetStatus(ctx, codes.AlreadyExists, err, reason, gameResultAlreadyExistsLexeme)

@@ -20,7 +20,7 @@ func TestFacade_DeleteGame(t *testing.T) {
 
 		err := fx.facade.DeleteGame(fx.ctx, 1)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, ErrGameNotFound)
 	})
 
 	t.Run("internal error  while get game by ID", func(t *testing.T) {

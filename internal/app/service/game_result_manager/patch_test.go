@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
@@ -118,7 +119,7 @@ func TestRegistrator_PatchGameResults(t *testing.T) {
 			"game_id",
 			"result_place",
 			"round_points",
-		}).Return(model.GameResult{}, model.ErrGameNotFound)
+		}).Return(model.GameResult{}, games.ErrGameNotFound)
 
 		got, err := fx.gameResultManager.PatchGameResult(fx.ctx, &gameresultmanagerpb.PatchGameResultRequest{
 			GameResult: &gameresultmanagerpb.GameResult{

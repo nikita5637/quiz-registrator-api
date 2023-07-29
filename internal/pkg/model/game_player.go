@@ -1,36 +1,41 @@
 package model
 
-import "github.com/mono83/maybe"
+import (
+	"errors"
 
-// RegisterPlayerStatus ...
-type RegisterPlayerStatus int32
-
-const (
-	// RegisterPlayerStatusInvalid ...
-	RegisterPlayerStatusInvalid RegisterPlayerStatus = iota
-	// RegisterPlayerStatusOK ...
-	RegisterPlayerStatusOK
-	// RegisterPlayerStatusAlreadyRegistered ...
-	RegisterPlayerStatusAlreadyRegistered
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 )
 
-// UnregisterPlayerStatus ...
-type UnregisterPlayerStatus int32
+// Degree ...
+type Degree int32
 
 const (
-	// UnregisterPlayerStatusInvalid ...
-	UnregisterPlayerStatusInvalid UnregisterPlayerStatus = iota
-	// UnregisterPlayerStatusOK ...
-	UnregisterPlayerStatusOK
-	// UnregisterPlayerStatusNotRegistered ...
-	UnregisterPlayerStatusNotRegistered
+	// DegreeInvalid ...
+	DegreeInvalid Degree = iota
+	// DegreeLikely ...
+	DegreeLikely
+	// DegreeUnlikely ...
+	DegreeUnlikely
+
+	numberOfDegrees
 )
+
+// ValidateDegree ...
+func ValidateDegree(value interface{}) error {
+	v, ok := value.(Degree)
+	if !ok {
+		return errors.New("must be Degree")
+	}
+
+	return validation.Validate(v, validation.Required, validation.Min(DegreeLikely), validation.Max(numberOfDegrees-1))
+}
 
 // GamePlayer ...
 type GamePlayer struct {
 	ID           int32
-	FkGameID     int32
-	FkUserID     maybe.Maybe[int32]
+	GameID       int32
+	UserID       maybe.Maybe[int32]
 	RegisteredBy int32
-	Degree       int32
+	Degree       Degree
 }

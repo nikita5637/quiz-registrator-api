@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
@@ -58,7 +59,7 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 			FkGameID:    1,
 			ResultPlace: 1,
 			RoundPoints: maybe.Just("{}"),
-		}).Return(model.GameResult{}, model.ErrGameNotFound)
+		}).Return(model.GameResult{}, games.ErrGameNotFound)
 
 		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{
 			GameResult: &gameresultmanagerpb.GameResult{

@@ -1,4 +1,4 @@
-package game
+package lottery
 
 import (
 	"context"
@@ -11,24 +11,24 @@ type fixture struct {
 	ctx      context.Context
 	reminder *Reminder
 
-	croupier         *mocks.Croupier
-	gamesFacade      *mocks.GamesFacade
-	rabbitMQProducer *mocks.RabbitMQProducer
+	croupier          *mocks.Croupier
+	gamePlayersFacade *mocks.GamePlayersFacade
+	rabbitMQProducer  *mocks.RabbitMQProducer
 }
 
 func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		croupier:         mocks.NewCroupier(t),
-		gamesFacade:      mocks.NewGamesFacade(t),
-		rabbitMQProducer: mocks.NewRabbitMQProducer(t),
+		croupier:          mocks.NewCroupier(t),
+		gamePlayersFacade: mocks.NewGamePlayersFacade(t),
+		rabbitMQProducer:  mocks.NewRabbitMQProducer(t),
 	}
 
 	fx.reminder = &Reminder{
 		alreadyRemindedGames: make(map[int32]struct{}),
 		croupier:             fx.croupier,
-		gamesFacade:          fx.gamesFacade,
+		gamePlayersFacade:    fx.gamePlayersFacade,
 		rabbitMQProducer:     fx.rabbitMQProducer,
 	}
 

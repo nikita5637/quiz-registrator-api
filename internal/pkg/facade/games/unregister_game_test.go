@@ -44,7 +44,7 @@ func TestFacade_UnregisterGame(t *testing.T) {
 		got, err := fx.facade.UnregisterGame(fx.ctx, 1)
 		assert.Equal(t, model.UnregisterGameStatusInvalid, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, ErrGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -61,7 +61,7 @@ func TestFacade_UnregisterGame(t *testing.T) {
 		got, err := fx.facade.UnregisterGame(fx.ctx, 1)
 		assert.Equal(t, model.UnregisterGameStatusInvalid, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameNotFound)
+		assert.ErrorIs(t, err, ErrGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
