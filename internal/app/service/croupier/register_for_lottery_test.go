@@ -64,6 +64,30 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
+	t.Run("game has passed", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+			ID:    777,
+			Name:  "user name",
+			Email: maybe.Just("user email"),
+			Phone: maybe.Just("user phone"),
+		})
+
+		fx.gamePlayersFacade.EXPECT().PlayerRegisteredOnGame(ctx, int32(1), int32(777)).Return(true, nil)
+
+		fx.gamesFacade.EXPECT().GetGameByID(ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
+
+		got, err := fx.implementation.RegisterForLottery(ctx, &croupierpb.RegisterForLotteryRequest{
+			GameId: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Len(t, st.Details(), 2)
+	})
+
 	t.Run("error lottery not available", func(t *testing.T) {
 		fx := tearUp(t)
 

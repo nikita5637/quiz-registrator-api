@@ -18,6 +18,8 @@ func (i *Implemintation) GetLotteryStatus(ctx context.Context, req *croupierpb.G
 
 		if errors.Is(err, games.ErrGameNotFound) {
 			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
+		} else if errors.Is(err, games.ErrGameHasPassed) {
+			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
 		}
 
 		return nil, st.Err()

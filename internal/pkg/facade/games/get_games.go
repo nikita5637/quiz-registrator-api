@@ -33,8 +33,12 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 		return model.Game{}, fmt.Errorf("get game by id error: %w", err)
 	}
 
+	if !game.DeletedAt.AsTime().IsZero() {
+		return model.Game{}, ErrGameNotFound
+	}
+
 	if !game.IsActive() {
-		return model.Game{}, fmt.Errorf("get game by id error: %w", ErrGameNotFound)
+		return model.Game{}, ErrGameHasPassed
 	}
 
 	user := users_utils.UserFromContext(ctx)

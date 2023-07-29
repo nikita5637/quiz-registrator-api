@@ -427,6 +427,22 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
+	t.Run("error game has passed while get game by id", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
+
+		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
+			GameId: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
 	t.Run("internal error while get game by id", func(t *testing.T) {
 		fx := tearUp(t)
 

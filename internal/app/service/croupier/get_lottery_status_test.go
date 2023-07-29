@@ -51,6 +51,22 @@ func TestRegistrator_GetLotteryStatus(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 	})
 
+	t.Run("error game has passed while get game", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
+
+		got, err := fx.implementation.GetLotteryStatus(fx.ctx, &croupierpb.GetLotteryStatusRequest{
+			GameId: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.NotFound, st.Code())
+		assert.Len(t, st.Details(), 2)
+	})
+
 	t.Run("ok game is not my", func(t *testing.T) {
 		timeutils.TimeNow = func() time.Time {
 			return timeutils.ConvertTime("2022-02-10 15:31")

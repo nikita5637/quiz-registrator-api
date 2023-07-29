@@ -19,13 +19,13 @@ import (
 )
 
 const (
-	reasonThereAreNoFreeSlots = "THERE_ARE_NO_FREE_SLOTS"
+	reasonThereAreNoFreeSlot = "THERE_ARE_NO_FREE_SLOT"
 )
 
 var (
-	noFreeSlotsLexeme = i18n.Lexeme{
-		Key:      "no_free_slots",
-		FallBack: "There are not free slots",
+	noFreeSlotLexeme = i18n.Lexeme{
+		Key:      "no_free_slot",
+		FallBack: "There are not free slot",
 	}
 )
 
@@ -75,7 +75,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx,
-				codes.InvalidArgument,
+				codes.FailedPrecondition,
 				games.ErrGameNotFound.Error(),
 				games.ReasonGameNotFound,
 				map[string]string{
@@ -83,13 +83,24 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 				},
 				games.GameNotFoundLexeme,
 			)
+		} else if errors.Is(err, games.ErrGameHasPassed) {
+			st = model.GetStatus(ctx,
+				codes.FailedPrecondition,
+				games.ErrGameHasPassed.Error(),
+				games.ReasonGameHasPassed,
+				map[string]string{
+					"error": err.Error(),
+				},
+				games.GameHasPassedLexeme,
+			)
+
 		}
 
 		return nil, st.Err()
 	}
 
 	if len(existedGamePlayers) >= int(game.MaxPlayers) {
-		st := model.GetStatus(ctx, codes.FailedPrecondition, "there are no free slots", reasonThereAreNoFreeSlots, nil, noFreeSlotsLexeme)
+		st := model.GetStatus(ctx, codes.FailedPrecondition, "there are no free slot", reasonThereAreNoFreeSlot, nil, noFreeSlotLexeme)
 		return nil, st.Err()
 	}
 
@@ -100,7 +111,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyRegistered.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx,
-				codes.InvalidArgument,
+				codes.FailedPrecondition,
 				games.ErrGameNotFound.Error(),
 				games.ReasonGameNotFound,
 				map[string]string{
@@ -111,7 +122,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 
 		} else if errors.Is(err, users.ErrUserNotFound) {
 			st = model.GetStatus(ctx,
-				codes.InvalidArgument,
+				codes.FailedPrecondition,
 				users.ErrUserNotFound.Error(),
 				users.ReasonUserNotFound,
 				map[string]string{

@@ -112,7 +112,7 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -207,7 +207,7 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, reasonThereAreNoFreeSlots, errorInfo.Reason)
+		assert.Equal(t, reasonThereAreNoFreeSlot, errorInfo.Reason)
 		assert.Nil(t, errorInfo.Metadata)
 	})
 
@@ -312,7 +312,7 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -369,7 +369,7 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
