@@ -17,7 +17,7 @@ func (i *Implementation) GetGamePlayer(ctx context.Context, req *gameplayerpb.Ge
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound, gameplayers.ReasonGamePlayerNotFound, gameplayers.GamePlayerNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), gameplayers.ReasonGamePlayerNotFound, nil, gameplayers.GamePlayerNotFoundLexeme)
 		}
 
 		return nil, st.Err()

@@ -101,3 +101,63 @@ func Test_convertProtoUserRoleToModelUserRole(t *testing.T) {
 		})
 	}
 }
+
+func Test_getErrorDetails(t *testing.T) {
+	type args struct {
+		keys []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *errorDetails
+	}{
+		{
+			name: "keys is nil",
+			args: args{
+				keys: nil,
+			},
+			want: nil,
+		},
+		{
+			name: "keys is empty",
+			args: args{
+				keys: []string{},
+			},
+			want: nil,
+		},
+		{
+			name: "UserID",
+			args: args{
+				keys: []string{"UserID"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidUserID,
+				Lexeme: invalidUserIDLexeme,
+			},
+		},
+		{
+			name: "Role",
+			args: args{
+				keys: []string{"Role"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidUserRole,
+				Lexeme: invalidUserRoleLexeme,
+			},
+		},
+		{
+			name: "not found",
+			args: args{
+				keys: []string{"not found"},
+			},
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getErrorDetails(tt.args.keys); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getErrorDetails() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

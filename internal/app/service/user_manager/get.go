@@ -17,7 +17,7 @@ func (i *Implementation) GetUser(ctx context.Context, req *usermanagerpb.GetUser
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, err, reasonUserNotFound, users.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reasonUserNotFound, nil, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -32,7 +32,7 @@ func (i *Implementation) GetUserByTelegramID(ctx context.Context, req *usermanag
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, err, reasonUserNotFound, users.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reasonUserNotFound, nil, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()

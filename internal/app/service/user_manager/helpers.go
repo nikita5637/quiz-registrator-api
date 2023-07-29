@@ -31,6 +31,34 @@ const (
 )
 
 var (
+	invalidUserBirthdateLexeme = i18n.Lexeme{
+		Key:      "invalid_user_birthdate",
+		FallBack: "Invalid user birthdate",
+	}
+	invalidUserEmailLexeme = i18n.Lexeme{
+		Key:      "invalid_user_email",
+		FallBack: "Invalid user email",
+	}
+	invalidUserNameLexeme = i18n.Lexeme{
+		Key:      "invalid_user_name",
+		FallBack: "Invalid user name",
+	}
+	invalidUserPhoneLexeme = i18n.Lexeme{
+		Key:      "invalid_user_phone",
+		FallBack: "Invalid user phone",
+	}
+	invalidUserSexLexeme = i18n.Lexeme{
+		Key:      "invalid_user_sex",
+		FallBack: "Invalid user sex",
+	}
+	invalidUserStateLexeme = i18n.Lexeme{
+		Key:      "invalid_user_state",
+		FallBack: "Invalid user state",
+	}
+	invalidUserTelegramIDLexeme = i18n.Lexeme{
+		Key:      "invalid_telegram_id",
+		FallBack: "Invalid telegram ID",
+	}
 	userAlreadyExistsLexeme = i18n.Lexeme{
 		Key:      "user_already_exists",
 		FallBack: "User already exists",
@@ -39,52 +67,31 @@ var (
 	errorDetailsByField = map[string]errorDetails{
 		"Name": {
 			Reason: reasonInvalidUserName,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_name",
-				FallBack: "Invalid user name",
-			},
+			Lexeme: invalidUserNameLexeme,
 		},
 		"TelegramID": {
 			Reason: reasonInvalidUserTelegramID,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_telegram_id",
-				FallBack: "Invalid telegram ID",
-			},
+			Lexeme: invalidUserTelegramIDLexeme,
 		},
 		"Email": {
 			Reason: reasonInvalidUserEmail,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_email",
-				FallBack: "Invalid user email",
-			},
+			Lexeme: invalidUserEmailLexeme,
 		},
 		"Phone": {
 			Reason: reasonInvalidUserPhone,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_phone",
-				FallBack: "Invalid user phone",
-			},
+			Lexeme: invalidUserPhoneLexeme,
 		},
 		"State": {
 			Reason: reasonInvalidUserState,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_state",
-				FallBack: "Invalid user state",
-			},
+			Lexeme: invalidUserStateLexeme,
 		},
 		"Birthdate": {
 			Reason: reasonInvalidUserBirthdate,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_birthdate",
-				FallBack: "Invalid user birthdate",
-			},
+			Lexeme: invalidUserBirthdateLexeme,
 		},
 		"Sex": {
 			Reason: reasonInvalidUserSex,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_sex",
-				FallBack: "Invalid user sex",
-			},
+			Lexeme: invalidUserSexLexeme,
 		},
 	}
 )
@@ -148,6 +155,18 @@ func convertProtoUserToModelUser(user *usermanagerpb.User) model.User {
 	}
 
 	return ret
+}
+
+func getErrorDetails(keys []string) *errorDetails {
+	if len(keys) == 0 {
+		return nil
+	}
+
+	if v, ok := errorDetailsByField[keys[0]]; ok {
+		return &v
+	}
+
+	return nil
 }
 
 func validateBirthdate(value interface{}) error {

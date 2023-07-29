@@ -32,7 +32,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, invalidUserIDReason, errorInfo.Reason)
+		assert.Equal(t, reasonInvalidUserID, errorInfo.Reason)
 	})
 
 	t.Run("error. invalid role", func(t *testing.T) {
@@ -52,7 +52,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, invalidUserRoleReason, errorInfo.Reason)
+		assert.Equal(t, reasonInvalidUserRole, errorInfo.Reason)
 	})
 
 	t.Run("error. user role already exists", func(t *testing.T) {
@@ -77,7 +77,7 @@ func TestImplementation_CreateUserRole(t *testing.T) {
 		assert.Len(t, st.Details(), 2)
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, roleIsAlreadyAssignReason, errorInfo.Reason)
+		assert.Equal(t, reasonRoleIsAlreadyAssign, errorInfo.Reason)
 	})
 
 	t.Run("error. user not found while create user role", func(t *testing.T) {

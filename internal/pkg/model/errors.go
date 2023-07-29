@@ -30,16 +30,17 @@ var (
 )
 
 // GetStatus ...
-func GetStatus(ctx context.Context, code codes.Code, err error, reason string, lexeme i18n.Lexeme) *status.Status {
-	st := status.New(code, err.Error())
+func GetStatus(ctx context.Context, code codes.Code, message, reason string, metadata map[string]string, lexeme i18n.Lexeme) *status.Status {
+	st := status.New(code, message)
 	ei := &errdetails.ErrorInfo{
-		Reason: reason,
+		Reason:   reason,
+		Metadata: metadata,
 	}
 	lm := &errdetails.LocalizedMessage{
 		Locale:  i18n.GetLangFromContext(ctx),
 		Message: i18n.GetTranslator(lexeme)(ctx),
 	}
-	st, err = st.WithDetails(ei, lm)
+	st, err := st.WithDetails(ei, lm)
 	if err != nil {
 		panic(err)
 	}

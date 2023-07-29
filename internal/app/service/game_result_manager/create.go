@@ -19,10 +19,10 @@ func (m *GameResultManager) CreateGameResult(ctx context.Context, req *gameresul
 		st := status.New(codes.InvalidArgument, err.Error())
 		if errors.Is(err, errInvalidJSONRoundPointsValue) {
 			reason := fmt.Sprintf("invalid game result round points JSON value: \"%s\"", req.GetGameResult().GetRoundPoints())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameResultRoundPointsJSONValueLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidGameResultRoundPointsJSONValueLexeme)
 		} else if errors.Is(err, errInvalidResultPlace) {
 			reason := fmt.Sprintf("invalid game result result place: \"%d\"", req.GetGameResult().GetResultPlace())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameResultResultPlaceValueLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidGameResultResultPlaceValueLexeme)
 		}
 
 		return nil, st.Err()
@@ -37,10 +37,10 @@ func (m *GameResultManager) CreateGameResult(ctx context.Context, req *gameresul
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
 			reason := fmt.Sprintf("game with id %d not found", req.GetGameResult().GetGameId())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, games.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, games.GameNotFoundLexeme)
 		} else if errors.Is(err, model.ErrGameResultAlreadyExists) {
 			reason := fmt.Sprintf("game result for game id %d already exists", req.GetGameResult().GetGameId())
-			st = model.GetStatus(ctx, codes.AlreadyExists, err, reason, gameResultAlreadyExistsLexeme)
+			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), reason, nil, gameResultAlreadyExistsLexeme)
 		}
 
 		return nil, st.Err()

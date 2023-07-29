@@ -11,35 +11,36 @@ type errorDetails struct {
 	Lexeme i18n.Lexeme
 }
 
-var (
-	roleIsAlreadyAssignedToUserLexeme = i18n.Lexeme{
-		Key:      "role_is_already_assigned_to_user",
-		FallBack: "Role is already assigned to user",
-	}
-)
-
 const (
-	invalidUserIDReason       = "INVALID_USER_ID"
-	invalidUserRoleReason     = "INVALID_USER_ROLE"
-	roleIsAlreadyAssignReason = "ROLE_IS_ALREADY_ASSIGN"
+	reasonInvalidUserID       = "INVALID_USER_ID"
+	reasonInvalidUserRole     = "INVALID_USER_ROLE"
+	reasonRoleIsAlreadyAssign = "ROLE_IS_ALREADY_ASSIGN"
 )
 
 var (
 	errorDetailsByField = map[string]errorDetails{
 		"UserID": {
-			Reason: invalidUserIDReason,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_id",
-				FallBack: "Invalid user ID",
-			},
+			Reason: reasonInvalidUserID,
+			Lexeme: invalidUserIDLexeme,
 		},
 		"Role": {
-			Reason: invalidUserRoleReason,
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_user_role",
-				FallBack: "Invalid user role",
-			},
+			Reason: reasonInvalidUserRole,
+			Lexeme: invalidUserRoleLexeme,
 		},
+	}
+
+	invalidUserIDLexeme = i18n.Lexeme{
+		Key:      "invalid_user_id",
+		FallBack: "Invalid user ID",
+	}
+	invalidUserRoleLexeme = i18n.Lexeme{
+		Key:      "invalid_user_role",
+		FallBack: "Invalid user role",
+	}
+
+	roleIsAlreadyAssignedToUserLexeme = i18n.Lexeme{
+		Key:      "role_is_already_assigned_to_user",
+		FallBack: "Role is already assigned to user",
 	}
 )
 
@@ -57,4 +58,16 @@ func convertProtoUserRoleToModelUserRole(userRole *adminpb.UserRole) model.UserR
 		UserID: userRole.GetUserId(),
 		Role:   model.Role(userRole.GetRole()),
 	}
+}
+
+func getErrorDetails(keys []string) *errorDetails {
+	if len(keys) == 0 {
+		return nil
+	}
+
+	if v, ok := errorDetailsByField[keys[0]]; ok {
+		return &v
+	}
+
+	return nil
 }

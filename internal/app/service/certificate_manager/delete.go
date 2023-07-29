@@ -20,7 +20,7 @@ func (m *CertificateManager) DeleteCertificate(ctx context.Context, req *certifi
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, certificates.ErrCertificateNotFound) {
 			reason := fmt.Sprintf("certificate with ID %d not found", req.GetId())
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, certificateNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reason, nil, certificateNotFoundLexeme)
 		}
 
 		return nil, st.Err()

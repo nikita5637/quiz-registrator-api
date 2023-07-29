@@ -10,10 +10,8 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameplayers"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -36,7 +34,7 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, err, gameplayers.ReasonGamePlayerNotFound, gameplayers.GamePlayerNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), gameplayers.ReasonGamePlayerNotFound, nil, gameplayers.GamePlayerNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -67,18 +65,15 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 			}
 
 			if errorDetails := getErrorDetails(keys); errorDetails != nil {
-				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
-				errorInfo := &errdetails.ErrorInfo{
-					Reason: errorDetails.Reason,
-					Metadata: map[string]string{
+				st = model.GetStatus(ctx,
+					codes.InvalidArgument,
+					fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()),
+					errorDetails.Reason,
+					map[string]string{
 						"error": err.Error(),
 					},
-				}
-				localizedMessage := &errdetails.LocalizedMessage{
-					Locale:  i18n.GetLangFromContext(ctx),
-					Message: i18n.GetTranslator(errorDetails.Lexeme)(ctx),
-				}
-				st, _ = st.WithDetails(errorInfo, localizedMessage)
+					errorDetails.Lexeme,
+				)
 			}
 		}
 
@@ -89,11 +84,11 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, users.ReasonUserNotFound, users.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), users.ReasonUserNotFound, nil, users.UserNotFoundLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, games.ReasonGameNotFound, games.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
 		} else if errors.Is(err, gameplayers.ErrGamePlayerAlreadyRegistered) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, err, gameplayers.ReasonGamePlayerAlreadyRegistered, gameplayers.GamePlayerAlreadyRegisteredLexeme)
+			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
 		}
 
 		return nil, st.Err()

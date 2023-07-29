@@ -19,7 +19,7 @@ func (i *Implementation) DeleteGamePlayer(ctx context.Context, req *gameplayerpb
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, err, gameplayers.ReasonGamePlayerNotFound, gameplayers.GamePlayerNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), gameplayers.ReasonGamePlayerNotFound, nil, gameplayers.GamePlayerNotFoundLexeme)
 		}
 
 		return &emptypb.Empty{}, st.Err()

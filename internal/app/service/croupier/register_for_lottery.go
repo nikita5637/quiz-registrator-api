@@ -41,8 +41,7 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	user := usersutils.UserFromContext(ctx)
 	if user.Email.Value() == "" || user.Name == "" || user.Phone.Value() == "" {
 		reason := fmt.Sprintf("permission denied for lottery registration for user %d", user.ID)
-		err := errors.New("permission denied for lottery registration")
-		st := model.GetStatus(ctx, codes.PermissionDenied, err, reason, lotteryPermissionDenied)
+		st := model.GetStatus(ctx, codes.PermissionDenied, "permission denied for lottery registration", reason, nil, lotteryPermissionDenied)
 		return nil, st.Err()
 	}
 
@@ -54,8 +53,7 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 
 	if !userRegistered {
 		reason := fmt.Sprintf("permission denied for lottery registration for user %d", user.ID)
-		err = errors.New("permission denied for lottery registration")
-		st := model.GetStatus(ctx, codes.PermissionDenied, err, reason, lotteryPermissionDenied)
+		st := model.GetStatus(ctx, codes.PermissionDenied, "permission denied for lottery registration", reason, nil, lotteryPermissionDenied)
 		return nil, st.Err()
 	}
 
@@ -75,10 +73,10 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 
 		if errors.Is(err, model.ErrLotteryNotAvailable) {
 			reason := fmt.Sprintf("lottery for game id %d not available", game.ID)
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, lotteryNotAvailableLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, lotteryNotAvailableLexeme)
 		} else if errors.Is(err, model.ErrLotteryNotImplemented) {
 			reason := fmt.Sprintf("lottery for league %d not implemented", game.LeagueID)
-			st = model.GetStatus(ctx, codes.Unimplemented, err, reason, lotteryNotImplementedLexeme)
+			st = model.GetStatus(ctx, codes.Unimplemented, err.Error(), reason, nil, lotteryNotImplementedLexeme)
 		} else {
 			if unwrappedError := errors.Unwrap(err); unwrappedError != nil {
 				err = unwrappedError

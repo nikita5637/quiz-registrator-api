@@ -9,11 +9,9 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameplayers"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -38,18 +36,15 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 			}
 
 			if errorDetails := getErrorDetails(keys); errorDetails != nil {
-				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
-				errorInfo := &errdetails.ErrorInfo{
-					Reason: errorDetails.Reason,
-					Metadata: map[string]string{
+				st = model.GetStatus(ctx,
+					codes.InvalidArgument,
+					fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()),
+					errorDetails.Reason,
+					map[string]string{
 						"error": err.Error(),
 					},
-				}
-				localizedMessage := &errdetails.LocalizedMessage{
-					Locale:  i18n.GetLangFromContext(ctx),
-					Message: i18n.GetTranslator(errorDetails.Lexeme)(ctx),
-				}
-				st, _ = st.WithDetails(errorInfo, localizedMessage)
+					errorDetails.Lexeme,
+				)
 			}
 		}
 
@@ -60,33 +55,27 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyRegistered) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyRegistered, gameplayers.ReasonGamePlayerAlreadyRegistered, gameplayers.GamePlayerAlreadyRegisteredLexeme)
+			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyRegistered.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
-			st = status.New(codes.InvalidArgument, games.ErrGameNotFound.Error())
-			errorInfo := &errdetails.ErrorInfo{
-				Reason: games.ReasonGameNotFound,
-				Metadata: map[string]string{
+			st = model.GetStatus(ctx,
+				codes.InvalidArgument,
+				games.ErrGameNotFound.Error(),
+				games.ReasonGameNotFound,
+				map[string]string{
 					"error": err.Error(),
 				},
-			}
-			localizedMessage := &errdetails.LocalizedMessage{
-				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(games.GameNotFoundLexeme)(ctx),
-			}
-			st, _ = st.WithDetails(errorInfo, localizedMessage)
+				games.GameNotFoundLexeme,
+			)
 		} else if errors.Is(err, users.ErrUserNotFound) {
-			st = status.New(codes.InvalidArgument, users.ErrUserNotFound.Error())
-			errorInfo := &errdetails.ErrorInfo{
-				Reason: users.ReasonUserNotFound,
-				Metadata: map[string]string{
+			st = model.GetStatus(ctx,
+				codes.InvalidArgument,
+				users.ErrUserNotFound.Error(),
+				users.ReasonUserNotFound,
+				map[string]string{
 					"error": err.Error(),
 				},
-			}
-			localizedMessage := &errdetails.LocalizedMessage{
-				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(users.UserNotFoundLexeme)(ctx),
-			}
-			st, _ = st.WithDetails(errorInfo, localizedMessage)
+				users.UserNotFoundLexeme,
+			)
 		}
 
 		return nil, st.Err()

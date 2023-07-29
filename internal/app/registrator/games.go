@@ -70,25 +70,25 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, model.ErrInvalidLeagueID) {
 			reason := fmt.Sprintf("invalid league ID: %d", req.GetLeagueId())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidLeagueIDLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidLeagueIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameType) {
 			reason := fmt.Sprintf("invalid type: %d", req.GetType())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameTypeLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidGameTypeLexeme)
 		} else if errors.Is(err, model.ErrInvalidGameNumber) {
 			reason := fmt.Sprintf("invalid game number: %s", req.GetNumber())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidGameNumberLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidGameNumberLexeme)
 		} else if errors.Is(err, model.ErrInvalidPlaceID) {
 			reason := fmt.Sprintf("invalid place ID: %d", req.GetPlaceId())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidPlaceIDLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidPlaceIDLexeme)
 		} else if errors.Is(err, model.ErrInvalidDate) {
 			reason := fmt.Sprintf("invalid date: %s", req.GetDate())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidDateLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidDateLexeme)
 		} else if errors.Is(err, model.ErrInvalidPrice) {
 			reason := fmt.Sprintf("invalid price: %d", req.GetPrice())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidPriceLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidPriceLexeme)
 		} else if errors.Is(err, model.ErrInvalidMaxPlayers) {
 			reason := fmt.Sprintf("invalid max players: %d", req.GetMaxPlayers())
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, reason, invalidMaxPlayersLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, invalidMaxPlayersLexeme)
 		}
 
 		return nil, st.Err()

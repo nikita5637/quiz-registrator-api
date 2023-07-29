@@ -18,8 +18,12 @@ type errorDetails struct {
 }
 
 const (
-	certificateWonOnGameNotFoundReason   = "WON_ON_GAME_NOT_FOUND"
-	certificateSpentOnGameNotFoundReason = "SPENT_ON_GAME_NOT_FOUND"
+	reasonCertificateWonOnGameNotFound   = "WON_ON_GAME_NOT_FOUND"
+	reasonCertificateSpentOnGameNotFound = "SPENT_ON_GAME_NOT_FOUND"
+	reasonInvalidCertificateType         = "INVALID_CERTIFICATE_TYPE"
+	reasonInvalidSpentOnGameID           = "INVALID_SPENT_ON_GAME_ID"
+	reasonInvalidWonOnGameID             = "INVALID_WON_ON_GAME_ID"
+	reasonInvalidInfo                    = "INVALID_INFO"
 
 	minWonOn   = int32(1)
 	minSpentOn = int32(1)
@@ -41,33 +45,38 @@ var (
 
 	errorDetailsByField = map[string]errorDetails{
 		"Type": {
-			Reason: "INVALID_CERTIFICATE_TYPE",
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_certificate_type",
-				FallBack: "Invalid certificate type",
-			},
+			Reason: reasonInvalidCertificateType,
+			Lexeme: invalidCertificateTypeLexeme,
 		},
 		"WonOn": {
-			Reason: "INVALID_WON_ON_GAME_ID",
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_certificate_won_on_game_id",
-				FallBack: "Invalid certificate won on game ID",
-			},
+			Reason: reasonInvalidWonOnGameID,
+			Lexeme: invalidWonOnGameIDLexeme,
 		},
 		"SpentOn": {
-			Reason: "INVALID_SPENT_ON_GAME_ID",
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_certificate_spent_on_game_id",
-				FallBack: "Invalid certificate spent on game ID",
-			},
+			Reason: reasonInvalidSpentOnGameID,
+			Lexeme: invalidSpentOnGameIDLexeme,
 		},
 		"Info": {
-			Reason: "INVALID_INFO",
-			Lexeme: i18n.Lexeme{
-				Key:      "invalid_certificate_info",
-				FallBack: "Invalid certificate info",
-			},
+			Reason: reasonInvalidInfo,
+			Lexeme: invalidInfoLexeme,
 		},
+	}
+
+	invalidCertificateTypeLexeme = i18n.Lexeme{
+		Key:      "invalid_certificate_type",
+		FallBack: "Invalid certificate type",
+	}
+	invalidInfoLexeme = i18n.Lexeme{
+		Key:      "invalid_certificate_info",
+		FallBack: "Invalid certificate info",
+	}
+	invalidSpentOnGameIDLexeme = i18n.Lexeme{
+		Key:      "invalid_certificate_spent_on_game_id",
+		FallBack: "Invalid certificate spent on game ID",
+	}
+	invalidWonOnGameIDLexeme = i18n.Lexeme{
+		Key:      "invalid_certificate_won_on_game_id",
+		FallBack: "Invalid certificate won on game ID",
 	}
 )
 
@@ -109,6 +118,18 @@ func convertProtoCertificateToModelCertificate(certificate *certificatemanagerpb
 	}
 
 	return ret
+}
+
+func getErrorDetails(keys []string) *errorDetails {
+	if len(keys) == 0 {
+		return nil
+	}
+
+	if v, ok := errorDetailsByField[keys[0]]; ok {
+		return &v
+	}
+
+	return nil
 }
 
 func validateSpentOn(value interface{}) error {

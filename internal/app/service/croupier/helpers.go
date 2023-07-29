@@ -12,5 +12,5 @@ import (
 
 func getGameNotFoundStatus(ctx context.Context, err error, gameID int32) *status.Status {
 	reason := fmt.Sprintf("game with id %d not found", gameID)
-	return model.GetStatus(ctx, codes.NotFound, err, reason, games.GameNotFoundLexeme)
+	return model.GetStatus(ctx, codes.NotFound, err.Error(), reason, nil, games.GameNotFoundLexeme)
 }

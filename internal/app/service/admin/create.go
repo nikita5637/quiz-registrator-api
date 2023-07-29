@@ -8,10 +8,8 @@ import (
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	userroles "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -27,19 +25,16 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 				keys = append(keys, k)
 			}
 
-			if ed, ok := errorDetailsByField[keys[0]]; ok {
-				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
-				errorInfo := &errdetails.ErrorInfo{
-					Reason: ed.Reason,
-					Metadata: map[string]string{
+			if errorDetails := getErrorDetails(keys); errorDetails != nil {
+				st = model.GetStatus(ctx,
+					codes.InvalidArgument,
+					fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()),
+					errorDetails.Reason,
+					map[string]string{
 						"error": err.Error(),
 					},
-				}
-				localizedMessage := &errdetails.LocalizedMessage{
-					Locale:  i18n.GetLangFromContext(ctx),
-					Message: i18n.GetTranslator(ed.Lexeme)(ctx),
-				}
-				st, _ = st.WithDetails(errorInfo, localizedMessage)
+					errorDetails.Lexeme,
+				)
 			}
 		}
 
@@ -50,9 +45,9 @@ func (i *Implementation) CreateUserRole(ctx context.Context, req *adminpb.Create
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, userroles.ErrRoleIsAlreadyAssigned) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, err, roleIsAlreadyAssignReason, roleIsAlreadyAssignedToUserLexeme)
+			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), reasonRoleIsAlreadyAssign, nil, roleIsAlreadyAssignedToUserLexeme)
 		} else if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, users.ReasonUserNotFound, users.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), users.ReasonUserNotFound, nil, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()

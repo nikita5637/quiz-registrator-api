@@ -176,6 +176,86 @@ func Test_convertProtoCertificateToModelCertificate(t *testing.T) {
 	}
 }
 
+func Test_getErrorDetails(t *testing.T) {
+	type args struct {
+		keys []string
+	}
+	tests := []struct {
+		name string
+		args args
+		want *errorDetails
+	}{
+		{
+			name: "keys is nil",
+			args: args{
+				keys: nil,
+			},
+			want: nil,
+		},
+		{
+			name: "keys is empty",
+			args: args{
+				keys: []string{},
+			},
+			want: nil,
+		},
+		{
+			name: "Type",
+			args: args{
+				keys: []string{"Type"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidCertificateType,
+				Lexeme: invalidCertificateTypeLexeme,
+			},
+		},
+		{
+			name: "WonOn",
+			args: args{
+				keys: []string{"WonOn"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidWonOnGameID,
+				Lexeme: invalidWonOnGameIDLexeme,
+			},
+		},
+		{
+			name: "SpentOn",
+			args: args{
+				keys: []string{"SpentOn"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidSpentOnGameID,
+				Lexeme: invalidSpentOnGameIDLexeme,
+			},
+		},
+		{
+			name: "Info",
+			args: args{
+				keys: []string{"Info"},
+			},
+			want: &errorDetails{
+				Reason: reasonInvalidInfo,
+				Lexeme: invalidInfoLexeme,
+			},
+		},
+		{
+			name: "not found",
+			args: args{
+				keys: []string{"not found"},
+			},
+			want: nil,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getErrorDetails(tt.args.keys); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("getErrorDetails() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func Test_validateSpentOn(t *testing.T) {
 	type args struct {
 		value interface{}

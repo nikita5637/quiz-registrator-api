@@ -7,7 +7,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -29,19 +28,7 @@ func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		user := users_utils.UserFromContext(ctx)
 		if user.State == model.UserStateBanned {
-			st := status.New(codes.PermissionDenied, "permission denied")
-			ei := &errdetails.ErrorInfo{
-				Reason: "You are banned",
-			}
-			lm := &errdetails.LocalizedMessage{
-				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(youAreBannedLexeme)(ctx),
-			}
-
-			st, err := st.WithDetails(ei, lm)
-			if err != nil {
-				panic(err)
-			}
+			st := model.GetStatus(ctx, codes.PermissionDenied, "permission denied", "You are banned", nil, youAreBannedLexeme)
 
 			return nil, st.Err()
 		}
@@ -66,20 +53,7 @@ func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 			logger.ErrorKV(ctx, "roles for method not found", "method", info.FullMethod)
 		}
 
-		st := status.New(codes.PermissionDenied, "")
-		ei := &errdetails.ErrorInfo{
-			Reason: "permission denied",
-		}
-
-		lm := &errdetails.LocalizedMessage{
-			Locale:  i18n.GetLangFromContext(ctx),
-			Message: i18n.GetTranslator(permissionDeniedLexeme)(ctx),
-		}
-
-		st, err = st.WithDetails(ei, lm)
-		if err != nil {
-			panic(err)
-		}
+		st := model.GetStatus(ctx, codes.PermissionDenied, "", "permission denied", nil, permissionDeniedLexeme)
 
 		return nil, st.Err()
 	}
