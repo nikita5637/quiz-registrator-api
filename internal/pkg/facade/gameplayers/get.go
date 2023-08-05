@@ -8,6 +8,7 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
 // GetGamePlayer ...
@@ -36,6 +37,51 @@ func (f *Facade) GetGamePlayer(ctx context.Context, id int32) (model.GamePlayer,
 	}
 
 	return gamePlayer, nil
+}
+
+// GetGamePlayersByFields ...
+func (f *Facade) GetGamePlayersByFields(ctx context.Context, gamePlayer model.GamePlayer) ([]model.GamePlayer, error) {
+	gamePlayers := make([]model.GamePlayer, 0)
+	err := f.db.RunTX(ctx, "GetGamePlayersByFields", func(ctx context.Context) error {
+		var dbGamePlayers []database.GamePlayer
+		var err error
+		builderCond := builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id":    gamePlayer.GameID,
+				"registered_by": gamePlayer.RegisteredBy,
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)
+		if userID, ok := gamePlayer.UserID.Get(); ok {
+			dbGamePlayers, err = f.gamePlayerStorage.Find(ctx, builderCond.And(
+				builder.Eq{
+					"fk_user_id": userID,
+				},
+			))
+		} else {
+			dbGamePlayers, err = f.gamePlayerStorage.Find(ctx, builderCond.And(
+				builder.IsNull{
+					"fk_user_id",
+				},
+			))
+		}
+		if err != nil {
+			return fmt.Errorf("find error: %w", err)
+		}
+
+		for _, dbGamePlayer := range dbGamePlayers {
+			gamePlayers = append(gamePlayers, convertDBGamePlayerToModelGamePlayer(dbGamePlayer))
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("GetGamePlayersByGameID error: %w", err)
+	}
+
+	return gamePlayers, nil
 }
 
 // GetGamePlayersByGameID ...

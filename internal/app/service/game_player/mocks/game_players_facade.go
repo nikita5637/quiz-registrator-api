@@ -151,6 +151,53 @@ func (_c *GamePlayersFacade_GetGamePlayer_Call) Return(_a0 model.GamePlayer, _a1
 	return _c
 }
 
+// GetGamePlayersByFields provides a mock function with given fields: ctx, gamePlayer
+func (_m *GamePlayersFacade) GetGamePlayersByFields(ctx context.Context, gamePlayer model.GamePlayer) ([]model.GamePlayer, error) {
+	ret := _m.Called(ctx, gamePlayer)
+
+	var r0 []model.GamePlayer
+	if rf, ok := ret.Get(0).(func(context.Context, model.GamePlayer) []model.GamePlayer); ok {
+		r0 = rf(ctx, gamePlayer)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]model.GamePlayer)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, model.GamePlayer) error); ok {
+		r1 = rf(ctx, gamePlayer)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GamePlayersFacade_GetGamePlayersByFields_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGamePlayersByFields'
+type GamePlayersFacade_GetGamePlayersByFields_Call struct {
+	*mock.Call
+}
+
+// GetGamePlayersByFields is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gamePlayer model.GamePlayer
+func (_e *GamePlayersFacade_Expecter) GetGamePlayersByFields(ctx interface{}, gamePlayer interface{}) *GamePlayersFacade_GetGamePlayersByFields_Call {
+	return &GamePlayersFacade_GetGamePlayersByFields_Call{Call: _e.mock.On("GetGamePlayersByFields", ctx, gamePlayer)}
+}
+
+func (_c *GamePlayersFacade_GetGamePlayersByFields_Call) Run(run func(ctx context.Context, gamePlayer model.GamePlayer)) *GamePlayersFacade_GetGamePlayersByFields_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(model.GamePlayer))
+	})
+	return _c
+}
+
+func (_c *GamePlayersFacade_GetGamePlayersByFields_Call) Return(_a0 []model.GamePlayer, _a1 error) *GamePlayersFacade_GetGamePlayersByFields_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 // GetGamePlayersByGameID provides a mock function with given fields: ctx, gameID
 func (_m *GamePlayersFacade) GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error) {
 	ret := _m.Called(ctx, gameID)

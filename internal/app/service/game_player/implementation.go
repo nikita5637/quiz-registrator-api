@@ -20,6 +20,7 @@ type GamePlayersFacade interface {
 	CreateGamePlayer(ctx context.Context, gamePlayer model.GamePlayer) (model.GamePlayer, error)
 	DeleteGamePlayer(ctx context.Context, id int32) error
 	GetGamePlayer(ctx context.Context, id int32) (model.GamePlayer, error)
+	GetGamePlayersByFields(ctx context.Context, gamePlayer model.GamePlayer) ([]model.GamePlayer, error)
 	GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
 	PatchGamePlayer(ctx context.Context, gamePlayer model.GamePlayer) (model.GamePlayer, error)
 }

@@ -74,8 +74,16 @@ service RegistratorService {
 	// RegisterPlayer registers player for a game
 	rpc RegisterPlayer(RegisterPlayerRequest) returns (google.protobuf.Empty) {
 	}
+
+	// UnregisterPlayer unregisters player from a game
+	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (google.protobuf.Empty) {
+	}
 }
 
 message RegisterPlayerRequest {
+	GamePlayer game_player = 1;
+}
+
+message UnregisterPlayerRequest {
 	GamePlayer game_player = 1;
 }

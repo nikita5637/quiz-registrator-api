@@ -29,7 +29,6 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.InvalidArgument, st.Code())
 		assert.Len(t, st.Details(), 0)
-
 	})
 
 	t.Run("validation error", func(t *testing.T) {

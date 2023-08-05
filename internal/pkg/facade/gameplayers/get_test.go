@@ -110,6 +110,138 @@ func TestFacade_GetGamePlayer(t *testing.T) {
 	})
 }
 
+func TestFacade_GetGamePlayersByFields(t *testing.T) {
+	t.Run("find error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id":    int32(1),
+				"registered_by": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		).And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+		)).Return(nil, errors.New("some error"))
+
+		got, err := fx.facade.GetGamePlayersByFields(fx.ctx, model.GamePlayer{
+			GameID:       1,
+			UserID:       maybe.Just(int32(1)),
+			RegisteredBy: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok legioner", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id":    int32(1),
+				"registered_by": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		).And(
+			builder.IsNull{
+				"fk_user_id",
+			},
+		)).Return([]database.GamePlayer{
+			{
+				ID:           1,
+				FkGameID:     1,
+				RegisteredBy: 1,
+				Degree:       uint8(model.DegreeLikely),
+			},
+		}, nil)
+
+		got, err := fx.facade.GetGamePlayersByFields(fx.ctx, model.GamePlayer{
+			GameID:       1,
+			UserID:       maybe.Nothing[int32](),
+			RegisteredBy: 1,
+		})
+		assert.Equal(t, []model.GamePlayer{
+			{
+				ID:           1,
+				GameID:       1,
+				UserID:       maybe.Nothing[int32](),
+				RegisteredBy: 1,
+				Degree:       model.DegreeLikely,
+			},
+		}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok main player", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id":    int32(1),
+				"registered_by": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		).And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+		)).Return([]database.GamePlayer{
+			{
+				ID:       1,
+				FkGameID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
+				RegisteredBy: 1,
+				Degree:       uint8(model.DegreeLikely),
+			},
+		}, nil)
+
+		got, err := fx.facade.GetGamePlayersByFields(fx.ctx, model.GamePlayer{
+			GameID:       1,
+			UserID:       maybe.Just(int32(1)),
+			RegisteredBy: 1,
+		})
+		assert.Equal(t, []model.GamePlayer{
+			{
+				ID:           1,
+				GameID:       1,
+				UserID:       maybe.Just(int32(1)),
+				RegisteredBy: 1,
+				Degree:       model.DegreeLikely,
+			},
+		}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}
+
 func TestFacade_GetGamePlayersByGameID(t *testing.T) {
 	t.Run("find error", func(t *testing.T) {
 		fx := tearUp(t)

@@ -134,4 +134,8 @@ run:
 
 .PHONY: test
 test:
-	go test -v ./...
+	go test -v ./internal/...
+
+.PHONY: integration-test
+integration-test:
+	go test -v ./tests/...
