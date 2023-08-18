@@ -18,6 +18,7 @@ enum LeagueID {
 	JACK_QUIZ = 10;
 	OWL_CUP = 11;
 	LYUTYY_QUIZ = 12;
+	SIB_QUIZ = 13;
 }
 
 message League {
