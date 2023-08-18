@@ -32,7 +32,7 @@ func (f *Facade) PatchGamePlayer(ctx context.Context, gamePlayer model.GamePlaye
 		}
 
 		if len(dbGamePlayers) > 0 {
-			return ErrGamePlayerAlreadyRegistered
+			return ErrGamePlayerAlreadyExists
 		}
 
 		patchedDBGamePlayer := convertModelGamePlayerToDBGamePlayer(gamePlayer)

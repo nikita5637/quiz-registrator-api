@@ -22,6 +22,7 @@ var dictionary = map[string]map[string]string{
 		"certificate_won_on_game_not_found":           "Игра, на которой выиграли сертификат, не найдена",
 		"game_has_passed":                             "Игра уже прошла",
 		"game_not_found":                              "Игра не найдена",
+		"game_player_already_exists":                  "Игрок уже существует",
 		"game_player_already_registered":              "Игрок уже зарегистрирован",
 		"game_player_not_found":                       "Игрок не найден",
 		"game_result_already_exists_lexeme":           "Результат игры уже есть",

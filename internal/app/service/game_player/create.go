@@ -54,8 +54,8 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 	gamePlayer, err := i.gamePlayersFacade.CreateGamePlayer(ctx, createdGamePlayer)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyRegistered) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyRegistered.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
+		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyExists) {
+			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyExists.Error(), gameplayers.ReasonGamePlayerAlreadyExists, nil, gameplayers.GamePlayerAlreadyExistsLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx,
 				codes.InvalidArgument,

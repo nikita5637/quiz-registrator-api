@@ -19,10 +19,16 @@ import (
 )
 
 const (
-	reasonThereAreNoFreeSlot = "THERE_ARE_NO_FREE_SLOT"
+	reasonGamePlayerAlreadyRegistered = "GAME_PLAYER_ALREADY_REGISTERED"
+	reasonThereAreNoFreeSlot          = "THERE_ARE_NO_FREE_SLOT"
 )
 
 var (
+	gamePlayerAlreadyRegisteredLexeme = i18n.Lexeme{
+		Key:      "game_player_already_registered",
+		FallBack: "Game player already registered",
+	}
+
 	noFreeSlotLexeme = i18n.Lexeme{
 		Key:      "no_free_slot",
 		FallBack: "There are not free slot",
@@ -107,8 +113,8 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	_, err = i.gamePlayersFacade.CreateGamePlayer(ctx, registeredGamePlayer)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyRegistered) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyRegistered.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
+		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyExists) {
+			st = model.GetStatus(ctx, codes.AlreadyExists, "game player already registered", reasonGamePlayerAlreadyRegistered, nil, gamePlayerAlreadyRegisteredLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx,
 				codes.FailedPrecondition,

@@ -24,7 +24,7 @@ func (f *Facade) CreateGamePlayer(ctx context.Context, gamePlayer model.GamePlay
 
 			for _, existedGamePlayer := range existedGamePlayers {
 				if existedGamePlayer.UserID.Value() == v {
-					return ErrGamePlayerAlreadyRegistered
+					return ErrGamePlayerAlreadyExists
 				}
 			}
 		}

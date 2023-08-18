@@ -205,7 +205,7 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		assert.Nil(t, errorInfo.Metadata)
 	})
 
-	t.Run("game player already registered", func(t *testing.T) {
+	t.Run("game player already exists", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePlayersFacade.EXPECT().GetGamePlayer(fx.ctx, int32(1)).Return(model.GamePlayer{
@@ -222,7 +222,7 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 			UserID:       maybe.Just(int32(1)),
 			RegisteredBy: 1,
 			Degree:       model.DegreeUnlikely,
-		}).Return(model.GamePlayer{}, gameplayers.ErrGamePlayerAlreadyRegistered)
+		}).Return(model.GamePlayer{}, gameplayers.ErrGamePlayerAlreadyExists)
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
@@ -247,7 +247,7 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, gameplayers.ReasonGamePlayerAlreadyRegistered, errorInfo.Reason)
+		assert.Equal(t, gameplayers.ReasonGamePlayerAlreadyExists, errorInfo.Reason)
 		assert.Nil(t, errorInfo.Metadata)
 	})
 

@@ -87,8 +87,8 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), users.ReasonUserNotFound, nil, users.UserNotFoundLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
-		} else if errors.Is(err, gameplayers.ErrGamePlayerAlreadyRegistered) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), gameplayers.ReasonGamePlayerAlreadyRegistered, nil, gameplayers.GamePlayerAlreadyRegisteredLexeme)
+		} else if errors.Is(err, gameplayers.ErrGamePlayerAlreadyExists) {
+			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), gameplayers.ReasonGamePlayerAlreadyExists, nil, gameplayers.GamePlayerAlreadyExistsLexeme)
 		}
 
 		return nil, st.Err()

@@ -50,7 +50,7 @@ func TestFacade_PatchGamePlayer(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("game player already registered", func(t *testing.T) {
+	t.Run("game player already exists", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.dbMock.ExpectBegin()
@@ -87,7 +87,7 @@ func TestFacade_PatchGamePlayer(t *testing.T) {
 		})
 		assert.Equal(t, model.GamePlayer{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrGamePlayerAlreadyRegistered)
+		assert.ErrorIs(t, err, ErrGamePlayerAlreadyExists)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
