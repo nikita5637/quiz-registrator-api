@@ -74,6 +74,9 @@ var grpcRules = map[string]roles{
 	"/game_player.RegistratorService/RegisterPlayer": {
 		User: struct{}{},
 	},
+	"/game_player.RegistratorService/UnregisterPlayer": {
+		User: struct{}{},
+	},
 	//
 	// game_result_manager
 	//
