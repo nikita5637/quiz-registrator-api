@@ -60,6 +60,7 @@ var dictionary = map[string]map[string]string{
 		"permission_denied":                           "Доступ запрещен",
 		"place_not_found":                             "Место не найдено",
 		"role_is_already_assigned_to_user":            "У пользователя уже есть данная роль",
+		"there_are_no_registration_for_the_game":      "Нет регистрации на игру",
 		"unauthenticated_request":                     "Неавторизованный запрос",
 		"user_not_found":                              "Пользователь не найден",
 		"user_already_exists":                         "Пользователь уже существует",

@@ -259,6 +259,13 @@ func Test_validateUserID(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "lt 0",
+			args: args{
+				value: maybe.Just(int32(-1)),
+			},
+			wantErr: true,
+		},
+		{
 			name: "eq 0",
 			args: args{
 				value: maybe.Just(int32(0)),

@@ -46,6 +46,7 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 		case "game_id":
 			patchedGamePlayer.GameID = req.GetGamePlayer().GetGameId()
 		case "user_id":
+			patchedGamePlayer.UserID = maybe.Nothing[int32]()
 			if req.GetGamePlayer().GetUserId() != nil {
 				patchedGamePlayer.UserID = maybe.Just(req.GetGamePlayer().GetUserId().GetValue())
 			}
@@ -84,9 +85,9 @@ func (i *Implementation) PatchGamePlayer(ctx context.Context, req *gameplayerpb.
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), users.ReasonUserNotFound, nil, users.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, err.Error(), users.ReasonUserNotFound, nil, users.UserNotFoundLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
 		} else if errors.Is(err, gameplayers.ErrGamePlayerAlreadyExists) {
 			st = model.GetStatus(ctx, codes.AlreadyExists, err.Error(), gameplayers.ReasonGamePlayerAlreadyExists, nil, gameplayers.GamePlayerAlreadyExistsLexeme)
 		}

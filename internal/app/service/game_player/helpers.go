@@ -110,5 +110,5 @@ func validateUserID(value interface{}) error {
 		return errors.New("must be Maybe[int32]")
 	}
 
-	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Min(1)))
 }

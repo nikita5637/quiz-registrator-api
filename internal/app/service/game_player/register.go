@@ -19,8 +19,9 @@ import (
 )
 
 const (
-	reasonGamePlayerAlreadyRegistered = "GAME_PLAYER_ALREADY_REGISTERED"
-	reasonThereAreNoFreeSlot          = "THERE_ARE_NO_FREE_SLOT"
+	reasonGamePlayerAlreadyRegistered      = "GAME_PLAYER_ALREADY_REGISTERED"
+	reasonThereAreNoFreeSlot               = "THERE_ARE_NO_FREE_SLOT"
+	reasonThereAreNoRegistrationForTheGame = "THERE_ARE_NO_REGISTRATION_FOR_THE_GAME"
 )
 
 var (
@@ -28,10 +29,13 @@ var (
 		Key:      "game_player_already_registered",
 		FallBack: "Game player already registered",
 	}
-
 	noFreeSlotLexeme = i18n.Lexeme{
 		Key:      "no_free_slot",
-		FallBack: "There are not free slot",
+		FallBack: "There are no free slot",
+	}
+	thereAreNoRegistrationForTheGameLexeme = i18n.Lexeme{
+		Key:      "there_are_no_registration_for_the_game",
+		FallBack: "There are no registration for the game",
 	}
 )
 
@@ -70,12 +74,6 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 		return nil, st.Err()
 	}
 
-	existedGamePlayers, err := i.gamePlayersFacade.GetGamePlayersByGameID(ctx, req.GetGamePlayer().GetGameId())
-	if err != nil {
-		st := status.New(codes.Internal, err.Error())
-		return nil, st.Err()
-	}
-
 	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGamePlayer().GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
@@ -105,6 +103,24 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 		return nil, st.Err()
 	}
 
+	if !game.Registered {
+		st := model.GetStatus(ctx,
+			codes.FailedPrecondition,
+			"there are no registration for the game",
+			reasonThereAreNoRegistrationForTheGame,
+			nil,
+			thereAreNoRegistrationForTheGameLexeme,
+		)
+
+		return nil, st.Err()
+	}
+
+	existedGamePlayers, err := i.gamePlayersFacade.GetGamePlayersByGameID(ctx, req.GetGamePlayer().GetGameId())
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+		return nil, st.Err()
+	}
+
 	if len(existedGamePlayers) >= int(game.MaxPlayers) {
 		st := model.GetStatus(ctx, codes.FailedPrecondition, "there are no free slot", reasonThereAreNoFreeSlot, nil, noFreeSlotLexeme)
 		return nil, st.Err()
@@ -125,7 +141,6 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 				},
 				games.GameNotFoundLexeme,
 			)
-
 		} else if errors.Is(err, users.ErrUserNotFound) {
 			st = model.GetStatus(ctx,
 				codes.FailedPrecondition,

@@ -112,7 +112,7 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -147,7 +147,7 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -278,6 +278,18 @@ func Test_validateCreatedGamePlayer(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "game ID lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					GameID:       -1,
+					UserID:       maybe.Just(int32(1)),
+					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "empty user ID",
 			args: args{
 				gamePlayer: model.GamePlayer{
@@ -290,12 +302,36 @@ func Test_validateCreatedGamePlayer(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "user ID lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					GameID:       1,
+					UserID:       maybe.Just(int32(-1)),
+					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "user ID eq 0",
 			args: args{
 				gamePlayer: model.GamePlayer{
 					GameID:       1,
 					UserID:       maybe.Just(int32(0)),
 					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "registered by lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					GameID:       1,
+					UserID:       maybe.Just(int32(1)),
+					RegisteredBy: -1,
 					Degree:       model.DegreeLikely,
 				},
 			},

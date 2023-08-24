@@ -39,9 +39,11 @@ func (f *Facade) PatchGamePlayer(ctx context.Context, gamePlayer model.GamePlaye
 		if err := f.gamePlayerStorage.PatchGamePlayer(ctx, patchedDBGamePlayer); err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
-					if i := strings.Index(err.Message, gameIDFK1ConstraintName); i != -1 {
+					if i := strings.Index(err.Message, gamePlayerIBFK1ConstraintName); i != -1 {
 						return fmt.Errorf("patch game player error: %w", users.ErrUserNotFound)
-					} else if i := strings.Index(err.Message, gameIDFK2ConstraintName); i != -1 {
+					} else if i := strings.Index(err.Message, gamePlayerIBFK3ConstraintName); i != -1 {
+						return fmt.Errorf("patch game player error: %w", users.ErrUserNotFound)
+					} else if i := strings.Index(err.Message, gamePlayerIBFK2ConstraintName); i != -1 {
 						return fmt.Errorf("patch game player error: %w", games.ErrGameNotFound)
 					}
 				}

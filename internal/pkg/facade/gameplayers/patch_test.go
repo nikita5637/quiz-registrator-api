@@ -123,7 +123,7 @@ func TestFacade_PatchGamePlayer(t *testing.T) {
 			Degree:       2,
 		}).Return(&mysql.MySQLError{
 			Number:  1452,
-			Message: gameIDFK1ConstraintName,
+			Message: gamePlayerIBFK1ConstraintName,
 		})
 
 		got, err := fx.facade.PatchGamePlayer(fx.ctx, model.GamePlayer{
@@ -131,6 +131,54 @@ func TestFacade_PatchGamePlayer(t *testing.T) {
 			GameID:       2,
 			UserID:       maybe.Just(int32(2)),
 			RegisteredBy: 2,
+			Degree:       model.DegreeUnlikely,
+		})
+		assert.Equal(t, model.GamePlayer{}, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, users.ErrUserNotFound)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("user id for field \"registered_by\" not found error while patching game player", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Neq{
+				"id": int32(1),
+			},
+			builder.Eq{
+				"fk_game_id": int32(2),
+				"fk_user_id": int32(2),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{}, nil)
+
+		fx.gamePlayerStorage.EXPECT().PatchGamePlayer(mock.Anything, database.GamePlayer{
+			ID:       1,
+			FkGameID: 2,
+			FkUserID: sql.NullInt64{
+				Int64: 2,
+				Valid: true,
+			},
+			RegisteredBy: 3,
+			Degree:       2,
+		}).Return(&mysql.MySQLError{
+			Number:  1452,
+			Message: gamePlayerIBFK3ConstraintName,
+		})
+
+		got, err := fx.facade.PatchGamePlayer(fx.ctx, model.GamePlayer{
+			ID:           1,
+			GameID:       2,
+			UserID:       maybe.Just(int32(2)),
+			RegisteredBy: 3,
 			Degree:       model.DegreeUnlikely,
 		})
 		assert.Equal(t, model.GamePlayer{}, got)
@@ -171,7 +219,7 @@ func TestFacade_PatchGamePlayer(t *testing.T) {
 			Degree:       2,
 		}).Return(&mysql.MySQLError{
 			Number:  1452,
-			Message: gameIDFK2ConstraintName,
+			Message: gamePlayerIBFK2ConstraintName,
 		})
 
 		got, err := fx.facade.PatchGamePlayer(fx.ctx, model.GamePlayer{

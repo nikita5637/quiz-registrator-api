@@ -10,9 +10,11 @@ import (
 
 const (
 	// fk_user_id field
-	gameIDFK1ConstraintName = "game_player_ibfk_1"
+	gamePlayerIBFK1ConstraintName = "game_player_ibfk_1"
 	// fk_game_id field
-	gameIDFK2ConstraintName = "game_player_ibfk_2"
+	gamePlayerIBFK2ConstraintName = "game_player_ibfk_2"
+	// registered_by field
+	gamePlayerIBFK3ConstraintName = "game_player_ibfk_3"
 )
 
 func convertDBGamePlayerToModelGamePlayer(gamePlayer database.GamePlayer) model.GamePlayer {

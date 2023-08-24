@@ -39,14 +39,14 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | Код | Причина | Описание |
 | - | - | - |
 | AlreadyExists | GAME_PLAYER_ALREADY_EXISTS | Игрок уже существует |
+| FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
+| FailedPrecondition | USER_NOT_FOUND | Пользователь создаваемого игрока или пользователь, создающий игрока, не найден|
 | Internal | | В остальных случаях |
 | InvalidArgument | | Пришёл пустой запрос или произошла ошибка валидатора |
-| InvalidArgument | GAME_NOT_FOUND | Игра не найдена |
 | InvalidArgument | INVALID_DEGREE | Некорректное значение вероятности |
 | InvalidArgument | INVALID_GAME_ID | Некорректное значение ID игры |
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
-| InvalidArgument | USER_NOT_FOUND | Пользователь не найден|
 | - | - | - |
 
 ---
@@ -97,15 +97,15 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | Код | Причина | Описание |
 | - | - | - |
 | AlreadyExists | GAME_PLAYER_ALREADY_EXISTS | Игрок уже существует |
+| FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
+| FailedPrecondition | USER_NOT_FOUND | Пользователь создаваемого игрока или пользователь, создающий игрока, не найден |
 | Internal |  | В остальных случаях |
-| NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
 | InvalidArgument | | Пришёл пустой запрос или произошла ошибка валидатора |
-| InvalidArgument | GAME_NOT_FOUND | Игра не найдена |
 | InvalidArgument | INVALID_DEGREE | Некорректное значение вероятности |
 | InvalidArgument | INVALID_GAME_ID | Некорректное значение ID игры |
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
-| InvalidArgument | USER_NOT_FOUND | Пользователь не найден |
+| NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
 | - | - | - |
 
 ---
@@ -121,6 +121,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | FailedPrecondition | GAME_HAS_PASSED | Игра прошла |
 | FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
 | FailedPrecondition | THERE_ARE_NO_FREE_SLOT | Нет совобдных слотов |
+| FailedPrecondition | THERE_ARE_NO_REGISTRATION_FOR_THE_GAME | Нет регистрации на игру |
 | FailedPrecondition | USER_NOT_FOUND | Пользователь не найден |
 | Internal | | В остальных случаях |
 | InvalidArgument | | Пришёл пустой запрос или произошла ошибка валидатора |

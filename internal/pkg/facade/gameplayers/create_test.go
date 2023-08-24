@@ -125,7 +125,7 @@ func TestFacade_CreateGamePlayer(t *testing.T) {
 			UpdatedAt:    sql.NullTime{},
 			DeletedAt:    sql.NullTime{},
 		}).Return(0, &mysql.MySQLError{
-			Message: gameIDFK1ConstraintName,
+			Message: gamePlayerIBFK1ConstraintName,
 			Number:  1452,
 		})
 
@@ -133,6 +133,63 @@ func TestFacade_CreateGamePlayer(t *testing.T) {
 			GameID:       1,
 			UserID:       maybe.Just(int32(1)),
 			RegisteredBy: 1,
+			Degree:       model.DegreeLikely,
+		})
+
+		assert.Equal(t, model.GamePlayer{}, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, users.ErrUserNotFound)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("error. user not found for field \"registered_by\"", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_game_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{
+			{
+				ID:       1,
+				FkGameID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 0,
+					Valid: false,
+				},
+				RegisteredBy: 1,
+				Degree:       2,
+			},
+		}, nil)
+
+		fx.gamePlayerStorage.EXPECT().CreateGamePlayer(mock.Anything, database.GamePlayer{
+			FkGameID: 1,
+			FkUserID: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
+			RegisteredBy: 2,
+			Degree:       1,
+			CreatedAt:    sql.NullTime{},
+			UpdatedAt:    sql.NullTime{},
+			DeletedAt:    sql.NullTime{},
+		}).Return(0, &mysql.MySQLError{
+			Message: gamePlayerIBFK3ConstraintName,
+			Number:  1452,
+		})
+
+		got, err := fx.facade.CreateGamePlayer(fx.ctx, model.GamePlayer{
+			GameID:       1,
+			UserID:       maybe.Just(int32(1)),
+			RegisteredBy: 2,
 			Degree:       model.DegreeLikely,
 		})
 
@@ -182,7 +239,7 @@ func TestFacade_CreateGamePlayer(t *testing.T) {
 			UpdatedAt:    sql.NullTime{},
 			DeletedAt:    sql.NullTime{},
 		}).Return(0, &mysql.MySQLError{
-			Message: gameIDFK2ConstraintName,
+			Message: gamePlayerIBFK2ConstraintName,
 			Number:  1452,
 		})
 

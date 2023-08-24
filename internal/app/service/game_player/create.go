@@ -58,7 +58,7 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyExists.Error(), gameplayers.ReasonGamePlayerAlreadyExists, nil, gameplayers.GamePlayerAlreadyExistsLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx,
-				codes.InvalidArgument,
+				codes.FailedPrecondition,
 				games.ErrGameNotFound.Error(),
 				games.ReasonGameNotFound,
 				map[string]string{
@@ -68,7 +68,7 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 			)
 		} else if errors.Is(err, users.ErrUserNotFound) {
 			st = model.GetStatus(ctx,
-				codes.InvalidArgument,
+				codes.FailedPrecondition,
 				users.ErrUserNotFound.Error(),
 				users.ReasonUserNotFound,
 				map[string]string{
@@ -86,9 +86,9 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 
 func validateCreatedGamePlayer(gamePlayer model.GamePlayer) error {
 	return validation.ValidateStruct(&gamePlayer,
-		validation.Field(&gamePlayer.GameID, validation.Required),
+		validation.Field(&gamePlayer.GameID, validation.Required, validation.Min(1)),
 		validation.Field(&gamePlayer.UserID, validation.By(validateUserID)),
-		validation.Field(&gamePlayer.RegisteredBy, validation.Required),
-		validation.Field(&gamePlayer.Degree, validation.Required, validation.By(model.ValidateDegree)),
+		validation.Field(&gamePlayer.RegisteredBy, validation.Required, validation.Min(1)),
+		validation.Field(&gamePlayer.Degree, validation.By(model.ValidateDegree)),
 	)
 }

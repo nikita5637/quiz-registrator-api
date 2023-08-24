@@ -150,7 +150,7 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -196,7 +196,7 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
@@ -325,12 +325,51 @@ func Test_validatePatchedGamePlayer(t *testing.T) {
 			wantErr: true,
 		},
 		{
+			name: "game ID lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					ID:           1,
+					GameID:       -1,
+					UserID:       maybe.Nothing[int32](),
+					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "game ID lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					ID:           1,
+					GameID:       -1,
+					UserID:       maybe.Nothing[int32](),
+					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
 			name: "game ID eq 0",
 			args: args{
 				gamePlayer: model.GamePlayer{
 					ID:           1,
 					GameID:       0,
 					UserID:       maybe.Nothing[int32](),
+					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "user ID lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					ID:           1,
+					GameID:       1,
+					UserID:       maybe.Just(int32(-1)),
 					RegisteredBy: 1,
 					Degree:       model.DegreeLikely,
 				},
@@ -345,6 +384,32 @@ func Test_validatePatchedGamePlayer(t *testing.T) {
 					GameID:       1,
 					UserID:       maybe.Just(int32(0)),
 					RegisteredBy: 1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "registered by lt 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					ID:           1,
+					GameID:       1,
+					UserID:       maybe.Just(int32(1)),
+					RegisteredBy: -1,
+					Degree:       model.DegreeLikely,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "registered by eq 0",
+			args: args{
+				gamePlayer: model.GamePlayer{
+					ID:           1,
+					GameID:       1,
+					UserID:       maybe.Just(int32(1)),
+					RegisteredBy: 0,
 					Degree:       model.DegreeLikely,
 				},
 			},
