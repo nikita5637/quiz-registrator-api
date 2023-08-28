@@ -6,7 +6,6 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
@@ -187,7 +186,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 2,
 				LeagueID:   2,
-				Type:       pkgmodel.GameTypeClassic,
+				Type:       model.GameTypeClassic,
 				Number:     "2",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -197,7 +196,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 4,
 				LeagueID:   4,
-				Type:       pkgmodel.GameTypeMoviesAndMusic,
+				Type:       model.GameTypeMoviesAndMusic,
 				Number:     "4",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -215,7 +214,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -229,7 +228,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -253,7 +252,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 2,
 				LeagueID:   2,
-				Type:       pkgmodel.GameTypeClassic,
+				Type:       model.GameTypeClassic,
 				Number:     "2",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -263,7 +262,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 4,
 				LeagueID:   4,
-				Type:       pkgmodel.GameTypeMoviesAndMusic,
+				Type:       model.GameTypeMoviesAndMusic,
 				Number:     "4",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -281,7 +280,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -295,7 +294,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -316,7 +315,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 2,
 				LeagueID:   2,
-				Type:       pkgmodel.GameTypeClassic,
+				Type:       model.GameTypeClassic,
 				Number:     "2",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -326,7 +325,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			{
 				ExternalID: 4,
 				LeagueID:   4,
-				Type:       pkgmodel.GameTypeMoviesAndMusic,
+				Type:       model.GameTypeMoviesAndMusic,
 				Number:     "4",
 				PlaceID:    1,
 				Date:       model.DateTime(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -340,7 +339,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 2,
 					LeagueId:   2,
-					Type:       commonpb.GameType(pkgmodel.GameTypeClassic),
+					Type:       commonpb.GameType(model.GameTypeClassic),
 					Number:     "2",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-02 16:30")),
@@ -350,7 +349,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 				{
 					ExternalId: 4,
 					LeagueId:   4,
-					Type:       commonpb.GameType(pkgmodel.GameTypeMoviesAndMusic),
+					Type:       commonpb.GameType(model.GameTypeMoviesAndMusic),
 					Number:     "4",
 					PlaceId:    1,
 					Date:       timestamppb.New(time_utils.ConvertTime("2023-01-03 13:00")),
@@ -467,7 +466,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 			ID:          1,
 			ExternalID:  2,
 			LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:        pkgmodel.GameTypeClassic,
+			Type:        model.GameTypeClassic,
 			Number:      "number",
 			Name:        "name",
 			PlaceID:     3,

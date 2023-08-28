@@ -9,7 +9,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
@@ -29,7 +28,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game1 := model.Game{
 		ID:        1,
 		LeagueID:  int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:      pkgmodel.GameTypeClassic,
+		Type:      model.GameTypeClassic,
 		Number:    "1",
 		PlaceID:   1,
 		Date:      model.DateTime(time_utils.ConvertTime("2022-01-01 16:30")),
@@ -39,7 +38,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game2 := model.Game{
 		ID:        2,
 		LeagueID:  int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:      pkgmodel.GameTypeClassic,
+		Type:      model.GameTypeClassic,
 		Number:    "2",
 		PlaceID:   1,
 		Date:      model.DateTime(time_utils.ConvertTime("2022-01-02 16:30")),
@@ -49,7 +48,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game3 := model.Game{
 		ID:       3,
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeClassic,
+		Type:     model.GameTypeClassic,
 		Number:   "1",
 		PlaceID:  2,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-03 13:00")),
@@ -58,7 +57,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game4 := model.Game{
 		ID:       4,
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeMoviesAndMusic,
+		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "1",
 		PlaceID:  3,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-03 16:30")),
@@ -67,7 +66,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game5 := model.Game{
 		ID:       5,
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeClassic,
+		Type:     model.GameTypeClassic,
 		Number:   "3",
 		PlaceID:  1,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-04 16:30")),
@@ -76,7 +75,7 @@ func TestFacade_AddGames(t *testing.T) {
 	game6 := model.Game{
 		ID:       6,
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeMoviesAndMusic,
+		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "2",
 		PlaceID:  2,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-04 16:30")),
@@ -84,7 +83,7 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game7 := model.Game{
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeClassic,
+		Type:     model.GameTypeClassic,
 		Number:   "4",
 		PlaceID:  1,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-07 16:30")),
@@ -92,14 +91,14 @@ func TestFacade_AddGames(t *testing.T) {
 
 	game8 := model.Game{
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeMoviesAndMusic,
+		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "2",
 		PlaceID:  2,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-08 13:00")),
 	}
 	game9 := model.Game{
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-		Type:     pkgmodel.GameTypeMoviesAndMusic,
+		Type:     model.GameTypeMoviesAndMusic,
 		Number:   "3",
 		PlaceID:  3,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-08 16:30")),

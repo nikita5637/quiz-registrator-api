@@ -46,7 +46,7 @@ func (f *Facade) GetGamesWithPhotos(ctx context.Context, limit, offset uint32) (
 			ID:          int32(dbGame.ID),
 			ExternalID:  int32(dbGame.ExternalID.Int64),
 			LeagueID:    int32(dbGame.LeagueID),
-			Type:        int32(dbGame.Type),
+			Type:        model.GameType(dbGame.Type),
 			Number:      dbGame.Number,
 			Name:        dbGame.Name.String,
 			PlaceID:     int32(dbGame.PlaceID),

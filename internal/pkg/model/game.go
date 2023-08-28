@@ -6,7 +6,6 @@ import (
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
@@ -16,7 +15,7 @@ type Game struct {
 	ID          int32
 	ExternalID  int32
 	LeagueID    int32
-	Type        int32
+	Type        GameType
 	Number      string
 	Name        string
 	PlaceID     int32
@@ -68,7 +67,7 @@ func ValidateGame(game Game) error {
 		return ErrInvalidGameType
 	}
 
-	if game.Type != pkgmodel.GameTypeClosed {
+	if game.Type != GameTypeClosed {
 		err = validation.Validate(game.Number, validation.Required)
 		if err != nil {
 			return ErrInvalidGameNumber
@@ -99,17 +98,17 @@ func ValidateGame(game Game) error {
 }
 
 func validateGameType(value interface{}) error {
-	gameType, ok := value.(int32)
+	gameType, ok := value.(GameType)
 	if !ok {
-		return errors.New("game type is not int32")
+		return errors.New("must be GameType")
 	}
 
-	if gameType == pkgmodel.GameTypeClassic ||
-		gameType == pkgmodel.GameTypeThematic ||
-		gameType == pkgmodel.GameTypeEnglish ||
-		gameType == pkgmodel.GameTypeMoviesAndMusic ||
-		gameType == pkgmodel.GameTypeClosed ||
-		gameType == pkgmodel.GameTypeThematicMoviesAndMusic {
+	if gameType == GameTypeClassic ||
+		gameType == GameTypeThematic ||
+		gameType == GameTypeEnglish ||
+		gameType == GameTypeMoviesAndMusic ||
+		gameType == GameTypeClosed ||
+		gameType == GameTypeThematicMoviesAndMusic {
 		return nil
 	}
 

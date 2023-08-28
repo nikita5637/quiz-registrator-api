@@ -12,7 +12,7 @@ func convertDBGameToModelGame(game database.Game) model.Game {
 		ID:          int32(game.ID),
 		ExternalID:  int32(game.ExternalID.Int64),
 		LeagueID:    int32(game.LeagueID),
-		Type:        int32(game.Type),
+		Type:        model.GameType(game.Type),
 		Number:      game.Number,
 		Name:        game.Name.String,
 		PlaceID:     int32(game.PlaceID),

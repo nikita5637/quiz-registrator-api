@@ -52,7 +52,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 	game := model.Game{
 		ExternalID:  req.GetExternalId(),
 		LeagueID:    req.GetLeagueId(),
-		Type:        int32(req.GetType()),
+		Type:        model.GameType(req.GetType()),
 		Number:      req.GetNumber(),
 		Name:        req.GetName(),
 		PlaceID:     req.GetPlaceId(),
@@ -106,7 +106,7 @@ func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesReq
 		game := model.Game{
 			ExternalID:  pbGame.GetExternalId(),
 			LeagueID:    pbGame.GetLeagueId(),
-			Type:        int32(pbGame.GetType()),
+			Type:        model.GameType(pbGame.GetType()),
 			Number:      pbGame.GetNumber(),
 			Name:        pbGame.GetName(),
 			PlaceID:     pbGame.GetPlaceId(),
