@@ -1,6 +1,8 @@
 package time
 
-import "time"
+import (
+	"time"
+)
 
 var (
 	// TimeNow ...

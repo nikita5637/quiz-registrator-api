@@ -7,6 +7,7 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
@@ -19,8 +20,8 @@ func (f *Facade) AddGames(ctx context.Context, games []model.Game) error {
 
 	err := f.db.RunTX(ctx, "Add games", func(ctx context.Context) error {
 		var err error
-		var notDeletedGames []model.Game
-		notDeletedGames, err = f.gameStorage.Find(ctx, builder.NewCond().And(
+		var notDeletedDBGames []database.Game
+		notDeletedDBGames, err = f.gameStorage.Find(ctx, builder.NewCond().And(
 			builder.In(
 				"league_id", leagues,
 			),
@@ -32,16 +33,17 @@ func (f *Facade) AddGames(ctx context.Context, games []model.Game) error {
 			return fmt.Errorf("add games error: %w", err)
 		}
 
-		activeGames := make([]model.Game, 0)
-		for _, notDeletedGame := range notDeletedGames {
-			if notDeletedGame.IsActive() {
-				activeGames = append(activeGames, notDeletedGame)
+		activeModelGames := make([]model.Game, 0)
+		for _, notDeletedDBGame := range notDeletedDBGames {
+			notDeletedModelGame := convertDBGameToModelGame(notDeletedDBGame)
+			if notDeletedModelGame.IsActive() {
+				activeModelGames = append(activeModelGames, notDeletedModelGame)
 			}
 		}
 
 		for i, game := range games {
-			var gamesDB []model.Game
-			gamesDB, err = f.gameStorage.Find(ctx, builder.NewCond().And(
+			var dbGames []database.Game
+			dbGames, err = f.gameStorage.Find(ctx, builder.NewCond().And(
 				builder.Eq{
 					"league_id": game.LeagueID,
 					"type":      game.Type,
@@ -57,39 +59,40 @@ func (f *Facade) AddGames(ctx context.Context, games []model.Game) error {
 				return fmt.Errorf("add games error: %w", err)
 			}
 
-			if len(gamesDB) == 0 {
+			if len(dbGames) == 0 {
 				logger.InfoKV(ctx, "inserting new game", "fields", game)
-				var gameID int32
-				gameID, err = f.gameStorage.Insert(ctx, game)
+				var gameID int
+				gameID, err = f.gameStorage.Insert(ctx, convertModelGameToDBGame(game))
 				if err != nil {
 					return fmt.Errorf("add games error: %w", err)
 				}
 
-				games[i].ID = gameID
+				games[i].ID = int32(gameID)
 			} else {
-				games[i].ID = gamesDB[0].ID
+				games[i].ID = int32(dbGames[0].ID)
 			}
 		}
 
-		gameIDsForDelete := getGameIDsForDelete(games, activeGames)
+		gameIDsForDelete := getGameIDsForDelete(games, activeModelGames)
 		for _, id := range gameIDsForDelete {
 			logger.InfoKV(ctx, "deleting game that not contains in master", "game ID", id)
-			err = f.gameStorage.Delete(ctx, id)
+			err = f.gameStorage.Delete(ctx, int(id))
 			if err != nil {
 				return fmt.Errorf("delete game error: %w", err)
 			}
 		}
 
 		outdatedGames := make([]model.Game, 0)
-		for _, notDeletedGame := range notDeletedGames {
-			if !notDeletedGame.IsActive() {
-				outdatedGames = append(outdatedGames, notDeletedGame)
+		for _, notDeletedDBGame := range notDeletedDBGames {
+			modelGame := convertDBGameToModelGame(notDeletedDBGame)
+			if !modelGame.IsActive() {
+				outdatedGames = append(outdatedGames, modelGame)
 			}
 		}
 
 		for _, outdatedGame := range outdatedGames {
 			logger.InfoKV(ctx, "deleting outdated game", "game ID", outdatedGame.ID)
-			err := f.gameStorage.Delete(ctx, outdatedGame.ID)
+			err := f.gameStorage.Delete(ctx, int(outdatedGame.ID))
 			if err != nil {
 				return fmt.Errorf("delete outdated game error: %w", err)
 			}

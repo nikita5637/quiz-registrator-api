@@ -8,8 +8,8 @@ import (
 )
 
 // DeleteGame ...
-func (f *Facade) DeleteGame(ctx context.Context, gameID int32) error {
-	game, err := f.gameStorage.GetGameByID(ctx, gameID)
+func (f *Facade) DeleteGame(ctx context.Context, id int32) error {
+	dbGame, err := f.gameStorage.GetGameByID(ctx, int(id))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return fmt.Errorf("delete game error: %w", ErrGameNotFound)
@@ -18,9 +18,11 @@ func (f *Facade) DeleteGame(ctx context.Context, gameID int32) error {
 		return fmt.Errorf("delete game error: %w", err)
 	}
 
-	if !game.IsActive() {
+	modelGame := convertDBGameToModelGame(*dbGame)
+
+	if !modelGame.IsActive() {
 		return fmt.Errorf("delete game error: %w", ErrGameNotFound)
 	}
 
-	return f.gameStorage.Delete(ctx, gameID)
+	return f.gameStorage.Delete(ctx, int(id))
 }

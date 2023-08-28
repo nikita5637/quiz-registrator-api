@@ -23,8 +23,8 @@ var (
 )
 
 // GetGameByID guaranteed returns active game by game ID
-func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, error) {
-	game, err := f.gameStorage.GetGameByID(ctx, gameID)
+func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) {
+	dbGame, err := f.gameStorage.GetGameByID(ctx, int(id))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return model.Game{}, fmt.Errorf("get game by id error: %w", ErrGameNotFound)
@@ -33,11 +33,13 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 		return model.Game{}, fmt.Errorf("get game by id error: %w", err)
 	}
 
-	if !game.DeletedAt.AsTime().IsZero() {
+	modelGame := convertDBGameToModelGame(*dbGame)
+
+	if !modelGame.DeletedAt.AsTime().IsZero() {
 		return model.Game{}, ErrGameNotFound
 	}
 
-	if !game.IsActive() {
+	if !modelGame.IsActive() {
 		return model.Game{}, ErrGameHasPassed
 	}
 
@@ -45,7 +47,7 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 
 	players, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
-			"fk_game_id": gameID,
+			"fk_game_id": id,
 		},
 		builder.IsNull{
 			"deleted_at",
@@ -74,22 +76,19 @@ func (f *Facade) GetGameByID(ctx context.Context, gameID int32) (model.Game, err
 		}
 	}
 
-	game.My = my
-	game.NumberOfMyLegioners = myLegioners
-	game.NumberOfLegioners = numberLegioners
-	game.NumberOfPlayers = numberPlayers
+	modelGame.My = my
+	modelGame.NumberOfMyLegioners = myLegioners
+	modelGame.NumberOfLegioners = numberLegioners
+	modelGame.NumberOfPlayers = numberPlayers
 
-	return game, nil
+	return modelGame, nil
 }
 
 // GetGames ...
 func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 	user := users_utils.UserFromContext(ctx)
 
-	var err error
-	var games []model.Game
-
-	games, err = f.gameStorage.Find(ctx, builder.NewCond().And(
+	dbGames, err := f.gameStorage.Find(ctx, builder.NewCond().And(
 		builder.In(
 			"type", availibilityGameTypes,
 		),
@@ -98,11 +97,13 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 		return nil, fmt.Errorf("get games error: %w", err)
 	}
 
-	for i, game := range games {
+	modelGames := make([]model.Game, 0, len(dbGames))
+	for _, dbGame := range dbGames {
+		modelGame := convertDBGameToModelGame(dbGame)
 		var players []database.GamePlayer
 		players, err = f.gamePlayerStorage.Find(ctx, builder.And(
 			builder.Eq{
-				"fk_game_id": game.ID,
+				"fk_game_id": modelGame.ID,
 			},
 			builder.IsNull{
 				"deleted_at",
@@ -115,27 +116,29 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 		for _, player := range players {
 			if player.FkUserID.Int64 > 0 {
 				if int32(player.FkUserID.Int64) == user.ID {
-					games[i].My = true
+					modelGame.My = true
 				}
-				games[i].NumberOfPlayers++
+				modelGame.NumberOfPlayers++
 			} else {
-				games[i].NumberOfLegioners++
+				modelGame.NumberOfLegioners++
 				if int32(player.RegisteredBy) == user.ID {
-					games[i].NumberOfMyLegioners++
+					modelGame.NumberOfMyLegioners++
 				}
 			}
 		}
+
+		modelGames = append(modelGames, modelGame)
 	}
 
-	return games, nil
+	return modelGames, nil
 }
 
 // GetGamesByUserID ...
-func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Game, error) {
+func (f *Facade) GetGamesByUserID(ctx context.Context, id int32) ([]model.Game, error) {
 	// TODO validate userID
 	playerGames, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
-			"fk_user_id": userID,
+			"fk_user_id": id,
 		},
 		builder.IsNull{
 			"deleted_at",
@@ -150,21 +153,23 @@ func (f *Facade) GetGamesByUserID(ctx context.Context, userID int32) ([]model.Ga
 		playerGameIDs = append(playerGameIDs, int32(playerGame.FkGameID))
 	}
 
-	games, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs), "date")
+	dbGames, err := f.gameStorage.Find(ctx, builder.In("id", playerGameIDs), "date")
 	if err != nil {
 		return nil, fmt.Errorf("get games by user error: %w", err)
 	}
 
-	return games, nil
+	modelGames := make([]model.Game, 0, len(dbGames))
+	for _, dbGame := range dbGames {
+		modelGames = append(modelGames, convertDBGameToModelGame(dbGame))
+	}
+
+	return modelGames, nil
 }
 
 // GetRegisteredGames ...
 func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
-	var err error
-	var games []model.Game
-
 	user := users_utils.UserFromContext(ctx)
-	games, err = f.gameStorage.Find(ctx, builder.NewCond().And(
+	dbGames, err := f.gameStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
 			"registered": true,
 		},
@@ -176,11 +181,13 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 		return nil, err
 	}
 
-	for i, game := range games {
+	modelGames := make([]model.Game, 0, len(dbGames))
+	for _, dbGame := range dbGames {
+		modelGame := convertDBGameToModelGame(dbGame)
 		var players []database.GamePlayer
 		players, err = f.gamePlayerStorage.Find(ctx, builder.And(
 			builder.Eq{
-				"fk_game_id": game.ID,
+				"fk_game_id": modelGame.ID,
 			},
 			builder.IsNull{
 				"deleted_at",
@@ -193,19 +200,21 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 		for _, player := range players {
 			if player.FkUserID.Int64 > 0 {
 				if int32(player.FkUserID.Int64) == user.ID {
-					games[i].My = true
+					modelGame.My = true
 				}
-				games[i].NumberOfPlayers++
+				modelGame.NumberOfPlayers++
 			} else {
-				games[i].NumberOfLegioners++
+				modelGame.NumberOfLegioners++
 				if int32(player.RegisteredBy) == user.ID {
-					games[i].NumberOfMyLegioners++
+					modelGame.NumberOfMyLegioners++
 				}
 			}
 		}
+
+		modelGames = append(modelGames, modelGame)
 	}
 
-	return games, err
+	return modelGames, err
 }
 
 // GetTodaysGames ...
@@ -214,7 +223,7 @@ func (f *Facade) GetTodaysGames(ctx context.Context) ([]model.Game, error) {
 
 	dateExpr := fmt.Sprintf("date LIKE \"%04d-%02d-%02d%%\"", timeNow.Year(), timeNow.Month(), timeNow.Day())
 
-	games, err := f.gameStorage.Find(ctx, builder.NewCond().And(
+	dbGames, err := f.gameStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
 			"registered": true,
 		},
@@ -224,5 +233,10 @@ func (f *Facade) GetTodaysGames(ctx context.Context) ([]model.Game, error) {
 		return nil, fmt.Errorf("get todays games error: %w", err)
 	}
 
-	return games, nil
+	modelGames := make([]model.Game, 0, len(dbGames))
+	for _, dbGame := range dbGames {
+		modelGames = append(modelGames, convertDBGameToModelGame(dbGame))
+	}
+
+	return modelGames, nil
 }

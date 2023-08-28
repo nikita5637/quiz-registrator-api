@@ -30,25 +30,41 @@ func (f *Facade) GetGamesWithPhotos(ctx context.Context, limit, offset uint32) (
 		limit = numberOfGamesWithPhotos - offset
 	}
 
-	games := make([]model.Game, 0, limit)
-
+	modelGames := make([]model.Game, 0, limit)
 	for i := uint32(0); i < limit; i++ {
-		game, err := f.gameStorage.GetGameByID(ctx, gameIDsWithPhotos[offset+i])
+		dbGame, err := f.gameStorage.GetGameByID(ctx, int(gameIDsWithPhotos[offset+i]))
 		if err != nil {
-			return nil, fmt.Errorf("get games with photos error: %w", err)
+			return nil, fmt.Errorf("get game by ID error: %w", err)
 		}
 
-		gameResult, err := f.gameResultStorage.GetGameResultByFkGameID(ctx, int(game.ID))
+		gameResult, err := f.gameResultStorage.GetGameResultByFkGameID(ctx, dbGame.ID)
 		if err != nil {
-			return nil, fmt.Errorf("get games with photos error: %w", err)
+			return nil, fmt.Errorf("get game result error: %w", err)
 		}
 
-		game.ResultPlace = gameResult.ResultPlace
-
-		games = append(games, game)
+		modelGames = append(modelGames, model.Game{
+			ID:          int32(dbGame.ID),
+			ExternalID:  int32(dbGame.ExternalID.Int64),
+			LeagueID:    int32(dbGame.LeagueID),
+			Type:        int32(dbGame.Type),
+			Number:      dbGame.Number,
+			Name:        dbGame.Name.String,
+			PlaceID:     int32(dbGame.PlaceID),
+			Date:        model.DateTime(dbGame.Date),
+			Price:       uint32(dbGame.Price),
+			PaymentType: string(dbGame.PaymentType),
+			MaxPlayers:  uint32(dbGame.MaxPlayers),
+			Payment:     int32(dbGame.Payment.Int64),
+			Registered:  dbGame.Registered,
+			CreatedAt:   model.DateTime(dbGame.CreatedAt.Time),
+			UpdatedAt:   model.DateTime(dbGame.UpdatedAt.Time),
+			DeletedAt:   model.DateTime(dbGame.DeletedAt.Time),
+			// additional
+			ResultPlace: gameResult.ResultPlace,
+		})
 	}
 
-	return games, nil
+	return modelGames, nil
 }
 
 // GetNumberOfGamesWithPhotos ...
@@ -62,8 +78,8 @@ func (f *Facade) GetNumberOfGamesWithPhotos(ctx context.Context) (uint32, error)
 }
 
 // GetPhotosByGameID ...
-func (f *Facade) GetPhotosByGameID(ctx context.Context, gameID int32) ([]string, error) {
-	_, err := f.gameStorage.GetGameByID(ctx, gameID)
+func (f *Facade) GetPhotosByGameID(ctx context.Context, id int32) ([]string, error) {
+	_, err := f.gameStorage.GetGameByID(ctx, int(id))
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, games.ErrGameNotFound
@@ -72,7 +88,7 @@ func (f *Facade) GetPhotosByGameID(ctx context.Context, gameID int32) ([]string,
 		return nil, fmt.Errorf("get photos by game id error: %w", err)
 	}
 
-	gamePhotos, err := f.gamePhotoStorage.GetGamePhotosByGameID(ctx, gameID)
+	gamePhotos, err := f.gamePhotoStorage.GetGamePhotosByGameID(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("get photos by game id error: %w", err)
 	}

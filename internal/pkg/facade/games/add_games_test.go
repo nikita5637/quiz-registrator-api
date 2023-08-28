@@ -8,6 +8,7 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
@@ -88,6 +89,7 @@ func TestFacade_AddGames(t *testing.T) {
 		PlaceID:  1,
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-07 16:30")),
 	}
+
 	game8 := model.Game{
 		LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 		Type:     pkgmodel.GameTypeMoviesAndMusic,
@@ -103,13 +105,13 @@ func TestFacade_AddGames(t *testing.T) {
 		Date:     model.DateTime(time_utils.ConvertTime("2022-01-08 16:30")),
 	}
 
-	storageGames := []model.Game{
-		game1,
-		game2,
-		game3,
-		game4,
-		game5,
-		game6,
+	storageGames := []database.Game{
+		convertModelGameToDBGame(game1),
+		convertModelGameToDBGame(game2),
+		convertModelGameToDBGame(game3),
+		convertModelGameToDBGame(game4),
+		convertModelGameToDBGame(game5),
+		convertModelGameToDBGame(game6),
 	}
 
 	t.Run("test case 1", func(t *testing.T) {
@@ -149,25 +151,25 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{
 			storageGames[4],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{
 			storageGames[5],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[3]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[3])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[4]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[4])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(4)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 4).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -214,25 +216,25 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{
 			storageGames[4],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{
 			storageGames[5],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[3]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[3])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[4]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[4])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(4)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 4).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -280,28 +282,28 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{
 			storageGames[2],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{
 			storageGames[3],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{
 			storageGames[4],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[3]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[3])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[4]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[4])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[5]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[5]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[5]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[5])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(6)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 6).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -346,24 +348,24 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{
 			storageGames[4],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{
 			storageGames[5],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[3]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[3])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[4]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[4])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -408,25 +410,25 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{
 			storageGames[4],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{
 			storageGames[5],
 		}, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[3]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[3]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[3])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[4]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[4]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[4])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(4)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 4).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -465,19 +467,19 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[1]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[1])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(4)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(5)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(6)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 4).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 5).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 6).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -516,18 +518,18 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[1]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[1])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(5)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(6)).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 5).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 6).Return(nil)
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.NoError(t, err)
@@ -601,8 +603,8 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
 		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return(nil, errors.New("some error"))
 
@@ -643,11 +645,11 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[1]).Return(8, errors.New("some error"))
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[1])).Return(8, errors.New("some error"))
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.Error(t, err)
@@ -686,17 +688,17 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[1]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[1])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(5)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(6)).Return(errors.New("some error"))
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 5).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 6).Return(errors.New("some error"))
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.Error(t, err)
@@ -735,18 +737,18 @@ func TestFacade_AddGames(t *testing.T) {
 			},
 		), "").Return(notDeletedGames, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[0]).Return(7, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[0]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[0])).Return(7, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[1]).Return(8, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[1]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[1])).Return(8, nil)
 
-		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]model.Game{}, nil)
-		fx.gameStorage.EXPECT().Insert(mock.Anything, newGames[2]).Return(9, nil)
+		fx.gameStorage.EXPECT().Find(mock.Anything, getGamesStorageFindBuilder(newGames[2]), "").Return([]database.Game{}, nil)
+		fx.gameStorage.EXPECT().Insert(mock.Anything, convertModelGameToDBGame(newGames[2])).Return(9, nil)
 
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(5)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(6)).Return(nil)
-		fx.gameStorage.EXPECT().Delete(mock.Anything, int32(3)).Return(errors.New("some error"))
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 5).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 6).Return(nil)
+		fx.gameStorage.EXPECT().Delete(mock.Anything, 3).Return(errors.New("some error"))
 
 		err := fx.facade.AddGames(fx.ctx, newGames)
 		assert.Error(t, err)
@@ -866,6 +868,7 @@ func Test_getGameIDsForDelete(t *testing.T) {
 			},
 		},
 	}
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			got := getGameIDsForDelete(tt.args.games, tt.args.activeGames)

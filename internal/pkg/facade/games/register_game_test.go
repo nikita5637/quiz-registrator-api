@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
-	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -23,7 +23,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{}, errors.New("some error"))
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(nil, errors.New("some error"))
 
 		got, err := fx.facade.RegisterGame(fx.ctx, 1)
 		assert.Equal(t, model.RegisterGameStatusInvalid, got)
@@ -39,7 +39,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{}, sql.ErrNoRows)
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(nil, sql.ErrNoRows)
 
 		got, err := fx.facade.RegisterGame(fx.ctx, 1)
 		assert.Equal(t, model.RegisterGameStatusInvalid, got)
@@ -56,7 +56,7 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{}, nil)
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{}, nil)
 
 		got, err := fx.facade.RegisterGame(fx.ctx, 1)
 		assert.Equal(t, model.RegisterGameStatusInvalid, got)
@@ -73,13 +73,16 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{
-			Date: model.DateTime(timeNow.Add(1 * time.Second)),
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			Date: timeNow.Add(1 * time.Second),
 		}, nil)
 
-		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
+		fx.gameStorage.EXPECT().Update(mock.Anything, database.Game{
+			Date: timeNow.Add(1 * time.Second),
+			Payment: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
 			Registered: true,
 		}).Return(errors.New("some error"))
 
@@ -97,8 +100,8 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			Date:       timeNow.Add(1 * time.Second),
 			Registered: true,
 		}, nil)
 
@@ -116,16 +119,19 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectRollback()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
 			ID:         1,
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
+			Date:       timeNow.Add(1 * time.Second),
 			Registered: false,
 		}, nil)
 
-		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
-			ID:         1,
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
+		fx.gameStorage.EXPECT().Update(mock.Anything, database.Game{
+			ID:   1,
+			Date: timeNow.Add(1 * time.Second),
+			Payment: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
 			Registered: true,
 		}).Return(nil)
 
@@ -148,16 +154,19 @@ func TestFacade_RegisterGame(t *testing.T) {
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
-		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
 			ID:         1,
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
+			Date:       timeNow.Add(1 * time.Second),
 			Registered: false,
 		}, nil)
 
-		fx.gameStorage.EXPECT().Update(mock.Anything, model.Game{
-			ID:         1,
-			Date:       model.DateTime(timeNow.Add(1 * time.Second)),
-			Payment:    int32(commonpb.Payment_PAYMENT_CASH),
+		fx.gameStorage.EXPECT().Update(mock.Anything, database.Game{
+			ID:   1,
+			Date: timeNow.Add(1 * time.Second),
+			Payment: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
 			Registered: true,
 		}).Return(nil)
 

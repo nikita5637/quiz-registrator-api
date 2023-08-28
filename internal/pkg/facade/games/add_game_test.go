@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
@@ -125,12 +126,12 @@ func TestFacade_AddGame(t *testing.T) {
 
 		timeNow := time_utils.TimeNow()
 
-		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:       pkgmodel.GameTypeClassic,
+		fx.gameStorage.EXPECT().Insert(fx.ctx, database.Game{
+			LeagueID:   1,
+			Type:       1,
 			Number:     "1",
 			PlaceID:    1,
-			Date:       model.DateTime(timeNow),
+			Date:       timeNow.UTC(),
 			Price:      400,
 			MaxPlayers: 10,
 		}).Return(0, errors.New("some error"))
@@ -153,12 +154,12 @@ func TestFacade_AddGame(t *testing.T) {
 
 		timeNow := time_utils.TimeNow()
 
-		fx.gameStorage.EXPECT().Insert(fx.ctx, model.Game{
-			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:       pkgmodel.GameTypeClassic,
+		fx.gameStorage.EXPECT().Insert(fx.ctx, database.Game{
+			LeagueID:   1,
+			Type:       1,
 			Number:     "1",
 			PlaceID:    1,
-			Date:       model.DateTime(timeNow),
+			Date:       timeNow.UTC(),
 			Price:      400,
 			MaxPlayers: 10,
 		}).Return(1, nil)

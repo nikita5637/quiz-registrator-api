@@ -41,7 +41,7 @@ type GamesFacade interface {
 	GetRegisteredGames(ctx context.Context) ([]model.Game, error)
 	RegisterGame(ctx context.Context, gameID int32) (model.RegisterGameStatus, error)
 	UnregisterGame(ctx context.Context, gameID int32) (model.UnregisterGameStatus, error)
-	UpdatePayment(ctx context.Context, gameID int32, payment int32) error
+	UpdatePayment(ctx context.Context, gameID int32, payment model.PaymentType) error
 }
 
 // Registrator ...

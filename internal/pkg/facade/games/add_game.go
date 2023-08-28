@@ -13,5 +13,6 @@ func (f *Facade) AddGame(ctx context.Context, game model.Game) (int32, error) {
 		return 0, fmt.Errorf("add game error: %w", err)
 	}
 
-	return f.gameStorage.Insert(ctx, game)
+	id, err := f.gameStorage.Insert(ctx, convertModelGameToDBGame(game))
+	return int32(id), err
 }

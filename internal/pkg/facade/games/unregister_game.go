@@ -8,14 +8,13 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
-	commonpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/common"
 )
 
 // UnregisterGame ...
-func (f *Facade) UnregisterGame(ctx context.Context, gameID int32) (model.UnregisterGameStatus, error) {
+func (f *Facade) UnregisterGame(ctx context.Context, id int32) (model.UnregisterGameStatus, error) {
 	unregisterGameStatus := model.UnregisterGameStatusOK
 	err := f.db.RunTX(ctx, "UnregisterGame", func(ctx context.Context) error {
-		game, err := f.gameStorage.GetGameByID(ctx, gameID)
+		dbGame, err := f.gameStorage.GetGameByID(ctx, int(id))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return fmt.Errorf("get game by ID error: %w", ErrGameNotFound)
@@ -24,24 +23,29 @@ func (f *Facade) UnregisterGame(ctx context.Context, gameID int32) (model.Unregi
 			return fmt.Errorf("get game by ID error: %w", err)
 		}
 
-		if !game.IsActive() {
+		modelGame := convertDBGameToModelGame(*dbGame)
+
+		if !modelGame.IsActive() {
 			return ErrGameNotFound
 		}
 
-		if !game.Registered {
+		if !dbGame.Registered {
 			unregisterGameStatus = model.UnregisterGameStatusNotRegistered
 			return nil
 		}
 
-		game.Registered = false
-		game.Payment = int32(commonpb.Payment_PAYMENT_INVALID)
+		dbGame.Registered = false
+		dbGame.Payment = sql.NullInt64{
+			Int64: int64(model.PaymentInvalid),
+			Valid: false,
+		}
 
-		if err = f.gameStorage.Update(ctx, game); err != nil {
+		if err = f.gameStorage.Update(ctx, *dbGame); err != nil {
 			return fmt.Errorf("update game error: %w", err)
 		}
 
 		if err := f.rabbitMQProducer.Send(ctx, ics.Event{
-			GameID: game.ID,
+			GameID: int32(dbGame.ID),
 			Event:  ics.EventUnregistered,
 		}); err != nil {
 			return fmt.Errorf("send message to rabbitMQ error: %w", err)

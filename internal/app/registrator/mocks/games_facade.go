@@ -418,11 +418,11 @@ func (_c *GamesFacade_UnregisterGame_Call) Return(_a0 model.UnregisterGameStatus
 }
 
 // UpdatePayment provides a mock function with given fields: ctx, gameID, payment
-func (_m *GamesFacade) UpdatePayment(ctx context.Context, gameID int32, payment int32) error {
+func (_m *GamesFacade) UpdatePayment(ctx context.Context, gameID int32, payment model.PaymentType) error {
 	ret := _m.Called(ctx, gameID, payment)
 
 	var r0 error
-	if rf, ok := ret.Get(0).(func(context.Context, int32, int32) error); ok {
+	if rf, ok := ret.Get(0).(func(context.Context, int32, model.PaymentType) error); ok {
 		r0 = rf(ctx, gameID, payment)
 	} else {
 		r0 = ret.Error(0)
@@ -439,14 +439,14 @@ type GamesFacade_UpdatePayment_Call struct {
 // UpdatePayment is a helper method to define mock.On call
 //  - ctx context.Context
 //  - gameID int32
-//  - payment int32
+//  - payment model.PaymentType
 func (_e *GamesFacade_Expecter) UpdatePayment(ctx interface{}, gameID interface{}, payment interface{}) *GamesFacade_UpdatePayment_Call {
 	return &GamesFacade_UpdatePayment_Call{Call: _e.mock.On("UpdatePayment", ctx, gameID, payment)}
 }
 
-func (_c *GamesFacade_UpdatePayment_Call) Run(run func(ctx context.Context, gameID int32, payment int32)) *GamesFacade_UpdatePayment_Call {
+func (_c *GamesFacade_UpdatePayment_Call) Run(run func(ctx context.Context, gameID int32, payment model.PaymentType)) *GamesFacade_UpdatePayment_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32), args[2].(int32))
+		run(args[0].(context.Context), args[1].(int32), args[2].(model.PaymentType))
 	})
 	return _c
 }

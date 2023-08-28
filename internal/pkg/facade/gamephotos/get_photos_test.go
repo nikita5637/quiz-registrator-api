@@ -7,6 +7,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +31,7 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		assert.Nil(t, got)
 	})
 
-	t.Run("offset g then len(GetGameIDsWithPhotos)", func(t *testing.T) {
+	t.Run("offset gt len(GetGameIDsWithPhotos)", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
@@ -54,10 +55,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
 
@@ -103,10 +104,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, errors.New("some error"))
 
@@ -125,10 +126,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 5).Return(&database.Game{
 			ID: 5,
 		}, nil)
 
@@ -164,10 +165,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 5).Return(&database.Game{
 			ID: 5,
 		}, nil)
 
@@ -203,10 +204,10 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{}, errors.New("some error"))
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 5).Return(&database.Game{}, errors.New("some error"))
 
 		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 4).Return(model.GameResult{
 			ID:          4,
@@ -223,13 +224,13 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(2)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 2).Return(&database.Game{
 			ID: 2,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
 
@@ -274,19 +275,19 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(2)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 2).Return(&database.Game{
 			ID: 2,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 5).Return(&database.Game{
 			ID: 5,
 		}, nil)
 
@@ -349,16 +350,16 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(2)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 2).Return(&database.Game{
 			ID: 2,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{}, errors.New("some error"))
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{}, errors.New("some error"))
 
 		fx.gameResultStorage.EXPECT().GetGameResultByFkGameID(fx.ctx, 1).Return(model.GameResult{
 			ID:          1,
@@ -385,19 +386,19 @@ func TestFacade_GetGamesWithPhotos(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(2)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 2).Return(&database.Game{
 			ID: 2,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(3)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 3).Return(&database.Game{
 			ID: 3,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(4)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 4).Return(&database.Game{
 			ID: 4,
 		}, nil)
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(5)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 5).Return(&database.Game{
 			ID: 5,
 		}, nil)
 
@@ -455,7 +456,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 	t.Run("error while find game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, errors.New("some error"))
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{}, errors.New("some error"))
 
 		got, err := fx.facade.GetPhotosByGameID(fx.ctx, 1)
 		assert.Nil(t, got)
@@ -465,7 +466,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 	t.Run("error game not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, sql.ErrNoRows)
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{}, sql.ErrNoRows)
 
 		got, err := fx.facade.GetPhotosByGameID(fx.ctx, 1)
 		assert.Nil(t, got)
@@ -476,7 +477,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 	t.Run("error while get game photos", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
 
@@ -490,7 +491,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 	t.Run("empty url list", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
 
@@ -504,7 +505,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+		fx.gameStorage.EXPECT().GetGameByID(fx.ctx, 1).Return(&database.Game{
 			ID: 1,
 		}, nil)
 

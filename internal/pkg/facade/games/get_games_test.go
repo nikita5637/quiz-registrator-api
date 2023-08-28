@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/go-xorm/builder"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
@@ -56,7 +56,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 				"registered": true,
 			},
 			builder.Expr("date LIKE \"2022-02-10%\""),
-		), "").Return([]model.Game{
+		), "").Return([]database.Game{
 			{
 				ID: 1,
 			},

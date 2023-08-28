@@ -12,28 +12,27 @@ import (
 )
 
 // AddGamePhotos ...
-func (f *Facade) AddGamePhotos(ctx context.Context, gameID int32, urls []string) error {
-	_, err := f.gameStorage.GetGameByID(ctx, gameID)
-	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			return fmt.Errorf("add game photos error: %w", games.ErrGameNotFound)
+func (f *Facade) AddGamePhotos(ctx context.Context, id int32, urls []string) error {
+	err := f.db.RunTX(ctx, "add game photos", func(ctx context.Context) error {
+		if _, err := f.gameStorage.GetGameByID(ctx, int(id)); err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				return fmt.Errorf("get game by ID error: %w", games.ErrGameNotFound)
+			}
+
+			return fmt.Errorf("get game by ID error: %w", err)
 		}
 
-		return fmt.Errorf("add game photos error: %w", err)
-	}
-
-	err = f.db.RunTX(ctx, "add game photos", func(ctx context.Context) error {
 		for _, url := range urls {
 			gamePhoto := model.GamePhoto{
-				FkGameID: gameID,
+				FkGameID: id,
 				URL:      url,
 			}
 
-			if _, err2 := f.gamePhotoStorage.Insert(ctx, gamePhoto); err2 != nil {
-				return err2
+			if _, err := f.gamePhotoStorage.Insert(ctx, gamePhoto); err != nil {
+				return fmt.Errorf("insert error: %w", err)
 			}
 
-			logger.DebugKV(ctx, "added new game photo", "game id", gameID, "url", url)
+			logger.DebugKV(ctx, "added new game photo", "game id", id, "url", url)
 		}
 
 		return nil

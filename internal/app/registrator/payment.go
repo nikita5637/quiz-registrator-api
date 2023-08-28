@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 
 	"google.golang.org/grpc/codes"
@@ -13,7 +14,7 @@ import (
 
 // UpdatePayment ...
 func (r *Registrator) UpdatePayment(ctx context.Context, req *registrator.UpdatePaymentRequest) (*registrator.UpdatePaymentResponse, error) {
-	err := r.gamesFacade.UpdatePayment(ctx, req.GetGameId(), int32(req.GetPayment()))
+	err := r.gamesFacade.UpdatePayment(ctx, req.GetGameId(), model.PaymentType(req.GetPayment()))
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
