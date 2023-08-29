@@ -18,7 +18,7 @@ func TestRegistrator_RegisterGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().RegisterGame(fx.ctx, int32(1)).Return(model.RegisterGameStatusInvalid, errors.New("some error"))
 
-		got, err := fx.registrator.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
+		got, err := fx.implementation.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
 			GameId: 1,
 		})
 		assert.Nil(t, got)
@@ -34,7 +34,7 @@ func TestRegistrator_RegisterGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().RegisterGame(fx.ctx, int32(1)).Return(model.RegisterGameStatusInvalid, games.ErrGameNotFound)
 
-		got, err := fx.registrator.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
+		got, err := fx.implementation.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
 			GameId: 1,
 		})
 		assert.Nil(t, got)
@@ -50,7 +50,7 @@ func TestRegistrator_RegisterGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().RegisterGame(fx.ctx, int32(1)).Return(model.RegisterGameStatusOK, nil)
 
-		got, err := fx.registrator.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
+		got, err := fx.implementation.RegisterGame(fx.ctx, &registrator.RegisterGameRequest{
 			GameId: 1,
 		})
 		assert.NotNil(t, got)

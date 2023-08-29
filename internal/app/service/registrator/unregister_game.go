@@ -11,9 +11,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// RegisterGame ...
-func (r *Registrator) RegisterGame(ctx context.Context, req *registrator.RegisterGameRequest) (*registrator.RegisterGameResponse, error) {
-	registerStatus, err := r.gamesFacade.RegisterGame(ctx, req.GetGameId())
+// UnregisterGame ...
+func (i *Implementation) UnregisterGame(ctx context.Context, req *registrator.UnregisterGameRequest) (*registrator.UnregisterGameResponse, error) {
+	unregisterStatus, err := i.gamesFacade.UnregisterGame(ctx, req.GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
@@ -24,7 +24,7 @@ func (r *Registrator) RegisterGame(ctx context.Context, req *registrator.Registe
 		return nil, st.Err()
 	}
 
-	return &registrator.RegisterGameResponse{
-		Status: registrator.RegisterGameStatus(registerStatus),
+	return &registrator.UnregisterGameResponse{
+		Status: registrator.UnregisterGameStatus(unregisterStatus),
 	}, nil
 }

@@ -48,7 +48,7 @@ var (
 )
 
 // AddGame ...
-func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameRequest) (*registrator.AddGameResponse, error) {
+func (i *Implementation) AddGame(ctx context.Context, req *registrator.AddGameRequest) (*registrator.AddGameResponse, error) {
 	game := model.Game{
 		ExternalID:  req.GetExternalId(),
 		LeagueID:    req.GetLeagueId(),
@@ -65,7 +65,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 		game.Date = model.DateTime(req.GetDate().AsTime())
 	}
 
-	id, err := r.gamesFacade.AddGame(ctx, game)
+	id, err := i.gamesFacade.AddGame(ctx, game)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, model.ErrInvalidLeagueID) {
@@ -100,7 +100,7 @@ func (r *Registrator) AddGame(ctx context.Context, req *registrator.AddGameReque
 }
 
 // AddGames ...
-func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesRequest) (*registrator.AddGamesResponse, error) {
+func (i *Implementation) AddGames(ctx context.Context, req *registrator.AddGamesRequest) (*registrator.AddGamesResponse, error) {
 	games := make([]model.Game, 0, len(req.GetGames()))
 	for _, pbGame := range req.GetGames() {
 		game := model.Game{
@@ -126,7 +126,7 @@ func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesReq
 		}
 	}
 
-	err := r.gamesFacade.AddGames(ctx, games)
+	err := i.gamesFacade.AddGames(ctx, games)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		return nil, st.Err()
@@ -136,8 +136,8 @@ func (r *Registrator) AddGames(ctx context.Context, req *registrator.AddGamesReq
 }
 
 // DeleteGame ...
-func (r *Registrator) DeleteGame(ctx context.Context, req *registrator.DeleteGameRequest) (*registrator.DeleteGameResponse, error) {
-	err := r.gamesFacade.DeleteGame(ctx, req.GetId())
+func (i *Implementation) DeleteGame(ctx context.Context, req *registrator.DeleteGameRequest) (*registrator.DeleteGameResponse, error) {
+	err := i.gamesFacade.DeleteGame(ctx, req.GetId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
@@ -152,8 +152,8 @@ func (r *Registrator) DeleteGame(ctx context.Context, req *registrator.DeleteGam
 }
 
 // GetGameByID returns game or Not Found
-func (r *Registrator) GetGameByID(ctx context.Context, req *registrator.GetGameByIDRequest) (*registrator.GetGameByIDResponse, error) {
-	game, err := r.gamesFacade.GetGameByID(ctx, req.GetGameId())
+func (i *Implementation) GetGameByID(ctx context.Context, req *registrator.GetGameByIDRequest) (*registrator.GetGameByIDResponse, error) {
+	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
@@ -172,8 +172,8 @@ func (r *Registrator) GetGameByID(ctx context.Context, req *registrator.GetGameB
 }
 
 // GetGames ...
-func (r *Registrator) GetGames(ctx context.Context, req *registrator.GetGamesRequest) (*registrator.GetGamesResponse, error) {
-	allGames, err := r.gamesFacade.GetGames(ctx)
+func (i *Implementation) GetGames(ctx context.Context, req *registrator.GetGamesRequest) (*registrator.GetGamesResponse, error) {
+	allGames, err := i.gamesFacade.GetGames(ctx)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		return nil, st.Err()
@@ -200,8 +200,8 @@ func (r *Registrator) GetGames(ctx context.Context, req *registrator.GetGamesReq
 }
 
 // GetRegisteredGames ...
-func (r *Registrator) GetRegisteredGames(ctx context.Context, req *registrator.GetRegisteredGamesRequest) (*registrator.GetRegisteredGamesResponse, error) {
-	allGames, err := r.gamesFacade.GetRegisteredGames(ctx)
+func (i *Implementation) GetRegisteredGames(ctx context.Context, req *registrator.GetRegisteredGamesRequest) (*registrator.GetRegisteredGamesResponse, error) {
+	allGames, err := i.gamesFacade.GetRegisteredGames(ctx)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		return nil, st.Err()
@@ -229,8 +229,8 @@ func (r *Registrator) GetRegisteredGames(ctx context.Context, req *registrator.G
 }
 
 // GetUserGames ...
-func (r *Registrator) GetUserGames(ctx context.Context, req *registrator.GetUserGamesRequest) (*registrator.GetUserGamesResponse, error) {
-	allGames, err := r.gamesFacade.GetGamesByUserID(ctx, req.GetUserId())
+func (i *Implementation) GetUserGames(ctx context.Context, req *registrator.GetUserGamesRequest) (*registrator.GetUserGamesResponse, error) {
+	allGames, err := i.gamesFacade.GetGamesByUserID(ctx, req.GetUserId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		return nil, st.Err()

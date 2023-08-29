@@ -19,7 +19,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().UpdatePayment(fx.ctx, int32(1), model.PaymentCertificate).Return(errors.New("some error"))
 
-		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
+		got, err := fx.implementation.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
 			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})
@@ -36,7 +36,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().UpdatePayment(fx.ctx, int32(1), model.PaymentCertificate).Return(games.ErrGameNotFound)
 
-		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
+		got, err := fx.implementation.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
 			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})
@@ -53,7 +53,7 @@ func TestRegistrator_UpdatePayment(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().UpdatePayment(fx.ctx, int32(1), model.PaymentCertificate).Return(nil)
 
-		got, err := fx.registrator.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
+		got, err := fx.implementation.UpdatePayment(fx.ctx, &registrator.UpdatePaymentRequest{
 			GameId:  1,
 			Payment: commonpb.Payment_PAYMENT_CERTIFICATE,
 		})

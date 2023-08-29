@@ -4,12 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator/mocks"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/service/registrator/mocks"
 )
 
 type fixture struct {
-	ctx         context.Context
-	registrator *Registrator
+	ctx            context.Context
+	implementation *Implementation
 
 	gamesFacade *mocks.GamesFacade
 }
@@ -21,7 +21,7 @@ func tearUp(t *testing.T) *fixture {
 		gamesFacade: mocks.NewGamesFacade(t),
 	}
 
-	fx.registrator = &Registrator{
+	fx.implementation = &Implementation{
 		gamesFacade: fx.gamesFacade,
 	}
 

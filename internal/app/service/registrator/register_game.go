@@ -5,16 +5,15 @@ import (
 	"errors"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-// UpdatePayment ...
-func (r *Registrator) UpdatePayment(ctx context.Context, req *registrator.UpdatePaymentRequest) (*registrator.UpdatePaymentResponse, error) {
-	err := r.gamesFacade.UpdatePayment(ctx, req.GetGameId(), model.PaymentType(req.GetPayment()))
+// RegisterGame ...
+func (i *Implementation) RegisterGame(ctx context.Context, req *registrator.RegisterGameRequest) (*registrator.RegisterGameResponse, error) {
+	registerStatus, err := i.gamesFacade.RegisterGame(ctx, req.GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 
@@ -25,5 +24,7 @@ func (r *Registrator) UpdatePayment(ctx context.Context, req *registrator.Update
 		return nil, st.Err()
 	}
 
-	return &registrator.UpdatePaymentResponse{}, nil
+	return &registrator.RegisterGameResponse{
+		Status: registrator.RegisterGameStatus(registerStatus),
+	}, nil
 }

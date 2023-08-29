@@ -3,15 +3,17 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"net"
 	"os"
 	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
 	errorwrap "github.com/nikita5637/quiz-registrator-api/internal/app/middleware/error_wrap"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
-	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
 	lottery_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/lottery"
@@ -23,6 +25,7 @@ import (
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	placeservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/place"
+	registratorservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/registrator"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
@@ -277,9 +280,12 @@ func main() {
 
 		logMiddleware := log.New()
 
-		registratorConfig := registrator.Config{
-			BindAddr: config.GetBindAddress(),
+		registratorServiceConfig := registratorservice.Config{
+			GamesFacade: gamesFacade,
+		}
+		registratorService := registratorservice.New(registratorServiceConfig)
 
+		apiServerConfig := apiserver.Config{
 			AuthenticationMiddleware: authenticationMiddleware,
 			AuthorizationMiddleware:  authorizationMiddleware,
 			ErrorWrapMiddleware:      errorWrapMiddleware,
@@ -294,15 +300,18 @@ func main() {
 			LeagueService:                leagueService,
 			PhotoManagerService:          photoManagerService,
 			PlaceService:                 placeService,
+			RegistratorService:           registratorService,
 			UserManagerService:           userManagerService,
+		}
+		apiServer := apiserver.New(apiServerConfig)
 
-			GamesFacade: gamesFacade,
+		lis, err := net.Listen("tcp", config.GetBindAddress())
+		if err != nil {
+			return fmt.Errorf("failed to listen: %w", err)
 		}
 
-		reg := registrator.New(registratorConfig)
-
 		logger.Infof(ctx, "starting registrator")
-		return reg.ListenAndServe(ctx)
+		return apiServer.ListenAndServe(ctx, lis)
 	})
 
 	g.Go(func() error {

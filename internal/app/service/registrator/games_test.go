@@ -24,7 +24,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidLeagueID)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -42,7 +42,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidGameType)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -60,7 +60,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidGameNumber)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -78,7 +78,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidPlaceID)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -96,7 +96,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidDate)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -114,7 +114,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidPrice)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -132,7 +132,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, model.ErrInvalidMaxPlayers)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -150,7 +150,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 1,
 		}).Return(0, errors.New("some error"))
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 1,
 		})
 		assert.Nil(t, got)
@@ -168,7 +168,7 @@ func TestRegistrator_AddGame(t *testing.T) {
 			PlaceID: 2,
 		}).Return(1, nil)
 
-		got, err := fx.registrator.AddGame(fx.ctx, &registrator.AddGameRequest{
+		got, err := fx.implementation.AddGame(fx.ctx, &registrator.AddGameRequest{
 			PlaceId: 2,
 		})
 		assert.Equal(t, &registrator.AddGameResponse{
@@ -205,7 +205,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			},
 		}).Return(errors.New("some error"))
 
-		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+		got, err := fx.implementation.AddGames(fx.ctx, &registrator.AddGamesRequest{
 			Games: []*registrator.AddGamesRequest_Game{
 				{
 					ExternalId: 1,
@@ -271,7 +271,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			},
 		}).Return(nil)
 
-		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+		got, err := fx.implementation.AddGames(fx.ctx, &registrator.AddGamesRequest{
 			Games: []*registrator.AddGamesRequest_Game{
 				{
 					ExternalId: 1,
@@ -334,7 +334,7 @@ func TestRegistrator_AddGames(t *testing.T) {
 			},
 		}).Return(nil)
 
-		got, err := fx.registrator.AddGames(fx.ctx, &registrator.AddGamesRequest{
+		got, err := fx.implementation.AddGames(fx.ctx, &registrator.AddGamesRequest{
 			Games: []*registrator.AddGamesRequest_Game{
 				{
 					ExternalId: 2,
@@ -370,7 +370,7 @@ func TestRegistrator_DeleteGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().DeleteGame(fx.ctx, int32(1)).Return(games.ErrGameNotFound)
 
-		got, err := fx.registrator.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
+		got, err := fx.implementation.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
 			Id: 1,
 		})
 		assert.Nil(t, got)
@@ -385,7 +385,7 @@ func TestRegistrator_DeleteGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().DeleteGame(fx.ctx, int32(1)).Return(errors.New("some error"))
 
-		got, err := fx.registrator.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
+		got, err := fx.implementation.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
 			Id: 1,
 		})
 		assert.Nil(t, got)
@@ -401,7 +401,7 @@ func TestRegistrator_DeleteGame(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().DeleteGame(fx.ctx, int32(1)).Return(nil)
 
-		got, err := fx.registrator.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
+		got, err := fx.implementation.DeleteGame(fx.ctx, &registrator.DeleteGameRequest{
 			Id: 1,
 		})
 		assert.NotNil(t, got)
@@ -415,7 +415,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameNotFound)
 
-		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
+		got, err := fx.implementation.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
 			GameId: 1,
 		})
 		assert.Nil(t, got)
@@ -431,7 +431,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
 
-		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
+		got, err := fx.implementation.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
 			GameId: 1,
 		})
 		assert.Nil(t, got)
@@ -447,7 +447,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, errors.New("some error"))
 
-		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
+		got, err := fx.implementation.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
 			GameId: 1,
 		})
 		assert.Nil(t, got)
@@ -485,7 +485,7 @@ func TestRegistrator_GetGameByID(t *testing.T) {
 
 		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(game, nil)
 
-		got, err := fx.registrator.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
+		got, err := fx.implementation.GetGameByID(fx.ctx, &registrator.GetGameByIDRequest{
 			GameId: 1,
 		})
 		assert.NotNil(t, got)
