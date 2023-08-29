@@ -13,7 +13,7 @@ import (
 
 // AddGamePhotos ...
 func (f *Facade) AddGamePhotos(ctx context.Context, id int32, urls []string) error {
-	err := f.db.RunTX(ctx, "add game photos", func(ctx context.Context) error {
+	err := f.db.RunTX(ctx, "AddGamePhotos", func(ctx context.Context) error {
 		if _, err := f.gameStorage.GetGameByID(ctx, int(id)); err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
 				return fmt.Errorf("get game by ID error: %w", games.ErrGameNotFound)
@@ -38,7 +38,7 @@ func (f *Facade) AddGamePhotos(ctx context.Context, id int32, urls []string) err
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("add game photos error: %w", err)
+		return fmt.Errorf("AddGamePhotos: %w", err)
 	}
 
 	return nil

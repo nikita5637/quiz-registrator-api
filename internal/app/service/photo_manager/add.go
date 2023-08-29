@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -18,7 +19,7 @@ func (i *Implementation) AddGamePhotos(ctx context.Context, req *photomanagerpb.
 		st := status.New(codes.Internal, err.Error())
 
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
+			st = model.GetStatus(ctx, codes.FailedPrecondition, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
 		}
 
 		return nil, st.Err()

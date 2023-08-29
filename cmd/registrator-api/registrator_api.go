@@ -206,10 +206,9 @@ func main() {
 		croupierService := croupierservice.New(croupierServiceConfig)
 
 		gamePhotosFacadeConfig := gamephotos.Config{
-			GameStorage:       gameStorage,
-			GamePhotoStorage:  gamePhotoStorage,
-			GameResultStorage: gameResultStorage,
-			TxManager:         txManager,
+			GameStorage:      gameStorage,
+			GamePhotoStorage: gamePhotoStorage,
+			TxManager:        txManager,
 		}
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
 

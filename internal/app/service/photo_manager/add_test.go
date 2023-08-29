@@ -7,6 +7,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -48,8 +49,13 @@ func TestRegistrator_AddGamePhotos(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.NotFound, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, games.ReasonGameNotFound, errorInfo.Reason)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("ok", func(t *testing.T) {

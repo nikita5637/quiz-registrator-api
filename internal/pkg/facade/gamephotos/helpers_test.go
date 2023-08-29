@@ -17,9 +17,8 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	gameStorage       *mocks.GameStorage
-	gamePhotoStorage  *mocks.GamePhotoStorage
-	gameResultStorage *mocks.GameResultStorage
+	gameStorage      *mocks.GameStorage
+	gamePhotoStorage *mocks.GamePhotoStorage
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -31,17 +30,15 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		gameStorage:       mocks.NewGameStorage(t),
-		gamePhotoStorage:  mocks.NewGamePhotoStorage(t),
-		gameResultStorage: mocks.NewGameResultStorage(t),
+		gameStorage:      mocks.NewGameStorage(t),
+		gamePhotoStorage: mocks.NewGamePhotoStorage(t),
 	}
 
 	fx.facade = &Facade{
 		db: fx.db,
 
-		gameStorage:       fx.gameStorage,
-		gamePhotoStorage:  fx.gamePhotoStorage,
-		gameResultStorage: fx.gameResultStorage,
+		gameStorage:      fx.gameStorage,
+		gamePhotoStorage: fx.gamePhotoStorage,
 	}
 
 	t.Cleanup(func() {

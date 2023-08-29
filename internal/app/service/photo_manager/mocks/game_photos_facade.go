@@ -5,7 +5,6 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -61,16 +60,16 @@ func (_c *GamePhotosFacade_AddGamePhotos_Call) Return(_a0 error) *GamePhotosFaca
 	return _c
 }
 
-// GetGamesWithPhotos provides a mock function with given fields: ctx, limit, offset
-func (_m *GamePhotosFacade) GetGamesWithPhotos(ctx context.Context, limit uint32, offset uint32) ([]model.Game, error) {
+// GetGameWithPhotosIDs provides a mock function with given fields: ctx, limit, offset
+func (_m *GamePhotosFacade) GetGameWithPhotosIDs(ctx context.Context, limit uint32, offset uint32) ([]int32, error) {
 	ret := _m.Called(ctx, limit, offset)
 
-	var r0 []model.Game
-	if rf, ok := ret.Get(0).(func(context.Context, uint32, uint32) []model.Game); ok {
+	var r0 []int32
+	if rf, ok := ret.Get(0).(func(context.Context, uint32, uint32) []int32); ok {
 		r0 = rf(ctx, limit, offset)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Game)
+			r0 = ret.Get(0).([]int32)
 		}
 	}
 
@@ -84,27 +83,27 @@ func (_m *GamePhotosFacade) GetGamesWithPhotos(ctx context.Context, limit uint32
 	return r0, r1
 }
 
-// GamePhotosFacade_GetGamesWithPhotos_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGamesWithPhotos'
-type GamePhotosFacade_GetGamesWithPhotos_Call struct {
+// GamePhotosFacade_GetGameWithPhotosIDs_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGameWithPhotosIDs'
+type GamePhotosFacade_GetGameWithPhotosIDs_Call struct {
 	*mock.Call
 }
 
-// GetGamesWithPhotos is a helper method to define mock.On call
+// GetGameWithPhotosIDs is a helper method to define mock.On call
 //  - ctx context.Context
 //  - limit uint32
 //  - offset uint32
-func (_e *GamePhotosFacade_Expecter) GetGamesWithPhotos(ctx interface{}, limit interface{}, offset interface{}) *GamePhotosFacade_GetGamesWithPhotos_Call {
-	return &GamePhotosFacade_GetGamesWithPhotos_Call{Call: _e.mock.On("GetGamesWithPhotos", ctx, limit, offset)}
+func (_e *GamePhotosFacade_Expecter) GetGameWithPhotosIDs(ctx interface{}, limit interface{}, offset interface{}) *GamePhotosFacade_GetGameWithPhotosIDs_Call {
+	return &GamePhotosFacade_GetGameWithPhotosIDs_Call{Call: _e.mock.On("GetGameWithPhotosIDs", ctx, limit, offset)}
 }
 
-func (_c *GamePhotosFacade_GetGamesWithPhotos_Call) Run(run func(ctx context.Context, limit uint32, offset uint32)) *GamePhotosFacade_GetGamesWithPhotos_Call {
+func (_c *GamePhotosFacade_GetGameWithPhotosIDs_Call) Run(run func(ctx context.Context, limit uint32, offset uint32)) *GamePhotosFacade_GetGameWithPhotosIDs_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(uint32), args[2].(uint32))
 	})
 	return _c
 }
 
-func (_c *GamePhotosFacade_GetGamesWithPhotos_Call) Return(_a0 []model.Game, _a1 error) *GamePhotosFacade_GetGamesWithPhotos_Call {
+func (_c *GamePhotosFacade_GetGameWithPhotosIDs_Call) Return(_a0 []int32, _a1 error) *GamePhotosFacade_GetGameWithPhotosIDs_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }

@@ -7,26 +7,23 @@ import (
 
 // Facade ...
 type Facade struct {
-	db                *tx.Manager
-	gameStorage       storage.GameStorage
-	gamePhotoStorage  storage.GamePhotoStorage
-	gameResultStorage storage.GameResultStorage
+	db               *tx.Manager
+	gameStorage      storage.GameStorage
+	gamePhotoStorage storage.GamePhotoStorage
 }
 
 // Config ...
 type Config struct {
-	GameStorage       storage.GameStorage
-	GamePhotoStorage  storage.GamePhotoStorage
-	GameResultStorage storage.GameResultStorage
-	TxManager         *tx.Manager
+	GameStorage      storage.GameStorage
+	GamePhotoStorage storage.GamePhotoStorage
+	TxManager        *tx.Manager
 }
 
 // NewFacade ...
 func NewFacade(cfg Config) *Facade {
 	return &Facade{
-		db:                cfg.TxManager,
-		gameStorage:       cfg.GameStorage,
-		gamePhotoStorage:  cfg.GamePhotoStorage,
-		gameResultStorage: cfg.GameResultStorage,
+		db:               cfg.TxManager,
+		gameStorage:      cfg.GameStorage,
+		gamePhotoStorage: cfg.GamePhotoStorage,
 	}
 }

@@ -4,7 +4,6 @@ package photo_manager;
 
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager;photomanager";
 
-import "common/common.proto";
 import "google/protobuf/empty.proto";
 
 service Service {
@@ -12,8 +11,8 @@ service Service {
 	rpc AddGamePhotos(AddGamePhotosRequest) returns (google.protobuf.Empty) {
 	}
 
-	// GetGamesWithPhotos returns list of games with photos
-	rpc GetGamesWithPhotos(GetGamesWithPhotosRequest) returns (GetGamesWithPhotosResponse) {
+	// GetGameWithPhotosIDs returns list of game with photos IDs
+	rpc GetGameWithPhotosIDs(GetGameWithPhotosIDsRequest) returns (GetGameWithPhotosIDsResponse) {
 	}
 
 	// GetPhotosByGameID returns all photos by game ID
@@ -26,13 +25,13 @@ message AddGamePhotosRequest {
 	repeated string urls = 2;
 }
 
-message GetGamesWithPhotosRequest {
+message GetGameWithPhotosIDsRequest {
 	uint32 limit = 1;
 	uint32 offset = 2;
 }
 
-message GetGamesWithPhotosResponse {
-	repeated common.Game games = 1;
+message GetGameWithPhotosIDsResponse {
+	repeated int32 game_ids = 1;
 	uint32 total = 2;
 }
 
