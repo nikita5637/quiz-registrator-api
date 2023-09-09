@@ -21,11 +21,15 @@
 Добавляет список фотографий
 ### Путь
 `/photo_manager.Service/AddGamePhotos`
+### Роли
++ management
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
 | FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
 | Internal | | В остальных случаях |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -34,10 +38,13 @@
 Возращает список ID игр с фотографиями
 ### Путь
 `/photo_manager.Service/GetGameWithPhotosIDs`
+### Роли
++ public
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
-| Internal | | В любом случае |
+| Internal | | В остальных случаях |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -46,11 +53,14 @@
 Возвращает список URL ссылок на фотографии с игры
 ### Путь
 `/photo_manager.Service/GetPhotosByGameID`
+### Роли
++ public
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
 | FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
 | Internal | | В остальных случаях |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---

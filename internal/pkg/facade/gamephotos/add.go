@@ -8,7 +8,7 @@ import (
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
 // AddGamePhotos ...
@@ -23,8 +23,8 @@ func (f *Facade) AddGamePhotos(ctx context.Context, id int32, urls []string) err
 		}
 
 		for _, url := range urls {
-			gamePhoto := model.GamePhoto{
-				FkGameID: id,
+			gamePhoto := database.GamePhoto{
+				FkGameID: int(id),
 				URL:      url,
 			}
 

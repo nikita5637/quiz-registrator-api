@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -54,15 +53,15 @@ func TestFacade_AddGamePhotos(t *testing.T) {
 			ID: 1,
 		}, nil)
 
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url1",
 		}).Return(1, nil)
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url2",
 		}).Return(2, nil)
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url3",
 		}).Return(0, errors.New("some error"))
@@ -88,15 +87,15 @@ func TestFacade_AddGamePhotos(t *testing.T) {
 			ID: 1,
 		}, nil)
 
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url1",
 		}).Return(1, nil)
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url2",
 		}).Return(2, nil)
-		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().Insert(mock.Anything, database.GamePhoto{
 			FkGameID: 1,
 			URL:      "url3",
 		}).Return(3, nil)

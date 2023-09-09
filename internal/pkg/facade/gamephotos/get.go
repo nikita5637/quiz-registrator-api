@@ -31,7 +31,7 @@ func (f *Facade) GetGameWithPhotosIDs(ctx context.Context, limit, offset uint32)
 
 	ids := make([]int32, 0, limit)
 	for i := uint32(0); i < limit; i++ {
-		ids = append(ids, gameIDsWithPhotos[offset+i])
+		ids = append(ids, int32(gameIDsWithPhotos[offset+i]))
 	}
 
 	return ids, nil
@@ -58,7 +58,7 @@ func (f *Facade) GetPhotosByGameID(ctx context.Context, id int32) ([]string, err
 		return nil, fmt.Errorf("get photos by game id error: %w", err)
 	}
 
-	gamePhotos, err := f.gamePhotoStorage.GetGamePhotosByGameID(ctx, id)
+	gamePhotos, err := f.gamePhotoStorage.GetGamePhotosByGameID(ctx, int(id))
 	if err != nil {
 		return nil, fmt.Errorf("get photos by game id error: %w", err)
 	}

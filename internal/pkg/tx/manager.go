@@ -3,9 +3,9 @@ package tx
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
 // Manager - transaction manager
@@ -71,7 +71,7 @@ func (m *Manager) begin(ctx context.Context, name string) (context.Context, *TX,
 	}
 	txval := txValue{
 		name:           name,
-		beginTs:        time.Now(),
+		beginTs:        timeutils.TimeNow(),
 		sqlTransaction: tx,
 	}
 

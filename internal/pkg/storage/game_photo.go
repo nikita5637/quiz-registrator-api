@@ -6,16 +6,16 @@ import (
 	"context"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // GamePhotoStorage ...
 type GamePhotoStorage interface {
-	GetGameIDsWithPhotos(ctx context.Context, limit uint32) ([]int32, error)
-	GetGamePhotosByGameID(ctx context.Context, gameID int32) ([]model.GamePhoto, error)
-	Insert(ctx context.Context, gamePhoto model.GamePhoto) (int32, error)
+	GetGameIDsWithPhotos(ctx context.Context, limit uint32) ([]int, error)
+	GetGamePhotosByGameID(ctx context.Context, gameID int) ([]*database.GamePhoto, error)
+	Insert(ctx context.Context, gamePhoto database.GamePhoto) (int, error)
 }
 
 // NewGamePhotoStorage ...

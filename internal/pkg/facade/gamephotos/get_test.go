@@ -34,7 +34,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("offset gt len(GetGameIDsWithPhotos)", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 0, 6)
 		assert.NoError(t, err)
@@ -44,7 +44,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("offset ge then len(GetGameIDsWithPhotos)", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 0, 5)
 		assert.NoError(t, err)
@@ -54,7 +54,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get middle batch #1", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 2, 2)
 		assert.NoError(t, err)
@@ -68,7 +68,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get middle batch #2 without limit", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 0, 2)
 		assert.NoError(t, err)
@@ -78,7 +78,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get last batch #1", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 2, 3)
 		assert.NoError(t, err)
@@ -89,7 +89,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get last batch #2", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 5, 3)
 		assert.NoError(t, err)
@@ -100,7 +100,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get first batch #1", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 3, 0)
 		assert.NoError(t, err)
@@ -111,7 +111,7 @@ func TestFacade_GetGameWithPhotosIDs(t *testing.T) {
 	t.Run("get first batch #2", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetGameWithPhotosIDs(fx.ctx, 30, 0)
 		assert.NoError(t, err)
@@ -134,7 +134,7 @@ func TestFacade_GetNumberOfGamesWithPhotos(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int32{1, 2, 3, 4, 5}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGameIDsWithPhotos(fx.ctx, uint32(0)).Return([]int{1, 2, 3, 4, 5}, nil)
 
 		got, err := fx.facade.GetNumberOfGamesWithPhotos(fx.ctx)
 		assert.NoError(t, err)
@@ -171,7 +171,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 			ID: 1,
 		}, nil)
 
-		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, int32(1)).Return(nil, errors.New("some error"))
+		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, 1).Return(nil, errors.New("some error"))
 
 		got, err := fx.facade.GetPhotosByGameID(fx.ctx, 1)
 		assert.Nil(t, got)
@@ -185,7 +185,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 			ID: 1,
 		}, nil)
 
-		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, int32(1)).Return([]model.GamePhoto{}, nil)
+		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, 1).Return([]*database.GamePhoto{}, nil)
 
 		got, err := fx.facade.GetPhotosByGameID(fx.ctx, 1)
 		assert.Equal(t, []string{}, got)
@@ -199,7 +199,7 @@ func TestFacade_GetPhotosByGameID(t *testing.T) {
 			ID: 1,
 		}, nil)
 
-		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, int32(1)).Return([]model.GamePhoto{
+		fx.gamePhotoStorage.EXPECT().GetGamePhotosByGameID(fx.ctx, 1).Return([]*database.GamePhoto{
 			{
 				FkGameID: 1,
 				URL:      "url1",
