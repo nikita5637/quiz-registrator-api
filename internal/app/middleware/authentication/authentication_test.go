@@ -95,7 +95,7 @@ func TestMiddleware_Authentication(t *testing.T) {
 		assert.NoError(t, err)
 
 		userFromContext := usersutils.UserFromContext(ctx)
-		assert.Equal(t, model.User{
+		assert.Equal(t, &model.User{
 			ID:         1,
 			TelegramID: 1,
 			Name:       "name",

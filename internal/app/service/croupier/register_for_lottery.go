@@ -69,7 +69,7 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	}
 
 	var number int32
-	number, err = i.croupier.RegisterForLottery(ctx, game, user)
+	number, err = i.croupier.RegisterForLottery(ctx, game, *user)
 	if err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 

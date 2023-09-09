@@ -21,7 +21,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("error, user is banned", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			State: model.UserStateBanned,
 		})
 
@@ -38,7 +38,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("error. grpc rule not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    1,
 			State: model.UserStateRegistered,
 		})
@@ -71,7 +71,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("error. internal error while get user roles", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    1,
 			State: model.UserStateRegistered,
 		})
@@ -93,7 +93,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("ok. public role exists", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    1,
 			State: model.UserStateRegistered,
 		})
@@ -122,7 +122,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("error. public role doesn't exists. role not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    1,
 			State: model.UserStateRegistered,
 		})
@@ -150,7 +150,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 	t.Run("ok. public role doesn't exists", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    1,
 			State: model.UserStateRegistered,
 		})

@@ -10,13 +10,13 @@ import (
 
 func TestNewContextWithUser(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		ctx := NewContextWithUser(context.Background(), model.User{
+		ctx := NewContextWithUser(context.Background(), &model.User{
 			ID:   1,
 			Name: "name",
 		})
 
 		user := UserFromContext(ctx)
-		assert.Equal(t, model.User{
+		assert.Equal(t, &model.User{
 			ID:   1,
 			Name: "name",
 		}, user)
@@ -30,13 +30,13 @@ func TestUserFromContext(t *testing.T) {
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		ctx := NewContextWithUser(context.Background(), model.User{
+		ctx := NewContextWithUser(context.Background(), &model.User{
 			ID:   1,
 			Name: "name",
 		})
 
 		user := UserFromContext(ctx)
-		assert.Equal(t, model.User{
+		assert.Equal(t, &model.User{
 			ID:   1,
 			Name: "name",
 		}, user)

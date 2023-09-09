@@ -42,8 +42,6 @@ func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) 
 		return model.Game{}, ErrGameHasPassed
 	}
 
-	user := users_utils.UserFromContext(ctx)
-
 	players, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
 		builder.Eq{
 			"fk_game_id": id,
@@ -61,15 +59,16 @@ func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) 
 	var my bool
 	var myLegioners uint32
 
+	user := users_utils.UserFromContext(ctx)
 	for _, player := range players {
 		if player.FkUserID.Int64 == 0 {
 			numberLegioners++
-			if int32(player.RegisteredBy) == user.ID {
+			if user != nil && int32(player.RegisteredBy) == user.ID {
 				myLegioners++
 			}
 		} else {
 			numberPlayers++
-			if int32(player.FkUserID.Int64) == user.ID {
+			if user != nil && int32(player.FkUserID.Int64) == user.ID {
 				my = true
 			}
 		}
@@ -114,13 +113,13 @@ func (f *Facade) GetGames(ctx context.Context) ([]model.Game, error) {
 
 		for _, player := range players {
 			if player.FkUserID.Int64 > 0 {
-				if int32(player.FkUserID.Int64) == user.ID {
+				if user != nil && int32(player.FkUserID.Int64) == user.ID {
 					modelGame.My = true
 				}
 				modelGame.NumberOfPlayers++
 			} else {
 				modelGame.NumberOfLegioners++
-				if int32(player.RegisteredBy) == user.ID {
+				if user != nil && int32(player.RegisteredBy) == user.ID {
 					modelGame.NumberOfMyLegioners++
 				}
 			}
@@ -198,13 +197,13 @@ func (f *Facade) GetRegisteredGames(ctx context.Context) ([]model.Game, error) {
 
 		for _, player := range players {
 			if player.FkUserID.Int64 > 0 {
-				if int32(player.FkUserID.Int64) == user.ID {
+				if user != nil && int32(player.FkUserID.Int64) == user.ID {
 					modelGame.My = true
 				}
 				modelGame.NumberOfPlayers++
 			} else {
 				modelGame.NumberOfLegioners++
-				if int32(player.RegisteredBy) == user.ID {
+				if user != nil && int32(player.RegisteredBy) == user.ID {
 					modelGame.NumberOfMyLegioners++
 				}
 			}

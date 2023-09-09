@@ -40,7 +40,7 @@ func (m *Middleware) Authentication() grpc_auth.AuthFunc {
 				return ctx, status.New(codes.Unauthenticated, unauthenticated).Err()
 			}
 
-			return usersutils.NewContextWithUser(ctx, user), nil
+			return usersutils.NewContextWithUser(ctx, &user), nil
 		case authenticationTypeServiceName:
 			serviceName := ""
 

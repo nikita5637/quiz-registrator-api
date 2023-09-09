@@ -18,7 +18,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("error while get game", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -43,7 +43,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("game not found", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -67,7 +67,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("game has passed", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -91,7 +91,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("error lottery not available", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -127,7 +127,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("error lottery not implemented", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -163,7 +163,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("other error while registration", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -199,7 +199,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("ok with number", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),
@@ -233,7 +233,7 @@ func TestRegistrator_RegisterForLottery(t *testing.T) {
 	t.Run("ok without number", func(t *testing.T) {
 		fx := tearUp(t)
 
-		ctx := usersutils.NewContextWithUser(fx.ctx, model.User{
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
 			ID:    777,
 			Name:  "user name",
 			Email: maybe.Just("user email"),

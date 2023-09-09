@@ -27,16 +27,19 @@ var (
 func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		user := users_utils.UserFromContext(ctx)
-		if user.State == model.UserStateBanned {
+		if user != nil && user.State == model.UserStateBanned {
 			st := model.GetStatus(ctx, codes.PermissionDenied, "permission denied", "You are banned", nil, youAreBannedLexeme)
-
 			return nil, st.Err()
 		}
 
-		userRoles, err := m.userRolesFacade.GetUserRolesByUserID(ctx, user.ID)
-		if err != nil {
-			st := status.New(codes.Internal, err.Error())
-			return nil, st.Err()
+		var err error
+		userRoles := make([]model.UserRole, 0)
+		if user != nil {
+			userRoles, err = m.userRolesFacade.GetUserRolesByUserID(ctx, user.ID)
+			if err != nil {
+				st := status.New(codes.Internal, err.Error())
+				return nil, st.Err()
+			}
 		}
 
 		if roles, ok := grpcRules[info.FullMethod]; ok {
