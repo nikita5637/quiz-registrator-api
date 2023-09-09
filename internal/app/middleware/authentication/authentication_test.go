@@ -32,11 +32,9 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
-		assert.Error(t, err)
-
-		st := status.Convert(err)
-		assert.Equal(t, codes.Unauthenticated, st.Code())
+		got, err := fn(ctx)
+		assert.Equal(t, ctx, got)
+		assert.NoError(t, err)
 	})
 
 	t.Run("error. authentication type Telegram ID. invalid Telegram ID", func(t *testing.T) {
@@ -130,8 +128,9 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
+		ctx, err := fn(ctx)
 		assert.NoError(t, err)
+		assert.True(t, IsServiceAuth(ctx))
 	})
 
 	t.Run("ok. authentication type service name. service name eq \"ics-manager\"", func(t *testing.T) {
@@ -158,8 +157,9 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
+		ctx, err := fn(ctx)
 		assert.NoError(t, err)
+		assert.True(t, IsServiceAuth(ctx))
 	})
 
 	t.Run("ok. authentication type service name. service name eq \"telegram-reminder\"", func(t *testing.T) {
@@ -172,8 +172,9 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
+		ctx, err := fn(ctx)
 		assert.NoError(t, err)
+		assert.True(t, IsServiceAuth(ctx))
 	})
 
 	t.Run("ok. authentication type service name. module name eq \"telegram\"", func(t *testing.T) {
@@ -186,8 +187,9 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
+		ctx, err := fn(ctx)
 		assert.NoError(t, err)
+		assert.True(t, IsServiceAuth(ctx))
 	})
 
 	t.Run("ok. authentication type service name. module name eq \"telegram-reminder\"", func(t *testing.T) {
@@ -200,7 +202,8 @@ func TestMiddleware_Authentication(t *testing.T) {
 		))
 
 		fn := fx.middleware.Authentication()
-		_, err := fn(ctx)
+		ctx, err := fn(ctx)
 		assert.NoError(t, err)
+		assert.True(t, IsServiceAuth(ctx))
 	})
 }

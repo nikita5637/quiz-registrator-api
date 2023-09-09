@@ -9,6 +9,8 @@ const (
 	Management = "management"
 	// Public ...
 	Public = "public"
+	// S2S ...
+	S2S = "s2s"
 	// User ...
 	User = "user"
 )
@@ -120,7 +122,7 @@ var grpcRules = map[string]roles{
 		Management: struct{}{},
 	},
 	"/registrator.RegistratorService/AddGames": {
-		Public: struct{}{},
+		S2S: struct{}{},
 	},
 	"/registrator.RegistratorService/DeleteGame": {
 		Management: struct{}{},
