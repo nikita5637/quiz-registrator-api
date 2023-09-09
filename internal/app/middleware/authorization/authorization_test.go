@@ -89,7 +89,7 @@ func TestMiddleware_Authorization(t *testing.T) {
 
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
-		assert.Equal(t, "You are banned", errorInfo.Reason)
+		assert.Equal(t, reasonYouAreBanned, errorInfo.Reason)
 		assert.Nil(t, errorInfo.Metadata)
 	})
 

@@ -15,6 +15,7 @@ import (
 
 const (
 	reasonPermissionDenied = "PERMISSION_DENIED"
+	reasonYouAreBanned     = "YOU_ARE_BANNED"
 )
 
 var (
@@ -33,7 +34,7 @@ func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		user := users_utils.UserFromContext(ctx)
 		if user != nil && user.State == model.UserStateBanned {
-			st := model.GetStatus(ctx, codes.PermissionDenied, "", "You are banned", nil, youAreBannedLexeme)
+			st := model.GetStatus(ctx, codes.PermissionDenied, "", reasonYouAreBanned, nil, youAreBannedLexeme)
 			return nil, st.Err()
 		}
 
