@@ -11,10 +11,8 @@ import (
 type Degree int32
 
 const (
-	// DegreeInvalid ...
-	DegreeInvalid Degree = iota
 	// DegreeLikely ...
-	DegreeLikely
+	DegreeLikely Degree = iota + 1
 	// DegreeUnlikely ...
 	DegreeUnlikely
 

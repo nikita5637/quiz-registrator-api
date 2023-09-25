@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -61,10 +62,15 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
-		} else if errors.Is(err, games.ErrGameHasPassed) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
+			st = model.GetStatus(ctx, codes.NotFound, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		}
+		return nil, st.Err()
+	}
+
+	if game.HasPassed {
+		st := model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameHasPassed.Error(), games.ReasonGameHasPassed, nil, games.GameHasPassedLexeme)
 		return nil, st.Err()
 	}
 
@@ -73,10 +79,10 @@ func (i *Implemintation) RegisterForLottery(ctx context.Context, req *croupierpb
 	if err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 
-		if errors.Is(err, model.ErrLotteryNotAvailable) {
+		if errors.Is(err, croupier.ErrLotteryNotAvailable) {
 			reason := fmt.Sprintf("lottery for game id %d not available", game.ID)
 			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reason, nil, lotteryNotAvailableLexeme)
-		} else if errors.Is(err, model.ErrLotteryNotImplemented) {
+		} else if errors.Is(err, croupier.ErrLotteryNotImplemented) {
 			reason := fmt.Sprintf("lottery for league %d not implemented", game.LeagueID)
 			st = model.GetStatus(ctx, codes.Unimplemented, err.Error(), reason, nil, lotteryNotImplementedLexeme)
 		} else {

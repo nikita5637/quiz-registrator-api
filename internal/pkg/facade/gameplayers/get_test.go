@@ -325,3 +325,96 @@ func TestFacade_GetGamePlayersByGameID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 }
+
+func TestFacade_GetUserGameIDs(t *testing.T) {
+	t.Run("error: error while finding game players", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return(nil, errors.New("some error"))
+
+		got, err := fx.facade.GetUserGameIDs(fx.ctx, 1)
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok: empty list", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{}, nil)
+
+		got, err := fx.facade.GetUserGameIDs(fx.ctx, 1)
+		assert.Equal(t, []int32{}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{
+			{
+				FkGameID: 1,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
+			},
+			{
+				FkGameID: 2,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
+			},
+			{
+				FkGameID: 3,
+				FkUserID: sql.NullInt64{
+					Int64: 1,
+					Valid: true,
+				},
+			},
+		}, nil)
+
+		got, err := fx.facade.GetUserGameIDs(fx.ctx, 1)
+		assert.Equal(t, []int32{1, 2, 3}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}

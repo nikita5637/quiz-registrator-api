@@ -80,15 +80,15 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, games.ReasonGameNotFound, errorInfo.Reason)
-		assert.Equal(t, map[string]string{
-			"error": "game not found",
-		}, errorInfo.Metadata)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
-	t.Run("game has passed error while get game", func(t *testing.T) {
+	t.Run("game has passed", func(t *testing.T) {
 		fx := tearUp(t)
 
-		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+			HasPassed: true,
+		}, nil)
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
@@ -110,9 +110,7 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, games.ReasonGameHasPassed, errorInfo.Reason)
-		assert.Equal(t, map[string]string{
-			"error": "game has passed",
-		}, errorInfo.Metadata)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("internal error while get game", func(t *testing.T) {
@@ -294,7 +292,9 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, reasonGamePlayerAlreadyRegistered, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player already exists",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("error game not found while create game player", func(t *testing.T) {

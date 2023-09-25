@@ -11,11 +11,6 @@ func TestRole_String(t *testing.T) {
 		want string
 	}{
 		{
-			name: "invalid",
-			r:    RoleInvalid,
-			want: invalid,
-		},
-		{
 			name: "admin",
 			r:    RoleAdmin,
 			want: admin,
@@ -33,7 +28,7 @@ func TestRole_String(t *testing.T) {
 		{
 			name: "not existed",
 			r:    numberOfRoles,
-			want: invalid,
+			want: "invalid",
 		},
 	}
 	for _, tt := range tests {
@@ -55,7 +50,7 @@ func TestValidateRole(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "error. not Role",
+			name: "is not Role",
 			args: args{
 				value: "not Role",
 			},
@@ -69,11 +64,11 @@ func TestValidateRole(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid role",
+			name: "eq 0",
 			args: args{
-				value: RoleInvalid,
+				value: Role(0),
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "ok",

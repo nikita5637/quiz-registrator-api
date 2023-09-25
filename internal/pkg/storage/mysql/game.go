@@ -19,8 +19,13 @@ func NewGameStorageAdapter(txManager *tx.Manager) *GameStorageAdapter {
 	}
 }
 
-// Delete ...
-func (a *GameStorageAdapter) Delete(ctx context.Context, id int) error {
+// CreateGame ...
+func (a *GameStorageAdapter) CreateGame(ctx context.Context, game Game) (int, error) {
+	return a.gameStorage.Insert(ctx, game)
+}
+
+// DeleteGame ...
+func (a *GameStorageAdapter) DeleteGame(ctx context.Context, id int) error {
 	return a.gameStorage.Delete(ctx, id)
 }
 
@@ -29,17 +34,22 @@ func (a *GameStorageAdapter) Find(ctx context.Context, q builder.Cond, sort stri
 	return a.gameStorage.Find(ctx, q, sort)
 }
 
+// FindWithLimit ...
+func (a *GameStorageAdapter) FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset, limit uint64) ([]Game, error) {
+	return a.gameStorage.FindWithLimit(ctx, q, sort, offset, limit)
+}
+
 // GetGameByID ...
 func (a *GameStorageAdapter) GetGameByID(ctx context.Context, id int) (*Game, error) {
 	return a.gameStorage.GetGameByID(ctx, id)
 }
 
-// Insert ...
-func (a *GameStorageAdapter) Insert(ctx context.Context, game Game) (int, error) {
-	return a.gameStorage.Insert(ctx, game)
+// PatchGame ....
+func (a *GameStorageAdapter) PatchGame(ctx context.Context, game Game) error {
+	return a.gameStorage.Update(ctx, game)
 }
 
-// Update ....
-func (a *GameStorageAdapter) Update(ctx context.Context, game Game) error {
-	return a.gameStorage.Update(ctx, game)
+// Total ...
+func (a *GameStorageAdapter) Total(ctx context.Context, q builder.Cond) (uint64, error) {
+	return a.gameStorage.Total(ctx, q)
 }

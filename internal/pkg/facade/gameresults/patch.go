@@ -24,10 +24,10 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		originalDBGameResult, err := f.gameResultStorage.GetGameResultByID(ctx, int(gameResult.ID))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return fmt.Errorf("get original game result error: %w", model.ErrGameResultNotFound)
+				return fmt.Errorf("get game result by ID error: %w", ErrGameResultNotFound)
 			}
 
-			return fmt.Errorf("get original game result error: %w", err)
+			return fmt.Errorf("get game result by ID error: %w", err)
 		}
 
 		patchedDBGameResult := *originalDBGameResult
@@ -51,10 +51,8 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 				if err.Number == 1452 {
 					return fmt.Errorf("patch game result error: %w", games.ErrGameNotFound)
 				} else if err.Number == 1062 {
-					return fmt.Errorf("patch game result error: %w", model.ErrGameResultAlreadyExists)
+					return fmt.Errorf("patch game result error: %w", ErrGameResultAlreadyExists)
 				}
-
-				return fmt.Errorf("patch game result error: %w", err)
 			}
 
 			return fmt.Errorf("patch game result error: %w", err)
@@ -65,7 +63,7 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		return nil
 	})
 	if err != nil {
-		return model.GameResult{}, fmt.Errorf("patch game result error: %w", err)
+		return model.GameResult{}, fmt.Errorf("PatchGameResult error: %w", err)
 	}
 
 	return patchedGameResult, nil

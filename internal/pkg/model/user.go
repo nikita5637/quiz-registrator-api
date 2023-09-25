@@ -11,10 +11,8 @@ import (
 type UserState int
 
 const (
-	// UserStateInvalid ...
-	UserStateInvalid UserState = iota
 	// UserStateWelcome ...
-	UserStateWelcome
+	UserStateWelcome UserState = iota + 1
 	// UserStateRegistered ...
 	UserStateRegistered
 	// UserStateChangingEmail ...
@@ -52,10 +50,8 @@ func ValidateUserState(value interface{}) error {
 type Sex int32
 
 const (
-	// SexInvalid ...
-	SexInvalid Sex = iota
 	// SexMale ...
-	SexMale
+	SexMale Sex = iota + 1
 	// SexFemale ...
 	SexFemale
 

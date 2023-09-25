@@ -5,6 +5,7 @@ import (
 	"errors"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,17 +16,16 @@ func (i *Implemintation) GetLotteryStatus(ctx context.Context, req *croupierpb.G
 	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
-		} else if errors.Is(err, games.ErrGameHasPassed) {
-			st = getGameNotFoundStatus(ctx, err, req.GetGameId())
+			st = model.GetStatus(ctx, codes.NotFound, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		}
 
 		return nil, st.Err()
 	}
 
-	if !game.My {
+	if game.HasPassed {
 		return &croupierpb.GetLotteryStatusResponse{
 			Active: false,
 		}, nil

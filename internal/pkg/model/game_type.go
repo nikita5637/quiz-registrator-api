@@ -1,11 +1,15 @@
 package model
 
+import (
+	"errors"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+)
+
 // GameType ...
 type GameType int32
 
 const (
-	// GameTypeInvalid ...
-	GameTypeInvalid GameType = 0
 	// GameTypeClassic ...
 	GameTypeClassic GameType = 1
 	// GameTypeThematic ...
@@ -19,3 +23,20 @@ const (
 	// GameTypeThematicMoviesAndMusic ...
 	GameTypeThematicMoviesAndMusic GameType = 9
 )
+
+// ValidateGameType ...
+func ValidateGameType(value interface{}) error {
+	v, ok := value.(GameType)
+	if !ok {
+		return errors.New("must be GameType")
+	}
+
+	return validation.Validate(v, validation.Required, validation.In(
+		GameTypeClassic,
+		GameTypeThematic,
+		GameTypeEnglish,
+		GameTypeMoviesAndMusic,
+		GameTypeClosed,
+		GameTypeThematicMoviesAndMusic,
+	))
+}

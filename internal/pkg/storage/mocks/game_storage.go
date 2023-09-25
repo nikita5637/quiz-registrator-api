@@ -25,8 +25,53 @@ func (_m *GameStorage) EXPECT() *GameStorage_Expecter {
 	return &GameStorage_Expecter{mock: &_m.Mock}
 }
 
-// Delete provides a mock function with given fields: ctx, id
-func (_m *GameStorage) Delete(ctx context.Context, id int) error {
+// CreateGame provides a mock function with given fields: ctx, game
+func (_m *GameStorage) CreateGame(ctx context.Context, game mysql.Game) (int, error) {
+	ret := _m.Called(ctx, game)
+
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.Game) int); ok {
+		r0 = rf(ctx, game)
+	} else {
+		r0 = ret.Get(0).(int)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, mysql.Game) error); ok {
+		r1 = rf(ctx, game)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GameStorage_CreateGame_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'CreateGame'
+type GameStorage_CreateGame_Call struct {
+	*mock.Call
+}
+
+// CreateGame is a helper method to define mock.On call
+//  - ctx context.Context
+//  - game mysql.Game
+func (_e *GameStorage_Expecter) CreateGame(ctx interface{}, game interface{}) *GameStorage_CreateGame_Call {
+	return &GameStorage_CreateGame_Call{Call: _e.mock.On("CreateGame", ctx, game)}
+}
+
+func (_c *GameStorage_CreateGame_Call) Run(run func(ctx context.Context, game mysql.Game)) *GameStorage_CreateGame_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(mysql.Game))
+	})
+	return _c
+}
+
+func (_c *GameStorage_CreateGame_Call) Return(_a0 int, _a1 error) *GameStorage_CreateGame_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+// DeleteGame provides a mock function with given fields: ctx, id
+func (_m *GameStorage) DeleteGame(ctx context.Context, id int) error {
 	ret := _m.Called(ctx, id)
 
 	var r0 error
@@ -39,26 +84,26 @@ func (_m *GameStorage) Delete(ctx context.Context, id int) error {
 	return r0
 }
 
-// GameStorage_Delete_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Delete'
-type GameStorage_Delete_Call struct {
+// GameStorage_DeleteGame_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'DeleteGame'
+type GameStorage_DeleteGame_Call struct {
 	*mock.Call
 }
 
-// Delete is a helper method to define mock.On call
+// DeleteGame is a helper method to define mock.On call
 //  - ctx context.Context
 //  - id int
-func (_e *GameStorage_Expecter) Delete(ctx interface{}, id interface{}) *GameStorage_Delete_Call {
-	return &GameStorage_Delete_Call{Call: _e.mock.On("Delete", ctx, id)}
+func (_e *GameStorage_Expecter) DeleteGame(ctx interface{}, id interface{}) *GameStorage_DeleteGame_Call {
+	return &GameStorage_DeleteGame_Call{Call: _e.mock.On("DeleteGame", ctx, id)}
 }
 
-func (_c *GameStorage_Delete_Call) Run(run func(ctx context.Context, id int)) *GameStorage_Delete_Call {
+func (_c *GameStorage_DeleteGame_Call) Run(run func(ctx context.Context, id int)) *GameStorage_DeleteGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
 
-func (_c *GameStorage_Delete_Call) Return(_a0 error) *GameStorage_Delete_Call {
+func (_c *GameStorage_DeleteGame_Call) Return(_a0 error) *GameStorage_DeleteGame_Call {
 	_c.Call.Return(_a0)
 	return _c
 }
@@ -111,6 +156,56 @@ func (_c *GameStorage_Find_Call) Return(_a0 []mysql.Game, _a1 error) *GameStorag
 	return _c
 }
 
+// FindWithLimit provides a mock function with given fields: ctx, q, sort, offset, limit
+func (_m *GameStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset uint64, limit uint64) ([]mysql.Game, error) {
+	ret := _m.Called(ctx, q, sort, offset, limit)
+
+	var r0 []mysql.Game
+	if rf, ok := ret.Get(0).(func(context.Context, builder.Cond, string, uint64, uint64) []mysql.Game); ok {
+		r0 = rf(ctx, q, sort, offset, limit)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).([]mysql.Game)
+		}
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, builder.Cond, string, uint64, uint64) error); ok {
+		r1 = rf(ctx, q, sort, offset, limit)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GameStorage_FindWithLimit_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'FindWithLimit'
+type GameStorage_FindWithLimit_Call struct {
+	*mock.Call
+}
+
+// FindWithLimit is a helper method to define mock.On call
+//  - ctx context.Context
+//  - q builder.Cond
+//  - sort string
+//  - offset uint64
+//  - limit uint64
+func (_e *GameStorage_Expecter) FindWithLimit(ctx interface{}, q interface{}, sort interface{}, offset interface{}, limit interface{}) *GameStorage_FindWithLimit_Call {
+	return &GameStorage_FindWithLimit_Call{Call: _e.mock.On("FindWithLimit", ctx, q, sort, offset, limit)}
+}
+
+func (_c *GameStorage_FindWithLimit_Call) Run(run func(ctx context.Context, q builder.Cond, sort string, offset uint64, limit uint64)) *GameStorage_FindWithLimit_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(builder.Cond), args[2].(string), args[3].(uint64), args[4].(uint64))
+	})
+	return _c
+}
+
+func (_c *GameStorage_FindWithLimit_Call) Return(_a0 []mysql.Game, _a1 error) *GameStorage_FindWithLimit_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 // GetGameByID provides a mock function with given fields: ctx, id
 func (_m *GameStorage) GetGameByID(ctx context.Context, id int) (*mysql.Game, error) {
 	ret := _m.Called(ctx, id)
@@ -158,53 +253,8 @@ func (_c *GameStorage_GetGameByID_Call) Return(_a0 *mysql.Game, _a1 error) *Game
 	return _c
 }
 
-// Insert provides a mock function with given fields: ctx, game
-func (_m *GameStorage) Insert(ctx context.Context, game mysql.Game) (int, error) {
-	ret := _m.Called(ctx, game)
-
-	var r0 int
-	if rf, ok := ret.Get(0).(func(context.Context, mysql.Game) int); ok {
-		r0 = rf(ctx, game)
-	} else {
-		r0 = ret.Get(0).(int)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, mysql.Game) error); ok {
-		r1 = rf(ctx, game)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GameStorage_Insert_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Insert'
-type GameStorage_Insert_Call struct {
-	*mock.Call
-}
-
-// Insert is a helper method to define mock.On call
-//  - ctx context.Context
-//  - game mysql.Game
-func (_e *GameStorage_Expecter) Insert(ctx interface{}, game interface{}) *GameStorage_Insert_Call {
-	return &GameStorage_Insert_Call{Call: _e.mock.On("Insert", ctx, game)}
-}
-
-func (_c *GameStorage_Insert_Call) Run(run func(ctx context.Context, game mysql.Game)) *GameStorage_Insert_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(mysql.Game))
-	})
-	return _c
-}
-
-func (_c *GameStorage_Insert_Call) Return(_a0 int, _a1 error) *GameStorage_Insert_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-// Update provides a mock function with given fields: ctx, game
-func (_m *GameStorage) Update(ctx context.Context, game mysql.Game) error {
+// PatchGame provides a mock function with given fields: ctx, game
+func (_m *GameStorage) PatchGame(ctx context.Context, game mysql.Game) error {
 	ret := _m.Called(ctx, game)
 
 	var r0 error
@@ -217,27 +267,72 @@ func (_m *GameStorage) Update(ctx context.Context, game mysql.Game) error {
 	return r0
 }
 
-// GameStorage_Update_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Update'
-type GameStorage_Update_Call struct {
+// GameStorage_PatchGame_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'PatchGame'
+type GameStorage_PatchGame_Call struct {
 	*mock.Call
 }
 
-// Update is a helper method to define mock.On call
+// PatchGame is a helper method to define mock.On call
 //  - ctx context.Context
 //  - game mysql.Game
-func (_e *GameStorage_Expecter) Update(ctx interface{}, game interface{}) *GameStorage_Update_Call {
-	return &GameStorage_Update_Call{Call: _e.mock.On("Update", ctx, game)}
+func (_e *GameStorage_Expecter) PatchGame(ctx interface{}, game interface{}) *GameStorage_PatchGame_Call {
+	return &GameStorage_PatchGame_Call{Call: _e.mock.On("PatchGame", ctx, game)}
 }
 
-func (_c *GameStorage_Update_Call) Run(run func(ctx context.Context, game mysql.Game)) *GameStorage_Update_Call {
+func (_c *GameStorage_PatchGame_Call) Run(run func(ctx context.Context, game mysql.Game)) *GameStorage_PatchGame_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context), args[1].(mysql.Game))
 	})
 	return _c
 }
 
-func (_c *GameStorage_Update_Call) Return(_a0 error) *GameStorage_Update_Call {
+func (_c *GameStorage_PatchGame_Call) Return(_a0 error) *GameStorage_PatchGame_Call {
 	_c.Call.Return(_a0)
+	return _c
+}
+
+// Total provides a mock function with given fields: ctx, q
+func (_m *GameStorage) Total(ctx context.Context, q builder.Cond) (uint64, error) {
+	ret := _m.Called(ctx, q)
+
+	var r0 uint64
+	if rf, ok := ret.Get(0).(func(context.Context, builder.Cond) uint64); ok {
+		r0 = rf(ctx, q)
+	} else {
+		r0 = ret.Get(0).(uint64)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, builder.Cond) error); ok {
+		r1 = rf(ctx, q)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GameStorage_Total_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'Total'
+type GameStorage_Total_Call struct {
+	*mock.Call
+}
+
+// Total is a helper method to define mock.On call
+//  - ctx context.Context
+//  - q builder.Cond
+func (_e *GameStorage_Expecter) Total(ctx interface{}, q interface{}) *GameStorage_Total_Call {
+	return &GameStorage_Total_Call{Call: _e.mock.On("Total", ctx, q)}
+}
+
+func (_c *GameStorage_Total_Call) Run(run func(ctx context.Context, q builder.Cond)) *GameStorage_Total_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(builder.Cond))
+	})
+	return _c
+}
+
+func (_c *GameStorage_Total_Call) Return(_a0 uint64, _a1 error) *GameStorage_Total_Call {
+	_c.Call.Return(_a0, _a1)
 	return _c
 }
 

@@ -13,7 +13,6 @@ import (
 
 // GamePhotoStorage ...
 type GamePhotoStorage interface {
-	GetGameIDsWithPhotos(ctx context.Context, limit uint32) ([]int, error)
 	GetGamePhotosByGameID(ctx context.Context, gameID int) ([]*database.GamePhoto, error)
 	Insert(ctx context.Context, gamePhoto database.GamePhoto) (int, error)
 }

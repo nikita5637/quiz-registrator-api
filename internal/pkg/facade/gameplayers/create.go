@@ -14,7 +14,6 @@ import (
 // CreateGamePlayer ...
 func (f *Facade) CreateGamePlayer(ctx context.Context, gamePlayer model.GamePlayer) (model.GamePlayer, error) {
 	createdGamePlayer := model.GamePlayer{}
-
 	err := f.db.RunTX(ctx, "CreateGamePlayer", func(ctx context.Context) error {
 		if v, ok := gamePlayer.UserID.Get(); ok {
 			existedGamePlayers, err := f.GetGamePlayersByGameID(ctx, gamePlayer.GameID)

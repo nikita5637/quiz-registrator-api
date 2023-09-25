@@ -14,12 +14,12 @@ import (
 	adminpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/admin"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
+	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	placepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/place"
-	registratorpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/registrator"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -42,13 +42,14 @@ type Config struct {
 	AdminService                 adminpb.ServiceServer
 	CertificateManagerService    certificatemanagerpb.ServiceServer
 	CroupierService              croupierpb.ServiceServer
+	GameService                  gamepb.ServiceServer
+	GameRegistratorService       gamepb.RegistratorServiceServer
 	GamePlayerService            gameplayerpb.ServiceServer
 	GamePlayerRegistratorService gameplayerpb.RegistratorServiceServer
 	GameResultManagerService     gameresultmanagerpb.ServiceServer
 	LeagueService                leaguepb.ServiceServer
 	PhotoManagerService          photomanagerpb.ServiceServer
 	PlaceService                 placepb.ServiceServer
-	RegistratorService           registratorpb.RegistratorServiceServer
 	UserManagerService           usermanagerpb.ServiceServer
 }
 
@@ -69,6 +70,8 @@ func New(cfg Config) *APIServer {
 	adminpb.RegisterServiceServer(s, cfg.AdminService)
 	certificatemanagerpb.RegisterServiceServer(s, cfg.CertificateManagerService)
 	croupierpb.RegisterServiceServer(s, cfg.CroupierService)
+	gamepb.RegisterServiceServer(s, cfg.GameService)
+	gamepb.RegisterRegistratorServiceServer(s, cfg.GameRegistratorService)
 	gameplayerpb.RegisterServiceServer(s, cfg.GamePlayerService)
 	gameplayerpb.RegisterRegistratorServiceServer(s, cfg.GamePlayerRegistratorService)
 	gameresultmanagerpb.RegisterServiceServer(s, cfg.GameResultManagerService)
@@ -76,7 +79,6 @@ func New(cfg Config) *APIServer {
 	photomanagerpb.RegisterServiceServer(s, cfg.PhotoManagerService)
 	placepb.RegisterServiceServer(s, cfg.PlaceService)
 	usermanagerpb.RegisterServiceServer(s, cfg.UserManagerService)
-	registratorpb.RegisterRegistratorServiceServer(s, cfg.RegistratorService)
 
 	return &APIServer{
 		grpcServer: s,

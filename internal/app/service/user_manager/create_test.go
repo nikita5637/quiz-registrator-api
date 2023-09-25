@@ -482,12 +482,12 @@ func Test_validateCreatedUser(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid state",
+			name: "state eq 0",
 			args: args{
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
-					State:      model.UserStateInvalid,
+					State:      0,
 				},
 			},
 			wantErr: true,
@@ -687,13 +687,13 @@ func Test_validateCreatedUser(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "invalid sex value",
+			name: "sex eq 0",
 			args: args{
 				user: model.User{
 					Name:       "name",
 					TelegramID: 100,
 					State:      model.UserStateWelcome,
-					Sex:        maybe.Just(model.SexInvalid),
+					Sex:        maybe.Just(model.Sex(0)),
 				},
 			},
 			wantErr: true,

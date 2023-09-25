@@ -100,7 +100,12 @@ func TestImplementation_UnregisterPlayer(t *testing.T) {
 
 		st := status.Convert(err)
 		assert.Equal(t, codes.NotFound, st.Code())
-		assert.Len(t, st.Details(), 0)
+		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, gameplayers.ReasonGamePlayerNotFound, errorInfo.Reason)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("game not found", func(t *testing.T) {
@@ -177,7 +182,9 @@ func TestImplementation_UnregisterPlayer(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{}, games.ErrGameHasPassed)
+		fx.gamesFacade.EXPECT().GetGameByID(fx.ctx, int32(1)).Return(model.Game{
+			HasPassed: true,
+		}, nil)
 
 		got, err := fx.implementation.UnregisterPlayer(fx.ctx, &gameplayer.UnregisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
@@ -196,9 +203,7 @@ func TestImplementation_UnregisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, games.ReasonGameHasPassed, errorInfo.Reason)
-		assert.Equal(t, map[string]string{
-			"error": "game has passed",
-		}, errorInfo.Metadata)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("internal error while getting game", func(t *testing.T) {
@@ -331,7 +336,9 @@ func TestImplementation_UnregisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, gameplayers.ReasonGamePlayerNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("ok", func(t *testing.T) {

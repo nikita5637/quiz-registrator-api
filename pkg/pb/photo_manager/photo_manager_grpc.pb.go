@@ -26,8 +26,6 @@ const _ = grpc.SupportPackageIsVersion7
 type ServiceClient interface {
 	// AddGamePhotos adds game photos
 	AddGamePhotos(ctx context.Context, in *AddGamePhotosRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
-	// GetGameWithPhotosIDs returns list of game with photos IDs
-	GetGameWithPhotosIDs(ctx context.Context, in *GetGameWithPhotosIDsRequest, opts ...grpc.CallOption) (*GetGameWithPhotosIDsResponse, error)
 	// GetPhotosByGameID returns all photos by game ID
 	GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error)
 }
@@ -49,15 +47,6 @@ func (c *serviceClient) AddGamePhotos(ctx context.Context, in *AddGamePhotosRequ
 	return out, nil
 }
 
-func (c *serviceClient) GetGameWithPhotosIDs(ctx context.Context, in *GetGameWithPhotosIDsRequest, opts ...grpc.CallOption) (*GetGameWithPhotosIDsResponse, error) {
-	out := new(GetGameWithPhotosIDsResponse)
-	err := c.cc.Invoke(ctx, "/photo_manager.Service/GetGameWithPhotosIDs", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *serviceClient) GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error) {
 	out := new(GetPhotosByGameIDResponse)
 	err := c.cc.Invoke(ctx, "/photo_manager.Service/GetPhotosByGameID", in, out, opts...)
@@ -73,8 +62,6 @@ func (c *serviceClient) GetPhotosByGameID(ctx context.Context, in *GetPhotosByGa
 type ServiceServer interface {
 	// AddGamePhotos adds game photos
 	AddGamePhotos(context.Context, *AddGamePhotosRequest) (*emptypb.Empty, error)
-	// GetGameWithPhotosIDs returns list of game with photos IDs
-	GetGameWithPhotosIDs(context.Context, *GetGameWithPhotosIDsRequest) (*GetGameWithPhotosIDsResponse, error)
 	// GetPhotosByGameID returns all photos by game ID
 	GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error)
 	mustEmbedUnimplementedServiceServer()
@@ -86,9 +73,6 @@ type UnimplementedServiceServer struct {
 
 func (UnimplementedServiceServer) AddGamePhotos(context.Context, *AddGamePhotosRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGamePhotos not implemented")
-}
-func (UnimplementedServiceServer) GetGameWithPhotosIDs(context.Context, *GetGameWithPhotosIDsRequest) (*GetGameWithPhotosIDsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetGameWithPhotosIDs not implemented")
 }
 func (UnimplementedServiceServer) GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPhotosByGameID not implemented")
@@ -124,24 +108,6 @@ func _Service_AddGamePhotos_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Service_GetGameWithPhotosIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetGameWithPhotosIDsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ServiceServer).GetGameWithPhotosIDs(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/photo_manager.Service/GetGameWithPhotosIDs",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ServiceServer).GetGameWithPhotosIDs(ctx, req.(*GetGameWithPhotosIDsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Service_GetPhotosByGameID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPhotosByGameIDRequest)
 	if err := dec(in); err != nil {
@@ -170,10 +136,6 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddGamePhotos",
 			Handler:    _Service_AddGamePhotos_Handler,
-		},
-		{
-			MethodName: "GetGameWithPhotosIDs",
-			Handler:    _Service_GetGameWithPhotosIDs_Handler,
 		},
 		{
 			MethodName: "GetPhotosByGameID",

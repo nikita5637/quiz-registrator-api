@@ -1,0 +1,340 @@
+package games
+
+import (
+	"database/sql"
+	"errors"
+	"testing"
+	"time"
+
+	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/config"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+func TestFacade_GetGameByID(t *testing.T) {
+	timeutils.TimeNow = func() time.Time {
+		return timeutils.ConvertTime("2006-01-02 15:04")
+	}
+
+	globalConfig := config.GlobalConfig{}
+	globalConfig.ActiveGameLag = 3600
+	config.UpdateGlobalConfig(globalConfig)
+
+	t.Run("error: game not found", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{}, sql.ErrNoRows)
+
+		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		expectedGame := model.NewGame()
+		assert.Equal(t, expectedGame, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrGameNotFound)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("error: internal error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{}, errors.New("some error"))
+
+		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		expectedGame := model.NewGame()
+		assert.Equal(t, expectedGame, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("error: game is deleted", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		timeNow := timeutils.TimeNow()
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID: 1,
+			DeletedAt: sql.NullTime{
+				Time:  timeNow,
+				Valid: true,
+			},
+		}, nil)
+
+		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		expectedGame := model.NewGame()
+		assert.Equal(t, expectedGame, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, ErrGameNotFound)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok. game has not passed", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		timeNow := timeutils.TimeNow()
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:   1,
+			Date: timeNow.Add(time.Hour),
+		}, nil)
+
+		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		expectedGame := model.NewGame()
+		expectedGame.ID = 1
+		expectedGame.Date = model.DateTime(timeNow.Add(time.Hour))
+		assert.Equal(t, expectedGame, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok. game has passed", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		timeNow := timeutils.TimeNow()
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:   1,
+			Date: timeNow.Add(-time.Hour),
+		}, nil)
+
+		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		expectedGame := model.NewGame()
+		expectedGame.ID = 1
+		expectedGame.Date = model.DateTime(timeNow.Add(-time.Hour))
+		expectedGame.HasPassed = true
+		assert.Equal(t, expectedGame, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}
+
+func TestFacade_GetGamesByIDs(t *testing.T) {
+	timeutils.TimeNow = func() time.Time {
+		return timeutils.ConvertTime("2006-01-02 15:04")
+	}
+
+	globalConfig := config.GlobalConfig{}
+	globalConfig.ActiveGameLag = 3600
+	config.UpdateGlobalConfig(globalConfig)
+
+	t.Run("error: find error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.In("id", []int32{1, 2, 3}),
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "").Return(nil, errors.New("some error"))
+
+		got, err := fx.facade.GetGamesByIDs(fx.ctx, []int32{1, 2, 3})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok: empty list", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.In("id", []int32{1, 2, 3}),
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "").Return([]database.Game{}, nil)
+
+		got, err := fx.facade.GetGamesByIDs(fx.ctx, []int32{1, 2, 3})
+		assert.Equal(t, []model.Game{}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.In("id", []int32{1, 2, 3}),
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "").Return([]database.Game{
+			{
+				ID:   1,
+				Date: timeutils.TimeNow().Add(time.Hour),
+			},
+			{
+				ID:   3,
+				Date: timeutils.TimeNow().Add(-1 * time.Hour),
+			},
+		}, nil)
+
+		got, err := fx.facade.GetGamesByIDs(fx.ctx, []int32{1, 2, 3})
+		assert.Equal(t, []model.Game{
+			{
+				ID:          1,
+				ExternalID:  maybe.Nothing[int32](),
+				Name:        maybe.Nothing[string](),
+				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
+				PaymentType: maybe.Nothing[string](),
+				Payment:     maybe.Nothing[model.Payment](),
+				HasPassed:   false,
+			},
+			{
+				ID:          3,
+				ExternalID:  maybe.Nothing[int32](),
+				Name:        maybe.Nothing[string](),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				PaymentType: maybe.Nothing[string](),
+				Payment:     maybe.Nothing[model.Payment](),
+				HasPassed:   true,
+			},
+		}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}
+
+func TestFacade_GetTodaysGames(t *testing.T) {
+	timeutils.TimeNow = func() time.Time {
+		return timeutils.ConvertTime("2006-01-02 15:04")
+	}
+
+	globalConfig := config.GlobalConfig{}
+	globalConfig.ActiveGameLag = 3600
+	config.UpdateGlobalConfig(globalConfig)
+
+	t.Run("error: find error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Eq{
+				"registered": true,
+			},
+			builder.Expr("date LIKE \"2006-01-02%\""),
+		), "").Return(nil, errors.New("some error"))
+
+		got, err := fx.facade.GetTodaysGames(fx.ctx)
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok: empty list", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Eq{
+				"registered": true,
+			},
+			builder.Expr("date LIKE \"2006-01-02%\""),
+		), "").Return([]database.Game{}, nil)
+
+		got, err := fx.facade.GetTodaysGames(fx.ctx)
+		assert.Equal(t, []model.Game{}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Eq{
+				"registered": true,
+			},
+			builder.Expr("date LIKE \"2006-01-02%\""),
+		), "").Return([]database.Game{
+			{
+				ID:         1,
+				Date:       timeutils.TimeNow().Add(time.Hour),
+				Registered: true,
+			},
+			{
+				ID:         3,
+				Date:       timeutils.TimeNow().Add(-1 * time.Hour),
+				Registered: true,
+			},
+		}, nil)
+
+		got, err := fx.facade.GetTodaysGames(fx.ctx)
+		assert.Equal(t, []model.Game{
+			{
+				ID:          1,
+				ExternalID:  maybe.Nothing[int32](),
+				Name:        maybe.Nothing[string](),
+				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
+				PaymentType: maybe.Nothing[string](),
+				Payment:     maybe.Nothing[model.Payment](),
+				Registered:  true,
+				HasPassed:   false,
+			},
+			{
+				ID:          3,
+				ExternalID:  maybe.Nothing[int32](),
+				Name:        maybe.Nothing[string](),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				PaymentType: maybe.Nothing[string](),
+				Payment:     maybe.Nothing[model.Payment](),
+				Registered:  true,
+				HasPassed:   true,
+			},
+		}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+}

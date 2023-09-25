@@ -438,9 +438,9 @@ func Test_validateUserSex(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "valid and has invalid value",
+			name: "valid and eq 0",
 			args: args{
-				value: maybe.Just(model.SexInvalid),
+				value: maybe.Just(model.Sex(0)),
 			},
 			wantErr: true,
 		},

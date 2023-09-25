@@ -112,3 +112,33 @@ func (f *Facade) GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]mo
 
 	return gamePlayers, nil
 }
+
+// GetUserGameIDs ...
+func (f *Facade) GetUserGameIDs(ctx context.Context, userID int32) ([]int32, error) {
+	var gameIDs []int32
+	err := f.db.RunTX(ctx, "GetUserGameIDs", func(ctx context.Context) error {
+		gamePlayers, err := f.gamePlayerStorage.Find(ctx, builder.NewCond().And(
+			builder.Eq{
+				"fk_user_id": userID,
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		))
+		if err != nil {
+			return fmt.Errorf("find error: %w", err)
+		}
+
+		gameIDs = make([]int32, 0, len(gamePlayers))
+		for _, gamePlayer := range gamePlayers {
+			gameIDs = append(gameIDs, int32(gamePlayer.FkGameID))
+		}
+
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("GetUserGameIDs error: %w", err)
+	}
+
+	return gameIDs, nil
+}

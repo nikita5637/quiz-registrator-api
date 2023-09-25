@@ -20,12 +20,12 @@ import (
 	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/admin"
 	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
+	gameservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game"
 	gameplayerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_player"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	placeservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/place"
-	registratorservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/registrator"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
@@ -128,16 +128,6 @@ func main() {
 	gameStorage := storage.NewGameStorage(driverName, txManager)
 	gamePlayerStorage := storage.NewGamePlayerStorage(driverName, txManager)
 
-	icsRabbitMQProducerConfig := rabbitmqproducer.Config{
-		QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
-		RabbitMQChannel: rabbitMQChannel,
-	}
-	icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
-
-	if err := icsRabbitMQProducer.Connect(ctx); err != nil {
-		logger.Fatalf(ctx, "ICS producer connect error: %s", err.Error())
-	}
-
 	gamePlayersFacadeConfig := gameplayers.Config{
 		GamePlayerStorage: gamePlayerStorage,
 		TxManager:         txManager,
@@ -145,13 +135,10 @@ func main() {
 	gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
 
 	gamesFacadeConfig := games.Config{
-		GameStorage:       gameStorage,
-		GamePlayerStorage: gamePlayerStorage,
-		RabbitMQProducer:  icsRabbitMQProducer,
-		TxManager:         txManager,
+		GameStorage: gameStorage,
+		TxManager:   txManager,
 	}
-
-	gamesFacade := games.NewFacade(gamesFacadeConfig)
+	gamesFacade := games.New(gamesFacadeConfig)
 
 	quizPleaseCroupierConfig := quiz_please.Config{
 		LotteryLink: quiz_please.LotteryLink,
@@ -214,6 +201,22 @@ func main() {
 			TxManager:        txManager,
 		}
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+
+		icsRabbitMQProducerConfig := rabbitmqproducer.Config{
+			QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
+
+		if err := icsRabbitMQProducer.Connect(ctx); err != nil {
+			return fmt.Errorf("ICS producer connect error: %w", err)
+		}
+
+		gameServiceConfig := gameservice.Config{
+			GamesFacade:      gamesFacade,
+			RabbitMQProducer: icsRabbitMQProducer,
+		}
+		gameService := gameservice.New(gameServiceConfig)
 
 		gamePlayerServiceConfig := gameplayerservice.Config{
 			GamesFacade:       gamesFacade,
@@ -280,11 +283,6 @@ func main() {
 
 		logMiddleware := log.New()
 
-		registratorServiceConfig := registratorservice.Config{
-			GamesFacade: gamesFacade,
-		}
-		registratorService := registratorservice.New(registratorServiceConfig)
-
 		apiServerConfig := apiserver.Config{
 			AuthenticationMiddleware: authenticationMiddleware,
 			AuthorizationMiddleware:  authorizationMiddleware,
@@ -294,13 +292,14 @@ func main() {
 			AdminService:                 adminService,
 			CertificateManagerService:    certificateManagerService,
 			CroupierService:              croupierService,
+			GameService:                  gameService,
+			GameRegistratorService:       gameService,
 			GamePlayerService:            gamePlayerService,
 			GamePlayerRegistratorService: gamePlayerService,
 			GameResultManagerService:     gameResultManagerService,
 			LeagueService:                leagueService,
 			PhotoManagerService:          photoManagerService,
 			PlaceService:                 placeService,
-			RegistratorService:           registratorService,
 			UserManagerService:           userManagerService,
 		}
 		apiServer := apiserver.New(apiServerConfig)
@@ -322,7 +321,7 @@ func main() {
 		gameReminderRabbitMQProducer := rabbitmqproducer.New(gameReminderRabbitMQProducerConfig)
 
 		if err := gameReminderRabbitMQProducer.Connect(ctx); err != nil {
-			logger.Fatalf(ctx, "game reminder producer connect error: %s", err.Error())
+			return fmt.Errorf("game reminder producer connect error: %w", err)
 		}
 
 		gameReminderConfig := game_reminder.Config{
@@ -339,7 +338,7 @@ func main() {
 		lotteryReminderRabbitMQProducer := rabbitmqproducer.New(lotteryReminderRabbitMQProducerConfig)
 
 		if err := lotteryReminderRabbitMQProducer.Connect(ctx); err != nil {
-			logger.Fatalf(ctx, "lottery reminder producer connect error: %s", err.Error())
+			return fmt.Errorf("lottery reminder producer connect error: %w", err)
 		}
 
 		lotteryReminderConfig := lottery_reminder.Config{

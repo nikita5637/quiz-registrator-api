@@ -5,16 +5,16 @@ package storage
 import (
 	"context"
 
-	"github.com/go-xorm/builder"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
 // PlaceStorage ...
 type PlaceStorage interface {
-	Find(ctx context.Context, q builder.Cond, sort string) ([]model.Place, error)
+	CreatePlace(ctx context.Context, place database.Place) (int, error)
 	GetPlaceByID(ctx context.Context, id int32) (model.Place, error)
 }
 

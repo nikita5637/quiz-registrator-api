@@ -66,7 +66,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 
 		croupier.lotteryLink = svr.URL
 		got, err := croupier.RegisterForLottery(context.Background(), model.Game{
-			ExternalID: 777,
+			ExternalID: maybe.Just(int32(777)),
 		}, model.User{
 			Name:  "Имя",
 			Email: maybe.Just("Email"),
@@ -86,7 +86,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 
 		croupier.lotteryLink = svr.URL
 		got, err := croupier.RegisterForLottery(context.Background(), model.Game{
-			ExternalID: 777,
+			ExternalID: maybe.Just(int32(777)),
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -102,7 +102,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 
 		croupier.lotteryLink = svr.URL
 		got, err := croupier.RegisterForLottery(context.Background(), model.Game{
-			ExternalID: 777,
+			ExternalID: maybe.Just(int32(777)),
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -118,7 +118,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 
 		croupier.lotteryLink = svr.URL
 		got, err := croupier.RegisterForLottery(context.Background(), model.Game{
-			ExternalID: 777,
+			ExternalID: maybe.Just(int32(777)),
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -134,7 +134,7 @@ func TestQuizPleaseCroupier_RegisterForLottery(t *testing.T) {
 
 		croupier.lotteryLink = svr.URL
 		got, err := croupier.RegisterForLottery(context.Background(), model.Game{
-			ExternalID: 777,
+			ExternalID: maybe.Just(int32(777)),
 		}, model.User{})
 		assert.Equal(t, int32(168), got)
 		assert.NoError(t, err)

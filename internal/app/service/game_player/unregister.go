@@ -58,36 +58,24 @@ func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb
 	}
 
 	if len(existedGamePlayers) == 0 {
-		st := status.New(codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error())
+		st := model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), gameplayers.ReasonGamePlayerNotFound, nil, gameplayers.GamePlayerNotFoundLexeme)
 		return nil, st.Err()
 	}
 
-	_, err = i.gamesFacade.GetGameByID(ctx, req.GetGamePlayer().GetGameId())
+	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGamePlayer().GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				games.ErrGameNotFound.Error(),
-				games.ReasonGameNotFound,
-				map[string]string{
-					"error": err.Error(),
-				},
-				games.GameNotFoundLexeme,
-			)
-		} else if errors.Is(err, games.ErrGameHasPassed) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				games.ErrGameHasPassed.Error(),
-				games.ReasonGameHasPassed,
-				map[string]string{
-					"error": err.Error(),
-				},
-				games.GameHasPassedLexeme,
-			)
-
+			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		}
 
+		return nil, st.Err()
+	}
+
+	if game.HasPassed {
+		st := model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameHasPassed.Error(), games.ReasonGameHasPassed, nil, games.GameHasPassedLexeme)
 		return nil, st.Err()
 	}
 
@@ -95,13 +83,9 @@ func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerNotFound) {
-			st = model.GetStatus(ctx,
-				codes.NotFound,
-				gameplayers.ErrGamePlayerNotFound.Error(),
-				gameplayers.ReasonGamePlayerNotFound,
-				nil,
-				gameplayers.GamePlayerNotFoundLexeme,
-			)
+			st = model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), gameplayers.ReasonGamePlayerNotFound, map[string]string{
+				"error": err.Error(),
+			}, gameplayers.GamePlayerNotFoundLexeme)
 		}
 
 		return nil, st.Err()

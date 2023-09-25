@@ -115,9 +115,9 @@ func (s *UserStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 	}
 
 	if limit != 0 {
-		query += ` OFFSET ? LIMIT ?`
-		args = append(args, offset)
+		query += ` LIMIT ? OFFSET ?`
 		args = append(args, limit)
+		args = append(args, offset)
 	}
 
 	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)

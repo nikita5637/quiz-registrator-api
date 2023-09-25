@@ -22,53 +22,6 @@ func (_m *GamePhotoStorage) EXPECT() *GamePhotoStorage_Expecter {
 	return &GamePhotoStorage_Expecter{mock: &_m.Mock}
 }
 
-// GetGameIDsWithPhotos provides a mock function with given fields: ctx, limit
-func (_m *GamePhotoStorage) GetGameIDsWithPhotos(ctx context.Context, limit uint32) ([]int, error) {
-	ret := _m.Called(ctx, limit)
-
-	var r0 []int
-	if rf, ok := ret.Get(0).(func(context.Context, uint32) []int); ok {
-		r0 = rf(ctx, limit)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]int)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, uint32) error); ok {
-		r1 = rf(ctx, limit)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GamePhotoStorage_GetGameIDsWithPhotos_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGameIDsWithPhotos'
-type GamePhotoStorage_GetGameIDsWithPhotos_Call struct {
-	*mock.Call
-}
-
-// GetGameIDsWithPhotos is a helper method to define mock.On call
-//  - ctx context.Context
-//  - limit uint32
-func (_e *GamePhotoStorage_Expecter) GetGameIDsWithPhotos(ctx interface{}, limit interface{}) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	return &GamePhotoStorage_GetGameIDsWithPhotos_Call{Call: _e.mock.On("GetGameIDsWithPhotos", ctx, limit)}
-}
-
-func (_c *GamePhotoStorage_GetGameIDsWithPhotos_Call) Run(run func(ctx context.Context, limit uint32)) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint32))
-	})
-	return _c
-}
-
-func (_c *GamePhotoStorage_GetGameIDsWithPhotos_Call) Return(_a0 []int, _a1 error) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
 // GetGamePhotosByGameID provides a mock function with given fields: ctx, gameID
 func (_m *GamePhotoStorage) GetGamePhotosByGameID(ctx context.Context, gameID int) ([]*mysql.GamePhoto, error) {
 	ret := _m.Called(ctx, gameID)

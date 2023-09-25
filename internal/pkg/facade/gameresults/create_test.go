@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -39,7 +40,38 @@ func TestFacade_CreateGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameResultAlreadyExists)
+		assert.ErrorIs(t, err, ErrGameResultAlreadyExists)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("error: game not found", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameResultStorage.EXPECT().CreateGameResult(mock.Anything, database.GameResult{
+			FkGameID: 2,
+			Place:    1,
+			Points: sql.NullString{
+				Valid:  true,
+				String: "{}",
+			},
+		}).Return(0, &mysql.MySQLError{
+			Number: 1452,
+		})
+
+		got, err := fx.facade.CreateGameResult(fx.ctx, model.GameResult{
+			FkGameID:    2,
+			ResultPlace: 1,
+			RoundPoints: maybe.Just("{}"),
+		})
+
+		assert.Equal(t, model.GameResult{}, got)
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, games.ErrGameNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

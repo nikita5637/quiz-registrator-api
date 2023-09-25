@@ -111,9 +111,9 @@ func (s *GamePlayerStorage) FindWithLimit(ctx context.Context, q builder.Cond, s
 	}
 
 	if limit != 0 {
-		query += ` OFFSET ? LIMIT ?`
-		args = append(args, offset)
+		query += ` LIMIT ? OFFSET ?`
 		args = append(args, limit)
+		args = append(args, offset)
 	}
 
 	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
@@ -334,4 +334,37 @@ func (s *GamePlayerStorage) GetGamePlayerByID(ctx context.Context, id int) (*Gam
 		return nil, err
 	}
 	return &gp, nil
+}
+
+// GetGamePlayerByRegisteredBy retrieves a row from 'game_player' as a GamePlayer.
+//
+// Generated from index 'registered_by'.
+func (s *GamePlayerStorage) GetGamePlayerByRegisteredBy(ctx context.Context, registeredBy int) ([]*GamePlayer, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at ` +
+		`FROM game_player ` +
+		`WHERE registered_by = ?`
+	// run
+	logger.Debugf(ctx, sqlstr, registeredBy)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, sqlstr, registeredBy)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	// process
+	var res []*GamePlayer
+	for rows.Next() {
+		gp := GamePlayer{}
+		// scan
+		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.UpdatedAt, &gp.DeletedAt); err != nil {
+			return nil, err
+		}
+		res = append(res, &gp)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

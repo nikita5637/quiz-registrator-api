@@ -48,7 +48,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameResultNotFound)
+		assert.ErrorIs(t, err, ErrGameResultNotFound)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)
@@ -179,7 +179,7 @@ func TestFacade_PatchGameResult(t *testing.T) {
 
 		assert.Equal(t, model.GameResult{}, got)
 		assert.Error(t, err)
-		assert.ErrorIs(t, err, model.ErrGameResultAlreadyExists)
+		assert.ErrorIs(t, err, ErrGameResultAlreadyExists)
 
 		err = fx.dbMock.ExpectationsWereMet()
 		assert.NoError(t, err)

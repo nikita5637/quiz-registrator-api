@@ -34,8 +34,13 @@ service Service {
 	// GetGamePlayer returns game player by ID
 	rpc GetGamePlayer(GetGamePlayerRequest) returns (GamePlayer) {
 	}
+
 	// GetGamePlayersByGameID returns list of game players by game ID
 	rpc GetGamePlayersByGameID(GetGamePlayersByGameIDRequest) returns (GetGamePlayersByGameIDResponse) {
+	}
+
+	// GetUserGameIDs returns complete list of user game IDs
+	rpc GetUserGameIDs(GetUserGameIDsRequest) returns (GetUserGameIDsResponse) {
 	}
 
 	// PatchGamePlayer patches game player
@@ -63,6 +68,13 @@ message GetGamePlayersByGameIDResponse {
 	repeated GamePlayer game_players = 1;
 }
 
+message GetUserGameIDsRequest {
+	int32 user_id = 1;
+}
+  
+message GetUserGameIDsResponse {
+	repeated int32 game_ids = 1;
+}
 
 message PatchGamePlayerRequest {
 	GamePlayer game_player = 1;

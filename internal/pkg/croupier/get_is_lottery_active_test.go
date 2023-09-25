@@ -30,7 +30,6 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
 		}
-		game.My = true
 
 		got := c.GetIsLotteryActive(ctx, game)
 		assert.False(t, got)
@@ -48,7 +47,6 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
 		}
-		game.My = true
 
 		got := c.GetIsLotteryActive(ctx, game)
 		assert.False(t, got)
@@ -65,7 +63,6 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		game := model.Game{
 			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
 			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
-			My:       true,
 		}
 
 		got := c.GetIsLotteryActive(ctx, game)

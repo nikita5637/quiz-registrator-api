@@ -21,16 +21,16 @@ func TestValidateDegree(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid value",
+			name: "lt 0",
 			args: args{
-				value: DegreeInvalid,
+				value: Degree(-1),
 			},
 			wantErr: true,
 		},
 		{
-			name: "lt 0",
+			name: "eq 0",
 			args: args{
-				value: Degree(-1),
+				value: Degree(0),
 			},
 			wantErr: true,
 		},

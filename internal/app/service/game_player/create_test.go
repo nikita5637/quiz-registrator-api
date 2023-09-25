@@ -85,7 +85,9 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, gameplayers.ReasonGamePlayerAlreadyExists, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player already exists",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("error game not found while create game player", func(t *testing.T) {
@@ -350,13 +352,13 @@ func Test_validateCreatedGamePlayer(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid degree",
+			name: "degree eq 0",
 			args: args{
 				gamePlayer: model.GamePlayer{
 					GameID:       1,
 					UserID:       maybe.Just(int32(1)),
 					RegisteredBy: 1,
-					Degree:       model.DegreeInvalid,
+					Degree:       0,
 				},
 			},
 			wantErr: true,

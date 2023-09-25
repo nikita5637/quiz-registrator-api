@@ -12,7 +12,7 @@ import (
 
 // GamesFacade ...
 type GamesFacade interface {
-	GetGames(ctx context.Context) ([]model.Game, error)
+	ListGames(ctx context.Context) ([]model.Game, error)
 }
 
 // LotteryRegistrator ...

@@ -4,12 +4,41 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 
 	"github.com/stretchr/testify/assert"
 )
+
+func Test_NewGame(t *testing.T) {
+	t.Run("ok", func(t *testing.T) {
+		got := NewGame()
+		assert.Equal(t, Game{
+			ExternalID:  maybe.Nothing[int32](),
+			Name:        maybe.Nothing[string](),
+			PaymentType: maybe.Nothing[string](),
+			Payment:     maybe.Nothing[Payment](),
+		}, got)
+	})
+}
+
+func TestGame_DateTime(t *testing.T) {
+	t.Run("nil", func(t *testing.T) {
+		var game *Game
+		got := game.DateTime()
+		assert.Equal(t, DateTime{}, got)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		timeNow := timeutils.TimeNow()
+		game := &Game{
+			Date: DateTime(timeNow),
+		}
+		got := game.DateTime()
+		assert.Equal(t, DateTime(timeNow), got)
+	})
+}
 
 func TestGame_IsActive(t *testing.T) {
 	activeGameLag := uint16(3600)
@@ -26,16 +55,9 @@ func TestGame_IsActive(t *testing.T) {
 		assert.False(t, got)
 	})
 
-	t.Run("game deleted at is not zero", func(t *testing.T) {
-		g := &Game{}
-		g.DeletedAt = DateTime(time_utils.TimeNow())
-		got := g.IsActive()
-		assert.False(t, got)
-	})
-
 	t.Run("game date + lag less then time_utils.TimeNow()", func(t *testing.T) {
-		gameDate := time_utils.TimeNow()
-		time_utils.TimeNow = func() time.Time {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
 			return gameDate.Add(time.Duration(activeGameLag+1) * time.Second)
 		}
 
@@ -47,8 +69,8 @@ func TestGame_IsActive(t *testing.T) {
 	})
 
 	t.Run("game date + lag is equal time_utils.TimeNow()", func(t *testing.T) {
-		gameDate := time_utils.TimeNow()
-		time_utils.TimeNow = func() time.Time {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
 			return gameDate.Add(time.Duration(activeGameLag) * time.Second)
 		}
 
@@ -60,8 +82,8 @@ func TestGame_IsActive(t *testing.T) {
 	})
 
 	t.Run("game date + lag is greater than time_utils.TimeNow()", func(t *testing.T) {
-		gameDate := time_utils.TimeNow()
-		time_utils.TimeNow = func() time.Time {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
 			return gameDate.Add(time.Duration(activeGameLag-1) * time.Second)
 		}
 
@@ -70,121 +92,5 @@ func TestGame_IsActive(t *testing.T) {
 		}
 		got := g.IsActive()
 		assert.True(t, got)
-	})
-}
-
-func TestFacade_ValidateGame(t *testing.T) {
-	t.Run("league id validation error", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: -1,
-			Number:   "1",
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidLeagueID)
-	})
-
-	t.Run("game type validation error case 1", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     0,
-			Number:   "1",
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidGameType)
-	})
-
-	t.Run("game type validation error case 2", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     3,
-			Number:   "1",
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidGameType)
-	})
-
-	t.Run("game number validation error. game type is classic", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     GameTypeClassic,
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidGameNumber)
-	})
-
-	t.Run("place id validation error", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     GameTypeClassic,
-			Number:   "1",
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidPlaceID)
-	})
-
-	t.Run("date validation error", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     GameTypeClassic,
-			Number:   "1",
-			PlaceID:  1,
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidDate)
-	})
-
-	t.Run("price validation error", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     GameTypeClassic,
-			Number:   "1",
-			PlaceID:  1,
-			Date:     DateTime(time_utils.TimeNow()),
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidPrice)
-	})
-
-	t.Run("max players validation error", func(t *testing.T) {
-		err := ValidateGame(Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:     GameTypeClassic,
-			Number:   "1",
-			PlaceID:  1,
-			Date:     DateTime(time_utils.TimeNow()),
-			Price:    400,
-		})
-		assert.Error(t, err)
-		assert.ErrorIs(t, err, ErrInvalidMaxPlayers)
-	})
-
-	t.Run("ok. game type is classic", func(t *testing.T) {
-		timeNow := time_utils.TimeNow()
-
-		err := ValidateGame(Game{
-			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:       GameTypeClassic,
-			Number:     "1",
-			PlaceID:    1,
-			Date:       DateTime(timeNow),
-			Price:      400,
-			MaxPlayers: 10,
-		})
-		assert.NoError(t, err)
-	})
-
-	t.Run("ok. game type is closed", func(t *testing.T) {
-		timeNow := time_utils.TimeNow()
-
-		err := ValidateGame(Game{
-			LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Type:       GameTypeClosed,
-			Number:     "",
-			PlaceID:    1,
-			Date:       DateTime(timeNow),
-			Price:      400,
-			MaxPlayers: 10,
-		})
-		assert.NoError(t, err)
 	})
 }

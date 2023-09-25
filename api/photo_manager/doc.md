@@ -9,7 +9,6 @@
 ---
 ## Список ручек
 [/photo_manager.Service/AddGamePhotos](#/photo_manager.Service/AddGamePhotos)  
-[/photo_manager.Service/GetGameWithPhotosIDs](#/photo_manager.Service/GetGameWithPhotosIDs)  
 [/photo_manager.Service/GetPhotosByGameID](#/photo_manager.Service/GetPhotosByGameID)  
 
 ---
@@ -18,7 +17,7 @@
 
 ### <a id="/photo_manager.Service/AddGamePhotos">AddGamePhotos</a>
 ### Описание
-Добавляет список фотографий
+Добавляет список фотографий.
 ### Путь
 `/photo_manager.Service/AddGamePhotos`
 ### Роли
@@ -33,24 +32,9 @@
 | - | - | - |
 
 ---
-### <a id="/photo_manager.Service/GetGameWithPhotosIDs">GetGameWithPhotosIDs</a>
-### Описание
-Возращает список ID игр с фотографиями
-### Путь
-`/photo_manager.Service/GetGameWithPhotosIDs`
-### Роли
-+ public
-### Возвращаемые ошибки
-| Код | Причина | Описание |
-| - | - | - |
-| Internal | | В остальных случаях |
-| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
-| - | - | - |
-
----
 ### <a id="/photo_manager.Service/GetPhotosByGameID">GetPhotosByGameID</a>
 ### Описание
-Возвращает список URL ссылок на фотографии с игры
+Возвращает список URL ссылок на фотографии с игры.
 ### Путь
 `/photo_manager.Service/GetPhotosByGameID`
 ### Роли

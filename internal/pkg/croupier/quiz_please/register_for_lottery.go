@@ -32,7 +32,7 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	multipartObjects := []multipartObject{
 		{
 			name:  "game_id",
-			value: strings.NewReader(strconv.FormatInt(int64(game.ExternalID), 10)),
+			value: strings.NewReader(strconv.FormatInt(int64(game.ExternalID.Value()), 10)),
 		},
 		{
 			name:  "LotteryPlayer[team_name]",

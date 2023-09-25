@@ -11,10 +11,8 @@ import (
 type CertificateType uint8
 
 const (
-	// CertificateTypeInvalid ...
-	CertificateTypeInvalid CertificateType = iota
 	// CertificateTypeFreePass ...
-	CertificateTypeFreePass
+	CertificateTypeFreePass CertificateType = iota + 1
 	// CertificateTypeBarBillPayment ...
 	CertificateTypeBarBillPayment
 
@@ -33,7 +31,7 @@ func ValidateCertificateType(value interface{}) error {
 		return errors.New("must be CertificateType")
 	}
 
-	return validation.Validate(v, validation.Max(numberOfCertificateTypes-1))
+	return validation.Validate(v, validation.Required, validation.Min(CertificateTypeFreePass), validation.Max(numberOfCertificateTypes-1))
 }
 
 // Certificate ...

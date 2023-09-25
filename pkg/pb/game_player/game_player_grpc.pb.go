@@ -32,6 +32,8 @@ type ServiceClient interface {
 	GetGamePlayer(ctx context.Context, in *GetGamePlayerRequest, opts ...grpc.CallOption) (*GamePlayer, error)
 	// GetGamePlayersByGameID returns list of game players by game ID
 	GetGamePlayersByGameID(ctx context.Context, in *GetGamePlayersByGameIDRequest, opts ...grpc.CallOption) (*GetGamePlayersByGameIDResponse, error)
+	// GetUserGameIDs returns complete list of user game IDs
+	GetUserGameIDs(ctx context.Context, in *GetUserGameIDsRequest, opts ...grpc.CallOption) (*GetUserGameIDsResponse, error)
 	// PatchGamePlayer patches game player
 	PatchGamePlayer(ctx context.Context, in *PatchGamePlayerRequest, opts ...grpc.CallOption) (*GamePlayer, error)
 }
@@ -80,6 +82,15 @@ func (c *serviceClient) GetGamePlayersByGameID(ctx context.Context, in *GetGameP
 	return out, nil
 }
 
+func (c *serviceClient) GetUserGameIDs(ctx context.Context, in *GetUserGameIDsRequest, opts ...grpc.CallOption) (*GetUserGameIDsResponse, error) {
+	out := new(GetUserGameIDsResponse)
+	err := c.cc.Invoke(ctx, "/game_player.Service/GetUserGameIDs", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *serviceClient) PatchGamePlayer(ctx context.Context, in *PatchGamePlayerRequest, opts ...grpc.CallOption) (*GamePlayer, error) {
 	out := new(GamePlayer)
 	err := c.cc.Invoke(ctx, "/game_player.Service/PatchGamePlayer", in, out, opts...)
@@ -101,6 +112,8 @@ type ServiceServer interface {
 	GetGamePlayer(context.Context, *GetGamePlayerRequest) (*GamePlayer, error)
 	// GetGamePlayersByGameID returns list of game players by game ID
 	GetGamePlayersByGameID(context.Context, *GetGamePlayersByGameIDRequest) (*GetGamePlayersByGameIDResponse, error)
+	// GetUserGameIDs returns complete list of user game IDs
+	GetUserGameIDs(context.Context, *GetUserGameIDsRequest) (*GetUserGameIDsResponse, error)
 	// PatchGamePlayer patches game player
 	PatchGamePlayer(context.Context, *PatchGamePlayerRequest) (*GamePlayer, error)
 	mustEmbedUnimplementedServiceServer()
@@ -121,6 +134,9 @@ func (UnimplementedServiceServer) GetGamePlayer(context.Context, *GetGamePlayerR
 }
 func (UnimplementedServiceServer) GetGamePlayersByGameID(context.Context, *GetGamePlayersByGameIDRequest) (*GetGamePlayersByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetGamePlayersByGameID not implemented")
+}
+func (UnimplementedServiceServer) GetUserGameIDs(context.Context, *GetUserGameIDsRequest) (*GetUserGameIDsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserGameIDs not implemented")
 }
 func (UnimplementedServiceServer) PatchGamePlayer(context.Context, *PatchGamePlayerRequest) (*GamePlayer, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PatchGamePlayer not implemented")
@@ -210,6 +226,24 @@ func _Service_GetGamePlayersByGameID_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_GetUserGameIDs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserGameIDsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).GetUserGameIDs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/game_player.Service/GetUserGameIDs",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).GetUserGameIDs(ctx, req.(*GetUserGameIDsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Service_PatchGamePlayer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(PatchGamePlayerRequest)
 	if err := dec(in); err != nil {
@@ -250,6 +284,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetGamePlayersByGameID",
 			Handler:    _Service_GetGamePlayersByGameID_Handler,
+		},
+		{
+			MethodName: "GetUserGameIDs",
+			Handler:    _Service_GetUserGameIDs_Handler,
 		},
 		{
 			MethodName: "PatchGamePlayer",

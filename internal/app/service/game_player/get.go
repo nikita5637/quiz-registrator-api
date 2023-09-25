@@ -43,3 +43,16 @@ func (i *Implementation) GetGamePlayersByGameID(ctx context.Context, req *gamepl
 		GamePlayers: pbGamePlayers,
 	}, nil
 }
+
+// GetUserGameIDs ...
+func (i *Implementation) GetUserGameIDs(ctx context.Context, req *gameplayerpb.GetUserGameIDsRequest) (*gameplayerpb.GetUserGameIDsResponse, error) {
+	gameIDs, err := i.gamePlayersFacade.GetUserGameIDs(ctx, req.GetUserId())
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+		return nil, st.Err()
+	}
+
+	return &gameplayerpb.GetUserGameIDsResponse{
+		GameIds: gameIDs,
+	}, nil
+}

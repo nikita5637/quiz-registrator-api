@@ -56,6 +56,45 @@ var grpcRules = map[string]roles{
 		User: struct{}{},
 	},
 	//
+	// game
+	//
+	"/game.Service/BatchGetGames": {
+		Public: struct{}{},
+	},
+	"/game.Service/CreateGame": {
+		Management: struct{}{},
+		S2S:        struct{}{},
+	},
+	"/game.Service/DeleteGame": {
+		Management: struct{}{},
+	},
+	"/game.Service/GetGame": {
+		Public: struct{}{},
+	},
+	"/game.Service/ListGames": {
+		Public: struct{}{},
+	},
+	"/game.Service/PatchGame": {
+		Management: struct{}{},
+		S2S:        struct{}{},
+	},
+	"/game.Service/SearchGamesByLeagueID": {
+		Public: struct{}{},
+		S2S:    struct{}{},
+	},
+	"/game.Service/SearchPassedAndRegisteredGames": {
+		Public: struct{}{},
+	},
+	"/game.RegistratorService/RegisterGame": {
+		User: struct{}{},
+	},
+	"/game.RegistratorService/UnregisterGame": {
+		User: struct{}{},
+	},
+	"/game.RegistratorService/UpdatePayment": {
+		User: struct{}{},
+	},
+	//
 	// game_player
 	//
 	"/game_player.Service/CreateGamePlayer": {
@@ -68,6 +107,9 @@ var grpcRules = map[string]roles{
 		Public: struct{}{},
 	},
 	"/game_player.Service/GetGamePlayersByGameID": {
+		Public: struct{}{},
+	},
+	"/game_player.Service/GetUserGameIDs": {
 		Public: struct{}{},
 	},
 	"/game_player.Service/PatchGamePlayer": {
@@ -91,6 +133,9 @@ var grpcRules = map[string]roles{
 	"/game_result_manager.Service/PatchGameResult": {
 		Management: struct{}{},
 	},
+	"/game_result_manager.Service/SearchGameResultByGameID": {
+		Public: struct{}{},
+	},
 	//
 	// league
 	//
@@ -103,9 +148,6 @@ var grpcRules = map[string]roles{
 	"/photo_manager.Service/AddGamePhotos": {
 		Management: struct{}{},
 	},
-	"/photo_manager.Service/GetGameWithPhotosIDs": {
-		Public: struct{}{},
-	},
 	"/photo_manager.Service/GetPhotosByGameID": {
 		Public: struct{}{},
 	},
@@ -114,39 +156,6 @@ var grpcRules = map[string]roles{
 	//
 	"/place.Service/GetPlace": {
 		Public: struct{}{},
-	},
-	//
-	// registrator
-	//
-	"/registrator.RegistratorService/AddGame": {
-		Management: struct{}{},
-	},
-	"/registrator.RegistratorService/AddGames": {
-		S2S: struct{}{},
-	},
-	"/registrator.RegistratorService/DeleteGame": {
-		Management: struct{}{},
-	},
-	"/registrator.RegistratorService/GetGameByID": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetGames": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetRegisteredGames": {
-		Public: struct{}{},
-	},
-	"/registrator.RegistratorService/GetUserGames": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/RegisterGame": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UnregisterGame": {
-		User: struct{}{},
-	},
-	"/registrator.RegistratorService/UpdatePayment": {
-		User: struct{}{},
 	},
 	//
 	// user_manager

@@ -22,6 +22,7 @@ type GamePlayersFacade interface {
 	GetGamePlayer(ctx context.Context, id int32) (model.GamePlayer, error)
 	GetGamePlayersByFields(ctx context.Context, gamePlayer model.GamePlayer) ([]model.GamePlayer, error)
 	GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
+	GetUserGameIDs(ctx context.Context, userID int32) ([]int32, error)
 	PatchGamePlayer(ctx context.Context, gamePlayer model.GamePlayer) (model.GamePlayer, error)
 }
 

@@ -2,13 +2,16 @@ package gameresultmanager
 
 import (
 	"context"
+	"errors"
 	"testing"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	"github.com/stretchr/testify/assert"
+	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -31,6 +34,11 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.InvalidArgument, st.Code())
 		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, "invalid game result round points JSON value: \"invalid JSON value\"", errorInfo.Reason)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("validation error. invalid game results result place", func(t *testing.T) {
@@ -50,6 +58,11 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.InvalidArgument, st.Code())
 		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, "invalid game result result place: \"0\"", errorInfo.Reason)
+		assert.Nil(t, errorInfo.Metadata)
 	})
 
 	t.Run("create game result error. game not found", func(t *testing.T) {
@@ -73,8 +86,15 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		assert.Error(t, err)
 
 		st := status.Convert(err)
-		assert.Equal(t, codes.InvalidArgument, st.Code())
+		assert.Equal(t, codes.FailedPrecondition, st.Code())
 		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, "GAME_NOT_FOUND", errorInfo.Reason)
+		assert.Equal(t, map[string]string{
+			"error": "game not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("create game result error. game result already exists", func(t *testing.T) {
@@ -84,7 +104,7 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 			FkGameID:    1,
 			ResultPlace: 1,
 			RoundPoints: maybe.Just("{}"),
-		}).Return(model.GameResult{}, model.ErrGameResultAlreadyExists)
+		}).Return(model.GameResult{}, gameresults.ErrGameResultAlreadyExists)
 
 		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{
 			GameResult: &gameresultmanagerpb.GameResult{
@@ -100,6 +120,38 @@ func TestRegistrator_CreateGameResult(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.AlreadyExists, st.Code())
 		assert.Len(t, st.Details(), 2)
+
+		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
+		assert.True(t, ok)
+		assert.Equal(t, "GAME_RESULT_ALREADY_EXISTS", errorInfo.Reason)
+		assert.Equal(t, map[string]string{
+			"error": "game result already exists",
+		}, errorInfo.Metadata)
+	})
+
+	t.Run("error: internal error while creating game", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gameResultsFacade.EXPECT().CreateGameResult(fx.ctx, model.GameResult{
+			FkGameID:    1,
+			ResultPlace: 1,
+			RoundPoints: maybe.Just("{}"),
+		}).Return(model.GameResult{}, errors.New("some error"))
+
+		got, err := fx.gameResultManager.CreateGameResult(fx.ctx, &gameresultmanagerpb.CreateGameResultRequest{
+			GameResult: &gameresultmanagerpb.GameResult{
+				GameId:      1,
+				ResultPlace: 1,
+				RoundPoints: "{}",
+			},
+		})
+
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+		assert.Len(t, st.Details(), 0)
 	})
 
 	t.Run("ok", func(t *testing.T) {

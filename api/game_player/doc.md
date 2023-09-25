@@ -22,6 +22,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 [/game_player.Service/DeleteGamePlayer](#/game_player.Service/DeleteGamePlayer)  
 [/game_player.Service/GetGamePlayer](#/game_player.Service/GetGamePlayer)  
 [/game_player.Service/GetGamePlayersByGameID](#/game_player.Service/GetGamePlayersByGameID)  
+[/game_player.Service/GetUserGameIDs](#/game_player.Service/GetUserGameIDs)  
 [/game_player.Service/PatchGamePlayer](#/game_player.Service/PatchGamePlayer)  
 [/game_player.RegistratorService/RegisterPlayer](#/game_player.RegistratorService/RegisterPlayer)  
 [/game_player.RegistratorService/UnregisterPlayer](#/game_player.RegistratorService/UnregisterPlayer)
@@ -35,6 +36,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Создаёт сущность игрока.
 ### Путь
 `/game_player.Service/CreateGamePlayer`
+### Роли
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -55,6 +58,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Удаляет сущность игрока по её ID.
 ### Путь
 `/game_player.Service/DeleteGamePlayer`
+### Роли
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -68,6 +73,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Возвращает сущность игрока по её ID.
 ### Путь
 `/game_player.Service/GetGamePlayer`
+### Роли
++ public
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -81,6 +88,22 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Возвращает список сущностей игроков по ID игры.
 ### Путь
 `/game_player.Service/GetGamePlayersByGameID`
+### Роли
++ public
+### Возвращаемые ошибки
+| Код | Причина | Описание |
+| - | - | - |
+| Internal | | В любом случае |
+| - | - | - |
+
+---
+### <a id="/game_player.Service/GetUserGameIDs">GetUserGameIDs</a>
+### Описание
+Возвращает список ID всех игр пользователя.
+### Путь
+`/game_player.Service/GetUserGameIDs`
+### Роли
++ public
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -93,6 +116,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Изменяет сущность игрока по ID сущности.
 ### Путь
 `/game_player.Service/PatchGamePlayer`
+### Роли
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -114,6 +139,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Регистрирует пользователя на игру. Выполняет внутренние проверки бизнес-логики перед регистрацией.
 ### Путь
 `/game_player.RegistratorService/RegisterPlayer`
+### Роли
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -137,6 +164,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 Отменяет регистрацию игрока. Выполняет внутренние проверки бизнес-логики перед отменой регистрации.
 ### Путь
 `/game_player.RegistratorService/UnregisterPlayer`
+### Роли
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |

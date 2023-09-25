@@ -14,11 +14,13 @@ import (
 
 // GameStorage ...
 type GameStorage interface {
-	Delete(ctx context.Context, id int) error
+	CreateGame(ctx context.Context, game database.Game) (int, error)
+	DeleteGame(ctx context.Context, id int) error
 	Find(ctx context.Context, q builder.Cond, sort string) ([]database.Game, error)
+	FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset, limit uint64) ([]database.Game, error)
 	GetGameByID(ctx context.Context, id int) (*database.Game, error)
-	Insert(ctx context.Context, game database.Game) (int, error)
-	Update(ctx context.Context, game database.Game) error
+	PatchGame(ctx context.Context, game database.Game) error
+	Total(ctx context.Context, q builder.Cond) (uint64, error)
 }
 
 // NewGameStorage ...

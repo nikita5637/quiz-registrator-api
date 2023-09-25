@@ -10,10 +10,8 @@ import (
 type Role uint8
 
 const (
-	// RoleInvalid ...
-	RoleInvalid Role = iota
 	// RoleAdmin ...
-	RoleAdmin
+	RoleAdmin Role = iota + 1
 	// RoleManagement ...
 	RoleManagement
 	// RoleUser ...
@@ -21,7 +19,6 @@ const (
 	// ...
 	numberOfRoles
 
-	invalid    = "invalid"
 	admin      = "admin"
 	management = "management"
 	user       = "user"
@@ -30,8 +27,6 @@ const (
 // String ...
 func (r Role) String() string {
 	switch r {
-	case RoleInvalid:
-		return invalid
 	case RoleAdmin:
 		return admin
 	case RoleManagement:
@@ -40,7 +35,7 @@ func (r Role) String() string {
 		return user
 	}
 
-	return invalid
+	return "invalid"
 }
 
 // ValidateRole ...
@@ -50,7 +45,7 @@ func ValidateRole(value interface{}) error {
 		return errors.New("must be Role")
 	}
 
-	return validation.Validate(v, validation.Max(numberOfRoles-1))
+	return validation.Validate(v, validation.Required, validation.Min(RoleAdmin), validation.Max(numberOfRoles-1))
 }
 
 // UserRole ...

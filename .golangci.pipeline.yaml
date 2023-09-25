@@ -7,6 +7,7 @@ run:
   skip-dirs:
     - bin
     - vendor
+    - tests
   skip-files:
     - \.pb\.go$
     - \.pb\.gw\.go$

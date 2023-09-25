@@ -17,7 +17,6 @@ func (i *Implementation) AddGamePhotos(ctx context.Context, req *photomanagerpb.
 	err := i.gamePhotosFacade.AddGamePhotos(ctx, req.GetGameId(), req.GetUrls())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-
 		if errors.Is(err, games.ErrGameNotFound) {
 			st = model.GetStatus(ctx, codes.FailedPrecondition, err.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
 		}

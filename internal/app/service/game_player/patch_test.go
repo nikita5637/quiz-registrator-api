@@ -416,14 +416,14 @@ func Test_validatePatchedGamePlayer(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid degree",
+			name: "degree eq 0",
 			args: args{
 				gamePlayer: model.GamePlayer{
 					ID:           1,
 					GameID:       1,
 					UserID:       maybe.Just(int32(1)),
 					RegisteredBy: 1,
-					Degree:       model.DegreeInvalid,
+					Degree:       0,
 				},
 			},
 			wantErr: true,

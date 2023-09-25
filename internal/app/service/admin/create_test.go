@@ -174,11 +174,11 @@ func Test_validateCreatedUserRole(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid user role",
+			name: "user role eq 0",
 			args: args{
 				userRole: model.UserRole{
 					UserID: 1,
-					Role:   model.RoleInvalid,
+					Role:   0,
 				},
 			},
 			wantErr: true,

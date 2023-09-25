@@ -52,13 +52,6 @@ func TestImplementation_GetGamePlayer(t *testing.T) {
 		st := status.Convert(err)
 		assert.Equal(t, codes.Internal, st.Code())
 		assert.Len(t, st.Details(), 0)
-
-		/*
-			errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
-			assert.True(t, ok)
-			assert.Equal(t, gameplayers.ReasonGamePlayerAlreadyRegistered, errorInfo.Reason)
-			assert.Nil(t, errorInfo.Metadata)
-		*/
 	})
 
 	t.Run("ok", func(t *testing.T) {
@@ -145,6 +138,46 @@ func TestImplementation_GetGamePlayersByGameID(t *testing.T) {
 					RegisteredBy: 1,
 					Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 				},
+			},
+		}, got)
+		assert.NoError(t, err)
+	})
+}
+
+func TestImplementation_GetUserGameIDs(t *testing.T) {
+	t.Run("error: internal error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamePlayersFacade.EXPECT().GetUserGameIDs(fx.ctx, int32(1)).Return(nil, errors.New("some error"))
+
+		got, err := fx.implementation.GetUserGameIDs(fx.ctx, &gameplayerpb.GetUserGameIDsRequest{
+			UserId: 1,
+		})
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		st := status.Convert(err)
+		assert.Equal(t, codes.Internal, st.Code())
+		assert.Len(t, st.Details(), 0)
+	})
+
+	t.Run("ok", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.gamePlayersFacade.EXPECT().GetUserGameIDs(fx.ctx, int32(1)).Return([]int32{
+			1,
+			2,
+			3,
+		}, nil)
+
+		got, err := fx.implementation.GetUserGameIDs(fx.ctx, &gameplayerpb.GetUserGameIDsRequest{
+			UserId: 1,
+		})
+		assert.Equal(t, &gameplayerpb.GetUserGameIDsResponse{
+			GameIds: []int32{
+				1,
+				2,
+				3,
 			},
 		}, got)
 		assert.NoError(t, err)

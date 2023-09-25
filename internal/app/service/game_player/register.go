@@ -78,28 +78,14 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				games.ErrGameNotFound.Error(),
-				games.ReasonGameNotFound,
-				map[string]string{
-					"error": err.Error(),
-				},
-				games.GameNotFoundLexeme,
-			)
-		} else if errors.Is(err, games.ErrGameHasPassed) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				games.ErrGameHasPassed.Error(),
-				games.ReasonGameHasPassed,
-				map[string]string{
-					"error": err.Error(),
-				},
-				games.GameHasPassedLexeme,
-			)
-
+			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
 		}
 
+		return nil, st.Err()
+	}
+
+	if game.HasPassed {
+		st := model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameHasPassed.Error(), games.ReasonGameHasPassed, nil, games.GameHasPassedLexeme)
 		return nil, st.Err()
 	}
 
@@ -130,27 +116,17 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, gameplayers.ErrGamePlayerAlreadyExists) {
-			st = model.GetStatus(ctx, codes.AlreadyExists, "game player already registered", reasonGamePlayerAlreadyRegistered, nil, gamePlayerAlreadyRegisteredLexeme)
+			st = model.GetStatus(ctx, codes.AlreadyExists, gameplayers.ErrGamePlayerAlreadyExists.Error(), reasonGamePlayerAlreadyRegistered, map[string]string{
+				"error": err.Error(),
+			}, gamePlayerAlreadyRegisteredLexeme)
 		} else if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				games.ErrGameNotFound.Error(),
-				games.ReasonGameNotFound,
-				map[string]string{
-					"error": err.Error(),
-				},
-				games.GameNotFoundLexeme,
-			)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		} else if errors.Is(err, users.ErrUserNotFound) {
-			st = model.GetStatus(ctx,
-				codes.FailedPrecondition,
-				users.ErrUserNotFound.Error(),
-				users.ReasonUserNotFound,
-				map[string]string{
-					"error": err.Error(),
-				},
-				users.UserNotFoundLexeme,
-			)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, users.ErrUserNotFound.Error(), users.ReasonUserNotFound, map[string]string{
+				"error": err.Error(),
+			}, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()

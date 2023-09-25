@@ -766,7 +766,7 @@ func Test_validatePatchedUser(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid state",
+			name: "state eq 0",
 			args: args{
 				user: model.User{
 					ID:         1,
@@ -774,7 +774,7 @@ func Test_validatePatchedUser(t *testing.T) {
 					TelegramID: 100,
 					Email:      maybe.Nothing[string](),
 					Phone:      maybe.Nothing[string](),
-					State:      model.UserStateInvalid,
+					State:      0,
 					Birthdate:  maybe.Nothing[string](),
 					Sex:        maybe.Nothing[model.Sex](),
 				},
@@ -1006,7 +1006,7 @@ func Test_validatePatchedUser(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "invalid sex value",
+			name: "sex eq 0",
 			args: args{
 				user: model.User{
 					ID:         1,
@@ -1016,7 +1016,7 @@ func Test_validatePatchedUser(t *testing.T) {
 					Phone:      maybe.Nothing[string](),
 					State:      model.UserStateWelcome,
 					Birthdate:  maybe.Nothing[string](),
-					Sex:        maybe.Just(model.SexInvalid),
+					Sex:        maybe.Just(model.Sex(0)),
 				},
 			},
 			wantErr: true,

@@ -6,13 +6,12 @@ import (
 	"testing"
 
 	"github.com/DATA-DOG/go-sqlmock"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games/mocks"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -22,10 +21,7 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	gameStorage       *dbmocks.GameStorage
-	gamePlayerStorage *dbmocks.GamePlayerStorage
-
-	rabbitMQProducer *mocks.RabbitMQProducer
+	gameStorage *dbmocks.GameStorage
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -37,17 +33,11 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		gameStorage:       dbmocks.NewGameStorage(t),
-		gamePlayerStorage: dbmocks.NewGamePlayerStorage(t),
-
-		rabbitMQProducer: mocks.NewRabbitMQProducer(t),
+		gameStorage: dbmocks.NewGameStorage(t),
 	}
 
-	fx.facade = NewFacade(Config{
-		GameStorage:       fx.gameStorage,
-		GamePlayerStorage: fx.gamePlayerStorage,
-
-		RabbitMQProducer: fx.rabbitMQProducer,
+	fx.facade = New(Config{
+		GameStorage: fx.gameStorage,
 
 		TxManager: fx.db,
 	})
@@ -60,7 +50,7 @@ func tearUp(t *testing.T) *fixture {
 }
 
 func Test_convertDBGameToModelGame(t *testing.T) {
-	timeNow := time_utils.TimeNow()
+	timeNow := timeutils.TimeNow()
 
 	type args struct {
 		game database.Game
@@ -79,7 +69,7 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 						Int64: 2,
 						Valid: true,
 					},
-					LeagueID: int(leaguepb.LeagueID_QUIZ_PLEASE),
+					LeagueID: 1,
 					Type:     1,
 					Number:   "1",
 					Name: sql.NullString{
@@ -96,37 +86,22 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 						Valid: true,
 					},
 					Registered: true,
-					CreatedAt: sql.NullTime{
-						Time:  timeNow,
-						Valid: true,
-					},
-					UpdatedAt: sql.NullTime{
-						Time:  timeNow,
-						Valid: true,
-					},
-					DeletedAt: sql.NullTime{
-						Time:  timeNow,
-						Valid: true,
-					},
 				},
 			},
 			want: model.Game{
 				ID:          1,
-				ExternalID:  2,
-				LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
+				ExternalID:  maybe.Just(int32(2)),
+				LeagueID:    int32(1),
 				Type:        1,
 				Number:      "1",
-				Name:        "name",
+				Name:        maybe.Just("name"),
 				PlaceID:     4,
 				Date:        model.DateTime(timeNow),
 				Price:       400,
-				PaymentType: "cash,card",
+				PaymentType: maybe.Just("cash,card"),
 				MaxPlayers:  9,
-				Payment:     1,
+				Payment:     maybe.Just(model.PaymentCash),
 				Registered:  true,
-				CreatedAt:   model.DateTime(timeNow),
-				UpdatedAt:   model.DateTime(timeNow),
-				DeletedAt:   model.DateTime(timeNow),
 			},
 		},
 	}
@@ -139,7 +114,7 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 }
 
 func Test_convertModelGameToDBGame(t *testing.T) {
-	timeNow := time_utils.TimeNow()
+	timeNow := timeutils.TimeNow()
 	type args struct {
 		game model.Game
 	}
@@ -153,17 +128,17 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			args: args{
 				game: model.Game{
 					ID:          1,
-					ExternalID:  2,
-					LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					ExternalID:  maybe.Just(int32(2)),
+					LeagueID:    1,
 					Type:        1,
 					Number:      "1",
-					Name:        "name",
+					Name:        maybe.Just("name"),
 					PlaceID:     4,
 					Date:        model.DateTime(timeNow),
 					Price:       400,
-					PaymentType: "cash,card",
+					PaymentType: maybe.Just("cash,card"),
 					MaxPlayers:  9,
-					Payment:     1,
+					Payment:     maybe.Just(model.PaymentCash),
 					Registered:  true,
 				},
 			},
@@ -173,7 +148,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID: int(leaguepb.LeagueID_QUIZ_PLEASE),
+				LeagueID: 1,
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
@@ -181,7 +156,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Valid:  true,
 				},
 				PlaceID:     4,
-				Date:        timeNow.UTC(),
+				Date:        timeNow,
 				Price:       400,
 				PaymentType: []byte("cash,card"),
 				MaxPlayers:  9,
@@ -197,22 +172,23 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			args: args{
 				game: model.Game{
 					ID:          1,
-					LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					ExternalID:  maybe.Nothing[int32](),
+					LeagueID:    1,
 					Type:        1,
 					Number:      "1",
-					Name:        "name",
+					Name:        maybe.Just("name"),
 					PlaceID:     4,
 					Date:        model.DateTime(timeNow),
 					Price:       400,
-					PaymentType: "cash,card",
+					PaymentType: maybe.Just("cash,card"),
 					MaxPlayers:  9,
-					Payment:     1,
+					Payment:     maybe.Just(model.PaymentCash),
 					Registered:  true,
 				},
 			},
 			want: database.Game{
 				ID:       1,
-				LeagueID: int(leaguepb.LeagueID_QUIZ_PLEASE),
+				LeagueID: 1,
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
@@ -220,7 +196,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Valid:  true,
 				},
 				PlaceID:     4,
-				Date:        timeNow.UTC(),
+				Date:        timeNow,
 				Price:       400,
 				PaymentType: []byte("cash,card"),
 				MaxPlayers:  9,
@@ -236,16 +212,17 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			args: args{
 				game: model.Game{
 					ID:          1,
-					ExternalID:  2,
-					LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					ExternalID:  maybe.Just(int32(2)),
+					LeagueID:    1,
 					Type:        1,
 					Number:      "1",
+					Name:        maybe.Nothing[string](),
 					PlaceID:     4,
 					Date:        model.DateTime(timeNow),
 					Price:       400,
-					PaymentType: "cash,card",
+					PaymentType: maybe.Just("cash,card"),
 					MaxPlayers:  9,
-					Payment:     1,
+					Payment:     maybe.Just(model.PaymentCash),
 					Registered:  true,
 				},
 			},
@@ -255,11 +232,11 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID:    int(leaguepb.LeagueID_QUIZ_PLEASE),
+				LeagueID:    1,
 				Type:        1,
 				Number:      "1",
 				PlaceID:     4,
-				Date:        timeNow.UTC(),
+				Date:        timeNow,
 				Price:       400,
 				PaymentType: []byte("cash,card"),
 				MaxPlayers:  9,
@@ -275,16 +252,17 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 			args: args{
 				game: model.Game{
 					ID:          1,
-					ExternalID:  2,
-					LeagueID:    int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					ExternalID:  maybe.Just(int32(2)),
+					LeagueID:    1,
 					Type:        1,
 					Number:      "1",
-					Name:        "name",
+					Name:        maybe.Just("name"),
 					PlaceID:     4,
 					Date:        model.DateTime(timeNow),
 					Price:       400,
-					PaymentType: "cash,card",
+					PaymentType: maybe.Just("cash,card"),
 					MaxPlayers:  9,
+					Payment:     maybe.Nothing[model.Payment](),
 					Registered:  true,
 				},
 			},
@@ -294,7 +272,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Int64: 2,
 					Valid: true,
 				},
-				LeagueID: int(leaguepb.LeagueID_QUIZ_PLEASE),
+				LeagueID: 1,
 				Type:     1,
 				Number:   "1",
 				Name: sql.NullString{
@@ -302,7 +280,7 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 					Valid:  true,
 				},
 				PlaceID:     4,
-				Date:        timeNow.UTC(),
+				Date:        timeNow,
 				Price:       400,
 				PaymentType: []byte("cash,card"),
 				MaxPlayers:  9,

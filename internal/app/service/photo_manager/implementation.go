@@ -11,8 +11,6 @@ import (
 // GamePhotosFacade ...
 type GamePhotosFacade interface {
 	AddGamePhotos(ctx context.Context, gameID int32, urls []string) error
-	GetGameWithPhotosIDs(ctx context.Context, limit, offset uint32) ([]int32, error)
-	GetNumberOfGamesWithPhotos(ctx context.Context) (uint32, error)
 	GetPhotosByGameID(ctx context.Context, gameID int32) ([]string, error)
 }
 

@@ -44,7 +44,7 @@ func TestValidateUserState(t *testing.T) {
 		{
 			name: "error. eq 0",
 			args: args{
-				value: UserStateInvalid,
+				value: UserState(0),
 			},
 			wantErr: true,
 		},
@@ -91,7 +91,7 @@ func TestValidateSex(t *testing.T) {
 		{
 			name: "error. eq 0",
 			args: args{
-				value: SexInvalid,
+				value: Sex(0),
 			},
 			wantErr: true,
 		},
