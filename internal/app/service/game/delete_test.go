@@ -30,7 +30,9 @@ func TestImplementation_DeleteGame(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, "GAME_NOT_FOUND", errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("error: internal", func(t *testing.T) {
