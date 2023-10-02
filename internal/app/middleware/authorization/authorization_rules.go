@@ -70,6 +70,7 @@ var grpcRules = map[string]roles{
 	},
 	"/game.Service/GetGame": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/game.Service/ListGames": {
 		Public: struct{}{},
@@ -141,6 +142,7 @@ var grpcRules = map[string]roles{
 	//
 	"/league.Service/GetLeague": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	//
 	// photo_manager
@@ -156,18 +158,21 @@ var grpcRules = map[string]roles{
 	//
 	"/place.Service/GetPlace": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	//
 	// user_manager
 	//
 	"/user_manager.Service/CreateUser": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/user_manager.Service/GetUser": {
 		Public: struct{}{},
 	},
 	"/user_manager.Service/GetUserByTelegramID": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/user_manager.Service/PatchUser": {
 		Public: struct{}{},

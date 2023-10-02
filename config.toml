@@ -2,7 +2,7 @@
 log_level = "info"
 elastic_address = "elasticsearch"
 elastic_port = 9200
-elastic_index = "registrator_api"
+elastic_index = "quiz_regbot"
 elastic_logs_enabled = true
 
 #
