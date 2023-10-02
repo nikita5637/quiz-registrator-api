@@ -5,8 +5,8 @@ import (
 )
 
 var (
-	// TimeNow ...
-	TimeNow = time.Now().UTC
+	// TimeNow returns time.Time in local timezone
+	TimeNow = time.Now
 )
 
 // ConvertTime returns time.Time in UTC

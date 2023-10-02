@@ -71,7 +71,7 @@ func (m *Manager) begin(ctx context.Context, name string) (context.Context, *TX,
 	}
 	txval := txValue{
 		name:           name,
-		beginTs:        timeutils.TimeNow(),
+		beginTs:        timeutils.TimeNow().UTC(),
 		sqlTransaction: tx,
 	}
 

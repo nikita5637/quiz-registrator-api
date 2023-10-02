@@ -70,7 +70,7 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 				"registered": true,
 			},
 			builder.Lt{
-				"date": timeutils.TimeNow().Add(-1 * time.Duration(activeGameLag) * time.Second),
+				"date": timeutils.TimeNow().UTC().Add(-1 * time.Duration(activeGameLag) * time.Second),
 			},
 			builder.IsNull{
 				"deleted_at",
@@ -85,7 +85,7 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 				"registered": true,
 			},
 			builder.Lt{
-				"date": timeutils.TimeNow().Add(-1 * time.Duration(activeGameLag) * time.Second),
+				"date": timeutils.TimeNow().UTC().Add(-1 * time.Duration(activeGameLag) * time.Second),
 			},
 			builder.IsNull{
 				"deleted_at",

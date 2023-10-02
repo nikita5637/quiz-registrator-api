@@ -54,5 +54,5 @@ func (g *Game) IsActive() bool {
 	}
 
 	activeGameLag := config.GetValue("ActiveGameLag").Uint16()
-	return time_utils.TimeNow().Before(g.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
+	return time_utils.TimeNow().UTC().Before(g.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
 }

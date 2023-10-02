@@ -57,8 +57,8 @@ func New(cfg Config) *Reminder {
 
 // Run ...
 func (r *Reminder) Run(ctx context.Context) error {
-	if time_utils.TimeNow().Minute() == 0 ||
-		time_utils.TimeNow().Minute() == 30 {
+	if time_utils.TimeNow().UTC().Minute() == 0 ||
+		time_utils.TimeNow().UTC().Minute() == 30 {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "lottery reminder"),
 		)))
