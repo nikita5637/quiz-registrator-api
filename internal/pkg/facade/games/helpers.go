@@ -2,10 +2,13 @@ package games
 
 import (
 	"database/sql"
+	"time"
 
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
 const (
@@ -81,4 +84,9 @@ func convertModelGameToDBGame(game model.Game) database.Game {
 	}
 
 	return databaseGame
+}
+
+func gameHasPassed(modelGame model.Game) bool {
+	activeGameLag := config.GetValue("ActiveGameLag").Uint16()
+	return !timeutils.TimeNow().UTC().Before(modelGame.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
 }

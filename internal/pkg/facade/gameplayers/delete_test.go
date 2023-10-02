@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -55,7 +55,7 @@ func TestFacade_DeleteGamePlayer(t *testing.T) {
 			ID: 1,
 			DeletedAt: sql.NullTime{
 				Valid: true,
-				Time:  time_utils.TimeNow(),
+				Time:  timeutils.TimeNow(),
 			},
 		}, nil)
 

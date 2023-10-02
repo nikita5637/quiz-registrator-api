@@ -4,9 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"time"
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
@@ -292,4 +294,53 @@ func Test_convertModelGameToDBGame(t *testing.T) {
 		got := convertModelGameToDBGame(tt.args.game)
 		assert.Equal(t, tt.want, got)
 	}
+}
+
+func Test_gameHasPassed(t *testing.T) {
+	activeGameLag := uint16(3600)
+	assert.Greater(t, activeGameLag, uint16(1))
+
+	cfg := config.GlobalConfig{}
+	cfg.ActiveGameLag = activeGameLag
+
+	config.UpdateGlobalConfig(cfg)
+
+	t.Run("game date + lag less then timeutils.TimeNow()", func(t *testing.T) {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
+			return gameDate.Add(time.Duration(activeGameLag+1) * time.Second)
+		}
+
+		g := model.Game{
+			Date: model.DateTime(gameDate),
+		}
+		got := gameHasPassed(g)
+		assert.True(t, got)
+	})
+
+	t.Run("game date + lag is equal timeutils.TimeNow()", func(t *testing.T) {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
+			return gameDate.Add(time.Duration(activeGameLag) * time.Second)
+		}
+
+		g := model.Game{
+			Date: model.DateTime(gameDate),
+		}
+		got := gameHasPassed(g)
+		assert.True(t, got)
+	})
+
+	t.Run("game date + lag is greater than timeutils.TimeNow()", func(t *testing.T) {
+		gameDate := timeutils.TimeNow()
+		timeutils.TimeNow = func() time.Time {
+			return gameDate.Add(time.Duration(activeGameLag-1) * time.Second)
+		}
+
+		g := model.Game{
+			Date: model.DateTime(gameDate),
+		}
+		got := gameHasPassed(g)
+		assert.False(t, got)
+	})
 }

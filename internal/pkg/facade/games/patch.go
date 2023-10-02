@@ -13,35 +13,35 @@ import (
 )
 
 // PatchGame ...
-func (f *Facade) PatchGame(ctx context.Context, game model.Game) (model.Game, error) {
+func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Game, error) {
 	err := f.db.RunTX(ctx, "PatchGame", func(ctx context.Context) error {
 		var builderCond builder.Cond
-		if externalID, isPresent := game.ExternalID.Get(); isPresent {
+		if externalID, isPresent := modelGame.ExternalID.Get(); isPresent {
 			builderCond = builder.And(
 				builder.Neq{
-					"id": game.ID,
+					"id": modelGame.ID,
 				},
 				builder.Eq{
 					"external_id": externalID,
-					"league_id":   game.LeagueID,
-					"place_id":    game.PlaceID,
-					"number":      game.Number,
-					"date":        game.DateTime().AsTime(),
+					"league_id":   modelGame.LeagueID,
+					"place_id":    modelGame.PlaceID,
+					"number":      modelGame.Number,
+					"date":        modelGame.DateTime().AsTime(),
 				},
 			)
 		} else {
 			builderCond = builder.And(
 				builder.Neq{
-					"id": game.ID,
+					"id": modelGame.ID,
 				},
 				builder.IsNull{
 					"external_id",
 				},
 				builder.Eq{
-					"league_id": game.LeagueID,
-					"place_id":  game.PlaceID,
-					"number":    game.Number,
-					"date":      game.DateTime().AsTime(),
+					"league_id": modelGame.LeagueID,
+					"place_id":  modelGame.PlaceID,
+					"number":    modelGame.Number,
+					"date":      modelGame.DateTime().AsTime(),
 				},
 			)
 		}
@@ -55,7 +55,7 @@ func (f *Facade) PatchGame(ctx context.Context, game model.Game) (model.Game, er
 			return ErrGameAlreadyExists
 		}
 
-		patchedDBGame := convertModelGameToDBGame(game)
+		patchedDBGame := convertModelGameToDBGame(modelGame)
 		if err := f.gameStorage.PatchGame(ctx, patchedDBGame); err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
@@ -70,7 +70,7 @@ func (f *Facade) PatchGame(ctx context.Context, game model.Game) (model.Game, er
 			return fmt.Errorf("patch game error: %w", err)
 		}
 
-		game.HasPassed = !game.IsActive()
+		modelGame.HasPassed = gameHasPassed(modelGame)
 
 		return nil
 	})
@@ -78,5 +78,5 @@ func (f *Facade) PatchGame(ctx context.Context, game model.Game) (model.Game, er
 		return model.NewGame(), fmt.Errorf("PatchGame error: %w", err)
 	}
 
-	return game, nil
+	return modelGame, nil
 }

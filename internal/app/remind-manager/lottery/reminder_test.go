@@ -11,7 +11,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -46,8 +46,8 @@ func TestNew(t *testing.T) {
 
 func TestReminder_Run(t *testing.T) {
 	t.Run("get games with active lottery error", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-02-10 10:00")
 		}
 
 		fx := tearUp(t)
@@ -63,8 +63,8 @@ func TestReminder_Run(t *testing.T) {
 	})
 
 	t.Run("get players by game ID error", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-02-10 10:00")
 		}
 
 		fx := tearUp(t)
@@ -103,8 +103,8 @@ func TestReminder_Run(t *testing.T) {
 	})
 
 	t.Run("there are not players to remind", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-02-10 10:00")
 		}
 
 		fx := tearUp(t)
@@ -137,8 +137,8 @@ func TestReminder_Run(t *testing.T) {
 	})
 
 	t.Run("publish with context error", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-02-10 10:00")
 		}
 
 		fx := tearUp(t)
@@ -189,8 +189,8 @@ func TestReminder_Run(t *testing.T) {
 	})
 
 	t.Run("ok", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-02-10 10:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-02-10 10:00")
 		}
 
 		fx := tearUp(t)

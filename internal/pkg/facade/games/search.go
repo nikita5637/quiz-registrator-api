@@ -43,10 +43,10 @@ func (f *Facade) SearchGamesByLeagueID(ctx context.Context, leagueID int32, offs
 
 		modelGames = make([]model.Game, 0, len(dbGames))
 		for _, dbGame := range dbGames {
-			game := convertDBGameToModelGame(dbGame)
-			game.HasPassed = !game.IsActive()
+			modelGame := convertDBGameToModelGame(dbGame)
+			modelGame.HasPassed = gameHasPassed(modelGame)
 
-			modelGames = append(modelGames, game)
+			modelGames = append(modelGames, modelGame)
 		}
 
 		return nil

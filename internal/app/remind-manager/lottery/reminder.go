@@ -11,7 +11,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"go.uber.org/zap"
 )
 
@@ -57,8 +57,8 @@ func New(cfg Config) *Reminder {
 
 // Run ...
 func (r *Reminder) Run(ctx context.Context) error {
-	if time_utils.TimeNow().UTC().Minute() == 0 ||
-		time_utils.TimeNow().UTC().Minute() == 30 {
+	if timeutils.TimeNow().UTC().Minute() == 0 ||
+		timeutils.TimeNow().UTC().Minute() == 30 {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "lottery reminder"),
 		)))

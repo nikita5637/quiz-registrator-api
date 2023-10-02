@@ -29,7 +29,7 @@ func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) 
 		}
 
 		modelGame = convertDBGameToModelGame(*dbGame)
-		modelGame.HasPassed = !modelGame.IsActive()
+		modelGame.HasPassed = gameHasPassed(modelGame)
 
 		return nil
 	})
@@ -57,7 +57,7 @@ func (f *Facade) GetGamesByIDs(ctx context.Context, ids []int32) ([]model.Game, 
 		modelGames = make([]model.Game, 0, len(dbGames))
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
-			modelGame.HasPassed = !modelGame.IsActive()
+			modelGame.HasPassed = gameHasPassed(modelGame)
 
 			modelGames = append(modelGames, modelGame)
 		}
@@ -90,7 +90,7 @@ func (f *Facade) GetTodaysGames(ctx context.Context) ([]model.Game, error) {
 		modelGames = make([]model.Game, 0, len(dbGames))
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
-			modelGame.HasPassed = !modelGame.IsActive()
+			modelGame.HasPassed = gameHasPassed(modelGame)
 
 			modelGames = append(modelGames, modelGame)
 		}

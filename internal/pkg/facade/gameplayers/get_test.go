@@ -9,7 +9,7 @@ import (
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -64,7 +64,7 @@ func TestFacade_GetGamePlayer(t *testing.T) {
 			RegisteredBy: 1,
 			Degree:       1,
 			DeletedAt: sql.NullTime{
-				Time:  time_utils.TimeNow(),
+				Time:  timeutils.TimeNow(),
 				Valid: true,
 			},
 		}, nil)
