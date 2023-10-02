@@ -1,40 +1,41 @@
 package model
 
 import (
-	"errors"
 	"time"
 
-	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/config"
-	pkgmodel "github.com/nikita5637/quiz-registrator-api/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
 // Game ...
 type Game struct {
 	ID          int32
-	ExternalID  int32
+	ExternalID  maybe.Maybe[int32]
 	LeagueID    int32
-	Type        int32
+	Type        GameType
 	Number      string
-	Name        string
+	Name        maybe.Maybe[string]
 	PlaceID     int32
 	Date        DateTime
 	Price       uint32
-	PaymentType string
+	PaymentType maybe.Maybe[string]
 	MaxPlayers  uint32
-	Payment     int32
+	Payment     maybe.Maybe[Payment]
 	Registered  bool
-	CreatedAt   DateTime
-	UpdatedAt   DateTime
-	DeletedAt   DateTime
+	IsInMaster  bool
 	// additional info
-	My                  bool
-	NumberOfMyLegioners uint32
-	NumberOfLegioners   uint32
-	NumberOfPlayers     uint32
-	ResultPlace         uint32
+	HasPassed bool
+}
+
+// NewGame returns dummy game
+func NewGame() Game {
+	return Game{
+		ExternalID:  maybe.Nothing[int32](),
+		Name:        maybe.Nothing[string](),
+		PaymentType: maybe.Nothing[string](),
+		Payment:     maybe.Nothing[Payment](),
+	}
 }
 
 // DateTime ...
@@ -53,78 +54,5 @@ func (g *Game) IsActive() bool {
 	}
 
 	activeGameLag := config.GetValue("ActiveGameLag").Uint16()
-	return g.DeletedAt.AsTime().IsZero() && time_utils.TimeNow().Before(g.DateTime().AsTime().Add(time.Duration(activeGameLag)*time.Second))
-}
-
-// ValidateGame ...
-func ValidateGame(game Game) error {
-	err := validation.Validate(game.LeagueID, validation.Required, validation.Min(1), validation.Max(len(leaguepb.LeagueID_value)-1))
-	if err != nil {
-		return ErrInvalidLeagueID
-	}
-
-	err = validation.Validate(game.Type, validation.Required, validation.By(validateGameType))
-	if err != nil {
-		return ErrInvalidGameType
-	}
-
-	if game.Type != pkgmodel.GameTypeClosed {
-		err = validation.Validate(game.Number, validation.Required)
-		if err != nil {
-			return ErrInvalidGameNumber
-		}
-	}
-
-	err = validation.Validate(game.PlaceID, validation.Required)
-	if err != nil {
-		return ErrInvalidPlaceID
-	}
-
-	err = validation.Validate(game.Date, validation.Required, validation.By(validateGameDate))
-	if err != nil {
-		return ErrInvalidDate
-	}
-
-	err = validation.Validate(game.Price, validation.Required)
-	if err != nil {
-		return ErrInvalidPrice
-	}
-
-	err = validation.Validate(game.MaxPlayers, validation.Required)
-	if err != nil {
-		return ErrInvalidMaxPlayers
-	}
-
-	return nil
-}
-
-func validateGameType(value interface{}) error {
-	gameType, ok := value.(int32)
-	if !ok {
-		return errors.New("game type is not int32")
-	}
-
-	if gameType == pkgmodel.GameTypeClassic ||
-		gameType == pkgmodel.GameTypeThematic ||
-		gameType == pkgmodel.GameTypeEnglish ||
-		gameType == pkgmodel.GameTypeMoviesAndMusic ||
-		gameType == pkgmodel.GameTypeClosed ||
-		gameType == pkgmodel.GameTypeThematicMoviesAndMusic {
-		return nil
-	}
-
-	return ErrInvalidGameType
-}
-
-func validateGameDate(value interface{}) error {
-	gameDate, ok := value.(DateTime)
-	if !ok {
-		return errors.New("game date is not model.DateTime")
-	}
-
-	if gameDate.AsTime().IsZero() {
-		return ErrInvalidDate
-	}
-
-	return nil
+	return time_utils.TimeNow().UTC().Before(g.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
 }

@@ -2,7 +2,6 @@ package model
 
 import (
 	"context"
-	"errors"
 	"testing"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
@@ -15,8 +14,9 @@ func TestGetStatus(t *testing.T) {
 		assert.Panics(t, func() {
 			GetStatus(context.Background(),
 				codes.OK,
-				errors.New("some error"),
+				"some error",
 				"some reason",
+				nil,
 				i18n.Lexeme{
 					Key:      "key",
 					FallBack: "fallback",
@@ -27,8 +27,9 @@ func TestGetStatus(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		got := GetStatus(context.Background(),
 			codes.InvalidArgument,
-			errors.New("some error"),
+			"some error",
 			"some reason",
+			map[string]string{},
 			i18n.Lexeme{
 				Key:      "key",
 				FallBack: "fallback",

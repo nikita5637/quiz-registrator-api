@@ -20,6 +20,8 @@ type User struct {
 	Email      sql.NullString `json:"email"`       // email
 	Phone      sql.NullString `json:"phone"`       // phone
 	State      int            `json:"state"`       // state
+	Birthdate  sql.NullTime   `json:"birthdate"`   // birthdate
+	Sex        sql.NullInt64  `json:"sex"`         // sex
 	CreatedAt  sql.NullTime   `json:"created_at"`  // created_at
 	UpdatedAt  sql.NullTime   `json:"updated_at"`  // updated_at
 }
@@ -43,7 +45,7 @@ func (s *UserStorage) GetAll(ctx context.Context) ([]User, error) {
 
 // Find perform find request by params
 func (s *UserStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]User, error) {
-	query := `SELECT id, name, telegram_id, email, phone, state, created_at, updated_at FROM user`
+	query := `SELECT id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at FROM user`
 
 	var args []interface{}
 
@@ -78,6 +80,8 @@ func (s *UserStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 			&item.Email,
 			&item.Phone,
 			&item.State,
+			&item.Birthdate,
+			&item.Sex,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 		); err != nil {
@@ -92,7 +96,7 @@ func (s *UserStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 
 // FindWithLimit perform find request by params, offset and limit
 func (s *UserStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset, limit uint64) ([]User, error) {
-	query := `SELECT id, name, telegram_id, email, phone, state, created_at, updated_at FROM user`
+	query := `SELECT id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at FROM user`
 
 	var args []interface{}
 
@@ -111,9 +115,9 @@ func (s *UserStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 	}
 
 	if limit != 0 {
-		query += ` OFFSET ? LIMIT ?`
-		args = append(args, offset)
+		query += ` LIMIT ? OFFSET ?`
 		args = append(args, limit)
+		args = append(args, offset)
 	}
 
 	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
@@ -133,6 +137,8 @@ func (s *UserStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 			&item.Email,
 			&item.Phone,
 			&item.State,
+			&item.Birthdate,
+			&item.Sex,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 		); err != nil {
@@ -184,14 +190,14 @@ func (s *UserStorage) Total(ctx context.Context, q builder.Cond) (uint64, error)
 func (s *UserStorage) Insert(ctx context.Context, item User) (int, error) {
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO user (` +
-		`name, telegram_id, email, phone, state, created_at` +
+		`name, telegram_id, email, phone, state, birthdate, sex, created_at` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
+		`?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
 		`)`
 	// run
-	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State)
+	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex)
 
-	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex)
 	if err != nil {
 		return 0, err
 	}
@@ -208,11 +214,11 @@ func (s *UserStorage) Insert(ctx context.Context, item User) (int, error) {
 func (s *UserStorage) Update(ctx context.Context, item User) error {
 	// update with primary key
 	const sqlstr = `UPDATE user SET ` +
-		`name = ?, telegram_id = ?, email = ?, phone = ?, state = ?, updated_at = UTC_TIMESTAMP() ` +
+		`name = ?, telegram_id = ?, email = ?, phone = ?, state = ?, birthdate = ?, sex = ?, updated_at = UTC_TIMESTAMP() ` +
 		`WHERE id = ?`
 	// run
-	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.ID)
-	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.ID); err != nil {
+	logger.Debugf(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex, item.ID)
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex, item.ID); err != nil {
 		return err
 	}
 
@@ -223,15 +229,15 @@ func (s *UserStorage) Update(ctx context.Context, item User) error {
 func (s *UserStorage) Upsert(ctx context.Context, item User) error {
 	// upsert
 	const sqlstr = `INSERT INTO user (` +
-		`id, name, telegram_id, email, phone, state, created_at` +
+		`id, name, telegram_id, email, phone, state, birthdate, sex, created_at` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
+		`?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`name = VALUES(name), telegram_id = VALUES(telegram_id), email = VALUES(email), phone = VALUES(phone), state = VALUES(state), created_at = VALUES(created_at), updated_at = VALUES(updated_at)`
+		`name = VALUES(name), telegram_id = VALUES(telegram_id), email = VALUES(email), phone = VALUES(phone), state = VALUES(state), birthdate = VALUES(birthdate), sex = VALUES(sex), created_at = VALUES(created_at), updated_at = VALUES(updated_at)`
 	// run
-	logger.Debugf(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.CreatedAt, item.UpdatedAt)
-	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State); err != nil {
+	logger.Debugf(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex, item.CreatedAt, item.UpdatedAt)
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.Name, item.TelegramID, item.Email, item.Phone, item.State, item.Birthdate, item.Sex); err != nil {
 		return err
 	}
 
@@ -259,13 +265,13 @@ func (s *UserStorage) Delete(ctx context.Context, id int) error {
 func (s *UserStorage) GetUserByEmail(ctx context.Context, email sql.NullString) (*User, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, name, telegram_id, email, phone, state, created_at, updated_at ` +
+		`id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at ` +
 		`FROM user ` +
 		`WHERE email = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, email)
 	u := User{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, email).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, email).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.Birthdate, &u.Sex, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -277,13 +283,13 @@ func (s *UserStorage) GetUserByEmail(ctx context.Context, email sql.NullString) 
 func (s *UserStorage) GetUserByPhone(ctx context.Context, phone sql.NullString) (*User, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, name, telegram_id, email, phone, state, created_at, updated_at ` +
+		`id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at ` +
 		`FROM user ` +
 		`WHERE phone = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, phone)
 	u := User{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, phone).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, phone).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.Birthdate, &u.Sex, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -295,13 +301,13 @@ func (s *UserStorage) GetUserByPhone(ctx context.Context, phone sql.NullString) 
 func (s *UserStorage) GetUserByTelegramID(ctx context.Context, telegramID int64) (*User, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, name, telegram_id, email, phone, state, created_at, updated_at ` +
+		`id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at ` +
 		`FROM user ` +
 		`WHERE telegram_id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, telegramID)
 	u := User{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, telegramID).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, telegramID).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.Birthdate, &u.Sex, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil
@@ -313,13 +319,13 @@ func (s *UserStorage) GetUserByTelegramID(ctx context.Context, telegramID int64)
 func (s *UserStorage) GetUserByID(ctx context.Context, id int) (*User, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, name, telegram_id, email, phone, state, created_at, updated_at ` +
+		`id, name, telegram_id, email, phone, state, birthdate, sex, created_at, updated_at ` +
 		`FROM user ` +
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	u := User{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.CreatedAt, &u.UpdatedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&u.ID, &u.Name, &u.TelegramID, &u.Email, &u.Phone, &u.State, &u.Birthdate, &u.Sex, &u.CreatedAt, &u.UpdatedAt); err != nil {
 		return nil, err
 	}
 	return &u, nil

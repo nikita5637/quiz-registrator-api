@@ -19,6 +19,11 @@ func NewLeagueStorageAdapter(txManager *tx.Manager) *LeagueStorageAdapter {
 	}
 }
 
+// CreateLeague ...
+func (a *LeagueStorageAdapter) CreateLeague(ctx context.Context, league League) (int, error) {
+	return a.leagueStorage.Insert(ctx, league)
+}
+
 // GetLeagueByID ...
 func (a *LeagueStorageAdapter) GetLeagueByID(ctx context.Context, id int32) (model.League, error) {
 	leagueDB, err := a.leagueStorage.GetLeagueByID(ctx, int(id))

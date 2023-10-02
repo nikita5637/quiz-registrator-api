@@ -14,7 +14,7 @@ type UsersFacade interface {
 	CreateUser(ctx context.Context, user model.User) (model.User, error)
 	GetUser(ctx context.Context, userID int32) (model.User, error)
 	GetUserByTelegramID(ctx context.Context, telegramID int64) (model.User, error)
-	PatchUser(ctx context.Context, user model.User, paths []string) (model.User, error)
+	PatchUser(ctx context.Context, user model.User) (model.User, error)
 }
 
 // Implementation ...

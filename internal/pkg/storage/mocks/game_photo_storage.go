@@ -5,7 +5,7 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	mysql "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -22,68 +22,21 @@ func (_m *GamePhotoStorage) EXPECT() *GamePhotoStorage_Expecter {
 	return &GamePhotoStorage_Expecter{mock: &_m.Mock}
 }
 
-// GetGameIDsWithPhotos provides a mock function with given fields: ctx, limit
-func (_m *GamePhotoStorage) GetGameIDsWithPhotos(ctx context.Context, limit uint32) ([]int32, error) {
-	ret := _m.Called(ctx, limit)
-
-	var r0 []int32
-	if rf, ok := ret.Get(0).(func(context.Context, uint32) []int32); ok {
-		r0 = rf(ctx, limit)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]int32)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, uint32) error); ok {
-		r1 = rf(ctx, limit)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GamePhotoStorage_GetGameIDsWithPhotos_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGameIDsWithPhotos'
-type GamePhotoStorage_GetGameIDsWithPhotos_Call struct {
-	*mock.Call
-}
-
-// GetGameIDsWithPhotos is a helper method to define mock.On call
-//  - ctx context.Context
-//  - limit uint32
-func (_e *GamePhotoStorage_Expecter) GetGameIDsWithPhotos(ctx interface{}, limit interface{}) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	return &GamePhotoStorage_GetGameIDsWithPhotos_Call{Call: _e.mock.On("GetGameIDsWithPhotos", ctx, limit)}
-}
-
-func (_c *GamePhotoStorage_GetGameIDsWithPhotos_Call) Run(run func(ctx context.Context, limit uint32)) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint32))
-	})
-	return _c
-}
-
-func (_c *GamePhotoStorage_GetGameIDsWithPhotos_Call) Return(_a0 []int32, _a1 error) *GamePhotoStorage_GetGameIDsWithPhotos_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
 // GetGamePhotosByGameID provides a mock function with given fields: ctx, gameID
-func (_m *GamePhotoStorage) GetGamePhotosByGameID(ctx context.Context, gameID int32) ([]model.GamePhoto, error) {
+func (_m *GamePhotoStorage) GetGamePhotosByGameID(ctx context.Context, gameID int) ([]*mysql.GamePhoto, error) {
 	ret := _m.Called(ctx, gameID)
 
-	var r0 []model.GamePhoto
-	if rf, ok := ret.Get(0).(func(context.Context, int32) []model.GamePhoto); ok {
+	var r0 []*mysql.GamePhoto
+	if rf, ok := ret.Get(0).(func(context.Context, int) []*mysql.GamePhoto); ok {
 		r0 = rf(ctx, gameID)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.GamePhoto)
+			r0 = ret.Get(0).([]*mysql.GamePhoto)
 		}
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, int) error); ok {
 		r1 = rf(ctx, gameID)
 	} else {
 		r1 = ret.Error(1)
@@ -99,36 +52,36 @@ type GamePhotoStorage_GetGamePhotosByGameID_Call struct {
 
 // GetGamePhotosByGameID is a helper method to define mock.On call
 //  - ctx context.Context
-//  - gameID int32
+//  - gameID int
 func (_e *GamePhotoStorage_Expecter) GetGamePhotosByGameID(ctx interface{}, gameID interface{}) *GamePhotoStorage_GetGamePhotosByGameID_Call {
 	return &GamePhotoStorage_GetGamePhotosByGameID_Call{Call: _e.mock.On("GetGamePhotosByGameID", ctx, gameID)}
 }
 
-func (_c *GamePhotoStorage_GetGamePhotosByGameID_Call) Run(run func(ctx context.Context, gameID int32)) *GamePhotoStorage_GetGamePhotosByGameID_Call {
+func (_c *GamePhotoStorage_GetGamePhotosByGameID_Call) Run(run func(ctx context.Context, gameID int)) *GamePhotoStorage_GetGamePhotosByGameID_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(int32))
+		run(args[0].(context.Context), args[1].(int))
 	})
 	return _c
 }
 
-func (_c *GamePhotoStorage_GetGamePhotosByGameID_Call) Return(_a0 []model.GamePhoto, _a1 error) *GamePhotoStorage_GetGamePhotosByGameID_Call {
+func (_c *GamePhotoStorage_GetGamePhotosByGameID_Call) Return(_a0 []*mysql.GamePhoto, _a1 error) *GamePhotoStorage_GetGamePhotosByGameID_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }
 
 // Insert provides a mock function with given fields: ctx, gamePhoto
-func (_m *GamePhotoStorage) Insert(ctx context.Context, gamePhoto model.GamePhoto) (int32, error) {
+func (_m *GamePhotoStorage) Insert(ctx context.Context, gamePhoto mysql.GamePhoto) (int, error) {
 	ret := _m.Called(ctx, gamePhoto)
 
-	var r0 int32
-	if rf, ok := ret.Get(0).(func(context.Context, model.GamePhoto) int32); ok {
+	var r0 int
+	if rf, ok := ret.Get(0).(func(context.Context, mysql.GamePhoto) int); ok {
 		r0 = rf(ctx, gamePhoto)
 	} else {
-		r0 = ret.Get(0).(int32)
+		r0 = ret.Get(0).(int)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, model.GamePhoto) error); ok {
+	if rf, ok := ret.Get(1).(func(context.Context, mysql.GamePhoto) error); ok {
 		r1 = rf(ctx, gamePhoto)
 	} else {
 		r1 = ret.Error(1)
@@ -144,19 +97,19 @@ type GamePhotoStorage_Insert_Call struct {
 
 // Insert is a helper method to define mock.On call
 //  - ctx context.Context
-//  - gamePhoto model.GamePhoto
+//  - gamePhoto mysql.GamePhoto
 func (_e *GamePhotoStorage_Expecter) Insert(ctx interface{}, gamePhoto interface{}) *GamePhotoStorage_Insert_Call {
 	return &GamePhotoStorage_Insert_Call{Call: _e.mock.On("Insert", ctx, gamePhoto)}
 }
 
-func (_c *GamePhotoStorage_Insert_Call) Run(run func(ctx context.Context, gamePhoto model.GamePhoto)) *GamePhotoStorage_Insert_Call {
+func (_c *GamePhotoStorage_Insert_Call) Run(run func(ctx context.Context, gamePhoto mysql.GamePhoto)) *GamePhotoStorage_Insert_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.GamePhoto))
+		run(args[0].(context.Context), args[1].(mysql.GamePhoto))
 	})
 	return _c
 }
 
-func (_c *GamePhotoStorage_Insert_Call) Return(_a0 int32, _a1 error) *GamePhotoStorage_Insert_Call {
+func (_c *GamePhotoStorage_Insert_Call) Return(_a0 int, _a1 error) *GamePhotoStorage_Insert_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }

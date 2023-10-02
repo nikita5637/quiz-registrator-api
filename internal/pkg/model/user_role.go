@@ -1,19 +1,24 @@
 package model
 
+import (
+	"errors"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
+)
+
 // Role ...
 type Role uint8
 
 const (
-	// RoleInvalid ...
-	RoleInvalid Role = 0
 	// RoleAdmin ...
-	RoleAdmin Role = 1
+	RoleAdmin Role = iota + 1
 	// RoleManagement ...
-	RoleManagement Role = 2
+	RoleManagement
 	// RoleUser ...
-	RoleUser Role = 3
+	RoleUser
+	// ...
+	numberOfRoles
 
-	invalid    = "invalid"
 	admin      = "admin"
 	management = "management"
 	user       = "user"
@@ -22,8 +27,6 @@ const (
 // String ...
 func (r Role) String() string {
 	switch r {
-	case RoleInvalid:
-		return invalid
 	case RoleAdmin:
 		return admin
 	case RoleManagement:
@@ -32,7 +35,17 @@ func (r Role) String() string {
 		return user
 	}
 
-	return invalid
+	return "invalid"
+}
+
+// ValidateRole ...
+func ValidateRole(value interface{}) error {
+	v, ok := value.(Role)
+	if !ok {
+		return errors.New("must be Role")
+	}
+
+	return validation.Validate(v, validation.Required, validation.Min(RoleAdmin), validation.Max(numberOfRoles-1))
 }
 
 // UserRole ...

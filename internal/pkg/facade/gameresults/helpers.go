@@ -3,20 +3,24 @@ package gameresults
 import (
 	"database/sql"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
 func convertDBGameResultToModelGameResult(dbGameResult database.GameResult) model.GameResult {
-	return model.GameResult{
+	ret := model.GameResult{
 		ID:          int32(dbGameResult.ID),
 		FkGameID:    int32(dbGameResult.FkGameID),
 		ResultPlace: uint32(dbGameResult.Place),
-		RoundPoints: model.MaybeString{
-			Valid: dbGameResult.Points.Valid,
-			Value: dbGameResult.Points.String,
-		},
+		RoundPoints: maybe.Nothing[string](),
 	}
+
+	if dbGameResult.Points.Valid {
+		ret.RoundPoints = maybe.Just(dbGameResult.Points.String)
+	}
+
+	return ret
 }
 
 func convertModelGameResultToDBGameResult(modelGameResult model.GameResult) database.GameResult {
@@ -25,8 +29,8 @@ func convertModelGameResultToDBGameResult(modelGameResult model.GameResult) data
 		FkGameID: int(modelGameResult.FkGameID),
 		Place:    uint8(modelGameResult.ResultPlace),
 		Points: sql.NullString{
-			Valid:  modelGameResult.RoundPoints.Valid,
-			String: modelGameResult.RoundPoints.Value,
+			String: modelGameResult.RoundPoints.Value(),
+			Valid:  modelGameResult.RoundPoints.IsPresent(),
 		},
 	}
 }

@@ -20,6 +20,7 @@ type GamePlayer struct {
 	RegisteredBy int           `json:"registered_by"` // registered_by
 	Degree       uint8         `json:"degree"`        // degree
 	CreatedAt    sql.NullTime  `json:"created_at"`    // created_at
+	UpdatedAt    sql.NullTime  `json:"updated_at"`    // updated_at
 	DeletedAt    sql.NullTime  `json:"deleted_at"`    // deleted_at
 }
 
@@ -42,7 +43,7 @@ func (s *GamePlayerStorage) GetAll(ctx context.Context) ([]GamePlayer, error) {
 
 // Find perform find request by params
 func (s *GamePlayerStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]GamePlayer, error) {
-	query := `SELECT id, fk_game_id, fk_user_id, registered_by, degree, created_at, deleted_at FROM game_player`
+	query := `SELECT id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at FROM game_player`
 
 	var args []interface{}
 
@@ -77,6 +78,7 @@ func (s *GamePlayerStorage) Find(ctx context.Context, q builder.Cond, sort strin
 			&item.RegisteredBy,
 			&item.Degree,
 			&item.CreatedAt,
+			&item.UpdatedAt,
 			&item.DeletedAt,
 		); err != nil {
 			return nil, err
@@ -90,7 +92,7 @@ func (s *GamePlayerStorage) Find(ctx context.Context, q builder.Cond, sort strin
 
 // FindWithLimit perform find request by params, offset and limit
 func (s *GamePlayerStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset, limit uint64) ([]GamePlayer, error) {
-	query := `SELECT id, fk_game_id, fk_user_id, registered_by, degree, created_at, deleted_at FROM game_player`
+	query := `SELECT id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at FROM game_player`
 
 	var args []interface{}
 
@@ -109,9 +111,9 @@ func (s *GamePlayerStorage) FindWithLimit(ctx context.Context, q builder.Cond, s
 	}
 
 	if limit != 0 {
-		query += ` OFFSET ? LIMIT ?`
-		args = append(args, offset)
+		query += ` LIMIT ? OFFSET ?`
 		args = append(args, limit)
+		args = append(args, offset)
 	}
 
 	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
@@ -131,6 +133,7 @@ func (s *GamePlayerStorage) FindWithLimit(ctx context.Context, q builder.Cond, s
 			&item.RegisteredBy,
 			&item.Degree,
 			&item.CreatedAt,
+			&item.UpdatedAt,
 			&item.DeletedAt,
 		); err != nil {
 			return nil, err
@@ -205,7 +208,7 @@ func (s *GamePlayerStorage) Insert(ctx context.Context, item GamePlayer) (int, e
 func (s *GamePlayerStorage) Update(ctx context.Context, item GamePlayer) error {
 	// update with primary key
 	const sqlstr = `UPDATE game_player SET ` +
-		`fk_game_id = ?, fk_user_id = ?, registered_by = ?, degree = ? ` +
+		`fk_game_id = ?, fk_user_id = ?, registered_by = ?, degree = ?, updated_at = UTC_TIMESTAMP() ` +
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, item.FkGameID, item.FkUserID, item.RegisteredBy, item.Degree, item.ID)
@@ -225,9 +228,9 @@ func (s *GamePlayerStorage) Upsert(ctx context.Context, item GamePlayer) error {
 		`?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`fk_game_id = VALUES(fk_game_id), fk_user_id = VALUES(fk_user_id), registered_by = VALUES(registered_by), degree = VALUES(degree), created_at = VALUES(created_at), deleted_at = VALUES(deleted_at)`
+		`fk_game_id = VALUES(fk_game_id), fk_user_id = VALUES(fk_user_id), registered_by = VALUES(registered_by), degree = VALUES(degree), created_at = VALUES(created_at), updated_at = VALUES(updated_at), deleted_at = VALUES(deleted_at)`
 	// run
-	logger.Debugf(ctx, sqlstr, item.ID, item.FkGameID, item.FkUserID, item.RegisteredBy, item.Degree, item.CreatedAt, item.DeletedAt)
+	logger.Debugf(ctx, sqlstr, item.ID, item.FkGameID, item.FkUserID, item.RegisteredBy, item.Degree, item.CreatedAt, item.UpdatedAt, item.DeletedAt)
 	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.FkGameID, item.FkUserID, item.RegisteredBy, item.Degree); err != nil {
 		return err
 	}
@@ -238,7 +241,7 @@ func (s *GamePlayerStorage) Upsert(ctx context.Context, item GamePlayer) error {
 // Delete deletes the GamePlayer from the database.
 func (s *GamePlayerStorage) Delete(ctx context.Context, id int) error {
 	// update with primary key
-	const sqlstr = `UPDATE game_player SET deleted_at = UTC_TIMESTAMP() WHERE id = ?`
+	const sqlstr = `UPDATE game_player SET updated_at = UTC_TIMESTAMP(), deleted_at = UTC_TIMESTAMP() WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 
@@ -255,7 +258,7 @@ func (s *GamePlayerStorage) Delete(ctx context.Context, id int) error {
 func (s *GamePlayerStorage) GetGamePlayerByFkGameID(ctx context.Context, fkGameID int) ([]*GamePlayer, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, deleted_at ` +
+		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at ` +
 		`FROM game_player ` +
 		`WHERE fk_game_id = ?`
 	// run
@@ -270,7 +273,7 @@ func (s *GamePlayerStorage) GetGamePlayerByFkGameID(ctx context.Context, fkGameI
 	for rows.Next() {
 		gp := GamePlayer{}
 		// scan
-		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.DeletedAt); err != nil {
+		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.UpdatedAt, &gp.DeletedAt); err != nil {
 			return nil, err
 		}
 		res = append(res, &gp)
@@ -288,7 +291,7 @@ func (s *GamePlayerStorage) GetGamePlayerByFkGameID(ctx context.Context, fkGameI
 func (s *GamePlayerStorage) GetGamePlayerByFkUserID(ctx context.Context, fkUserID sql.NullInt64) ([]*GamePlayer, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, deleted_at ` +
+		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at ` +
 		`FROM game_player ` +
 		`WHERE fk_user_id = ?`
 	// run
@@ -303,7 +306,7 @@ func (s *GamePlayerStorage) GetGamePlayerByFkUserID(ctx context.Context, fkUserI
 	for rows.Next() {
 		gp := GamePlayer{}
 		// scan
-		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.DeletedAt); err != nil {
+		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.UpdatedAt, &gp.DeletedAt); err != nil {
 			return nil, err
 		}
 		res = append(res, &gp)
@@ -321,14 +324,47 @@ func (s *GamePlayerStorage) GetGamePlayerByFkUserID(ctx context.Context, fkUserI
 func (s *GamePlayerStorage) GetGamePlayerByID(ctx context.Context, id int) (*GamePlayer, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, deleted_at ` +
+		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at ` +
 		`FROM game_player ` +
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	gp := GamePlayer{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.DeletedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.UpdatedAt, &gp.DeletedAt); err != nil {
 		return nil, err
 	}
 	return &gp, nil
+}
+
+// GetGamePlayerByRegisteredBy retrieves a row from 'game_player' as a GamePlayer.
+//
+// Generated from index 'registered_by'.
+func (s *GamePlayerStorage) GetGamePlayerByRegisteredBy(ctx context.Context, registeredBy int) ([]*GamePlayer, error) {
+	// query
+	const sqlstr = `SELECT ` +
+		`id, fk_game_id, fk_user_id, registered_by, degree, created_at, updated_at, deleted_at ` +
+		`FROM game_player ` +
+		`WHERE registered_by = ?`
+	// run
+	logger.Debugf(ctx, sqlstr, registeredBy)
+	rows, err := s.db.Sync(ctx).QueryContext(ctx, sqlstr, registeredBy)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	// process
+	var res []*GamePlayer
+	for rows.Next() {
+		gp := GamePlayer{}
+		// scan
+		if err := rows.Scan(&gp.ID, &gp.FkGameID, &gp.FkUserID, &gp.RegisteredBy, &gp.Degree, &gp.CreatedAt, &gp.UpdatedAt, &gp.DeletedAt); err != nil {
+			return nil, err
+		}
+		res = append(res, &gp)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }

@@ -2,10 +2,8 @@ package mysql
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/go-xorm/builder"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
 
@@ -21,9 +19,14 @@ func NewGamePlayerStorageAdapter(txManager *tx.Manager) *GamePlayerStorageAdapte
 	}
 }
 
-// Delete ...
-func (a *GamePlayerStorageAdapter) Delete(ctx context.Context, id int32) error {
-	return a.gamePlayerStorage.Delete(ctx, int(id))
+// CreateGamePlayer ...
+func (a *GamePlayerStorageAdapter) CreateGamePlayer(ctx context.Context, gamePlayer GamePlayer) (int, error) {
+	return a.gamePlayerStorage.Insert(ctx, gamePlayer)
+}
+
+// DeleteGamePlayer ...
+func (a *GamePlayerStorageAdapter) DeleteGamePlayer(ctx context.Context, id int) error {
+	return a.gamePlayerStorage.Delete(ctx, id)
 }
 
 // Find ...
@@ -31,27 +34,12 @@ func (a *GamePlayerStorageAdapter) Find(ctx context.Context, q builder.Cond) ([]
 	return a.gamePlayerStorage.Find(ctx, q, "")
 }
 
-// Insert ...
-func (a *GamePlayerStorageAdapter) Insert(ctx context.Context, gamePlayer model.GamePlayer) (int32, error) {
-	id, err := a.gamePlayerStorage.Insert(ctx, convertModelGamePlayerToDBGamePlayer(gamePlayer))
-	if err != nil {
-		return 0, err
-	}
-
-	return int32(id), nil
+// GetGamePlayer ...
+func (a *GamePlayerStorageAdapter) GetGamePlayer(ctx context.Context, id int) (*GamePlayer, error) {
+	return a.gamePlayerStorage.GetGamePlayerByID(ctx, id)
 }
 
-func convertModelGamePlayerToDBGamePlayer(gamePlayer model.GamePlayer) GamePlayer {
-	ret := GamePlayer{
-		ID:       int(gamePlayer.ID),
-		FkGameID: int(gamePlayer.FkGameID),
-		FkUserID: sql.NullInt64{
-			Int64: int64(gamePlayer.FkUserID.Value),
-			Valid: gamePlayer.FkUserID.Valid,
-		},
-		RegisteredBy: int(gamePlayer.RegisteredBy),
-		Degree:       uint8(gamePlayer.Degree),
-	}
-
-	return ret
+// PatchGamePlayer ...
+func (a *GamePlayerStorageAdapter) PatchGamePlayer(ctx context.Context, gamePlayer GamePlayer) error {
+	return a.gamePlayerStorage.Update(ctx, gamePlayer)
 }

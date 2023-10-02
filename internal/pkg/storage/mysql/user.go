@@ -33,7 +33,7 @@ func (a *UserStorageAdapter) Insert(ctx context.Context, user User) (int, error)
 	return a.userStorage.Insert(ctx, user)
 }
 
-// Update ...
-func (a *UserStorageAdapter) Update(ctx context.Context, user User) error {
+// PatchUser ...
+func (a *UserStorageAdapter) PatchUser(ctx context.Context, user User) error {
 	return a.userStorage.Update(ctx, user)
 }

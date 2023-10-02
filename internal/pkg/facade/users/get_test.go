@@ -4,7 +4,9 @@ import (
 	"database/sql"
 	"errors"
 	"testing"
+	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
@@ -48,6 +50,9 @@ func TestFacade_GetUser(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
+		birthDateTime, err := time.Parse("2006-01-02", birthDate)
+		assert.NoError(t, err)
+
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
@@ -64,6 +69,14 @@ func TestFacade_GetUser(t *testing.T) {
 				Valid:  true,
 			},
 			State: 1,
+			Birthdate: sql.NullTime{
+				Time:  birthDateTime,
+				Valid: true,
+			},
+			Sex: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
 		}, nil)
 
 		got, err := fx.facade.GetUser(fx.ctx, 1)
@@ -71,9 +84,11 @@ func TestFacade_GetUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      1,
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}, got)
 		assert.NoError(t, err)
 
@@ -119,6 +134,9 @@ func TestFacade_GetUserByTelegramID(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
+		birthDateTime, err := time.Parse("2006-01-02", birthDate)
+		assert.NoError(t, err)
+
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
@@ -135,6 +153,14 @@ func TestFacade_GetUserByTelegramID(t *testing.T) {
 				Valid:  true,
 			},
 			State: 1,
+			Birthdate: sql.NullTime{
+				Time:  birthDateTime,
+				Valid: true,
+			},
+			Sex: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
 		}, nil)
 
 		got, err := fx.facade.GetUserByTelegramID(fx.ctx, -100)
@@ -142,9 +168,11 @@ func TestFacade_GetUserByTelegramID(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      model.NewMaybeString("email"),
-			Phone:      model.NewMaybeString("phone"),
+			Email:      maybe.Just("email"),
+			Phone:      maybe.Just("phone"),
 			State:      1,
+			Birthdate:  maybe.Just("1990-01-30"),
+			Sex:        maybe.Just(model.SexMale),
 		}, got)
 		assert.NoError(t, err)
 

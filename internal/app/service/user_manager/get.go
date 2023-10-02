@@ -3,10 +3,8 @@ package usermanager
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	users "github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
 	"google.golang.org/grpc/codes"
@@ -19,8 +17,7 @@ func (i *Implementation) GetUser(ctx context.Context, req *usermanagerpb.GetUser
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			reason := fmt.Sprintf("user not found")
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, i18n.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reasonUserNotFound, nil, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -35,8 +32,7 @@ func (i *Implementation) GetUserByTelegramID(ctx context.Context, req *usermanag
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, users.ErrUserNotFound) {
-			reason := fmt.Sprintf("user not found")
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, i18n.UserNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reasonUserNotFound, nil, users.UserNotFoundLexeme)
 		}
 
 		return nil, st.Err()

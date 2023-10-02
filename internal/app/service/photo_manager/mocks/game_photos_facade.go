@@ -5,7 +5,6 @@ package mocks
 import (
 	context "context"
 
-	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -58,98 +57,6 @@ func (_c *GamePhotosFacade_AddGamePhotos_Call) Run(run func(ctx context.Context,
 
 func (_c *GamePhotosFacade_AddGamePhotos_Call) Return(_a0 error) *GamePhotosFacade_AddGamePhotos_Call {
 	_c.Call.Return(_a0)
-	return _c
-}
-
-// GetGamesWithPhotos provides a mock function with given fields: ctx, limit, offset
-func (_m *GamePhotosFacade) GetGamesWithPhotos(ctx context.Context, limit uint32, offset uint32) ([]model.Game, error) {
-	ret := _m.Called(ctx, limit, offset)
-
-	var r0 []model.Game
-	if rf, ok := ret.Get(0).(func(context.Context, uint32, uint32) []model.Game); ok {
-		r0 = rf(ctx, limit, offset)
-	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]model.Game)
-		}
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, uint32, uint32) error); ok {
-		r1 = rf(ctx, limit, offset)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GamePhotosFacade_GetGamesWithPhotos_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGamesWithPhotos'
-type GamePhotosFacade_GetGamesWithPhotos_Call struct {
-	*mock.Call
-}
-
-// GetGamesWithPhotos is a helper method to define mock.On call
-//  - ctx context.Context
-//  - limit uint32
-//  - offset uint32
-func (_e *GamePhotosFacade_Expecter) GetGamesWithPhotos(ctx interface{}, limit interface{}, offset interface{}) *GamePhotosFacade_GetGamesWithPhotos_Call {
-	return &GamePhotosFacade_GetGamesWithPhotos_Call{Call: _e.mock.On("GetGamesWithPhotos", ctx, limit, offset)}
-}
-
-func (_c *GamePhotosFacade_GetGamesWithPhotos_Call) Run(run func(ctx context.Context, limit uint32, offset uint32)) *GamePhotosFacade_GetGamesWithPhotos_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(uint32), args[2].(uint32))
-	})
-	return _c
-}
-
-func (_c *GamePhotosFacade_GetGamesWithPhotos_Call) Return(_a0 []model.Game, _a1 error) *GamePhotosFacade_GetGamesWithPhotos_Call {
-	_c.Call.Return(_a0, _a1)
-	return _c
-}
-
-// GetNumberOfGamesWithPhotos provides a mock function with given fields: ctx
-func (_m *GamePhotosFacade) GetNumberOfGamesWithPhotos(ctx context.Context) (uint32, error) {
-	ret := _m.Called(ctx)
-
-	var r0 uint32
-	if rf, ok := ret.Get(0).(func(context.Context) uint32); ok {
-		r0 = rf(ctx)
-	} else {
-		r0 = ret.Get(0).(uint32)
-	}
-
-	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context) error); ok {
-		r1 = rf(ctx)
-	} else {
-		r1 = ret.Error(1)
-	}
-
-	return r0, r1
-}
-
-// GamePhotosFacade_GetNumberOfGamesWithPhotos_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetNumberOfGamesWithPhotos'
-type GamePhotosFacade_GetNumberOfGamesWithPhotos_Call struct {
-	*mock.Call
-}
-
-// GetNumberOfGamesWithPhotos is a helper method to define mock.On call
-//  - ctx context.Context
-func (_e *GamePhotosFacade_Expecter) GetNumberOfGamesWithPhotos(ctx interface{}) *GamePhotosFacade_GetNumberOfGamesWithPhotos_Call {
-	return &GamePhotosFacade_GetNumberOfGamesWithPhotos_Call{Call: _e.mock.On("GetNumberOfGamesWithPhotos", ctx)}
-}
-
-func (_c *GamePhotosFacade_GetNumberOfGamesWithPhotos_Call) Run(run func(ctx context.Context)) *GamePhotosFacade_GetNumberOfGamesWithPhotos_Call {
-	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context))
-	})
-	return _c
-}
-
-func (_c *GamePhotosFacade_GetNumberOfGamesWithPhotos_Call) Return(_a0 uint32, _a1 error) *GamePhotosFacade_GetNumberOfGamesWithPhotos_Call {
-	_c.Call.Return(_a0, _a1)
 	return _c
 }
 

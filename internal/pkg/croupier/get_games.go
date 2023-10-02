@@ -9,7 +9,7 @@ import (
 
 // GetGamesWithActiveLottery ...
 func (c *Croupier) GetGamesWithActiveLottery(ctx context.Context) ([]model.Game, error) {
-	allGames, err := c.gamesFacade.GetGames(ctx)
+	allGames, err := c.gamesFacade.ListGames(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("getting games error: %w", err)
 	}

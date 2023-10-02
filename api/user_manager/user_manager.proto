@@ -5,6 +5,13 @@ package user_manager;
 option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager;usermanager";
 
 import "google/protobuf/field_mask.proto";
+import "google/protobuf/wrappers.proto";
+
+enum Sex {
+	SEX_INVALID = 0;
+	SEX_MALE = 1;
+	SEX_FEMALE = 2;
+}
 
 enum UserState {
 	USER_STATE_INVALID = 0;
@@ -14,15 +21,19 @@ enum UserState {
 	USER_STATE_CHANGING_NAME = 4;
 	USER_STATE_CHANGING_PHONE = 5;
 	USER_STATE_CHANGING_BANNED = 6;
+	USER_STATE_CHANGING_BIRTHDATE = 7;
+	USER_STATE_CHANGING_SEX = 8;
 }
 
 message User {
 	int32 id = 1;
 	string name = 2;
 	int64 telegram_id = 3;
-	string email = 4;
-	string phone = 5;
+	google.protobuf.StringValue email = 4;
+	google.protobuf.StringValue phone = 5;
 	UserState state = 6;
+	google.protobuf.StringValue birthdate = 7;
+	optional Sex sex = 8;
 }
 
 service Service {

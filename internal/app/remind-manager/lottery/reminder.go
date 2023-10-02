@@ -1,8 +1,8 @@
 //go:generate mockery --case underscore --name Croupier --with-expecter
-//go:generate mockery --case underscore --name GamesFacade --with-expecter
+//go:generate mockery --case underscore --name GamePlayersFacade --with-expecter
 //go:generate mockery --case underscore --name RabbitMQProducer --with-expecter
 
-package game
+package lottery
 
 import (
 	"context"
@@ -20,9 +20,9 @@ type Croupier interface {
 	GetGamesWithActiveLottery(ctx context.Context) ([]model.Game, error)
 }
 
-// GamesFacade ...
-type GamesFacade interface {
-	GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
+// GamePlayersFacade ...
+type GamePlayersFacade interface {
+	GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
 }
 
 // RabbitMQProducer ...
@@ -34,15 +34,15 @@ type RabbitMQProducer interface {
 type Reminder struct {
 	alreadyRemindedGames map[int32]struct{}
 	croupier             Croupier
-	gamesFacade          GamesFacade
+	gamePlayersFacade    GamePlayersFacade
 	rabbitMQProducer     RabbitMQProducer
 }
 
 // Config ...
 type Config struct {
-	Croupier         Croupier
-	GamesFacade      GamesFacade
-	RabbitMQProducer RabbitMQProducer
+	Croupier          Croupier
+	GamePlayersFacade GamePlayersFacade
+	RabbitMQProducer  RabbitMQProducer
 }
 
 // New ...
@@ -50,15 +50,15 @@ func New(cfg Config) *Reminder {
 	return &Reminder{
 		alreadyRemindedGames: make(map[int32]struct{}, 0),
 		croupier:             cfg.Croupier,
-		gamesFacade:          cfg.GamesFacade,
+		gamePlayersFacade:    cfg.GamePlayersFacade,
 		rabbitMQProducer:     cfg.RabbitMQProducer,
 	}
 }
 
 // Run ...
 func (r *Reminder) Run(ctx context.Context) error {
-	if time_utils.TimeNow().Minute() == 0 ||
-		time_utils.TimeNow().Minute() == 30 {
+	if time_utils.TimeNow().UTC().Minute() == 0 ||
+		time_utils.TimeNow().UTC().Minute() == 30 {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "lottery reminder"),
 		)))
@@ -93,7 +93,7 @@ func (r *Reminder) run(ctx context.Context) error {
 			continue
 		}
 
-		players, err := r.gamesFacade.GetPlayersByGameID(ctx, game.ID)
+		players, err := r.gamePlayersFacade.GetGamePlayersByGameID(ctx, game.ID)
 		if err != nil {
 			logger.ErrorKV(ctx, "get players by game ID error", "error", err, "gameID", game.ID)
 			continue
@@ -101,8 +101,8 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		playerIDs := make([]int32, 0, len(players))
 		for _, player := range players {
-			if player.FkUserID.Value != 0 {
-				playerIDs = append(playerIDs, player.FkUserID.Value)
+			if player.UserID.IsPresent() {
+				playerIDs = append(playerIDs, player.UserID.Value())
 			}
 		}
 

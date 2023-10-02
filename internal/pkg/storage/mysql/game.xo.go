@@ -28,6 +28,7 @@ type Game struct {
 	MaxPlayers  uint8          `json:"max_players"`  // max_players
 	Payment     sql.NullInt64  `json:"payment"`      // payment
 	Registered  bool           `json:"registered"`   // registered
+	IsInMaster  bool           `json:"is_in_master"` // is_in_master
 	CreatedAt   sql.NullTime   `json:"created_at"`   // created_at
 	UpdatedAt   sql.NullTime   `json:"updated_at"`   // updated_at
 	DeletedAt   sql.NullTime   `json:"deleted_at"`   // deleted_at
@@ -52,7 +53,7 @@ func (s *GameStorage) GetAll(ctx context.Context) ([]Game, error) {
 
 // Find perform find request by params
 func (s *GameStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]Game, error) {
-	query := `SELECT id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at, updated_at, deleted_at FROM game`
+	query := `SELECT id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at, updated_at, deleted_at FROM game`
 
 	var args []interface{}
 
@@ -94,6 +95,7 @@ func (s *GameStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 			&item.MaxPlayers,
 			&item.Payment,
 			&item.Registered,
+			&item.IsInMaster,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 			&item.DeletedAt,
@@ -109,7 +111,7 @@ func (s *GameStorage) Find(ctx context.Context, q builder.Cond, sort string) ([]
 
 // FindWithLimit perform find request by params, offset and limit
 func (s *GameStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort string, offset, limit uint64) ([]Game, error) {
-	query := `SELECT id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at, updated_at, deleted_at FROM game`
+	query := `SELECT id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at, updated_at, deleted_at FROM game`
 
 	var args []interface{}
 
@@ -128,9 +130,9 @@ func (s *GameStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 	}
 
 	if limit != 0 {
-		query += ` OFFSET ? LIMIT ?`
-		args = append(args, offset)
+		query += ` LIMIT ? OFFSET ?`
 		args = append(args, limit)
+		args = append(args, offset)
 	}
 
 	rows, err := s.db.Sync(ctx).QueryContext(ctx, query, args...)
@@ -157,6 +159,7 @@ func (s *GameStorage) FindWithLimit(ctx context.Context, q builder.Cond, sort st
 			&item.MaxPlayers,
 			&item.Payment,
 			&item.Registered,
+			&item.IsInMaster,
 			&item.CreatedAt,
 			&item.UpdatedAt,
 			&item.DeletedAt,
@@ -209,14 +212,14 @@ func (s *GameStorage) Total(ctx context.Context, q builder.Cond) (uint64, error)
 func (s *GameStorage) Insert(ctx context.Context, item Game) (int, error) {
 	// insert (primary key generated and returned by database)
 	const sqlstr = `INSERT INTO game (` +
-		`external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at` +
+		`external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
+		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
 		`)`
 	// run
-	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered)
+	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster)
 
-	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered)
+	res, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster)
 	if err != nil {
 		return 0, err
 	}
@@ -233,11 +236,11 @@ func (s *GameStorage) Insert(ctx context.Context, item Game) (int, error) {
 func (s *GameStorage) Update(ctx context.Context, item Game) error {
 	// update with primary key
 	const sqlstr = `UPDATE game SET ` +
-		`external_id = ?, league_id = ?, type = ?, number = ?, name = ?, place_id = ?, date = ?, price = ?, payment_type = ?, max_players = ?, payment = ?, registered = ?, updated_at = UTC_TIMESTAMP() ` +
+		`external_id = ?, league_id = ?, type = ?, number = ?, name = ?, place_id = ?, date = ?, price = ?, payment_type = ?, max_players = ?, payment = ?, registered = ?, is_in_master = ?, updated_at = UTC_TIMESTAMP() ` +
 		`WHERE id = ?`
 	// run
-	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.ID)
-	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.ID); err != nil {
+	logger.Debugf(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster, item.ID)
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster, item.ID); err != nil {
 		return err
 	}
 
@@ -248,15 +251,15 @@ func (s *GameStorage) Update(ctx context.Context, item Game) error {
 func (s *GameStorage) Upsert(ctx context.Context, item Game) error {
 	// upsert
 	const sqlstr = `INSERT INTO game (` +
-		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at` +
+		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at` +
 		`) VALUES (` +
-		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
+		`?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, UTC_TIMESTAMP()` +
 		`)` +
 		` ON DUPLICATE KEY UPDATE ` +
-		`external_id = VALUES(external_id), league_id = VALUES(league_id), type = VALUES(type), number = VALUES(number), name = VALUES(name), place_id = VALUES(place_id), date = VALUES(date), price = VALUES(price), payment_type = VALUES(payment_type), max_players = VALUES(max_players), payment = VALUES(payment), registered = VALUES(registered), created_at = VALUES(created_at), updated_at = VALUES(updated_at), deleted_at = VALUES(deleted_at)`
+		`external_id = VALUES(external_id), league_id = VALUES(league_id), type = VALUES(type), number = VALUES(number), name = VALUES(name), place_id = VALUES(place_id), date = VALUES(date), price = VALUES(price), payment_type = VALUES(payment_type), max_players = VALUES(max_players), payment = VALUES(payment), registered = VALUES(registered), is_in_master = VALUES(is_in_master), created_at = VALUES(created_at), updated_at = VALUES(updated_at), deleted_at = VALUES(deleted_at)`
 	// run
-	logger.Debugf(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.CreatedAt, item.UpdatedAt, item.DeletedAt)
-	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered); err != nil {
+	logger.Debugf(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster, item.CreatedAt, item.UpdatedAt, item.DeletedAt)
+	if _, err := s.db.Master(ctx).ExecContext(ctx, sqlstr, item.ID, item.ExternalID, item.LeagueID, item.Type, item.Number, item.Name, item.PlaceID, item.Date, item.Price, item.PaymentType, item.MaxPlayers, item.Payment, item.Registered, item.IsInMaster); err != nil {
 		return err
 	}
 
@@ -283,13 +286,13 @@ func (s *GameStorage) Delete(ctx context.Context, id int) error {
 func (s *GameStorage) GetGameByID(ctx context.Context, id int) (*Game, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at, updated_at, deleted_at ` +
+		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at, updated_at, deleted_at ` +
 		`FROM game ` +
 		`WHERE id = ?`
 	// run
 	logger.Debugf(ctx, sqlstr, id)
 	g := Game{}
-	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
+	if err := s.db.Sync(ctx).QueryRowContext(ctx, sqlstr, id).Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.IsInMaster, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
 		return nil, err
 	}
 	return &g, nil
@@ -301,7 +304,7 @@ func (s *GameStorage) GetGameByID(ctx context.Context, id int) (*Game, error) {
 func (s *GameStorage) GetGameByLeagueID(ctx context.Context, leagueID int) ([]*Game, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at, updated_at, deleted_at ` +
+		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at, updated_at, deleted_at ` +
 		`FROM game ` +
 		`WHERE league_id = ?`
 	// run
@@ -316,7 +319,7 @@ func (s *GameStorage) GetGameByLeagueID(ctx context.Context, leagueID int) ([]*G
 	for rows.Next() {
 		g := Game{}
 		// scan
-		if err := rows.Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
+		if err := rows.Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.IsInMaster, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
 			return nil, err
 		}
 		res = append(res, &g)
@@ -334,7 +337,7 @@ func (s *GameStorage) GetGameByLeagueID(ctx context.Context, leagueID int) ([]*G
 func (s *GameStorage) GetGameByPlaceID(ctx context.Context, placeID int) ([]*Game, error) {
 	// query
 	const sqlstr = `SELECT ` +
-		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, created_at, updated_at, deleted_at ` +
+		`id, external_id, league_id, type, number, name, place_id, date, price, payment_type, max_players, payment, registered, is_in_master, created_at, updated_at, deleted_at ` +
 		`FROM game ` +
 		`WHERE place_id = ?`
 	// run
@@ -349,7 +352,7 @@ func (s *GameStorage) GetGameByPlaceID(ctx context.Context, placeID int) ([]*Gam
 	for rows.Next() {
 		g := Game{}
 		// scan
-		if err := rows.Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
+		if err := rows.Scan(&g.ID, &g.ExternalID, &g.LeagueID, &g.Type, &g.Number, &g.Name, &g.PlaceID, &g.Date, &g.Price, &g.PaymentType, &g.MaxPlayers, &g.Payment, &g.Registered, &g.IsInMaster, &g.CreatedAt, &g.UpdatedAt, &g.DeletedAt); err != nil {
 			return nil, err
 		}
 		res = append(res, &g)

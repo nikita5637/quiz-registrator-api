@@ -23,8 +23,8 @@ func (_m *GamesFacade) EXPECT() *GamesFacade_Expecter {
 	return &GamesFacade_Expecter{mock: &_m.Mock}
 }
 
-// GetGames provides a mock function with given fields: ctx
-func (_m *GamesFacade) GetGames(ctx context.Context) ([]model.Game, error) {
+// ListGames provides a mock function with given fields: ctx
+func (_m *GamesFacade) ListGames(ctx context.Context) ([]model.Game, error) {
 	ret := _m.Called(ctx)
 
 	var r0 []model.Game
@@ -46,25 +46,25 @@ func (_m *GamesFacade) GetGames(ctx context.Context) ([]model.Game, error) {
 	return r0, r1
 }
 
-// GamesFacade_GetGames_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'GetGames'
-type GamesFacade_GetGames_Call struct {
+// GamesFacade_ListGames_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ListGames'
+type GamesFacade_ListGames_Call struct {
 	*mock.Call
 }
 
-// GetGames is a helper method to define mock.On call
+// ListGames is a helper method to define mock.On call
 //  - ctx context.Context
-func (_e *GamesFacade_Expecter) GetGames(ctx interface{}) *GamesFacade_GetGames_Call {
-	return &GamesFacade_GetGames_Call{Call: _e.mock.On("GetGames", ctx)}
+func (_e *GamesFacade_Expecter) ListGames(ctx interface{}) *GamesFacade_ListGames_Call {
+	return &GamesFacade_ListGames_Call{Call: _e.mock.On("ListGames", ctx)}
 }
 
-func (_c *GamesFacade_GetGames_Call) Run(run func(ctx context.Context)) *GamesFacade_GetGames_Call {
+func (_c *GamesFacade_ListGames_Call) Run(run func(ctx context.Context)) *GamesFacade_ListGames_Call {
 	_c.Call.Run(func(args mock.Arguments) {
 		run(args[0].(context.Context))
 	})
 	return _c
 }
 
-func (_c *GamesFacade_GetGames_Call) Return(_a0 []model.Game, _a1 error) *GamesFacade_GetGames_Call {
+func (_c *GamesFacade_ListGames_Call) Return(_a0 []model.Game, _a1 error) *GamesFacade_ListGames_Call {
 	_c.Call.Return(_a0, _a1)
 	return _c
 }

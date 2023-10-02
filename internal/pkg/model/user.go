@@ -4,16 +4,15 @@ import (
 	"errors"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 )
 
 // UserState ...
 type UserState int
 
 const (
-	// UserStateInvalid ...
-	UserStateInvalid UserState = iota
 	// UserStateWelcome ...
-	UserStateWelcome
+	UserStateWelcome UserState = iota + 1
 	// UserStateRegistered ...
 	UserStateRegistered
 	// UserStateChangingEmail ...
@@ -24,6 +23,10 @@ const (
 	UserStateChangingPhone
 	// UserStateBanned ...
 	UserStateBanned
+	// UserStateChangingBirthdate ...
+	UserStateChangingBirthdate
+	// UserStateChangingSex ...
+	UserStateChangingSex
 
 	numberOfUserStates
 )
@@ -40,7 +43,29 @@ func ValidateUserState(value interface{}) error {
 		return errors.New("must be UserState")
 	}
 
-	return validation.Validate(v, validation.Max(numberOfUserStates-1))
+	return validation.Validate(v, validation.Required, validation.Min(UserStateWelcome), validation.Max(numberOfUserStates-1))
+}
+
+// Sex ...
+type Sex int32
+
+const (
+	// SexMale ...
+	SexMale Sex = iota + 1
+	// SexFemale ...
+	SexFemale
+
+	numberOfSexes
+)
+
+// ValidateSex ...
+func ValidateSex(value interface{}) error {
+	v, ok := value.(Sex)
+	if !ok {
+		return errors.New("must be Sex")
+	}
+
+	return validation.Validate(v, validation.Required, validation.Min(SexMale), validation.Max(numberOfSexes-1))
 }
 
 // User ...
@@ -48,7 +73,9 @@ type User struct {
 	ID         int32
 	Name       string
 	TelegramID int64
-	Email      MaybeString
-	Phone      MaybeString
+	Email      maybe.Maybe[string]
+	Phone      maybe.Maybe[string]
 	State      UserState
+	Birthdate  maybe.Maybe[string]
+	Sex        maybe.Maybe[Sex]
 }

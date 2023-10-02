@@ -28,7 +28,7 @@ func (i *Implementation) DeleteUserRole(ctx context.Context, req *adminpb.Delete
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, userroles.ErrUserRoleNotFound) {
 			reason := fmt.Sprintf("user role with ID %d not found", req.GetId())
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, userRoleNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reason, nil, userRoleNotFoundLexeme)
 		}
 
 		return nil, st.Err()

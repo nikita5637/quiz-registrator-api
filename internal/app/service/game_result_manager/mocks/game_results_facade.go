@@ -160,6 +160,51 @@ func (_c *GameResultsFacade_PatchGameResult_Call) Return(_a0 model.GameResult, _
 	return _c
 }
 
+// SearchGameResultByGameID provides a mock function with given fields: ctx, gameID
+func (_m *GameResultsFacade) SearchGameResultByGameID(ctx context.Context, gameID int32) (model.GameResult, error) {
+	ret := _m.Called(ctx, gameID)
+
+	var r0 model.GameResult
+	if rf, ok := ret.Get(0).(func(context.Context, int32) model.GameResult); ok {
+		r0 = rf(ctx, gameID)
+	} else {
+		r0 = ret.Get(0).(model.GameResult)
+	}
+
+	var r1 error
+	if rf, ok := ret.Get(1).(func(context.Context, int32) error); ok {
+		r1 = rf(ctx, gameID)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// GameResultsFacade_SearchGameResultByGameID_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'SearchGameResultByGameID'
+type GameResultsFacade_SearchGameResultByGameID_Call struct {
+	*mock.Call
+}
+
+// SearchGameResultByGameID is a helper method to define mock.On call
+//  - ctx context.Context
+//  - gameID int32
+func (_e *GameResultsFacade_Expecter) SearchGameResultByGameID(ctx interface{}, gameID interface{}) *GameResultsFacade_SearchGameResultByGameID_Call {
+	return &GameResultsFacade_SearchGameResultByGameID_Call{Call: _e.mock.On("SearchGameResultByGameID", ctx, gameID)}
+}
+
+func (_c *GameResultsFacade_SearchGameResultByGameID_Call) Run(run func(ctx context.Context, gameID int32)) *GameResultsFacade_SearchGameResultByGameID_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(context.Context), args[1].(int32))
+	})
+	return _c
+}
+
+func (_c *GameResultsFacade_SearchGameResultByGameID_Call) Return(_a0 model.GameResult, _a1 error) *GameResultsFacade_SearchGameResultByGameID_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
 type mockConstructorTestingTNewGameResultsFacade interface {
 	mock.TestingT
 	Cleanup(func())

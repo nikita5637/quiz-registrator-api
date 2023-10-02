@@ -24,11 +24,11 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	}
 
 	if !implemented {
-		return 0, fmt.Errorf("%w", model.ErrLotteryNotImplemented)
+		return 0, fmt.Errorf("%w", ErrLotteryNotImplemented)
 	}
 
 	if !c.GetIsLotteryActive(ctx, game) {
-		return 0, fmt.Errorf("%w", model.ErrLotteryNotAvailable)
+		return 0, fmt.Errorf("%w", ErrLotteryNotAvailable)
 	}
 
 	switch game.LeagueID {
@@ -48,5 +48,5 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 		return 0, nil
 	}
 
-	return 0, fmt.Errorf("register for lottery error: %w", model.ErrLotteryNotImplemented)
+	return 0, fmt.Errorf("register for lottery error: %w", ErrLotteryNotImplemented)
 }

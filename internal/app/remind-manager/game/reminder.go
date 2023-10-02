@@ -1,4 +1,5 @@
 //go:generate mockery --case underscore --name GamesFacade --with-expecter
+//go:generate mockery --case underscore --name GamePlayersFacade --with-expecter
 //go:generate mockery --case underscore --name RabbitMQProducer --with-expecter
 
 package game
@@ -10,14 +11,18 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"go.uber.org/zap"
 )
 
 // GamesFacade ...
 type GamesFacade interface {
-	GetPlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
 	GetTodaysGames(ctx context.Context) ([]model.Game, error)
+}
+
+// GamePlayersFacade ...
+type GamePlayersFacade interface { // nolint:revive
+	GetGamePlayersByGameID(ctx context.Context, gameID int32) ([]model.GamePlayer, error)
 }
 
 // RabbitMQProducer ...
@@ -27,28 +32,31 @@ type RabbitMQProducer interface {
 
 // Reminder ...
 type Reminder struct {
-	gamesFacade      GamesFacade
-	rabbitMQProducer RabbitMQProducer
+	gamesFacade       GamesFacade
+	gamePlayersFacade GamePlayersFacade
+	rabbitMQProducer  RabbitMQProducer
 }
 
 // Config ...
 type Config struct {
-	GamesFacade      GamesFacade
-	RabbitMQProducer RabbitMQProducer
+	GamesFacade       GamesFacade
+	GamePlayersFacade GamePlayersFacade
+	RabbitMQProducer  RabbitMQProducer
 }
 
 // New ...
 func New(cfg Config) *Reminder {
 	return &Reminder{
-		gamesFacade:      cfg.GamesFacade,
-		rabbitMQProducer: cfg.RabbitMQProducer,
+		gamesFacade:       cfg.GamesFacade,
+		gamePlayersFacade: cfg.GamePlayersFacade,
+		rabbitMQProducer:  cfg.RabbitMQProducer,
 	}
 }
 
-// Run runs at 10:00
+// Run runs at 07:00 UTC
 func (r *Reminder) Run(ctx context.Context) error {
-	if time_utils.TimeNow().Hour() == 10 &&
-		time_utils.TimeNow().Minute() == 0 {
+	if timeutils.TimeNow().UTC().Hour() == 7 &&
+		timeutils.TimeNow().UTC().Minute() == 0 {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "game reminder"),
 		)))
@@ -79,7 +87,7 @@ func (r *Reminder) run(ctx context.Context) error {
 	}
 
 	for _, game := range games {
-		players, err := r.gamesFacade.GetPlayersByGameID(ctx, game.ID)
+		players, err := r.gamePlayersFacade.GetGamePlayersByGameID(ctx, game.ID)
 		if err != nil {
 			logger.ErrorKV(ctx, "get players by game ID error", "error", err, "gameID", game.ID)
 			continue
@@ -87,8 +95,8 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		playerIDs := make([]int32, 0, len(players))
 		for _, player := range players {
-			if player.FkUserID.Value != 0 {
-				playerIDs = append(playerIDs, player.FkUserID.Value)
+			if player.UserID.IsPresent() {
+				playerIDs = append(playerIDs, player.UserID.Value())
 			}
 		}
 

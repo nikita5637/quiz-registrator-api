@@ -1,0 +1,159 @@
+syntax = "proto3";
+
+package game;
+
+option go_package = "github.com/nikita5637/quiz-registrator-api/pkg/pb/game;game";
+
+import "league/league.proto";
+import "google/protobuf/empty.proto";
+import "google/protobuf/field_mask.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/wrappers.proto";
+
+enum GameType {
+	GAME_TYPE_INVALID = 0;
+	GAME_TYPE_CLASSIC = 1;
+	GAME_TYPE_THEMATIC = 2;
+	GAME_TYPE_MOVIES_AND_MUSIC = 5;
+	GAME_TYPE_CLOSED = 6;
+	GAME_TYPE_THEMATIC_MOVIES_AND_MUSIC = 9;
+}
+
+enum Payment {
+	PAYMENT_INVALID = 0;
+	PAYMENT_CASH = 1;
+	PAYMENT_CERTIFICATE = 2;
+	PAYMENT_MIXED = 3;
+}
+
+message Game {
+	int32 id = 1;
+	google.protobuf.Int32Value external_id = 2;
+	league.LeagueID league_id = 3;
+	GameType type = 4;
+	string number = 5;
+	google.protobuf.StringValue name = 6;
+	int32 place_id = 7;
+	google.protobuf.Timestamp date = 8;
+	uint32 price = 9;
+	google.protobuf.StringValue payment_type = 10; // cash, card
+	uint32 max_players = 11;
+	optional Payment payment = 12;
+	bool registered = 13;
+	bool is_in_master = 14;
+	// additional info
+	bool has_passed = 15;
+}
+
+service Service {
+	// BatchGetGames returns games by game IDs
+	rpc BatchGetGames(BatchGetGamesRequest) returns (BatchGetGamesResponse) {
+	}
+	
+	// CreateGame creates a new game
+	rpc CreateGame(CreateGameRequest) returns (Game) {
+	}
+
+	// DeleteGame deletes game by game ID
+	rpc DeleteGame(DeleteGameRequest) returns (google.protobuf.Empty) {
+	}
+
+	// GetGame returns game by game ID
+	rpc GetGame(GetGameRequest) returns (Game) {
+	}
+
+	// ListGames returns complete list of games
+	rpc ListGames(google.protobuf.Empty) returns (ListGamesResponse) {
+	}
+
+	// PatchGame patches game
+	rpc PatchGame(PatchGameRequest) returns (Game) {
+	}
+
+	// SearchGamesByLeagueID returns list of games for specified league
+	rpc SearchGamesByLeagueID(SearchGamesByLeagueIDRequest) returns (SearchGamesByLeagueIDResponse) {
+	}
+
+	// SearchPassedAndRegisteredGames returns list of passed and registered games
+	rpc SearchPassedAndRegisteredGames(SearchPassedAndRegisteredGamesRequest) returns (SearchPassedAndRegisteredGamesResponse) {
+	}
+}
+
+message BatchGetGamesRequest {
+	repeated int32 ids = 1;
+}
+
+message BatchGetGamesResponse {
+	repeated Game games = 2;
+}
+
+message CreateGameRequest {
+	Game game = 1;
+}
+
+message DeleteGameRequest {
+	int32 id = 1;
+}
+
+message GetGameRequest {
+	int32 id = 1;
+}
+
+message ListGamesResponse {
+	repeated Game games = 1;
+}
+
+message PatchGameRequest {
+	Game game = 1;
+
+	google.protobuf.FieldMask update_mask = 2;
+}
+
+message SearchGamesByLeagueIDRequest {
+	league.LeagueID id = 1;
+	uint64 page = 2; 
+	uint64 page_size = 3;
+}
+
+message SearchGamesByLeagueIDResponse {
+	repeated Game games = 1;
+	uint64 total = 2;
+}
+
+message SearchPassedAndRegisteredGamesRequest {
+	uint64 page = 1; 
+	uint64 page_size = 2;
+}
+
+message SearchPassedAndRegisteredGamesResponse {
+	repeated Game games = 1;
+	uint64 total = 2;
+}
+
+
+service RegistratorService {
+	// RegisterGame registers game by game ID
+	rpc RegisterGame(RegisterGameRequest) returns (google.protobuf.Empty) {
+	}
+
+	// UnregisterGame unregisters game by game ID
+	rpc UnregisterGame(UnregisterGameRequest) returns (google.protobuf.Empty) {
+	}
+
+	// UpdatePayment updates payment by game ID
+	rpc UpdatePayment(UpdatePaymentRequest) returns (google.protobuf.Empty) {
+	}
+}
+
+message RegisterGameRequest {
+	int32 id = 1;	
+}
+
+message UnregisterGameRequest {
+	int32 id = 1;	
+}
+
+message UpdatePaymentRequest {
+	int32 id = 1;
+	Payment payment = 2;
+}

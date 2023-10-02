@@ -15,10 +15,6 @@ var (
 	errInvalidJSONRoundPointsValue = errors.New("invalid JSON round points value")
 	errInvalidResultPlace          = errors.New("invalid result place")
 
-	gameResultAlreadyExistsLexeme = i18n.Lexeme{
-		Key:      "game_result_already_exists_lexeme",
-		FallBack: "Game result already exists",
-	}
 	invalidGameResultResultPlaceValueLexeme = i18n.Lexeme{
 		Key:      "invalid_game_result_result_place_value",
 		FallBack: "Invalid game result result place value",
@@ -34,7 +30,7 @@ func convertModelGameResultToProtoGameResult(gameResult model.GameResult) *gamer
 		Id:          gameResult.ID,
 		GameId:      gameResult.FkGameID,
 		ResultPlace: gameResult.ResultPlace,
-		RoundPoints: gameResult.RoundPoints.Value,
+		RoundPoints: gameResult.RoundPoints.Value(),
 	}
 }
 

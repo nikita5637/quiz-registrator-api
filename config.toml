@@ -1,34 +1,34 @@
 #Log level
 log_level = "info"
-elastic_address = "localhost"
+elastic_address = "elasticsearch"
 elastic_port = 9200
-elastic_index = "quiz_registrator_api_prod"
+elastic_index = "quiz_regbot"
 elastic_logs_enabled = true
 
 #
 # Registrator settings
 #
-bind_address = "localhost"
+bind_address = "0.0.0.0"
 bind_port = 8080
 active_game_lag = 3600
 # lottery starts 3600 seconds before the game start
 lottery_starts_before = 3600
-rabbitmq_ics_queue_name = "quiz_ics_prod"
+rabbitmq_ics_queue_name = "ics"
 
 #
 # Reminder settings
 #
-rabbitmq_address = "localhost"
+rabbitmq_address = "rabbitmq"
 rabbitmq_port = 5672
-rabbitmq_game_reminder_queue_name = "quiz_game_reminder_prod"
-rabbitmq_lottery_reminder_queue_name = "quiz_lottery_reminder_prod"
-rabbitmq_username = "quiz_reminder"
+rabbitmq_game_reminder_queue_name = "game_reminder"
+rabbitmq_lottery_reminder_queue_name = "lottery_reminder"
+rabbitmq_username = "quiz_regbot"
 
 #
 # DB Settings
 #
 driver = "mysql"
-database_address = "localhost"
-database_name = "quiz_registrator_api_prod"
+database_address = "mysql"
+database_name = "registrator_api"
 database_port = 3306
-database_username = "quiz_prod"
+database_username = "quiz_regbot"

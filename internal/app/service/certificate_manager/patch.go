@@ -6,11 +6,10 @@ import (
 	"fmt"
 
 	validation "github.com/go-ozzo/ozzo-validation/v4"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	certificatemanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/certificate_manager"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,15 +24,7 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, certificates.ErrCertificateNotFound) {
-			st = status.New(codes.NotFound, err.Error())
-			errorInfo := &errdetails.ErrorInfo{
-				Reason: "CERTIFICATE_NOT_FOUND",
-			}
-			localizedMessage := &errdetails.LocalizedMessage{
-				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(certificateNotFoundLexeme)(ctx),
-			}
-			st, _ = st.WithDetails(errorInfo, localizedMessage)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), "CERTIFICATE_NOT_FOUND", nil, certificateNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -47,20 +38,17 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 		case "won_on":
 			patchedCertificate.WonOn = req.GetCertificate().GetWonOn()
 		case "spent_on":
-			patchedCertificate.SpentOn = model.MaybeInt32{
-				Valid: req.GetCertificate().GetSpentOn() != nil,
-				Value: req.GetCertificate().GetSpentOn().GetValue(),
+			if req.GetCertificate().GetSpentOn() != nil {
+				patchedCertificate.SpentOn = maybe.Just(req.GetCertificate().GetSpentOn().GetValue())
 			}
 		case "info":
-			patchedCertificate.Info = model.MaybeString{
-				Valid: req.GetCertificate().GetInfo() != nil,
-				Value: req.GetCertificate().GetInfo().GetValue(),
+			if req.GetCertificate().GetInfo() != nil {
+				patchedCertificate.Info = maybe.Just(req.GetCertificate().GetInfo().GetValue())
 			}
 		}
 	}
 
-	err = validatePatchedCertificate(patchedCertificate)
-	if err != nil {
+	if err = validatePatchedCertificate(patchedCertificate); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
 		if validationErrors, ok := err.(validation.Errors); ok && len(validationErrors) > 0 {
 			keys := make([]string, 0, len(validationErrors))
@@ -68,19 +56,16 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 				keys = append(keys, k)
 			}
 
-			if ed, ok := errorDetailsByField[keys[0]]; ok {
-				st = status.New(codes.InvalidArgument, fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()))
-				errorInfo := &errdetails.ErrorInfo{
-					Reason: ed.Reason,
-					Metadata: map[string]string{
+			if errorDetails := getErrorDetails(keys); errorDetails != nil {
+				st = model.GetStatus(ctx,
+					codes.InvalidArgument,
+					fmt.Sprintf("%s %s", keys[0], validationErrors[keys[0]].Error()),
+					errorDetails.Reason,
+					map[string]string{
 						"error": err.Error(),
 					},
-				}
-				localizedMessage := &errdetails.LocalizedMessage{
-					Locale:  i18n.GetLangFromContext(ctx),
-					Message: i18n.GetTranslator(ed.Lexeme)(ctx),
-				}
-				st, _ = st.WithDetails(errorInfo, localizedMessage)
+					errorDetails.Lexeme,
+				)
 			}
 		}
 
@@ -91,9 +76,9 @@ func (m *CertificateManager) PatchCertificate(ctx context.Context, req *certific
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, certificates.ErrWonOnGameNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, certificateWonOnGameNotFoundReason, certificateWonOnGameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reasonCertificateWonOnGameNotFound, nil, certificateWonOnGameNotFoundLexeme)
 		} else if errors.Is(err, certificates.ErrSpentOnGameNotFound) {
-			st = model.GetStatus(ctx, codes.InvalidArgument, err, certificateSpentOnGameNotFoundReason, certificateSpentOnGameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.InvalidArgument, err.Error(), reasonCertificateSpentOnGameNotFound, nil, certificateSpentOnGameNotFoundLexeme)
 		}
 
 		return nil, st.Err()

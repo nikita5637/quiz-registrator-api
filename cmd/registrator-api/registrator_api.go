@@ -3,21 +3,25 @@ package main
 import (
 	"context"
 	"flag"
+	"fmt"
+	"net"
 	"os"
 	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authorization"
 	errorwrap "github.com/nikita5637/quiz-registrator-api/internal/app/middleware/error_wrap"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/log"
-	"github.com/nikita5637/quiz-registrator-api/internal/app/registrator"
 	remindmanager "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager"
 	game_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/game"
 	lottery_reminder "github.com/nikita5637/quiz-registrator-api/internal/app/remind-manager/lottery"
 	adminservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/admin"
 	certificatemanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/certificate_manager"
 	croupierservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/croupier"
+	gameservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game"
+	gameplayerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_player"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
@@ -124,24 +128,17 @@ func main() {
 	gameStorage := storage.NewGameStorage(driverName, txManager)
 	gamePlayerStorage := storage.NewGamePlayerStorage(driverName, txManager)
 
-	icsRabbitMQProducerConfig := rabbitmqproducer.Config{
-		QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
-		RabbitMQChannel: rabbitMQChannel,
-	}
-	icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
-
-	if err := icsRabbitMQProducer.Connect(ctx); err != nil {
-		logger.Fatalf(ctx, "ICS producer connect error: %s", err.Error())
-	}
-
-	gamesFacadeConfig := games.Config{
-		GameStorage:       gameStorage,
+	gamePlayersFacadeConfig := gameplayers.Config{
 		GamePlayerStorage: gamePlayerStorage,
-		RabbitMQProducer:  icsRabbitMQProducer,
 		TxManager:         txManager,
 	}
+	gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
 
-	gamesFacade := games.NewFacade(gamesFacadeConfig)
+	gamesFacadeConfig := games.Config{
+		GameStorage: gameStorage,
+		TxManager:   txManager,
+	}
+	gamesFacade := games.New(gamesFacadeConfig)
 
 	quizPleaseCroupierConfig := quiz_please.Config{
 		LotteryLink: quiz_please.LotteryLink,
@@ -191,12 +188,6 @@ func main() {
 		}
 		certificateManagerService := certificatemanagerservice.New(certificateManagerServiceConfig)
 
-		gamePlayersFacadeConfig := gameplayers.Config{
-			GamePlayerStorage: gamePlayerStorage,
-			TxManager:         txManager,
-		}
-		gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
-
 		croupierServiceConfig := croupierservice.Config{
 			Croupier:          croupier,
 			GamePlayersFacade: gamePlayersFacade,
@@ -205,12 +196,33 @@ func main() {
 		croupierService := croupierservice.New(croupierServiceConfig)
 
 		gamePhotosFacadeConfig := gamephotos.Config{
-			GameStorage:       gameStorage,
-			GamePhotoStorage:  gamePhotoStorage,
-			GameResultStorage: gameResultStorage,
-			TxManager:         txManager,
+			GameStorage:      gameStorage,
+			GamePhotoStorage: gamePhotoStorage,
+			TxManager:        txManager,
 		}
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+
+		icsRabbitMQProducerConfig := rabbitmqproducer.Config{
+			QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
+			RabbitMQChannel: rabbitMQChannel,
+		}
+		icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
+
+		if err := icsRabbitMQProducer.Connect(ctx); err != nil {
+			return fmt.Errorf("ICS producer connect error: %w", err)
+		}
+
+		gameServiceConfig := gameservice.Config{
+			GamesFacade:      gamesFacade,
+			RabbitMQProducer: icsRabbitMQProducer,
+		}
+		gameService := gameservice.New(gameServiceConfig)
+
+		gamePlayerServiceConfig := gameplayerservice.Config{
+			GamesFacade:       gamesFacade,
+			GamePlayersFacade: gamePlayersFacade,
+		}
+		gamePlayerService := gameplayerservice.New(gamePlayerServiceConfig)
 
 		gameResultsFacadeConfig := gameresults.Config{
 			GameResultStorage: gameResultStorage,
@@ -271,30 +283,34 @@ func main() {
 
 		logMiddleware := log.New()
 
-		registratorConfig := registrator.Config{
-			BindAddr: config.GetBindAddress(),
-
+		apiServerConfig := apiserver.Config{
 			AuthenticationMiddleware: authenticationMiddleware,
 			AuthorizationMiddleware:  authorizationMiddleware,
 			ErrorWrapMiddleware:      errorWrapMiddleware,
 			LogMiddleware:            logMiddleware,
 
-			AdminService:              adminService,
-			CertificateManagerService: certificateManagerService,
-			CroupierService:           croupierService,
-			GameResultManagerService:  gameResultManagerService,
-			LeagueService:             leagueService,
-			PhotoManagerService:       photoManagerService,
-			PlaceService:              placeService,
-			UserManagerService:        userManagerService,
+			AdminService:                 adminService,
+			CertificateManagerService:    certificateManagerService,
+			CroupierService:              croupierService,
+			GameService:                  gameService,
+			GameRegistratorService:       gameService,
+			GamePlayerService:            gamePlayerService,
+			GamePlayerRegistratorService: gamePlayerService,
+			GameResultManagerService:     gameResultManagerService,
+			LeagueService:                leagueService,
+			PhotoManagerService:          photoManagerService,
+			PlaceService:                 placeService,
+			UserManagerService:           userManagerService,
+		}
+		apiServer := apiserver.New(apiServerConfig)
 
-			GamesFacade: gamesFacade,
+		lis, err := net.Listen("tcp", config.GetBindAddress())
+		if err != nil {
+			return fmt.Errorf("failed to listen: %w", err)
 		}
 
-		reg := registrator.New(registratorConfig)
-
 		logger.Infof(ctx, "starting registrator")
-		return reg.ListenAndServe(ctx)
+		return apiServer.ListenAndServe(ctx, lis)
 	})
 
 	g.Go(func() error {
@@ -305,12 +321,13 @@ func main() {
 		gameReminderRabbitMQProducer := rabbitmqproducer.New(gameReminderRabbitMQProducerConfig)
 
 		if err := gameReminderRabbitMQProducer.Connect(ctx); err != nil {
-			logger.Fatalf(ctx, "game reminder producer connect error: %s", err.Error())
+			return fmt.Errorf("game reminder producer connect error: %w", err)
 		}
 
 		gameReminderConfig := game_reminder.Config{
-			GamesFacade:      gamesFacade,
-			RabbitMQProducer: gameReminderRabbitMQProducer,
+			GamesFacade:       gamesFacade,
+			GamePlayersFacade: gamePlayersFacade,
+			RabbitMQProducer:  gameReminderRabbitMQProducer,
 		}
 		gameReminder := game_reminder.New(gameReminderConfig)
 
@@ -321,13 +338,13 @@ func main() {
 		lotteryReminderRabbitMQProducer := rabbitmqproducer.New(lotteryReminderRabbitMQProducerConfig)
 
 		if err := lotteryReminderRabbitMQProducer.Connect(ctx); err != nil {
-			logger.Fatalf(ctx, "lottery reminder producer connect error: %s", err.Error())
+			return fmt.Errorf("lottery reminder producer connect error: %w", err)
 		}
 
 		lotteryReminderConfig := lottery_reminder.Config{
-			Croupier:         croupier,
-			GamesFacade:      gamesFacade,
-			RabbitMQProducer: lotteryReminderRabbitMQProducer,
+			Croupier:          croupier,
+			GamePlayersFacade: gamePlayersFacade,
+			RabbitMQProducer:  lotteryReminderRabbitMQProducer,
 		}
 		lotteryReminder := lottery_reminder.New(lotteryReminderConfig)
 

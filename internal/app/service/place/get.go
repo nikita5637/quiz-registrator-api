@@ -27,7 +27,7 @@ func (i *Implementation) GetPlace(ctx context.Context, req *placepb.GetPlaceRequ
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, places.ErrPlaceNotFound) {
 			reason := fmt.Sprintf("place not found")
-			st = model.GetStatus(ctx, codes.NotFound, err, reason, placeNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.NotFound, err.Error(), reason, nil, placeNotFoundLexeme)
 		}
 
 		return nil, st.Err()

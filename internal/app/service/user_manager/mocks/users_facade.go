@@ -157,20 +157,20 @@ func (_c *UsersFacade_GetUserByTelegramID_Call) Return(_a0 model.User, _a1 error
 	return _c
 }
 
-// PatchUser provides a mock function with given fields: ctx, user, paths
-func (_m *UsersFacade) PatchUser(ctx context.Context, user model.User, paths []string) (model.User, error) {
-	ret := _m.Called(ctx, user, paths)
+// PatchUser provides a mock function with given fields: ctx, user
+func (_m *UsersFacade) PatchUser(ctx context.Context, user model.User) (model.User, error) {
+	ret := _m.Called(ctx, user)
 
 	var r0 model.User
-	if rf, ok := ret.Get(0).(func(context.Context, model.User, []string) model.User); ok {
-		r0 = rf(ctx, user, paths)
+	if rf, ok := ret.Get(0).(func(context.Context, model.User) model.User); ok {
+		r0 = rf(ctx, user)
 	} else {
 		r0 = ret.Get(0).(model.User)
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(context.Context, model.User, []string) error); ok {
-		r1 = rf(ctx, user, paths)
+	if rf, ok := ret.Get(1).(func(context.Context, model.User) error); ok {
+		r1 = rf(ctx, user)
 	} else {
 		r1 = ret.Error(1)
 	}
@@ -186,14 +186,13 @@ type UsersFacade_PatchUser_Call struct {
 // PatchUser is a helper method to define mock.On call
 //  - ctx context.Context
 //  - user model.User
-//  - paths []string
-func (_e *UsersFacade_Expecter) PatchUser(ctx interface{}, user interface{}, paths interface{}) *UsersFacade_PatchUser_Call {
-	return &UsersFacade_PatchUser_Call{Call: _e.mock.On("PatchUser", ctx, user, paths)}
+func (_e *UsersFacade_Expecter) PatchUser(ctx interface{}, user interface{}) *UsersFacade_PatchUser_Call {
+	return &UsersFacade_PatchUser_Call{Call: _e.mock.On("PatchUser", ctx, user)}
 }
 
-func (_c *UsersFacade_PatchUser_Call) Run(run func(ctx context.Context, user model.User, paths []string)) *UsersFacade_PatchUser_Call {
+func (_c *UsersFacade_PatchUser_Call) Run(run func(ctx context.Context, user model.User)) *UsersFacade_PatchUser_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(context.Context), args[1].(model.User), args[2].([]string))
+		run(args[0].(context.Context), args[1].(model.User))
 	})
 	return _c
 }

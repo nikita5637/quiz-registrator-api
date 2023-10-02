@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
@@ -50,7 +51,7 @@ func Test_convertModelGameResultToProtoGameResult(t *testing.T) {
 					ID:          1,
 					FkGameID:    2,
 					ResultPlace: 3,
-					RoundPoints: model.NewMaybeString("{\"a\": 1}"),
+					RoundPoints: maybe.Just("{\"a\": 1}"),
 				},
 			},
 			want: &gameresultmanagerpb.GameResult{

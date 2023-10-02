@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/stretchr/testify/assert"
 )
@@ -42,10 +43,7 @@ func Test_convertDBGameResultToModelGameResult(t *testing.T) {
 				ID:          1,
 				FkGameID:    2,
 				ResultPlace: 3,
-				RoundPoints: model.MaybeString{
-					Valid: true,
-					Value: "{}",
-				},
+				RoundPoints: maybe.Just("{}"),
 			},
 		},
 	}

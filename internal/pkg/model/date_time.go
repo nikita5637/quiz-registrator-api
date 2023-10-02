@@ -1,8 +1,10 @@
 package model
 
 import (
-	"fmt"
+	"errors"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation/v4"
 )
 
 const (
@@ -10,59 +12,22 @@ const (
 	TimeZoneMoscow = "Europe/Moscow"
 )
 
-var (
-	months = []string{
-		"января",
-		"февраля",
-		"марта",
-		"апреля",
-		"мая",
-		"июня",
-		"июля",
-		"августа",
-		"сентября",
-		"октября",
-		"ноября",
-		"декабря",
-	}
-
-	days = []string{
-		"ВС",
-		"ПН",
-		"ВТ",
-		"СР",
-		"ЧТ",
-		"ПТ",
-		"СБ",
-	}
-)
-
 // DateTime ...
 type DateTime time.Time
 
-// String ...
-func (d DateTime) String() string {
-	if time.Time(d).IsZero() {
-		return "time is empty"
-	}
-
-	loc, err := time.LoadLocation(TimeZoneMoscow)
-	if err != nil {
-		return ""
-	}
-
-	t := time.Time(d).In(loc)
-	return fmt.Sprintf("[%s] %02d %s: %02d:%02d", days[t.Weekday()], t.Day(), months[t.Month()-1], t.Hour(), t.Minute())
-}
-
-// AsTime returns time in UTC
+// AsTime returns time
 func (d DateTime) AsTime() time.Time {
-	return time.Time(d).UTC()
+	return time.Time(d)
 }
 
 // MarshalJSON ...
 func (d DateTime) MarshalJSON() ([]byte, error) {
 	return time.Time(d).MarshalJSON()
+}
+
+// String ...
+func (d DateTime) String() string {
+	return time.Time(d).String()
 }
 
 // UnmarshalJSON ...
@@ -74,4 +39,14 @@ func (d *DateTime) UnmarshalJSON(data []byte) error {
 
 	*d = DateTime(t)
 	return nil
+}
+
+// ValidateDateTime ...
+func ValidateDateTime(value interface{}) error {
+	dateTime, ok := value.(DateTime)
+	if !ok {
+		return errors.New("must be DateTime")
+	}
+
+	return validation.Validate(dateTime.AsTime().Unix(), validation.Required, validation.Min(1))
 }

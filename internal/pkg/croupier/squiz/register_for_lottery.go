@@ -88,9 +88,9 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 
 	data.Add("name", user.Name)
 	data.Add("team", "Жизнь и Грабля")
-	data.Add("tildaspec-phone-part[]", getPhonePart(user.Phone.Value))
-	data.Add("phone", getPhone(user.Phone.Value))
-	data.Add("email", user.Email.Value)
+	data.Add("tildaspec-phone-part[]", getPhonePart(user.Phone.Value()))
+	data.Add("phone", getPhone(user.Phone.Value()))
+	data.Add("email", user.Email.Value())
 	data.Add("policy", "yes")
 	data.Add("form-spec-comments", "")
 	gaCid, err := c.getGaCid(ctx, doc)

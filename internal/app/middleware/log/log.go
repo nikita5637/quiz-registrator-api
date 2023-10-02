@@ -13,7 +13,7 @@ import (
 // Log ...
 func (m *Middleware) Log() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-		start := timeutils.TimeNow()
+		start := timeutils.TimeNow().UTC()
 
 		h, err := handler(ctx, req)
 

@@ -3,6 +3,7 @@ package mysql
 import (
 	"context"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 )
@@ -55,13 +56,16 @@ func (a *GameResultStorageAdapter) PatchGameResult(ctx context.Context, dbGameRe
 }
 
 func convertDBGameResultToModelGameResult(game GameResult) model.GameResult {
-	return model.GameResult{
+	ret := model.GameResult{
 		ID:          int32(game.ID),
 		FkGameID:    int32(game.FkGameID),
 		ResultPlace: uint32(game.Place),
-		RoundPoints: model.MaybeString{
-			Valid: game.Points.Valid,
-			Value: game.Points.String,
-		},
+		RoundPoints: maybe.Nothing[string](),
 	}
+
+	if game.Points.Valid {
+		ret.RoundPoints = maybe.Just(game.Points.String)
+	}
+
+	return ret
 }

@@ -30,6 +30,8 @@ type ServiceClient interface {
 	ListGameResults(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ListGameResultsResponse, error)
 	// Patches game result
 	PatchGameResult(ctx context.Context, in *PatchGameResultRequest, opts ...grpc.CallOption) (*GameResult, error)
+	// SearchGameResultByGameID returns game result by game ID
+	SearchGameResultByGameID(ctx context.Context, in *SearchGameResultByGameIDRequest, opts ...grpc.CallOption) (*GameResult, error)
 }
 
 type serviceClient struct {
@@ -67,6 +69,15 @@ func (c *serviceClient) PatchGameResult(ctx context.Context, in *PatchGameResult
 	return out, nil
 }
 
+func (c *serviceClient) SearchGameResultByGameID(ctx context.Context, in *SearchGameResultByGameIDRequest, opts ...grpc.CallOption) (*GameResult, error) {
+	out := new(GameResult)
+	err := c.cc.Invoke(ctx, "/game_result_manager.Service/SearchGameResultByGameID", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ServiceServer is the server API for Service service.
 // All implementations must embed UnimplementedServiceServer
 // for forward compatibility
@@ -77,6 +88,8 @@ type ServiceServer interface {
 	ListGameResults(context.Context, *emptypb.Empty) (*ListGameResultsResponse, error)
 	// Patches game result
 	PatchGameResult(context.Context, *PatchGameResultRequest) (*GameResult, error)
+	// SearchGameResultByGameID returns game result by game ID
+	SearchGameResultByGameID(context.Context, *SearchGameResultByGameIDRequest) (*GameResult, error)
 	mustEmbedUnimplementedServiceServer()
 }
 
@@ -92,6 +105,9 @@ func (UnimplementedServiceServer) ListGameResults(context.Context, *emptypb.Empt
 }
 func (UnimplementedServiceServer) PatchGameResult(context.Context, *PatchGameResultRequest) (*GameResult, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PatchGameResult not implemented")
+}
+func (UnimplementedServiceServer) SearchGameResultByGameID(context.Context, *SearchGameResultByGameIDRequest) (*GameResult, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SearchGameResultByGameID not implemented")
 }
 func (UnimplementedServiceServer) mustEmbedUnimplementedServiceServer() {}
 
@@ -160,6 +176,24 @@ func _Service_PatchGameResult_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_SearchGameResultByGameID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SearchGameResultByGameIDRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).SearchGameResultByGameID(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/game_result_manager.Service/SearchGameResultByGameID",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).SearchGameResultByGameID(ctx, req.(*SearchGameResultByGameIDRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Service_ServiceDesc is the grpc.ServiceDesc for Service service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -178,6 +212,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PatchGameResult",
 			Handler:    _Service_PatchGameResult_Handler,
+		},
+		{
+			MethodName: "SearchGameResultByGameID",
+			Handler:    _Service_SearchGameResultByGameID_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

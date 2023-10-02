@@ -26,6 +26,10 @@ service Service {
 	// Patches game result
 	rpc PatchGameResult(PatchGameResultRequest) returns (GameResult) {
 	}
+
+	// SearchGameResultByGameID returns game result by game ID
+	rpc SearchGameResultByGameID(SearchGameResultByGameIDRequest) returns (GameResult) {
+	}
 }
 
 message CreateGameResultRequest {
@@ -40,4 +44,8 @@ message PatchGameResultRequest {
 	GameResult game_result = 1;
 
 	google.protobuf.FieldMask update_mask = 2;
+}
+
+message SearchGameResultByGameIDRequest {
+	int32 id = 1;
 }

@@ -2,6 +2,11 @@ package users
 
 import "errors"
 
+const (
+	// ReasonUserNotFound ...
+	ReasonUserNotFound = "USER_NOT_FOUND"
+)
+
 var (
 	// ErrUserNotFound ...
 	ErrUserNotFound = errors.New("user not found")

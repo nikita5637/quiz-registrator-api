@@ -71,12 +71,17 @@ generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
-	--proto_path=./api ./api/common/common.proto
+	--proto_path=./api ./api/croupier/croupier.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
-	--proto_path=./api ./api/croupier/croupier.proto
+	--proto_path=./api ./api/game/game.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/game_player/game_player.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
@@ -97,11 +102,6 @@ generate: .install-bin-deps
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/place/place.proto
-
-	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
-	--go_out=./pkg/pb --go_opt=paths=source_relative \
-	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
-	--proto_path=./api ./api/registrator/registrator.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
@@ -129,4 +129,8 @@ run:
 
 .PHONY: test
 test:
-	go test -v ./...
+	go test -v ./internal/...
+
+.PHONY: integration-test
+integration-test:
+	go test -v ./tests/...

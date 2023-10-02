@@ -1,7 +1,4 @@
-//go:generate mockery --case underscore --name Croupier --with-expecter
-//go:generate mockery --case underscore --name GamesFacade --with-expecter
-
-package game
+package lottery
 
 import (
 	"errors"
@@ -9,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
@@ -84,16 +82,16 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: model.NewMaybeInt32(1),
+				UserID: maybe.Just(int32(1)),
 			},
 			{
-				FkUserID: model.NewMaybeInt32(2),
+				UserID: maybe.Just(int32(2)),
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{}, errors.New("some error"))
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{}, errors.New("some error"))
 
 		fx.rabbitMQProducer.EXPECT().Send(ctx, reminder.Lottery{
 			GameID:    1,
@@ -121,13 +119,15 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
 				ID:           1,
+				UserID:       maybe.Nothing[int32](),
 				RegisteredBy: 1,
 			},
 			{
 				ID:           2,
+				UserID:       maybe.Nothing[int32](),
 				RegisteredBy: 1,
 			},
 		}, nil)
@@ -156,21 +156,21 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: model.NewMaybeInt32(1),
+				UserID: maybe.Just(int32(1)),
 			},
 			{
-				FkUserID: model.NewMaybeInt32(2),
+				UserID: maybe.Just(int32(2)),
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: model.NewMaybeInt32(3),
+				UserID: maybe.Just(int32(3)),
 			},
 			{
-				FkUserID: model.NewMaybeInt32(4),
+				UserID: maybe.Just(int32(4)),
 			},
 		}, nil)
 
@@ -210,21 +210,21 @@ func TestReminder_Run(t *testing.T) {
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(1)).Return([]model.GamePlayer{
 			{
-				FkUserID: model.NewMaybeInt32(1),
+				UserID: maybe.Just(int32(1)),
 			},
 			{
-				FkUserID: model.NewMaybeInt32(2),
+				UserID: maybe.Just(int32(2)),
 			},
 		}, nil)
 
-		fx.gamesFacade.EXPECT().GetPlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
+		fx.gamePlayersFacade.EXPECT().GetGamePlayersByGameID(ctx, int32(2)).Return([]model.GamePlayer{
 			{
-				FkUserID: model.NewMaybeInt32(3),
+				UserID: maybe.Just(int32(3)),
 			},
 			{
-				FkUserID: model.NewMaybeInt32(4),
+				UserID: maybe.Just(int32(4)),
 			},
 		}, nil)
 

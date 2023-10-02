@@ -14,6 +14,7 @@ type GameResultsFacade interface {
 	CreateGameResult(ctx context.Context, gameResult model.GameResult) (model.GameResult, error)
 	ListGameResults(ctx context.Context) ([]model.GameResult, error)
 	PatchGameResult(ctx context.Context, gameResult model.GameResult, paths []string) (model.GameResult, error)
+	SearchGameResultByGameID(ctx context.Context, gameID int32) (model.GameResult, error)
 }
 
 // GameResultManager ...

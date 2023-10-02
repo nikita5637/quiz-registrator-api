@@ -1,13 +1,15 @@
 package time
 
-import "time"
+import (
+	"time"
+)
 
 var (
-	// TimeNow ...
+	// TimeNow returns time.Time in local timezone
 	TimeNow = time.Now
 )
 
-// ConvertTime ...
+// ConvertTime returns time.Time in UTC
 func ConvertTime(str string) time.Time {
 	timeFormat := "2006-01-02 15:04"
 

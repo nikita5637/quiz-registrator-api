@@ -38,7 +38,7 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			GamesFacade: gamesFacadeMock,
 		})
 
-		gamesFacadeMock.EXPECT().GetGames(ctx).Return(nil, errors.New("some error"))
+		gamesFacadeMock.EXPECT().ListGames(ctx).Return(nil, errors.New("some error"))
 
 		got, err := c.GetGamesWithActiveLottery(ctx)
 		assert.Nil(t, got)
@@ -52,7 +52,7 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			GamesFacade: gamesFacadeMock,
 		})
 
-		gamesFacadeMock.EXPECT().GetGames(ctx).Return([]model.Game{
+		gamesFacadeMock.EXPECT().ListGames(ctx).Return([]model.Game{
 			{
 				ID:       1,
 				Date:     model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),
@@ -87,7 +87,7 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 			GamesFacade: gamesFacadeMock,
 		})
 
-		gamesFacadeMock.EXPECT().GetGames(ctx).Return([]model.Game{
+		gamesFacadeMock.EXPECT().ListGames(ctx).Return([]model.Game{
 			{
 				ID:         1,
 				Date:       model.DateTime(time_utils.ConvertTime("2022-02-10 13:00")),

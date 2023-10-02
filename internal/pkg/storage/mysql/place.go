@@ -20,6 +20,11 @@ func NewPlaceStorageAdapter(txManager *tx.Manager) *PlaceStorageAdapter {
 	}
 }
 
+// CreatePlace ...
+func (a *PlaceStorageAdapter) CreatePlace(ctx context.Context, place Place) (int, error) {
+	return a.placeStorage.Insert(ctx, place)
+}
+
 // Find ...
 func (a *PlaceStorageAdapter) Find(ctx context.Context, q builder.Cond, sort string) ([]model.Place, error) {
 	dbPlaces, err := a.placeStorage.Find(ctx, q, sort)

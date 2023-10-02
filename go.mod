@@ -13,10 +13,12 @@ require (
 	github.com/golangci/golangci-lint v1.50.1
 	github.com/google/uuid v1.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.3.0
+	github.com/mono83/maybe v1.0.0
 	github.com/rabbitmq/amqp091-go v1.6.0
 	github.com/stretchr/testify v1.8.1
 	github.com/xo/xo v0.0.0-20220107024827-d70880d59a86
 	go.uber.org/zap v1.23.0
+	golang.org/x/net v0.2.0
 	golang.org/x/sync v0.1.0
 	golang.org/x/tools v0.3.0
 	google.golang.org/genproto v0.0.0-20221118155620-16455021b5e6
@@ -205,7 +207,6 @@ require (
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect
 	golang.org/x/exp/typeparams v0.0.0-20220827204233-334a2380cb91 // indirect
 	golang.org/x/mod v0.7.0 // indirect
-	golang.org/x/net v0.2.0 // indirect
 	golang.org/x/oauth2 v0.2.0 // indirect
 	golang.org/x/sys v0.3.0 // indirect
 	golang.org/x/text v0.4.0 // indirect

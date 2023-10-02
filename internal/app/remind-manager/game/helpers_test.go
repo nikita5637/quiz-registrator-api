@@ -11,21 +11,24 @@ type fixture struct {
 	ctx      context.Context
 	reminder *Reminder
 
-	gamesFacade      *mocks.GamesFacade
-	rabbitMQProducer *mocks.RabbitMQProducer
+	gamesFacade       *mocks.GamesFacade
+	gamePlayersFacade *mocks.GamePlayersFacade
+	rabbitMQProducer  *mocks.RabbitMQProducer
 }
 
 func tearUp(t *testing.T) *fixture {
 	fx := &fixture{
 		ctx: context.Background(),
 
-		gamesFacade:      mocks.NewGamesFacade(t),
-		rabbitMQProducer: mocks.NewRabbitMQProducer(t),
+		gamesFacade:       mocks.NewGamesFacade(t),
+		gamePlayersFacade: mocks.NewGamePlayersFacade(t),
+		rabbitMQProducer:  mocks.NewRabbitMQProducer(t),
 	}
 
 	fx.reminder = &Reminder{
-		gamesFacade:      fx.gamesFacade,
-		rabbitMQProducer: fx.rabbitMQProducer,
+		gamesFacade:       fx.gamesFacade,
+		gamePlayersFacade: fx.gamePlayersFacade,
+		rabbitMQProducer:  fx.rabbitMQProducer,
 	}
 
 	t.Cleanup(func() {})

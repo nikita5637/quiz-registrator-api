@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
@@ -23,10 +24,10 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		originalDBGameResult, err := f.gameResultStorage.GetGameResultByID(ctx, int(gameResult.ID))
 		if err != nil {
 			if errors.Is(err, sql.ErrNoRows) {
-				return fmt.Errorf("get original game result error: %w", model.ErrGameResultNotFound)
+				return fmt.Errorf("get game result by ID error: %w", ErrGameResultNotFound)
 			}
 
-			return fmt.Errorf("get original game result error: %w", err)
+			return fmt.Errorf("get game result by ID error: %w", err)
 		}
 
 		patchedDBGameResult := *originalDBGameResult
@@ -38,8 +39,8 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 				patchedDBGameResult.Place = uint8(gameResult.ResultPlace)
 			case fieldNameRoundPoints:
 				patchedDBGameResult.Points = sql.NullString{
-					Valid:  gameResult.RoundPoints.Valid,
-					String: gameResult.RoundPoints.Value,
+					String: gameResult.RoundPoints.Value(),
+					Valid:  gameResult.RoundPoints.IsPresent(),
 				}
 			}
 		}
@@ -48,12 +49,10 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		if err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
 				if err.Number == 1452 {
-					return fmt.Errorf("patch game result error: %w", model.ErrGameNotFound)
+					return fmt.Errorf("patch game result error: %w", games.ErrGameNotFound)
 				} else if err.Number == 1062 {
-					return fmt.Errorf("patch game result error: %w", model.ErrGameResultAlreadyExists)
+					return fmt.Errorf("patch game result error: %w", ErrGameResultAlreadyExists)
 				}
-
-				return fmt.Errorf("patch game result error: %w", err)
 			}
 
 			return fmt.Errorf("patch game result error: %w", err)
@@ -64,7 +63,7 @@ func (f *Facade) PatchGameResult(ctx context.Context, gameResult model.GameResul
 		return nil
 	})
 	if err != nil {
-		return model.GameResult{}, fmt.Errorf("patch game result error: %w", err)
+		return model.GameResult{}, fmt.Errorf("PatchGameResult error: %w", err)
 	}
 
 	return patchedGameResult, nil

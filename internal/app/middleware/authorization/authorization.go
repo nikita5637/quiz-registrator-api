@@ -3,14 +3,19 @@ package authorization
 import (
 	"context"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
-	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+)
+
+const (
+	reasonPermissionDenied = "PERMISSION_DENIED"
+	reasonYouAreBanned     = "YOU_ARE_BANNED"
 )
 
 var (
@@ -28,33 +33,37 @@ var (
 func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
 		user := users_utils.UserFromContext(ctx)
-		if user.State == model.UserStateBanned {
-			st := status.New(codes.PermissionDenied, "permission denied")
-			ei := &errdetails.ErrorInfo{
-				Reason: "You are banned",
-			}
-			lm := &errdetails.LocalizedMessage{
-				Locale:  i18n.GetLangFromContext(ctx),
-				Message: i18n.GetTranslator(youAreBannedLexeme)(ctx),
-			}
-
-			st, err := st.WithDetails(ei, lm)
-			if err != nil {
-				panic(err)
-			}
-
+		if user != nil && user.State == model.UserStateBanned {
+			st := model.GetStatus(ctx, codes.PermissionDenied, "", reasonYouAreBanned, nil, youAreBannedLexeme)
 			return nil, st.Err()
 		}
 
-		userRoles, err := m.userRolesFacade.GetUserRolesByUserID(ctx, user.ID)
-		if err != nil {
-			st := status.New(codes.Internal, err.Error())
+		var roles roles
+		var ok bool
+		if roles, ok = grpcRules[info.FullMethod]; !ok {
+			logger.ErrorKV(ctx, "roles for method not found", "method", info.FullMethod)
+			st := model.GetStatus(ctx, codes.Internal, "roles for method not found", "", nil, i18n.Lexeme{})
 			return nil, st.Err()
 		}
 
-		if roles, ok := grpcRules[info.FullMethod]; ok {
-			if _, ok := roles[Public]; ok {
+		if isServiceAuth := authentication.IsServiceAuth(ctx); isServiceAuth {
+			if _, ok := roles[S2S]; ok {
 				return handler(ctx, req)
+			}
+
+			st := model.GetStatus(ctx, codes.PermissionDenied, "", reasonPermissionDenied, nil, permissionDeniedLexeme)
+			return nil, st.Err()
+		}
+
+		if _, ok := roles[Public]; ok {
+			return handler(ctx, req)
+		}
+
+		if user != nil {
+			userRoles, err := m.userRolesFacade.GetUserRolesByUserID(ctx, user.ID)
+			if err != nil {
+				st := status.New(codes.Internal, err.Error())
+				return nil, st.Err()
 			}
 
 			for _, userRole := range userRoles {
@@ -62,25 +71,9 @@ func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 					return handler(ctx, req)
 				}
 			}
-		} else {
-			logger.ErrorKV(ctx, "roles for method not found", "method", info.FullMethod)
 		}
 
-		st := status.New(codes.PermissionDenied, "")
-		ei := &errdetails.ErrorInfo{
-			Reason: "permission denied",
-		}
-
-		lm := &errdetails.LocalizedMessage{
-			Locale:  i18n.GetLangFromContext(ctx),
-			Message: i18n.GetTranslator(permissionDeniedLexeme)(ctx),
-		}
-
-		st, err = st.WithDetails(ei, lm)
-		if err != nil {
-			panic(err)
-		}
-
+		st := model.GetStatus(ctx, codes.PermissionDenied, "", reasonPermissionDenied, nil, permissionDeniedLexeme)
 		return nil, st.Err()
 	}
 }

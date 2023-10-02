@@ -16,7 +16,7 @@ type UserStorage interface {
 	GetUserByID(ctx context.Context, userID int) (*database.User, error)
 	GetUserByTelegramID(ctx context.Context, telegramID int64) (*database.User, error)
 	Insert(ctx context.Context, user database.User) (int, error)
-	Update(ctx context.Context, user database.User) error
+	PatchUser(ctx context.Context, user database.User) error
 }
 
 // NewUserStorage ...

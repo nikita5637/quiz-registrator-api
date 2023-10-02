@@ -12,16 +12,11 @@ func TestCertificateType_ToSQL(t *testing.T) {
 	}{
 		{
 			name: "tc1",
-			tr:   CertificateTypeInvalid,
-			want: 0,
-		},
-		{
-			name: "tc2",
 			tr:   CertificateTypeFreePass,
 			want: 1,
 		},
 		{
-			name: "tc3",
+			name: "tc2",
 			tr:   CertificateTypeBarBillPayment,
 			want: 2,
 		},
@@ -59,11 +54,11 @@ func TestValidateCertificateType(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "invalid certificate type",
+			name: "eq 0",
 			args: args{
-				value: CertificateTypeInvalid,
+				value: CertificateType(0),
 			},
-			wantErr: false,
+			wantErr: true,
 		},
 		{
 			name: "ok",
