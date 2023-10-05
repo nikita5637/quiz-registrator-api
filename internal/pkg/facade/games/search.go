@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/go-xorm/builder"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 )
 
 // SearchGamesByLeagueID ...
@@ -63,14 +63,14 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 	var modelGames []model.Game
 	var total uint64
 	err := f.db.RunTX(ctx, "SearchPassedAndRegisteredGames", func(ctx context.Context) error {
-		activeGameLag := config.GetValue("ActiveGameLag").Uint16()
+		hasPassedGameLag := viper.GetDuration("service.game.has_passed_game_lag") * time.Second
 		var err error
 		total, err = f.gameStorage.Total(ctx, builder.And(
 			builder.Eq{
 				"registered": true,
 			},
 			builder.Lt{
-				"date": timeutils.TimeNow().UTC().Add(-1 * time.Duration(activeGameLag) * time.Second),
+				"date": timeutils.TimeNow().UTC().Add(-1 * hasPassedGameLag),
 			},
 			builder.IsNull{
 				"deleted_at",
@@ -85,7 +85,7 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 				"registered": true,
 			},
 			builder.Lt{
-				"date": timeutils.TimeNow().UTC().Add(-1 * time.Duration(activeGameLag) * time.Second),
+				"date": timeutils.TimeNow().UTC().Add(-1 * hasPassedGameLag),
 			},
 			builder.IsNull{
 				"deleted_at",

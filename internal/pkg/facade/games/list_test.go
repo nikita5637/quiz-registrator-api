@@ -7,10 +7,10 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -20,9 +20,7 @@ func TestFacade_ListGames(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -81,7 +79,7 @@ func TestFacade_ListGames(t *testing.T) {
 			},
 			{
 				ID:   3,
-				Date: timeutils.TimeNow().Add(-1 * time.Hour),
+				Date: timeutils.TimeNow().Add(-3601 * time.Second),
 			},
 		}, nil)
 
@@ -100,7 +98,7 @@ func TestFacade_ListGames(t *testing.T) {
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,

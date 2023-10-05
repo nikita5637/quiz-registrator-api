@@ -8,12 +8,12 @@ import (
 	"github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -23,9 +23,7 @@ func TestFacade_PatchGame(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -272,7 +270,7 @@ func TestFacade_PatchGame(t *testing.T) {
 				"league_id": int32(1),
 				"place_id":  int32(1),
 				"number":    "number",
-				"date":      timeutils.TimeNow().Add(-3600 * time.Second),
+				"date":      timeutils.TimeNow().Add(-3601 * time.Second),
 			},
 		), "").Return([]database.Game{}, nil)
 
@@ -281,7 +279,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			LeagueID: 1,
 			PlaceID:  1,
 			Number:   "number",
-			Date:     timeutils.TimeNow().Add(-3600 * time.Second),
+			Date:     timeutils.TimeNow().Add(-3601 * time.Second),
 		}).Return(nil)
 
 		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
@@ -291,7 +289,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			Number:      "number",
 			Name:        maybe.Nothing[string](),
 			PlaceID:     1,
-			Date:        model.DateTime(timeutils.TimeNow().Add(-3600 * time.Second)),
+			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 			PaymentType: maybe.Nothing[string](),
 			Payment:     maybe.Nothing[model.Payment](),
 		})
@@ -302,7 +300,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			Number:      "number",
 			Name:        maybe.Nothing[string](),
 			PlaceID:     1,
-			Date:        model.DateTime(timeutils.TimeNow().Add(-3600 * time.Second)),
+			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 			PaymentType: maybe.Nothing[string](),
 			Payment:     maybe.Nothing[model.Payment](),
 			HasPassed:   true,

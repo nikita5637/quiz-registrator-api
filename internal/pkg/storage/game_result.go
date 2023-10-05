@@ -5,7 +5,6 @@ package storage
 import (
 	"context"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
@@ -24,7 +23,7 @@ type GameResultStorage interface {
 // NewGameResultStorage ...
 func NewGameResultStorage(driver string, txManager *tx.Manager) GameResultStorage {
 	switch driver {
-	case config.DriverMySQL:
+	case mysql.DriverName:
 		return mysql.NewGameResultStorageAdapter(txManager)
 	}
 

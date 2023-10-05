@@ -11,8 +11,8 @@ services:
     command: "/bin/registrator-api --config /etc/config.toml"
     container_name: registrator-api
     environment:
-      DATABASE_PASSWORD: quiz_regbot
-      RABBITMQ_PASSWORD: quiz_regbot
+      DATABASE_CREDENTIALS_PASSWORD: quiz_regbot
+      REMIND_MANAGER_RABBITMQ_CREDENTIALS_PASSWORD: quiz_regbot
     networks:
       - network
     ports:

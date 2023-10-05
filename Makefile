@@ -125,7 +125,7 @@ migrations:
 
 .PHONY: run
 run:
-	go run ./cmd/registrator-api
+	go run ./cmd/registrator-api --config ./config.toml
 
 .PHONY: test
 test:

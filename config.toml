@@ -1,34 +1,44 @@
-#Log level
-log_level = "info"
-elastic_address = "elasticsearch"
-elastic_port = 9200
-elastic_index = "quiz_regbot"
-elastic_logs_enabled = true
+[apiserver]
+  [apiserver.bind]
+  address = "localhost"
+  port = 8080
 
-#
-# Registrator settings
-#
-bind_address = "0.0.0.0"
-bind_port = 8080
-active_game_lag = 3600
-# lottery starts 3600 seconds before the game start
+[croupier]
 lottery_starts_before = 3600
-rabbitmq_ics_queue_name = "ics"
 
-#
-# Reminder settings
-#
-rabbitmq_address = "rabbitmq"
-rabbitmq_port = 5672
-rabbitmq_game_reminder_queue_name = "game_reminder"
-rabbitmq_lottery_reminder_queue_name = "lottery_reminder"
-rabbitmq_username = "quiz_regbot"
-
-#
-# DB Settings
-#
+[database]
+address = "database"
+dbname = "registrator_api"
 driver = "mysql"
-database_address = "mysql"
-database_name = "registrator_api"
-database_port = 3306
-database_username = "quiz_regbot"
+port = 3306
+  [database.credentials]
+  username = "quiz_regbot"
+  password = "TOPSECRET"
+
+[log]
+level = "info"
+module_name = "registrator-api"
+  [log.elastic]
+  address = "elasticsearch"
+  enabled = true
+  index = "quiz_regbot"
+  port = 9200
+
+[remind_manager]
+  [remind_manager.game.queue]
+  name = "game_reminder"
+  [remind_manager.lottery.queue]
+  name = "lottery_reminder"
+  [remind_manager.rabbitmq]
+  address = "rabbitmq"
+  port = 5672
+    [remind_manager.rabbitmq.credentials]
+    username = "quiz_regbot"
+    password = "TOPSECRET"
+
+[service]
+  [service.game]
+  has_passed_game_lag = 3600
+    [service.game.ics]
+      [service.game.ics.queue]
+      name = "ics"

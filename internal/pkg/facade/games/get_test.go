@@ -8,10 +8,10 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -21,9 +21,7 @@ func TestFacade_GetGameByID(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: game not found", func(t *testing.T) {
 		fx := tearUp(t)
@@ -85,7 +83,7 @@ func TestFacade_GetGameByID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok. game has not passed", func(t *testing.T) {
+	t.Run("ok: game has not passed", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.dbMock.ExpectBegin()
@@ -108,7 +106,7 @@ func TestFacade_GetGameByID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok. game has passed", func(t *testing.T) {
+	t.Run("ok: game has passed", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.dbMock.ExpectBegin()
@@ -117,13 +115,13 @@ func TestFacade_GetGameByID(t *testing.T) {
 		timeNow := timeutils.TimeNow()
 		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
 			ID:   1,
-			Date: timeNow.Add(-time.Hour),
+			Date: timeNow.Add(-3601 * time.Second),
 		}, nil)
 
 		got, err := fx.facade.GetGameByID(fx.ctx, 1)
 		expectedGame := model.NewGame()
 		expectedGame.ID = 1
-		expectedGame.Date = model.DateTime(timeNow.Add(-time.Hour))
+		expectedGame.Date = model.DateTime(timeNow.Add(-3601 * time.Second))
 		expectedGame.HasPassed = true
 		assert.Equal(t, expectedGame, got)
 		assert.NoError(t, err)
@@ -138,9 +136,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -202,7 +198,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 			},
 			{
 				ID:   3,
-				Date: timeutils.TimeNow().Add(-1 * time.Hour),
+				Date: timeutils.TimeNow().Add(-3601 * time.Second),
 			},
 		}, nil)
 
@@ -221,7 +217,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,
@@ -239,9 +235,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -304,7 +298,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 			},
 			{
 				ID:         3,
-				Date:       timeutils.TimeNow().Add(-1 * time.Hour),
+				Date:       timeutils.TimeNow().Add(-3601 * time.Second),
 				Registered: true,
 			},
 		}, nil)
@@ -325,7 +319,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				Registered:  true,

@@ -8,13 +8,14 @@ import (
 )
 
 const (
-	driverName = "mysql"
+	// DriverName ...
+	DriverName = "mysql"
 )
 
 // NewDB ...
 func NewDB(ctx context.Context, dataSourceName string) (*sql.DB, error) {
-	logger.DebugKV(ctx, "initialize database connection started", "driverName", driverName, "DSN", dataSourceName)
-	db, err := sql.Open(driverName, dataSourceName)
+	logger.DebugKV(ctx, "initialize database connection started", "driverName", DriverName, "DSN", dataSourceName)
+	db, err := sql.Open(DriverName, dataSourceName)
 	if err != nil {
 		return nil, err
 	}

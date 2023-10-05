@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"flag"
 	"fmt"
 	"net"
 	"os"
@@ -46,38 +45,35 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
-var (
-	configPath string
-)
-
 func init() {
-	flag.StringVar(&configPath, "config", "./config.toml", "path to config file")
+	pflag.StringP("config", "c", "", "path to config file")
+	_ = viper.BindPFlag("config", pflag.Lookup("config"))
 }
 
 func main() {
-	flag.Parse()
+	pflag.Parse()
 
-	ctx := context.Background()
-
-	var err error
-	err = config.ParseConfigFile(configPath)
-	if err != nil {
+	if err := config.ReadConfig(); err != nil {
 		panic(err)
 	}
+
+	ctx := context.Background()
 
 	logsCombiner := &logger.Combiner{}
 	logsCombiner = logsCombiner.WithWriter(os.Stdout)
 
-	elasticLogsEnabled := config.GetValue("ElasticLogsEnabled").Bool()
+	elasticLogsEnabled := viper.GetBool("log.elastic.enabled")
 	if elasticLogsEnabled {
 		var elasticClient *elasticsearch.Client
-		elasticClient, err = elasticsearch.New(elasticsearch.Config{
+		elasticClient, err := elasticsearch.New(elasticsearch.Config{
 			ElasticAddress: config.GetElasticAddress(),
-			ElasticIndex:   config.GetValue("ElasticIndex").String(),
+			ElasticIndex:   viper.GetString("log.elastic.index"),
 		})
 		if err != nil {
 			panic(err)
@@ -89,11 +85,11 @@ func main() {
 
 	logLevel := config.GetLogLevel()
 	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner, zap.Fields(
-		zap.String("module", "registrator-api"),
+		zap.String("module", viper.GetString("log.module_name")),
 	)))
 	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
 
-	driverName := config.GetValue("Driver").String()
+	driverName := viper.GetString("database.driver")
 	db, err := storage.NewDB(ctx, driverName)
 	if err != nil {
 		logger.Fatalf(ctx, "new DB initialization error: %s", err.Error())
@@ -203,7 +199,7 @@ func main() {
 		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
 
 		icsRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
+			QueueName:       viper.GetString("service.game.ics.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
@@ -315,7 +311,7 @@ func main() {
 
 	g.Go(func() error {
 		gameReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			QueueName:       viper.GetString("remind_manager.game.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		gameReminderRabbitMQProducer := rabbitmqproducer.New(gameReminderRabbitMQProducerConfig)
@@ -332,7 +328,7 @@ func main() {
 		gameReminder := game_reminder.New(gameReminderConfig)
 
 		lotteryReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQLotteryReminderQueueName").String(),
+			QueueName:       viper.GetString("remind_manager.lottery.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		lotteryReminderRabbitMQProducer := rabbitmqproducer.New(lotteryReminderRabbitMQProducerConfig)

@@ -7,11 +7,11 @@ import (
 	"time"
 
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -31,9 +31,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 	t.Run("lottery is not active", func(t *testing.T) {
 		croupier := New(Config{})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
 		timeutils.TimeNow = func() time.Time {
 			return timeutils.ConvertTime("2022-01-08 13:39")
@@ -56,9 +54,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			QuizPleaseCroupier: quizPleaseCroupierMock,
 		})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
 		timeutils.TimeNow = func() time.Time {
 			return timeutils.ConvertTime("2022-01-10 15:31")
@@ -128,9 +124,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			QuizPleaseCroupier: quizPleaseCroupierMock,
 		})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
 		timeutils.TimeNow = func() time.Time {
 			return timeutils.ConvertTime("2022-01-10 15:31")

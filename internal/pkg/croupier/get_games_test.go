@@ -6,11 +6,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -19,17 +19,7 @@ func TestCroupier_GetGamesWithActiveLottery(t *testing.T) {
 		return timeutils.ConvertTime("2022-02-10 15:22")
 	}
 
-	activeGameLag := uint16(3600)
-	assert.Greater(t, activeGameLag, uint16(1))
-
-	lotteryStartsBefore := uint16(3600)
-	assert.Greater(t, lotteryStartsBefore, uint16(1))
-
-	cfg := config.GlobalConfig{}
-	cfg.ActiveGameLag = activeGameLag
-	cfg.LotteryStartsBefore = lotteryStartsBefore
-
-	config.UpdateGlobalConfig(cfg)
+	viper.Set("croupier.lottery_starts_before", 3600)
 
 	t.Run("error while get games", func(t *testing.T) {
 		ctx := context.Background()

@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -87,6 +87,6 @@ func convertModelGameToDBGame(game model.Game) database.Game {
 }
 
 func gameHasPassed(modelGame model.Game) bool {
-	activeGameLag := config.GetValue("ActiveGameLag").Uint16()
-	return !timeutils.TimeNow().UTC().Before(modelGame.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
+	hasPassedGameLag := viper.GetDuration("service.game.has_passed_game_lag")
+	return timeutils.TimeNow().UTC().After(modelGame.DateTime().AsTime().Add(hasPassedGameLag * time.Second))
 }

@@ -5,18 +5,16 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCroupier_GetIsLotteryActive(t *testing.T) {
-	globalConfig := config.GlobalConfig{}
-	globalConfig.LotteryStartsBefore = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("croupier.lottery_starts_before", 3600)
 
 	t.Run("test case 1", func(t *testing.T) {
 		timeutils.TimeNow = func() time.Time {
