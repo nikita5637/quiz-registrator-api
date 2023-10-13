@@ -61,6 +61,11 @@ func (i *Implementation) UpdatePlayerDegree(ctx context.Context, req *gameplayer
 		return nil, st.Err()
 	}
 
+	if !game.Registered {
+		st := model.GetStatus(ctx, codes.FailedPrecondition, thereAreNoRegistrationForTheGame, reasonThereAreNoRegistrationForTheGame, nil, thereAreNoRegistrationForTheGameLexeme)
+		return nil, st.Err()
+	}
+
 	_, err = i.gamePlayersFacade.PatchGamePlayer(ctx, patchedGamePlayer)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())

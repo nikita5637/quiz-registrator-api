@@ -209,6 +209,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | - | - | - |
 | FailedPrecondition | GAME_HAS_PASSED | Игра прошла |
 | FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
+| FailedPrecondition | THERE_ARE_NO_REGISTRATION_FOR_THE_GAME | Нет регистрации на игру |
 | Internal | | В остальных случаях |
 | InvalidArgument | | Произошла ошибка валидатора |
 | InvalidArgument | INVALID_DEGREE | Некорректное значение вероятности |

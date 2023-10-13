@@ -94,7 +94,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if !game.Registered {
 		st := model.GetStatus(ctx,
 			codes.FailedPrecondition,
-			"there are no registration for the game",
+			thereAreNoRegistrationForTheGame,
 			reasonThereAreNoRegistrationForTheGame,
 			nil,
 			thereAreNoRegistrationForTheGameLexeme,

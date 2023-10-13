@@ -21,6 +21,8 @@ const (
 	invalidUserIDReason       = "INVALID_USER_ID"
 	invalidRegisteredByReason = "INVALID_REGISTERED_BY"
 	invalidDegreeReason       = "INVALID_DEGREE"
+
+	thereAreNoRegistrationForTheGame = "there are no registration for the game"
 )
 
 var (
