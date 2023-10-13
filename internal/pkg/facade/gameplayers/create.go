@@ -15,14 +15,14 @@ import (
 func (f *Facade) CreateGamePlayer(ctx context.Context, gamePlayer model.GamePlayer) (model.GamePlayer, error) {
 	createdGamePlayer := model.GamePlayer{}
 	err := f.db.RunTX(ctx, "CreateGamePlayer", func(ctx context.Context) error {
-		if v, ok := gamePlayer.UserID.Get(); ok {
+		if userID, ok := gamePlayer.UserID.Get(); ok {
 			existedGamePlayers, err := f.GetGamePlayersByGameID(ctx, gamePlayer.GameID)
 			if err != nil {
 				return fmt.Errorf("get gamme players by game ID error: %w", err)
 			}
 
 			for _, existedGamePlayer := range existedGamePlayers {
-				if existedGamePlayer.UserID.Value() == v {
+				if existedGamePlayer.UserID.Value() == userID {
 					return ErrGamePlayerAlreadyExists
 				}
 			}

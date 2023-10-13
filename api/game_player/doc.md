@@ -26,6 +26,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 [/game_player.Service/PatchGamePlayer](#/game_player.Service/PatchGamePlayer)  
 [/game_player.RegistratorService/RegisterPlayer](#/game_player.RegistratorService/RegisterPlayer)  
 [/game_player.RegistratorService/UnregisterPlayer](#/game_player.RegistratorService/UnregisterPlayer)
+[/game_player.RegistratorService/UpdatePlayerDegree](#/game_player.RegistratorService/UpdatePlayerDegree)
 
 ---
 ## Ручки
@@ -37,7 +38,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Путь
 `/game_player.Service/CreateGamePlayer`
 ### Роли
-+ user
++ management
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -50,6 +51,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | InvalidArgument | INVALID_GAME_ID | Некорректное значение ID игры |
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -59,12 +62,14 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Путь
 `/game_player.Service/DeleteGamePlayer`
 ### Роли
-+ user
++ management
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
 | Internal | | В остальных случаях |
 | NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -74,12 +79,14 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Путь
 `/game_player.Service/GetGamePlayer`
 ### Роли
-+ public
++ management
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
 | Internal | | В остальных случаях |
 | NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -93,7 +100,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
-| Internal | | В любом случае |
+| Internal | | В остальных случаях |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -103,11 +111,13 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Путь
 `/game_player.Service/GetUserGameIDs`
 ### Роли
-+ public
++ user
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
-| Internal | | В любом случае |
+| Internal | | В остальных случаях |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **user** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -117,7 +127,7 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 ### Путь
 `/game_player.Service/PatchGamePlayer`
 ### Роли
-+ user
++ management
 ### Возвращаемые ошибки
 | Код | Причина | Описание |
 | - | - | - |
@@ -131,6 +141,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
 | NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -156,6 +168,8 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | InvalidArgument | INVALID_GAME_ID | Некорректное значение ID игры |
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **user** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---
@@ -177,8 +191,30 @@ DEGREE_UNLIKELY = 2 - игрок может быть придёт на игру
 | InvalidArgument | INVALID_GAME_ID | Некорректное значение ID игры |
 | InvalidArgument | INVALID_REGISTERED_BY | Некорректное значение ID пользователя, регистрирующего игрока |
 | InvalidArgument | INVALID_USER_ID | Некорректное значение ID пользователя |
-| NotFound | | Список игроков пользователя пуст |
+| NotFound | THERE_ARE_NO_SUITABLE_PLAYERS | Подходящий для удаления игрок не найден |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **user** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
+| - | - | - |
+
+---
+### <a id="/game_player.RegistratorService/UpdatePlayerDegree">UpdatePlayerDegree</a>
+### Описание
+Обновляет вероятность игрока. Выполняет внутренние проверки бизнес-логики перед обновлением вероятности.
+### Путь
+`/game_player.RegistratorService/UpdatePlayerDegree`
+### Роли
++ user
+### Возвращаемые ошибки
+| Код | Причина | Описание |
+| - | - | - |
+| FailedPrecondition | GAME_HAS_PASSED | Игра прошла |
+| FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
+| Internal | | В остальных случаях |
+| InvalidArgument | | Произошла ошибка валидатора |
+| InvalidArgument | INVALID_DEGREE | Некорректное значение вероятности |
 | NotFound | GAME_PLAYER_NOT_FOUND | Игрок не найден |
+| PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **user** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 
 ---

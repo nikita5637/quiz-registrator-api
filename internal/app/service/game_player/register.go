@@ -48,7 +48,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 
 	registeredGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.Debugf(ctx, "trying to register new game player: %#v", registeredGamePlayer)
+	logger.DebugKV(ctx, "registering new game player", "gameplayer", registeredGamePlayer)
 
 	if err := validateRegisteredGamePlayer(registeredGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
@@ -78,7 +78,9 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		}
 
 		return nil, st.Err()

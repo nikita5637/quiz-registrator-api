@@ -35,7 +35,9 @@ func TestImplementation_GetGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, gameplayers.ReasonGamePlayerNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("internal error", func(t *testing.T) {

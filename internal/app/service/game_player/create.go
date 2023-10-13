@@ -25,7 +25,7 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 
 	createdGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.Debugf(ctx, "trying to create new game player: %#v", createdGamePlayer)
+	logger.DebugKV(ctx, "creating new game player", "gameplayer", createdGamePlayer)
 
 	if err := validateCreatedGamePlayer(createdGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())

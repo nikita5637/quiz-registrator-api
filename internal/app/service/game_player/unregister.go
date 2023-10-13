@@ -16,6 +16,10 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
+const (
+	reasonThereAreNoSuitablePlayers = "THERE_ARE_NO_SUITABLE_PLAYERS"
+)
+
 // UnregisterPlayer ...
 func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb.UnregisterPlayerRequest) (*emptypb.Empty, error) {
 	if req.GetGamePlayer() == nil {
@@ -25,7 +29,7 @@ func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb
 
 	unregisteredGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.Debugf(ctx, "trying to unregister game player: %#v", unregisteredGamePlayer)
+	logger.DebugKV(ctx, "unregistering game player", "gameplayer", unregisteredGamePlayer)
 
 	if err := validateUnregisteredGamePlayer(unregisteredGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
@@ -51,17 +55,6 @@ func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb
 		return nil, st.Err()
 	}
 
-	existedGamePlayers, err := i.gamePlayersFacade.GetGamePlayersByFields(ctx, unregisteredGamePlayer)
-	if err != nil {
-		st := status.New(codes.Internal, err.Error())
-		return nil, st.Err()
-	}
-
-	if len(existedGamePlayers) == 0 {
-		st := model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), gameplayers.ReasonGamePlayerNotFound, nil, gameplayers.GamePlayerNotFoundLexeme)
-		return nil, st.Err()
-	}
-
 	game, err := i.gamesFacade.GetGameByID(ctx, req.GetGamePlayer().GetGameId())
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
@@ -79,15 +72,20 @@ func (i *Implementation) UnregisterPlayer(ctx context.Context, req *gameplayerpb
 		return nil, st.Err()
 	}
 
+	existedGamePlayers, err := i.gamePlayersFacade.GetGamePlayersByFields(ctx, unregisteredGamePlayer)
+	if err != nil {
+		st := status.New(codes.Internal, err.Error())
+		return nil, st.Err()
+	}
+
+	if len(existedGamePlayers) == 0 {
+		st := model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), reasonThereAreNoSuitablePlayers, nil, gameplayers.GamePlayerNotFoundLexeme)
+		return nil, st.Err()
+	}
+
 	err = i.gamePlayersFacade.DeleteGamePlayer(ctx, existedGamePlayers[0].ID)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
-		if errors.Is(err, gameplayers.ErrGamePlayerNotFound) {
-			st = model.GetStatus(ctx, codes.NotFound, gameplayers.ErrGamePlayerNotFound.Error(), gameplayers.ReasonGamePlayerNotFound, map[string]string{
-				"error": err.Error(),
-			}, gameplayers.GamePlayerNotFoundLexeme)
-		}
-
 		return nil, st.Err()
 	}
 

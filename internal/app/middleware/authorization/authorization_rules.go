@@ -99,27 +99,30 @@ var grpcRules = map[string]roles{
 	// game_player
 	//
 	"/game_player.Service/CreateGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/DeleteGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/GetGamePlayer": {
-		Public: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/GetGamePlayersByGameID": {
 		Public: struct{}{},
 	},
 	"/game_player.Service/GetUserGameIDs": {
-		Public: struct{}{},
+		User: struct{}{},
 	},
 	"/game_player.Service/PatchGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.RegistratorService/RegisterPlayer": {
 		User: struct{}{},
 	},
 	"/game_player.RegistratorService/UnregisterPlayer": {
+		User: struct{}{},
+	},
+	"/game_player.RegistratorService/UpdatePlayerDegree": {
 		User: struct{}{},
 	},
 	//
