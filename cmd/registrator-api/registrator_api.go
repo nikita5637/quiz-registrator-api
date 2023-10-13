@@ -1,11 +1,9 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"os"
-	"os/signal"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
@@ -44,6 +42,7 @@ import (
 	rabbitmqproducer "github.com/nikita5637/quiz-registrator-api/internal/pkg/rabbitmq/producer"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
+	"github.com/posener/ctxutil"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -57,13 +56,13 @@ func init() {
 }
 
 func main() {
+	ctx := ctxutil.Interrupt()
+
 	pflag.Parse()
 
 	if err := config.ReadConfig(); err != nil {
 		panic(err)
 	}
-
-	ctx := context.Background()
 
 	logsCombiner := &logger.Combiner{}
 	logsCombiner = logsCombiner.WithWriter(os.Stdout)
@@ -107,17 +106,6 @@ func main() {
 		logger.Fatalf(ctx, "get rabbitMQ channel error: %s", err.Error())
 	}
 	defer rabbitMQChannel.Close()
-
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
-	ctx, cancel := context.WithCancel(ctx)
-
-	go func() {
-		oscall := <-c
-		logger.Infof(ctx, "system call recieved: %+v", oscall)
-		cancel()
-	}()
 
 	txManager := tx.NewManager(db)
 
