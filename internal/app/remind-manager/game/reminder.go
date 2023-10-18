@@ -12,6 +12,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
@@ -55,8 +56,8 @@ func New(cfg Config) *Reminder {
 
 // Run runs at 07:00 UTC
 func (r *Reminder) Run(ctx context.Context) error {
-	if timeutils.TimeNow().UTC().Hour() == 7 &&
-		timeutils.TimeNow().UTC().Minute() == 0 {
+	if timeutils.TimeNow().UTC().Hour() == viper.GetInt("remind_manager.game.hour") &&
+		timeutils.TimeNow().UTC().Minute() == viper.GetInt("remind_manager.game.minute") {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "game reminder"),
 		)))

@@ -1,0 +1,48 @@
+apiserver:
+  bind:
+    address: "localhost"
+    port: 8080
+
+croupier:
+  lottery_starts_before: 3600
+
+database:
+  address: "database"
+  credentials:
+    username: "quiz_regbot"
+    password: "TOPSECRET"
+  dbname: "registrator_api"
+  driver: "mysql"
+  port: 3306
+
+log:
+  elastic:
+    address: "elasticsearch"
+    enabled: true
+    index: "quiz_regbot"
+    port: 9200
+  level: "info"
+  module_name: "registrator-api"
+
+remind_manager:
+  game:
+    hour: 07
+    minute: 00
+    queue:
+      name: "game_reminder"
+  lottery:
+    queue:
+      name: "lottery_reminder"
+  rabbitmq:
+    address: "rabbitmq"
+    credentials:
+      username: "quiz_regbot"
+      password: "TOPSECRET"
+    port: 5672
+
+service:
+  game:
+    has_passed_game_lag: 3600
+    ics:
+      queue:
+        name: "ics"

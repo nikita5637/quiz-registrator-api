@@ -8,7 +8,7 @@ services:
       args:
         GITHUB_PATH: https://github.com/nikita5637/quiz-registrator-api.git
         BRANCH: v1.4
-    command: "/bin/registrator-api --config /etc/config.toml"
+    command: "/bin/registrator-api --config /etc/config.yaml"
     container_name: registrator-api
     environment:
     networks:

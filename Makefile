@@ -130,7 +130,7 @@ migrations:
 
 .PHONY: run
 run:
-	go run ./cmd/registrator-api --config ./config.toml
+	go run ./cmd/registrator-api --config ./config.yaml
 
 .PHONY: test
 test:
