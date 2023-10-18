@@ -174,6 +174,7 @@ var grpcRules = map[string]roles{
 	},
 	"/user_manager.Service/GetUser": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/user_manager.Service/GetUserByTelegramID": {
 		Public: struct{}{},

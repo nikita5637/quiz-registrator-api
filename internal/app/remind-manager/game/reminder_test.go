@@ -11,6 +11,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/zap"
 )
@@ -42,6 +43,9 @@ func TestNew(t *testing.T) {
 }
 
 func TestReminder_Run(t *testing.T) {
+	viper.Set("remind_manager.game.hour", 07)
+	viper.Set("remind_manager.game.minute", 00)
+
 	t.Run("get todays games error", func(t *testing.T) {
 		timeutils.TimeNow = func() time.Time {
 			return timeutils.ConvertTime("2022-02-10 07:00")
