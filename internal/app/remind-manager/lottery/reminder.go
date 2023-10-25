@@ -67,7 +67,7 @@ func (r *Reminder) Run(ctx context.Context) error {
 
 		err := r.run(ctx)
 		if err != nil {
-			logger.Errorf(ctx, "reminder error: %s", err.Error())
+			logger.ErrorKV(ctx, "running reminder error", zap.Error(err))
 			return err
 		}
 
@@ -95,7 +95,7 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		players, err := r.gamePlayersFacade.GetGamePlayersByGameID(ctx, game.ID)
 		if err != nil {
-			logger.ErrorKV(ctx, "get players by game ID error", "error", err, "gameID", game.ID)
+			logger.ErrorKV(ctx, "getting game players by game ID error", zap.Error(err), "gameID", game.ID)
 			continue
 		}
 
@@ -119,7 +119,7 @@ func (r *Reminder) run(ctx context.Context) error {
 
 		err = r.rabbitMQProducer.Send(ctx, reminder)
 		if err != nil {
-			logger.Errorf(ctx, "send publish error: %s", err.Error())
+			logger.ErrorKV(ctx, "sending message error", zap.Error(err))
 			continue
 		}
 

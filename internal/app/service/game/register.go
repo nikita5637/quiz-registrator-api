@@ -3,7 +3,6 @@ package game
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
@@ -11,6 +10,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/ics"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -48,7 +48,7 @@ func (i *Implementation) RegisterGame(ctx context.Context, req *gamepb.RegisterG
 		Event:  ics.EventRegistered,
 	}
 	if err := i.rabbitMQProducer.Send(ctx, icsEvent); err != nil {
-		logger.ErrorKV(ctx, fmt.Sprintf("send message to rabbitMQ error: %s", err.Error()), "event", icsEvent)
+		logger.ErrorKV(ctx, "sending ICS event error", zap.Error(err), "event", icsEvent)
 	}
 
 	return &emptypb.Empty{}, nil
