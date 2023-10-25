@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"runtime/debug"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
@@ -343,6 +344,14 @@ func main() {
 		logger.Infof(ctx, "starting remind manager")
 		return remindManager.Start(ctx)
 	})
+
+	if buildInfo, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range buildInfo.Settings {
+			if setting.Key == "vcs.revision" {
+				logger.InfoKV(ctx, "application started", zap.String("vcs.revision", setting.Value))
+			}
+		}
+	}
 
 	if err := g.Wait(); err != nil {
 		logger.Fatal(ctx, err)

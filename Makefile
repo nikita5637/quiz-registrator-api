@@ -43,7 +43,7 @@ endif
 
 .PHONY: build
 build:
-	go build -o registrator-api ./cmd/registrator-api
+	go build -buildvcs=auto -o registrator-api ./cmd/registrator-api
 
 .PHONY: clean
 clean:
