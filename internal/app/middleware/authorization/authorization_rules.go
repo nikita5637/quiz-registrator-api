@@ -138,6 +138,7 @@ var grpcRules = map[string]roles{
 	},
 	"/game_result_manager.Service/PatchGameResult": {
 		Management: struct{}{},
+		S2S:        struct{}{},
 	},
 	"/game_result_manager.Service/SearchGameResultByGameID": {
 		Public: struct{}{},
