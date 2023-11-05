@@ -88,11 +88,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 0,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       0,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -136,11 +134,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -184,11 +180,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -232,11 +226,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -286,11 +278,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 2,
-				UserId: &wrapperspb.Int32Value{
-					Value: 2,
-				},
+				Id:           1,
+				GameId:       2,
+				UserId:       wrapperspb.Int32(2),
 				RegisteredBy: 2,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -299,11 +289,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 			},
 		})
 		assert.Equal(t, &gameplayerpb.GamePlayer{
-			Id:     1,
-			GameId: 2,
-			UserId: &wrapperspb.Int32Value{
-				Value: 2,
-			},
+			Id:           1,
+			GameId:       2,
+			UserId:       wrapperspb.Int32(2),
 			RegisteredBy: 2,
 			Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 		}, got)

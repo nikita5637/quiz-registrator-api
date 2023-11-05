@@ -61,17 +61,11 @@ func Test_convertModelUserToProtoUser(t *testing.T) {
 				Id:         1,
 				Name:       "name",
 				TelegramId: 111,
-				Email: &wrapperspb.StringValue{
-					Value: "email",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "phone",
-				},
-				State: usermanagerpb.UserState_USER_STATE_REGISTERED,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email"),
+				Phone:      wrapperspb.String("phone"),
+				State:      usermanagerpb.UserState_USER_STATE_REGISTERED,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 		},
 	}
@@ -101,17 +95,11 @@ func Test_convertProtoUserToModelUser(t *testing.T) {
 					Id:         1,
 					Name:       "name",
 					TelegramId: 100,
-					Email: &wrapperspb.StringValue{
-						Value: "email",
-					},
-					Phone: &wrapperspb.StringValue{
-						Value: "phone",
-					},
-					State: usermanagerpb.UserState_USER_STATE_CHANGING_EMAIL,
-					Birthdate: &wrapperspb.StringValue{
-						Value: "1990-01-30",
-					},
-					Sex: &pbSex,
+					Email:      wrapperspb.String("email"),
+					Phone:      wrapperspb.String("phone"),
+					State:      usermanagerpb.UserState_USER_STATE_CHANGING_EMAIL,
+					Birthdate:  wrapperspb.String("1990-01-30"),
+					Sex:        &pbSex,
 				},
 			},
 			want: model.User{

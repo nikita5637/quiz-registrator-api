@@ -1,6 +1,7 @@
 package games
 
 import (
+	"database/sql"
 	"errors"
 	"testing"
 	"time"
@@ -253,7 +254,68 @@ func TestFacade_PatchGame(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok", func(t *testing.T) {
+	t.Run("ok with externalID", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectCommit()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Neq{
+				"id": int32(1),
+			},
+			builder.Eq{
+				"external_id": int32(777),
+				"league_id":   int32(1),
+				"place_id":    int32(1),
+				"number":      "number",
+				"date":        timeutils.TimeNow().Add(-3601 * time.Second),
+			},
+		), "").Return([]database.Game{}, nil)
+
+		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+			ID: 1,
+			ExternalID: sql.NullInt64{
+				Int64: 777,
+				Valid: true,
+			},
+			LeagueID: 1,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow().Add(-3601 * time.Second),
+		}).Return(nil)
+
+		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
+			ID:          1,
+			ExternalID:  maybe.Just(int32(777)),
+			LeagueID:    1,
+			Number:      "number",
+			Name:        maybe.Nothing[string](),
+			PlaceID:     1,
+			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
+			PaymentType: maybe.Nothing[string](),
+			Payment:     maybe.Nothing[model.Payment](),
+		})
+		assert.Equal(t, model.Game{
+			ID:          1,
+			ExternalID:  maybe.Just(int32(777)),
+			LeagueID:    1,
+			Number:      "number",
+			Name:        maybe.Nothing[string](),
+			PlaceID:     1,
+			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
+			PaymentType: maybe.Nothing[string](),
+			Payment:     maybe.Nothing[model.Payment](),
+			HasPassed:   true,
+			GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
+		}, got)
+		assert.NoError(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok without externalID", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.dbMock.ExpectBegin()

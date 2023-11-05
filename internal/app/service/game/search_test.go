@@ -61,6 +61,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 			{
 				ID:          2,
@@ -69,6 +70,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 			{
 				ID:          3,
@@ -77,6 +79,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, 3, nil)
 
@@ -151,6 +154,7 @@ func TestImplementation_SearchPassedAndRegisteredGames(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 			{
 				ID:          2,
@@ -159,6 +163,7 @@ func TestImplementation_SearchPassedAndRegisteredGames(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 			{
 				ID:          3,
@@ -167,6 +172,7 @@ func TestImplementation_SearchPassedAndRegisteredGames(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, 4, nil)
 

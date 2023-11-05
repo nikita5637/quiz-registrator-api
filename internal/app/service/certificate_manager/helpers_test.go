@@ -57,15 +57,11 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 				},
 			},
 			want: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn: 2,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 100,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{}",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn:   2,
+				SpentOn: wrapperspb.Int32(100),
+				Info:    wrapperspb.String("{}"),
 			},
 		},
 		{
@@ -83,9 +79,7 @@ func Test_convertModelCertificateToProtoCertificate(t *testing.T) {
 				Id:    1,
 				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
 				WonOn: 2,
-				Info: &wrapperspb.StringValue{
-					Value: "{}",
-				},
+				Info:  wrapperspb.String("{}"),
 			},
 		},
 		{
@@ -147,15 +141,11 @@ func Test_convertProtoCertificateToModelCertificate(t *testing.T) {
 			name: "tc1",
 			args: args{
 				certificate: &certificatemanagerpb.Certificate{
-					Id:    1,
-					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-					WonOn: 1,
-					SpentOn: &wrapperspb.Int32Value{
-						Value: 2,
-					},
-					Info: &wrapperspb.StringValue{
-						Value: "{}",
-					},
+					Id:      1,
+					Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+					WonOn:   1,
+					SpentOn: wrapperspb.Int32(2),
+					Info:    wrapperspb.String("{}"),
 				},
 			},
 			want: model.Certificate{

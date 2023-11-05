@@ -17,6 +17,7 @@ func Test_NewGame(t *testing.T) {
 			Name:        maybe.Nothing[string](),
 			PaymentType: maybe.Nothing[string](),
 			Payment:     maybe.Nothing[Payment](),
+			GameLink:    maybe.Nothing[string](),
 		}, got)
 	})
 }

@@ -71,9 +71,7 @@ func convertModelGamePlayerToProtoGamePlayer(gamePlayer model.GamePlayer) *gamep
 		Degree:       gameplayerpb.Degree(gamePlayer.Degree),
 	}
 	if v, ok := gamePlayer.UserID.Get(); ok {
-		ret.UserId = &wrapperspb.Int32Value{
-			Value: v,
-		}
+		ret.UserId = wrapperspb.Int32(v)
 	}
 
 	return ret

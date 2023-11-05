@@ -145,6 +145,7 @@ func TestImplementation_PatchGame(t *testing.T) {
 			Payment:     maybe.Just(model.PaymentCertificate),
 			Registered:  true,
 			IsInMaster:  true,
+			GameLink:    maybe.Nothing[string](),
 		}).Return(model.Game{}, games.ErrGameAlreadyExists)
 
 		paymentCertificate := gamepb.Payment_PAYMENT_CERTIFICATE

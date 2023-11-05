@@ -114,15 +114,23 @@ func TestFacade_GetGameByID(t *testing.T) {
 
 		timeNow := timeutils.TimeNow()
 		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
-			ID:   1,
-			Date: timeNow.Add(-3601 * time.Second),
+			ID: 1,
+			ExternalID: sql.NullInt64{
+				Int64: 123,
+				Valid: true,
+			},
+			LeagueID: 1,
+			Date:     timeNow.Add(-3601 * time.Second),
 		}, nil)
 
 		got, err := fx.facade.GetGameByID(fx.ctx, 1)
 		expectedGame := model.NewGame()
 		expectedGame.ID = 1
+		expectedGame.ExternalID = maybe.Just(int32(123))
+		expectedGame.LeagueID = 1
 		expectedGame.Date = model.DateTime(timeNow.Add(-3601 * time.Second))
 		expectedGame.HasPassed = true
+		expectedGame.GameLink = maybe.Just("https://spb.quizplease.ru/game-page?id=123")
 		assert.Equal(t, expectedGame, got)
 		assert.NoError(t, err)
 
@@ -193,8 +201,13 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 			},
 		), "").Return([]database.Game{
 			{
-				ID:   1,
-				Date: timeutils.TimeNow().Add(time.Hour),
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID: 3,
+				Date:     timeutils.TimeNow().Add(time.Hour),
 			},
 			{
 				ID:   3,
@@ -206,12 +219,14 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    3,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://60sec.online/game/777/"),
 			},
 			{
 				ID:          3,
@@ -221,6 +236,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)
@@ -292,7 +308,12 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 			builder.Expr("date LIKE \"2006-01-02%\""),
 		), "").Return([]database.Game{
 			{
-				ID:         1,
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID:   1,
 				Date:       timeutils.TimeNow().Add(time.Hour),
 				Registered: true,
 			},
@@ -307,13 +328,15 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    1,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				Registered:  true,
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
 			},
 			{
 				ID:          3,
@@ -324,6 +347,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 				Payment:     maybe.Nothing[model.Payment](),
 				Registered:  true,
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)

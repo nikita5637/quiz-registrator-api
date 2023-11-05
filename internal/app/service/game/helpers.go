@@ -134,26 +134,24 @@ func convertModelGameToProtoGame(game model.Game) *gamepb.Game {
 	}
 
 	if externalID, isPresent := game.ExternalID.Get(); isPresent {
-		pbGame.ExternalId = &wrapperspb.Int32Value{
-			Value: externalID,
-		}
+		pbGame.ExternalId = wrapperspb.Int32(externalID)
 	}
 
 	if name, isPresent := game.Name.Get(); isPresent {
-		pbGame.Name = &wrapperspb.StringValue{
-			Value: name,
-		}
+		pbGame.Name = wrapperspb.String(name)
 	}
 
 	if paymentType, isPresent := game.PaymentType.Get(); isPresent {
-		pbGame.PaymentType = &wrapperspb.StringValue{
-			Value: paymentType,
-		}
+		pbGame.PaymentType = wrapperspb.String(paymentType)
 	}
 
 	if payment, isPresent := game.Payment.Get(); isPresent {
 		p := gamepb.Payment(payment)
 		pbGame.Payment = &p
+	}
+
+	if gameLink, isPresent := game.GameLink.Get(); isPresent {
+		pbGame.GameLink = wrapperspb.String(gameLink)
 	}
 
 	return pbGame
@@ -194,6 +192,10 @@ func convertProtoGameToModelGame(game *gamepb.Game) model.Game {
 	modelGame.IsInMaster = game.GetIsInMaster()
 	// additional
 	modelGame.HasPassed = game.GetHasPassed()
+
+	if gameLink := game.GetGameLink(); gameLink != nil {
+		modelGame.GameLink = maybe.Just(gameLink.GetValue())
+	}
 
 	return modelGame
 }

@@ -67,10 +67,8 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.CreateGamePlayer(fx.ctx, &gameplayer.CreateGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -102,10 +100,8 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.CreateGamePlayer(fx.ctx, &gameplayer.CreateGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -137,10 +133,8 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.CreateGamePlayer(fx.ctx, &gameplayer.CreateGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -172,10 +166,8 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.CreateGamePlayer(fx.ctx, &gameplayer.CreateGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -206,20 +198,16 @@ func TestImplementation_CreateGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.CreateGamePlayer(fx.ctx, &gameplayer.CreateGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
 		})
 		assert.Equal(t, &gameplayerpb.GamePlayer{
-			Id:     1,
-			GameId: 1,
-			UserId: &wrapperspb.Int32Value{
-				Value: 1,
-			},
+			Id:           1,
+			GameId:       1,
+			UserId:       wrapperspb.Int32(1),
 			RegisteredBy: 1,
 			Degree:       gameplayer.Degree_DEGREE_LIKELY,
 		}, got)

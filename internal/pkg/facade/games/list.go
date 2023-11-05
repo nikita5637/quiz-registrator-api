@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 )
 
@@ -25,6 +26,10 @@ func (f *Facade) ListGames(ctx context.Context) ([]model.Game, error) {
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
 			modelGame.HasPassed = gameHasPassed(modelGame)
+
+			if gameLink := getGameLink(modelGame); gameLink != "" {
+				modelGame.GameLink = maybe.Just(gameLink)
+			}
 
 			modelGames = append(modelGames, modelGame)
 		}

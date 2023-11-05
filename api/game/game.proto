@@ -43,6 +43,7 @@ message Game {
 	bool is_in_master = 14;
 	// additional info
 	bool has_passed = 15;
+	google.protobuf.StringValue game_link = 16;
 }
 
 service Service {

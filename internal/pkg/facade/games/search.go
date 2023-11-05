@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
@@ -45,6 +46,10 @@ func (f *Facade) SearchGamesByLeagueID(ctx context.Context, leagueID int32, offs
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
 			modelGame.HasPassed = gameHasPassed(modelGame)
+
+			if gameLink := getGameLink(modelGame); gameLink != "" {
+				modelGame.GameLink = maybe.Just(gameLink)
+			}
 
 			modelGames = append(modelGames, modelGame)
 		}
@@ -99,6 +104,10 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
 			modelGame.HasPassed = true
+
+			if gameLink := getGameLink(modelGame); gameLink != "" {
+				modelGame.GameLink = maybe.Just(gameLink)
+			}
 
 			modelGames = append(modelGames, modelGame)
 		}

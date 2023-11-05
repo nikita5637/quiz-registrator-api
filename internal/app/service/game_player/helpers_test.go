@@ -78,11 +78,9 @@ func Test_convertModelGamePlayerToProtoGamePlayer(t *testing.T) {
 				},
 			},
 			want: &gameplayerpb.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayerpb.Degree_DEGREE_LIKELY,
 			},
@@ -128,11 +126,9 @@ func Test_convertProtoGamePlayerToModelGamePlayer(t *testing.T) {
 			name: "tc2",
 			args: args{
 				gamePlayer: &gameplayerpb.GamePlayer{
-					Id:     1,
-					GameId: 1,
-					UserId: &wrapperspb.Int32Value{
-						Value: 1,
-					},
+					Id:           1,
+					GameId:       1,
+					UserId:       wrapperspb.Int32(1),
 					RegisteredBy: 1,
 					Degree:       gameplayerpb.Degree_DEGREE_LIKELY,
 				},

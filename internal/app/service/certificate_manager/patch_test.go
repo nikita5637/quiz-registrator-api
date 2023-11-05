@@ -23,15 +23,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "invalid JSON",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("invalid JSON"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -56,15 +52,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "invalid JSON",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("invalid JSON"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -95,15 +87,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_INVALID,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{}",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_INVALID,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("{}"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -142,15 +130,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{}",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("{}"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -189,15 +173,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{}",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("{}"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -242,15 +222,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.PatchCertificate(fx.ctx, &certificatemanagerpb.PatchCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Id:    1,
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 10,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 190,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{\"a\":1}",
-				},
+				Id:      1,
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   10,
+				SpentOn: wrapperspb.Int32(190),
+				Info:    wrapperspb.String("{\"a\":1}"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -263,15 +239,11 @@ func TestRegistrator_PatchCertificate(t *testing.T) {
 		})
 
 		assert.Equal(t, &certificatemanagerpb.Certificate{
-			Id:    1,
-			Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-			WonOn: 100,
-			SpentOn: &wrapperspb.Int32Value{
-				Value: 190,
-			},
-			Info: &wrapperspb.StringValue{
-				Value: "{\"a\":1}",
-			},
+			Id:      1,
+			Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+			WonOn:   100,
+			SpentOn: wrapperspb.Int32(190),
+			Info:    wrapperspb.String("{\"a\":1}"),
 		}, got)
 		assert.NoError(t, err)
 	})

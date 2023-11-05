@@ -22,6 +22,7 @@ type Game struct {
 	IsInMaster  bool
 	// additional info
 	HasPassed bool
+	GameLink  maybe.Maybe[string]
 }
 
 // NewGame returns dummy game
@@ -31,6 +32,7 @@ func NewGame() Game {
 		Name:        maybe.Nothing[string](),
 		PaymentType: maybe.Nothing[string](),
 		Payment:     maybe.Nothing[Payment](),
+		GameLink:    maybe.Nothing[string](),
 	}
 }
 

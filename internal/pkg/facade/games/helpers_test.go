@@ -12,6 +12,7 @@ import (
 	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
+	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -104,6 +105,7 @@ func Test_convertDBGameToModelGame(t *testing.T) {
 				MaxPlayers:  9,
 				Payment:     maybe.Just(model.PaymentCash),
 				Registered:  true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		},
 	}
@@ -337,4 +339,60 @@ func Test_gameHasPassed(t *testing.T) {
 		got := gameHasPassed(g)
 		assert.False(t, got)
 	})
+}
+
+func Test_getGameLink(t *testing.T) {
+	type args struct {
+		modelGame model.Game
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "tc1",
+			args: args{
+				modelGame: model.Game{},
+			},
+			want: "",
+		},
+		{
+			name: "tc2",
+			args: args{
+				modelGame: model.Game{
+					ExternalID: maybe.Nothing[int32](),
+					LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+				},
+			},
+			want: "",
+		},
+		{
+			name: "tc3",
+			args: args{
+				modelGame: model.Game{
+					ExternalID: maybe.Just(int32(66059)),
+					LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+				},
+			},
+			want: "https://spb.quizplease.ru/game-page?id=66059",
+		},
+		{
+			name: "tc4",
+			args: args{
+				modelGame: model.Game{
+					ExternalID: maybe.Just(int32(21281)),
+					LeagueID:   int32(leaguepb.LeagueID_SIXTY_SECONDS),
+				},
+			},
+			want: "https://60sec.online/game/21281/",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getGameLink(tt.args.modelGame); got != tt.want {
+				t.Errorf("getGameLink() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }

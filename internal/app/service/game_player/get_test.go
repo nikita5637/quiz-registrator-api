@@ -71,11 +71,9 @@ func TestImplementation_GetGamePlayer(t *testing.T) {
 			Id: 1,
 		})
 		assert.Equal(t, &gameplayerpb.GamePlayer{
-			Id:     1,
-			GameId: 1,
-			UserId: &wrapperspb.Int32Value{
-				Value: 1,
-			},
+			Id:           1,
+			GameId:       1,
+			UserId:       wrapperspb.Int32(1),
 			RegisteredBy: 1,
 			Degree:       gameplayer.Degree_DEGREE_LIKELY,
 		}, got)
@@ -132,11 +130,9 @@ func TestImplementation_GetGamePlayersByGameID(t *testing.T) {
 					Degree:       gameplayer.Degree_DEGREE_LIKELY,
 				},
 				{
-					Id:     2,
-					GameId: 1,
-					UserId: &wrapperspb.Int32Value{
-						Value: 1,
-					},
+					Id:           2,
+					GameId:       1,
+					UserId:       wrapperspb.Int32(1),
 					RegisteredBy: 1,
 					Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 				},

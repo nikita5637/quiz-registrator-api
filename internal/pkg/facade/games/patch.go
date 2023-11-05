@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
@@ -71,6 +72,10 @@ func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Gam
 		}
 
 		modelGame.HasPassed = gameHasPassed(modelGame)
+
+		if gameLink := getGameLink(modelGame); gameLink != "" {
+			modelGame.GameLink = maybe.Just(gameLink)
+		}
 
 		return nil
 	})

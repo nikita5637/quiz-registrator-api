@@ -1,6 +1,7 @@
 package games
 
 import (
+	"database/sql"
 	"errors"
 	"testing"
 	"time"
@@ -74,8 +75,13 @@ func TestFacade_ListGames(t *testing.T) {
 			},
 		), "date").Return([]database.Game{
 			{
-				ID:   1,
-				Date: timeutils.TimeNow().Add(time.Hour),
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID: 1,
+				Date:     timeutils.TimeNow().Add(time.Hour),
 			},
 			{
 				ID:   3,
@@ -87,12 +93,14 @@ func TestFacade_ListGames(t *testing.T) {
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    1,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
 			},
 			{
 				ID:          3,
@@ -102,6 +110,7 @@ func TestFacade_ListGames(t *testing.T) {
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)
