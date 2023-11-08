@@ -8,7 +8,6 @@ import (
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
 )
@@ -100,9 +99,9 @@ func getGameLink(modelGame model.Game) string {
 	}
 
 	switch modelGame.LeagueID {
-	case int32(leaguepb.LeagueID_QUIZ_PLEASE):
+	case model.LeagueQuizPlease:
 		return fmt.Sprintf("https://spb.quizplease.ru/game-page?id=%d", externalID)
-	case int32(leaguepb.LeagueID_SIXTY_SECONDS):
+	case model.LeagueSixtySeconds:
 		return fmt.Sprintf("https://60sec.online/game/%d/", externalID)
 	}
 

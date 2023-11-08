@@ -12,7 +12,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -42,7 +41,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
 				ExternalId: wrapperspb.Int32(1),
-				LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+				LeagueId:   model.LeagueQuizPlease,
 				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:     "1",
 				Name:       wrapperspb.String(""), // invalid
@@ -206,7 +205,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
 				ExternalId: wrapperspb.Int32(1),
-				LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+				LeagueId:   model.LeagueQuizPlease,
 				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:     "1",
 				Name:       wrapperspb.String("name"),
@@ -261,7 +260,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
 				ExternalId: wrapperspb.Int32(1),
-				LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+				LeagueId:   model.LeagueQuizPlease,
 				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:     "1",
 				Name:       wrapperspb.String("name"),
@@ -324,7 +323,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
 				ExternalId: wrapperspb.Int32(1),
-				LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+				LeagueId:   model.LeagueQuizPlease,
 				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:     "1",
 				Name:       wrapperspb.String("name"),
@@ -343,7 +342,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 		assert.Equal(t, &gamepb.Game{
 			Id:         1,
 			ExternalId: wrapperspb.Int32(1),
-			LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+			LeagueId:   model.LeagueQuizPlease,
 			Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 			Number:     "1",
 			Name:       wrapperspb.String("name"),

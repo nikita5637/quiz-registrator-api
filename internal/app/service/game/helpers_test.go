@@ -11,7 +11,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/game/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -123,7 +122,7 @@ func Test_convertProtoGameToModelGame(t *testing.T) {
 				game: &gamepb.Game{
 					Id:         1,
 					ExternalId: wrapperspb.Int32(1),
-					LeagueId:   leaguepb.LeagueID(1),
+					LeagueId:   model.LeagueQuizPlease,
 					Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 					Number:     "1",
 					Name:       wrapperspb.String("name"),
@@ -166,7 +165,7 @@ func Test_convertProtoGameToModelGame(t *testing.T) {
 				game: &gamepb.Game{
 					Id:          1,
 					ExternalId:  wrapperspb.Int32(1),
-					LeagueId:    leaguepb.LeagueID(1),
+					LeagueId:    model.LeagueQuizPlease,
 					Type:        gamepb.GameType_GAME_TYPE_CLASSIC,
 					Number:      "1",
 					Name:        wrapperspb.String("name"),

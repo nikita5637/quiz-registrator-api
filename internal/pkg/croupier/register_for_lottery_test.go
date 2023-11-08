@@ -9,7 +9,6 @@ import (
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
 
@@ -41,7 +40,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -64,7 +63,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 		}
 
 		user := model.User{
@@ -134,7 +133,7 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 
 		game := model.Game{
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 		}
 
 		user := model.User{

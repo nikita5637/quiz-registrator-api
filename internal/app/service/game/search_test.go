@@ -8,7 +8,6 @@ import (
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	"github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -22,7 +21,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 		fx.gamesFacade.EXPECT().SearchGamesByLeagueID(fx.ctx, int32(1), uint64(0), uint64(10)).Return(nil, 0, errors.New("some error"))
 
 		got, err := fx.implementation.SearchGamesByLeagueID(fx.ctx, &gamepb.SearchGamesByLeagueIDRequest{
-			Id:       league.LeagueID_QUIZ_PLEASE,
+			Id:       model.LeagueQuizPlease,
 			Page:     1,
 			PageSize: 10,
 		})
@@ -40,7 +39,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 		fx.gamesFacade.EXPECT().SearchGamesByLeagueID(fx.ctx, int32(1), uint64(0), uint64(10)).Return([]model.Game{}, 0, nil)
 
 		got, err := fx.implementation.SearchGamesByLeagueID(fx.ctx, &gamepb.SearchGamesByLeagueIDRequest{
-			Id:       league.LeagueID_QUIZ_PLEASE,
+			Id:       model.LeagueQuizPlease,
 			Page:     1,
 			PageSize: 10,
 		})
@@ -84,7 +83,7 @@ func TestImplementation_SearchGamesByLeagueID(t *testing.T) {
 		}, 3, nil)
 
 		got, err := fx.implementation.SearchGamesByLeagueID(fx.ctx, &gamepb.SearchGamesByLeagueIDRequest{
-			Id:       league.LeagueID_QUIZ_PLEASE,
+			Id:       model.LeagueQuizPlease,
 			Page:     0,
 			PageSize: 10,
 		})

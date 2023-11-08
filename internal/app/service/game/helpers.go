@@ -8,7 +8,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -120,7 +119,7 @@ var (
 func convertModelGameToProtoGame(game model.Game) *gamepb.Game {
 	pbGame := &gamepb.Game{
 		Id:         game.ID,
-		LeagueId:   leaguepb.LeagueID(game.LeagueID),
+		LeagueId:   game.LeagueID,
 		Type:       gamepb.GameType(game.Type),
 		Number:     game.Number,
 		PlaceId:    game.PlaceID,
@@ -166,7 +165,7 @@ func convertProtoGameToModelGame(game *gamepb.Game) model.Game {
 		modelGame.ExternalID = maybe.Just(externalID.GetValue())
 	}
 
-	modelGame.LeagueID = int32(game.GetLeagueId())
+	modelGame.LeagueID = game.GetLeagueId()
 	modelGame.Type = model.GameType(game.GetType())
 	modelGame.Number = game.GetNumber()
 

@@ -12,7 +12,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
 	"google.golang.org/grpc/codes"
@@ -95,7 +94,7 @@ func TestImplementation_PatchGame(t *testing.T) {
 		got, err := fx.implementation.PatchGame(fx.ctx, &gamepb.PatchGameRequest{
 			Game: &gamepb.Game{
 				Id:       1,
-				LeagueId: leaguepb.LeagueID_INVALID,
+				LeagueId: 0,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -153,7 +152,7 @@ func TestImplementation_PatchGame(t *testing.T) {
 			Game: &gamepb.Game{
 				Id:         1,
 				ExternalId: wrapperspb.Int32(1),
-				LeagueId:   leaguepb.LeagueID_QUIZ_PLEASE,
+				LeagueId:   model.LeagueQuizPlease,
 				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:     "1",
 				Name:       wrapperspb.String("name"),
@@ -229,7 +228,7 @@ func TestImplementation_PatchGame(t *testing.T) {
 		got, err := fx.implementation.PatchGame(fx.ctx, &gamepb.PatchGameRequest{
 			Game: &gamepb.Game{
 				Id:       1,
-				LeagueId: leaguepb.LeagueID(math.MaxInt32),
+				LeagueId: math.MaxInt32,
 				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
 				Number:   "1",
 				PlaceId:  1,
@@ -345,7 +344,7 @@ func TestImplementation_PatchGame(t *testing.T) {
 		})
 		assert.Equal(t, &gamepb.Game{
 			Id:       1,
-			LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
+			LeagueId: model.LeagueQuizPlease,
 			Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
 			Number:   "1",
 			PlaceId:  math.MaxInt32,

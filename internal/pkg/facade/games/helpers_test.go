@@ -12,7 +12,6 @@ import (
 	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
@@ -362,7 +361,7 @@ func Test_getGameLink(t *testing.T) {
 			args: args{
 				modelGame: model.Game{
 					ExternalID: maybe.Nothing[int32](),
-					LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					LeagueID:   model.LeagueQuizPlease,
 				},
 			},
 			want: "",
@@ -372,7 +371,7 @@ func Test_getGameLink(t *testing.T) {
 			args: args{
 				modelGame: model.Game{
 					ExternalID: maybe.Just(int32(66059)),
-					LeagueID:   int32(leaguepb.LeagueID_QUIZ_PLEASE),
+					LeagueID:   model.LeagueQuizPlease,
 				},
 			},
 			want: "https://spb.quizplease.ru/game-page?id=66059",
@@ -382,7 +381,7 @@ func Test_getGameLink(t *testing.T) {
 			args: args{
 				modelGame: model.Game{
 					ExternalID: maybe.Just(int32(21281)),
-					LeagueID:   int32(leaguepb.LeagueID_SIXTY_SECONDS),
+					LeagueID:   model.LeagueSixtySeconds,
 				},
 			},
 			want: "https://60sec.online/game/21281/",

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/spf13/viper"
 
@@ -25,7 +24,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 
@@ -42,7 +41,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 
@@ -59,7 +58,7 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			LeagueID: model.LeagueQuizPlease,
 			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 

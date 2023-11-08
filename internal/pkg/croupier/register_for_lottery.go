@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 )
 
 // RegisterForLottery ...
@@ -19,7 +18,7 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	}
 
 	// TODO fix squiz lottery registration
-	if game.LeagueID == int32(leaguepb.LeagueID_SQUIZ) {
+	if game.LeagueID == model.LeagueSquiz {
 		implemented = false
 	}
 
@@ -32,14 +31,14 @@ func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user
 	}
 
 	switch game.LeagueID {
-	case int32(leaguepb.LeagueID_QUIZ_PLEASE):
+	case model.LeagueQuizPlease:
 		number, err := c.quizPleaseCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("quiz please lottery registration error: %w", err)
 		}
 
 		return number, nil
-	case int32(leaguepb.LeagueID_SQUIZ):
+	case model.LeagueSquiz:
 		_, err := c.squizCroupier.RegisterForLottery(ctx, game, user)
 		if err != nil {
 			return 0, fmt.Errorf("squiz lottery registration error: %w", err)

@@ -45,7 +45,7 @@ func (i *Implementation) PatchGame(ctx context.Context, req *gamepb.PatchGameReq
 				patchedGame.ExternalID = maybe.Nothing[int32]()
 			}
 		case "league_id":
-			patchedGame.LeagueID = int32(req.GetGame().GetLeagueId())
+			patchedGame.LeagueID = req.GetGame().GetLeagueId()
 		case "type":
 			patchedGame.Type = model.GameType(req.GetGame().GetType())
 		case "number":
