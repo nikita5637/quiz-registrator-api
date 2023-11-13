@@ -10,6 +10,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -18,7 +19,7 @@ import (
 func (i *Implementation) CreateUser(ctx context.Context, req *usermanagerpb.CreateUserRequest) (*usermanagerpb.User, error) {
 	createdUser := convertProtoUserToModelUser(req.GetUser())
 
-	logger.Debugf(ctx, "trying to create new user: %#v", createdUser)
+	logger.DebugKV(ctx, "trying to create new user", zap.Reflect("created_user", createdUser))
 
 	if err := validateCreatedUser(createdUser); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
@@ -57,7 +58,7 @@ func (i *Implementation) CreateUser(ctx context.Context, req *usermanagerpb.Crea
 		return nil, st.Err()
 	}
 
-	logger.Debugf(ctx, "user created: %#v", user)
+	logger.DebugKV(ctx, "user has been created", zap.Reflect("user", user))
 
 	return convertModelUserToProtoUser(user), nil
 }

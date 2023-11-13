@@ -90,7 +90,7 @@ func (r *Reminder) run(ctx context.Context) error {
 	for _, game := range games {
 		players, err := r.gamePlayersFacade.GetGamePlayersByGameID(ctx, game.ID)
 		if err != nil {
-			logger.ErrorKV(ctx, "getting game players by game ID error", zap.Error(err), "gameID", game.ID)
+			logger.ErrorKV(ctx, "getting game players by game ID error", zap.Error(err), zap.Int32("game_id", game.ID))
 			continue
 		}
 
@@ -102,22 +102,22 @@ func (r *Reminder) run(ctx context.Context) error {
 		}
 
 		if len(playerIDs) == 0 {
-			logger.WarnKV(ctx, "there are not players to remind", "gameID", game.ID)
+			logger.WarnKV(ctx, "there are not players to remind", zap.Int32("game_id", game.ID))
 			continue
 		}
 
-		reminder := reminder.Game{
+		reminderMessage := reminder.Game{
 			GameID:    game.ID,
 			PlayerIDs: playerIDs,
 		}
 
-		err = r.rabbitMQProducer.Send(ctx, reminder)
+		err = r.rabbitMQProducer.Send(ctx, reminderMessage)
 		if err != nil {
 			logger.ErrorKV(ctx, "sending message error", zap.Error(err))
 			continue
 		}
 
-		logger.InfoKV(ctx, "message published", "reminder", reminder)
+		logger.InfoKV(ctx, "reminder message published", zap.Reflect("message", reminderMessage))
 	}
 
 	return nil

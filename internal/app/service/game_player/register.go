@@ -13,6 +13,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -48,7 +49,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 
 	registeredGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.DebugKV(ctx, "registering new game player", "gameplayer", registeredGamePlayer)
+	logger.DebugKV(ctx, "registering new game player", zap.Reflect("game_player", registeredGamePlayer))
 
 	if err := validateRegisteredGamePlayer(registeredGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())

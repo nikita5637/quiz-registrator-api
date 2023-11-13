@@ -87,24 +87,24 @@ func main() {
 	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner, zap.Fields(
 		zap.String("module", viper.GetString("log.module_name")),
 	)))
-	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
+	logger.InfoKV(ctx, "initialized logger", zap.String("log_level", logLevel.String()))
 
 	driverName := viper.GetString("database.driver")
 	db, err := storage.NewDB(ctx, driverName)
 	if err != nil {
-		logger.Fatalf(ctx, "new DB initialization error: %s", err.Error())
+		logger.FatalKV(ctx, "new DB initialization error", zap.Error(err))
 	}
 	defer db.Close()
 
 	rabbitMQConn, err := amqp.Dial(config.GetRabbitMQURL())
 	if err != nil {
-		logger.Fatalf(ctx, "get rabbitMQ connection error: %s", err.Error())
+		logger.FatalKV(ctx, "get rabbitMQ connection error", zap.Error(err))
 	}
 	defer rabbitMQConn.Close()
 
 	rabbitMQChannel, err := rabbitMQConn.Channel()
 	if err != nil {
-		logger.Fatalf(ctx, "get rabbitMQ channel error: %s", err.Error())
+		logger.FatalKV(ctx, "get rabbitMQ channel error", zap.Error(err))
 	}
 	defer rabbitMQChannel.Close()
 
@@ -294,7 +294,7 @@ func main() {
 			return fmt.Errorf("failed to listen: %w", err)
 		}
 
-		logger.Infof(ctx, "starting registrator")
+		logger.Info(ctx, "starting registrator")
 		return apiServer.ListenAndServe(ctx, lis)
 	})
 
@@ -341,7 +341,7 @@ func main() {
 		}
 		remindManager := remindmanager.New(remindManagerConfig)
 
-		logger.Infof(ctx, "starting remind manager")
+		logger.Info(ctx, "starting remind manager")
 		return remindManager.Start(ctx)
 	})
 

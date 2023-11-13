@@ -12,6 +12,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -32,7 +33,7 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 		return nil, st.Err()
 	}
 
-	logger.Debugf(ctx, "trying to patch user: %#v", originalUser)
+	logger.DebugKV(ctx, "trying to patch user", zap.Reflect("original_user", originalUser))
 
 	onlyRussianAlphabet := false
 	patchedUser := originalUser
@@ -102,7 +103,7 @@ func (i *Implementation) PatchUser(ctx context.Context, req *usermanagerpb.Patch
 		return nil, st.Err()
 	}
 
-	logger.Debugf(ctx, "user patched: %#v", user)
+	logger.DebugKV(ctx, "user has been patched", zap.Reflect("user", user))
 
 	return convertModelUserToProtoUser(user), nil
 }

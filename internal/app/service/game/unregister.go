@@ -48,7 +48,7 @@ func (i *Implementation) UnregisterGame(ctx context.Context, req *gamepb.Unregis
 		Event:  ics.EventUnregistered,
 	}
 	if err := i.rabbitMQProducer.Send(ctx, icsEvent); err != nil {
-		logger.ErrorKV(ctx, "sending ICS event error", zap.Error(err), "event", icsEvent)
+		logger.ErrorKV(ctx, "sending ICS event error", zap.Error(err), zap.Reflect("event", icsEvent))
 	}
 
 	return &emptypb.Empty{}, nil

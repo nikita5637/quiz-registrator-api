@@ -11,6 +11,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -42,7 +43,7 @@ func (i *Implementation) UpdatePlayerDegree(ctx context.Context, req *gameplayer
 	patchedGamePlayer := originalGamePlayer
 	patchedGamePlayer.Degree = model.Degree(req.GetDegree())
 
-	logger.DebugKV(ctx, "updating game player degree", "gameplayer", patchedGamePlayer)
+	logger.DebugKV(ctx, "updating game player degree", zap.Reflect("game_player", patchedGamePlayer))
 
 	game, err := i.gamesFacade.GetGameByID(ctx, patchedGamePlayer.GameID)
 	if err != nil {
