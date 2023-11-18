@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-// Role is the 'role' enum type from schema 'quiz_registrator_api_stg'.
+// Role is the 'role' enum type from schema 'registrator_api'.
 type Role uint16
 
 // Role values.
@@ -66,7 +66,7 @@ func (r *Role) Scan(v interface{}) error {
 	return ErrInvalidRole(fmt.Sprintf("%T", v))
 }
 
-// NullRole represents a null 'role' enum for schema 'quiz_registrator_api_stg'.
+// NullRole represents a null 'role' enum for schema 'registrator_api'.
 type NullRole struct {
 	Role Role
 	// Valid is true if Role is not null.

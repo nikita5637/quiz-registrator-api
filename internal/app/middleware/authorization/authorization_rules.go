@@ -151,6 +151,15 @@ var grpcRules = map[string]roles{
 		S2S:    struct{}{},
 	},
 	//
+	// math_problem
+	//
+	"/math_problem.Service/CreateMathProblem": {
+		Management: struct{}{},
+	},
+	"/math_problem.Service/SearchMathProblemByGameID": {
+		Public: struct{}{},
+	},
+	//
 	// photo_manager
 	//
 	"/photo_manager.Service/AddGamePhotos": {

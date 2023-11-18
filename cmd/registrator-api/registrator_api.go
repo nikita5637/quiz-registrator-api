@@ -22,6 +22,7 @@ import (
 	gameplayerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_player"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
+	mathproblemservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/math_problem"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	placeservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/place"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
@@ -36,6 +37,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/mathproblems"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
@@ -147,6 +149,7 @@ func main() {
 		gamePhotoStorage := storage.NewGamePhotoStorage(driverName, txManager)
 		gameResultStorage := storage.NewGameResultStorage(driverName, txManager)
 		leagueStorage := storage.NewLeagueStorage(driverName, txManager)
+		mathProblemStorage := storage.NewMathProblemStorage(driverName, txManager)
 		placeStorage := storage.NewPlaceStorage(driverName, txManager)
 		userStorage := storage.NewUserStorage(driverName, txManager)
 		userRoleStorage := storage.NewUserRoleStorage(driverName, txManager)
@@ -230,6 +233,17 @@ func main() {
 		}
 		leagueService := leagueservice.New(leagueServiceConfig)
 
+		mathProblemsFacadeConfig := mathproblems.Config{
+			MathProblemStorage: mathProblemStorage,
+			TxManager:          txManager,
+		}
+		mathProblemsFacade := mathproblems.New(mathProblemsFacadeConfig)
+
+		mathProblemServiceConfig := mathproblemservice.Config{
+			MathProblemsFacade: mathProblemsFacade,
+		}
+		mathProblemService := mathproblemservice.New(mathProblemServiceConfig)
+
 		photoManagerServiceConfig := photomanagerservice.Config{
 			GamePhotosFacade: gamePhotosFacade,
 		}
@@ -283,6 +297,7 @@ func main() {
 			GamePlayerRegistratorService: gamePlayerService,
 			GameResultManagerService:     gameResultManagerService,
 			LeagueService:                leagueService,
+			MathProblemService:           mathProblemService,
 			PhotoManagerService:          photoManagerService,
 			PlaceService:                 placeService,
 			UserManagerService:           userManagerService,

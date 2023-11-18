@@ -18,7 +18,7 @@ func (f *Facade) CreateGamePlayer(ctx context.Context, gamePlayer model.GamePlay
 		if userID, ok := gamePlayer.UserID.Get(); ok {
 			existedGamePlayers, err := f.GetGamePlayersByGameID(ctx, gamePlayer.GameID)
 			if err != nil {
-				return fmt.Errorf("get gamme players by game ID error: %w", err)
+				return fmt.Errorf("get game players by game ID error: %w", err)
 			}
 
 			for _, existedGamePlayer := range existedGamePlayers {

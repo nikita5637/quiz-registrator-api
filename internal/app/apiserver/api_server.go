@@ -18,6 +18,7 @@ import (
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
 	gameresultmanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_result_manager"
 	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
+	mathproblempb "github.com/nikita5637/quiz-registrator-api/pkg/pb/math_problem"
 	photomanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/photo_manager"
 	placepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/place"
 	usermanagerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/user_manager"
@@ -48,6 +49,7 @@ type Config struct {
 	GamePlayerRegistratorService gameplayerpb.RegistratorServiceServer
 	GameResultManagerService     gameresultmanagerpb.ServiceServer
 	LeagueService                leaguepb.ServiceServer
+	MathProblemService           mathproblempb.ServiceServer
 	PhotoManagerService          photomanagerpb.ServiceServer
 	PlaceService                 placepb.ServiceServer
 	UserManagerService           usermanagerpb.ServiceServer
@@ -76,6 +78,7 @@ func New(cfg Config) *APIServer {
 	gameplayerpb.RegisterRegistratorServiceServer(s, cfg.GamePlayerRegistratorService)
 	gameresultmanagerpb.RegisterServiceServer(s, cfg.GameResultManagerService)
 	leaguepb.RegisterServiceServer(s, cfg.LeagueService)
+	mathproblempb.RegisterServiceServer(s, cfg.MathProblemService)
 	photomanagerpb.RegisterServiceServer(s, cfg.PhotoManagerService)
 	placepb.RegisterServiceServer(s, cfg.PlaceService)
 	usermanagerpb.RegisterServiceServer(s, cfg.UserManagerService)
