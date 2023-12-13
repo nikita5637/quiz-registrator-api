@@ -40,7 +40,7 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 			assert.Len(t, a, 1)
 			assert.Equal(t, "application/json, text/javascript, */*; q=0.01", a[0])
 
-			assert.Equal(t, `formservices%5B%5D=2f10f04603e10edcc2a2f556014f4647&city=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3&name=%D0%98%D0%BC%D1%8F&team=%D0%96%D0%B8%D0%B7%D0%BD%D1%8C+%D0%B8+%D0%93%D1%80%D0%B0%D0%B1%D0%BB%D1%8F&tildaspec-phone-part%5B%5D=(999)+888-77-66&phone=%2B7+(999)+888-77-66&email=email%40email.ru&policy=yes&form-spec-comments=&ga-cid=2095662112.1674837243&ym-cid=1668581346714918248&tildaspec-cookie=_fbp%3Dfb.1.1674837243537.1860351820%3B+previousUrl%3Dspb.squiz.ru%252Fgame%3B+tildasid%3D1674837245102.474240%3B+tildauid%3D1674837245102.202611%3B+tmr_detect%3D0%257C1674837245889%3B+_ga%3DGA1.2.2095662112.1674837243%3B+_gid%3DGA1.2.858509434.1674837243%3B+_ym_d%3D1674837243%3B+_ym_isad%3D2%3B+_ym_uid%3D1668581346714918248%3B+_ym_visorc%3Dw%3B+tmr_lvid%3D8837cd2f89f7e2366a01121f7183882b%3B+tmr_lvidTS%3D1668581346211%3B+metrika_enabled%3D1&tildaspec-referer=https%3A%2F%2Fspb.squiz.ru%2Fgame&tildaspec-formid=form89161196&tildaspec-formskey=e1f3c41503ecee331fd3e20a0956db51&tildaspec-version-lib=02.001&tildaspec-pageid=4917751&tildaspec-projectid=1057010&tildaspec-lang=EN&tildaspec-fp=6354646d6863386c656e2d4742704d6163496e74656c764170706c6520436f6d70757465722c20496e632e614d6f7a696c6c616e4e65747363617065706c707232773134343068323731`,
+			assert.Equal(t, `formservices%5B%5D=2f10f04603e10edcc2a2f556014f4647&city=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3&name=%D0%98%D0%BC%D1%8F&team=%D0%96%D0%B8%D0%B7%D0%BD%D1%8C+%D0%B8+%D0%93%D1%80%D0%B0%D0%B1%D0%BB%D1%8F&tildaspec-phone-part%5B%5D=(999)+888-77-66&phone=%2B7+(999)+888-77-66&email=email%40example.com&policy=yes&form-spec-comments=&ga-cid=2095662112.1674837243&ym-cid=1668581346714918248&tildaspec-cookie=_fbp%3Dfb.1.1674837243537.1860351820%3B+previousUrl%3Dspb.squiz.ru%252Fgame%3B+tildasid%3D1674837245102.474240%3B+tildauid%3D1674837245102.202611%3B+tmr_detect%3D0%257C1674837245889%3B+_ga%3DGA1.2.2095662112.1674837243%3B+_gid%3DGA1.2.858509434.1674837243%3B+_ym_d%3D1674837243%3B+_ym_isad%3D2%3B+_ym_uid%3D1668581346714918248%3B+_ym_visorc%3Dw%3B+tmr_lvid%3D8837cd2f89f7e2366a01121f7183882b%3B+tmr_lvidTS%3D1668581346211%3B+metrika_enabled%3D1&tildaspec-referer=https%3A%2F%2Fspb.squiz.ru%2Fgame&tildaspec-formid=form89161196&tildaspec-formskey=e1f3c41503ecee331fd3e20a0956db51&tildaspec-version-lib=02.001&tildaspec-pageid=4917751&tildaspec-projectid=1057010&tildaspec-lang=EN&tildaspec-fp=6354646d6863386c656e2d4742704d6163496e74656c764170706c6520436f6d70757465722c20496e632e614d6f7a696c6c616e4e65747363617065706c707232773134343068323731`,
 				string(b))
 
 			fmt.Fprintf(w, `{"message": "OK","results": ["1057010:4240991651"]}`)
@@ -56,7 +56,7 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 		}, model.User{
 			Name:  "Имя",
 			Phone: maybe.Just("+79998887766"),
-			Email: maybe.Just("email@email.ru"),
+			Email: maybe.Just("email@example.com"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.NoError(t, err)
@@ -85,7 +85,7 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 			assert.Len(t, a, 1)
 			assert.Equal(t, "application/json, text/javascript, */*; q=0.01", a[0])
 
-			assert.Equal(t, `formservices%5B%5D=2f10f04603e10edcc2a2f556014f4647&city=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3&name=%D0%98%D0%BC%D1%8F&team=%D0%96%D0%B8%D0%B7%D0%BD%D1%8C+%D0%B8+%D0%93%D1%80%D0%B0%D0%B1%D0%BB%D1%8F&tildaspec-phone-part%5B%5D=(999)+888-77-66&phone=%2B7+(999)+888-77-66&email=email%40email.ru&policy=yes&form-spec-comments=&ga-cid=2095662112.1674837243&ym-cid=1668581346714918248&tildaspec-cookie=_fbp%3Dfb.1.1674837243537.1860351820%3B+previousUrl%3Dspb.squiz.ru%252Fgame%3B+tildasid%3D1674837245102.474240%3B+tildauid%3D1674837245102.202611%3B+tmr_detect%3D0%257C1674837245889%3B+_ga%3DGA1.2.2095662112.1674837243%3B+_gid%3DGA1.2.858509434.1674837243%3B+_ym_d%3D1674837243%3B+_ym_isad%3D2%3B+_ym_uid%3D1668581346714918248%3B+_ym_visorc%3Dw%3B+tmr_lvid%3D8837cd2f89f7e2366a01121f7183882b%3B+tmr_lvidTS%3D1668581346211%3B+metrika_enabled%3D1&tildaspec-referer=https%3A%2F%2Fspb.squiz.ru%2Fgame&tildaspec-formid=form89161196&tildaspec-formskey=e1f3c41503ecee331fd3e20a0956db51&tildaspec-version-lib=02.001&tildaspec-pageid=4917751&tildaspec-projectid=1057010&tildaspec-lang=EN&tildaspec-fp=6354646d6863386c656e2d4742704d6163496e74656c764170706c6520436f6d70757465722c20496e632e614d6f7a696c6c616e4e65747363617065706c707232773134343068323731`,
+			assert.Equal(t, `formservices%5B%5D=2f10f04603e10edcc2a2f556014f4647&city=%D0%A1%D0%B0%D0%BD%D0%BA%D1%82-%D0%9F%D0%B5%D1%82%D0%B5%D1%80%D0%B1%D1%83%D1%80%D0%B3&name=%D0%98%D0%BC%D1%8F&team=%D0%96%D0%B8%D0%B7%D0%BD%D1%8C+%D0%B8+%D0%93%D1%80%D0%B0%D0%B1%D0%BB%D1%8F&tildaspec-phone-part%5B%5D=(999)+888-77-66&phone=%2B7+(999)+888-77-66&email=email%40example.com&policy=yes&form-spec-comments=&ga-cid=2095662112.1674837243&ym-cid=1668581346714918248&tildaspec-cookie=_fbp%3Dfb.1.1674837243537.1860351820%3B+previousUrl%3Dspb.squiz.ru%252Fgame%3B+tildasid%3D1674837245102.474240%3B+tildauid%3D1674837245102.202611%3B+tmr_detect%3D0%257C1674837245889%3B+_ga%3DGA1.2.2095662112.1674837243%3B+_gid%3DGA1.2.858509434.1674837243%3B+_ym_d%3D1674837243%3B+_ym_isad%3D2%3B+_ym_uid%3D1668581346714918248%3B+_ym_visorc%3Dw%3B+tmr_lvid%3D8837cd2f89f7e2366a01121f7183882b%3B+tmr_lvidTS%3D1668581346211%3B+metrika_enabled%3D1&tildaspec-referer=https%3A%2F%2Fspb.squiz.ru%2Fgame&tildaspec-formid=form89161196&tildaspec-formskey=e1f3c41503ecee331fd3e20a0956db51&tildaspec-version-lib=02.001&tildaspec-pageid=4917751&tildaspec-projectid=1057010&tildaspec-lang=EN&tildaspec-fp=6354646d6863386c656e2d4742704d6163496e74656c764170706c6520436f6d70757465722c20496e632e614d6f7a696c6c616e4e65747363617065706c707232773134343068323731`,
 				string(b))
 
 			fmt.Fprintf(w, `{"message": "OK","results": ["1057010:4240991651"]}`)
@@ -101,7 +101,7 @@ func TestSquizCroupier_RegisterForLottery(t *testing.T) {
 		}, model.User{
 			Name:  "Имя",
 			Phone: maybe.Just("+79998887766"),
-			Email: maybe.Just("email@email.ru"),
+			Email: maybe.Just("email@example.com"),
 		})
 		assert.Equal(t, int32(0), got)
 		assert.NoError(t, err)

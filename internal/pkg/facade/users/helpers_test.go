@@ -60,7 +60,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 				Name:       "name",
 				TelegramID: -100,
 				Email: sql.NullString{
-					String: "email@email.ru",
+					String: "email@example.com",
 					Valid:  true,
 				},
 				Phone: sql.NullString{
@@ -74,7 +74,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Nothing[string](),
@@ -92,7 +92,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 				Name:       "name",
 				TelegramID: -100,
 				Email: sql.NullString{
-					String: "email@email.ru",
+					String: "email@example.com",
 					Valid:  true,
 				},
 				Phone: sql.NullString{
@@ -110,7 +110,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -125,7 +125,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 				Name:       "name",
 				TelegramID: -100,
 				Email: sql.NullString{
-					String: "email@email.ru",
+					String: "email@example.com",
 					Valid:  true,
 				},
 				Phone: sql.NullString{
@@ -143,7 +143,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Nothing[string](),
@@ -158,7 +158,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 				Name:       "name",
 				TelegramID: -100,
 				Email: sql.NullString{
-					String: "email@email.ru",
+					String: "email@example.com",
 					Valid:  true,
 				},
 				Phone: sql.NullString{
@@ -176,7 +176,7 @@ func Test_convertDBUserToModelUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Nothing[string](),
@@ -194,7 +194,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just(birthDate),
@@ -205,7 +205,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Email: sql.NullString{
-				String: "email@email.ru",
+				String: "email@example.com",
 				Valid:  true,
 			},
 			Phone: sql.NullString{
@@ -231,7 +231,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just(birthDate),
@@ -242,7 +242,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Email: sql.NullString{
-				String: "email@email.ru",
+				String: "email@example.com",
 				Valid:  true,
 			},
 			Phone: sql.NullString{
@@ -269,7 +269,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just(birthDate),
@@ -280,7 +280,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Email: sql.NullString{
-				String: "email@email.ru",
+				String: "email@example.com",
 				Valid:  true,
 			},
 			Phone: sql.NullString{
@@ -307,7 +307,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			ID:         1,
 			Name:       "name",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just(birthDate),
@@ -318,7 +318,7 @@ func Test_convertModelUserToDBUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Email: sql.NullString{
-				String: "email@email.ru",
+				String: "email@example.com",
 				Valid:  true,
 			},
 			Phone: sql.NullString{

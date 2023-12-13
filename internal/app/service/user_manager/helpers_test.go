@@ -327,7 +327,7 @@ func Test_validateEmail(t *testing.T) {
 		{
 			name: "ok",
 			args: args{
-				value: maybe.Just("email@email.ru"),
+				value: maybe.Just("email@example.com"),
 			},
 			wantErr: false,
 		},
