@@ -226,7 +226,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   false,
-				GameLink:    maybe.Just("https://60sec.online/game/777/"),
+				GameLink:    maybe.Just("https://club60sec.ru/quizgames/game/777/"),
 			},
 			{
 				ID:          3,

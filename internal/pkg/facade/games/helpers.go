@@ -102,7 +102,8 @@ func getGameLink(modelGame model.Game) string {
 	case model.LeagueQuizPlease:
 		return fmt.Sprintf("https://spb.quizplease.ru/game-page?id=%d", externalID)
 	case model.LeagueSixtySeconds:
-		return fmt.Sprintf("https://60sec.online/game/%d/", externalID)
+		// return fmt.Sprintf("https://60sec.online/game/%d/", externalID) // old variant
+		return fmt.Sprintf("https://club60sec.ru/quizgames/game/%d/", externalID)
 	}
 
 	return ""

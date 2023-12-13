@@ -384,7 +384,7 @@ func Test_getGameLink(t *testing.T) {
 					LeagueID:   model.LeagueSixtySeconds,
 				},
 			},
-			want: "https://60sec.online/game/21281/",
+			want: "https://club60sec.ru/quizgames/game/21281/",
 		},
 	}
 	for _, tt := range tests {

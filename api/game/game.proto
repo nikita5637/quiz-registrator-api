@@ -131,7 +131,6 @@ message SearchPassedAndRegisteredGamesResponse {
 	uint64 total = 2;
 }
 
-
 service RegistratorService {
 	// RegisterGame registers game by game ID
 	rpc RegisterGame(RegisterGameRequest) returns (google.protobuf.Empty) {
