@@ -1,4 +1,4 @@
-// go:generate mockery --case underscore --name MathProblemStorage --with-expecter
+//go:generate mockery --case underscore --name MathProblemStorage --with-expecter
 
 package storage
 
