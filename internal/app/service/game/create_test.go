@@ -503,7 +503,7 @@ func Test_validateCreatedGame(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "error: invalid Nummber",
+			name: "error: invalid Number",
 			args: args{
 				game: model.Game{
 					ID:          1,
@@ -525,7 +525,7 @@ func Test_validateCreatedGame(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "error: invalid Nummber",
+			name: "error: invalid Number",
 			args: args{
 				game: model.Game{
 					ID:          1,
@@ -599,7 +599,7 @@ func Test_validateCreatedGame(t *testing.T) {
 					LeagueID:    1,
 					Type:        model.GameTypeClassic,
 					Number:      "1",
-					Name:        maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+					Name:        maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
 					PlaceID:     1,
 					Date:        model.DateTime(timeutils.ConvertTime("2006-01-02 15:04")),
 					Price:       400,

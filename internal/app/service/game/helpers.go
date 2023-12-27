@@ -226,7 +226,7 @@ func validateName(value interface{}) error {
 		return errors.New("must be Maybe[string]")
 	}
 
-	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Length(1, 64)))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Length(1, 128)))
 }
 
 func validatePayment(value interface{}) error {

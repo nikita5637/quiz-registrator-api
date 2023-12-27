@@ -455,9 +455,9 @@ func Test_validateName(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "len lt 64",
+			name: "len lt 128",
 			args: args{
-				value: maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+				value: maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
 			},
 			wantErr: true,
 		},
