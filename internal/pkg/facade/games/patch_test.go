@@ -43,6 +43,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"number":      "number",
 				"date":        timeutils.TimeNow(),
 			},
+			builder.IsNull{
+				"deleted_at",
+			},
 		), "").Return(nil, errors.New("some error"))
 
 		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
@@ -78,6 +81,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"place_id":  int32(1),
 				"number":    "number",
 				"date":      timeutils.TimeNow(),
+			},
+			builder.IsNull{
+				"deleted_at",
 			},
 		), "").Return([]database.Game{
 			{
@@ -123,6 +129,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"place_id":  int32(1),
 				"number":    "number",
 				"date":      timeutils.TimeNow(),
+			},
+			builder.IsNull{
+				"deleted_at",
 			},
 		), "").Return([]database.Game{}, nil)
 
@@ -175,6 +184,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"number":    "number",
 				"date":      timeutils.TimeNow(),
 			},
+			builder.IsNull{
+				"deleted_at",
+			},
 		), "").Return([]database.Game{}, nil)
 
 		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
@@ -226,6 +238,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"number":    "number",
 				"date":      timeutils.TimeNow(),
 			},
+			builder.IsNull{
+				"deleted_at",
+			},
 		), "").Return([]database.Game{}, nil)
 
 		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
@@ -270,6 +285,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"place_id":    int32(1),
 				"number":      "number",
 				"date":        timeutils.TimeNow().Add(-3601 * time.Second),
+			},
+			builder.IsNull{
+				"deleted_at",
 			},
 		), "").Return([]database.Game{}, nil)
 
@@ -333,6 +351,9 @@ func TestFacade_PatchGame(t *testing.T) {
 				"place_id":  int32(1),
 				"number":    "number",
 				"date":      timeutils.TimeNow().Add(-3601 * time.Second),
+			},
+			builder.IsNull{
+				"deleted_at",
 			},
 		), "").Return([]database.Game{}, nil)
 

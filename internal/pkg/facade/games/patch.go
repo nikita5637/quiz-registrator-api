@@ -29,6 +29,9 @@ func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Gam
 					"number":      modelGame.Number,
 					"date":        modelGame.DateTime().AsTime(),
 				},
+				builder.IsNull{
+					"deleted_at",
+				},
 			)
 		} else {
 			builderCond = builder.And(
@@ -43,6 +46,9 @@ func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Gam
 					"place_id":  modelGame.PlaceID,
 					"number":    modelGame.Number,
 					"date":      modelGame.DateTime().AsTime(),
+				},
+				builder.IsNull{
+					"deleted_at",
 				},
 			)
 		}
