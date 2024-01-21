@@ -56,7 +56,7 @@ type response struct {
 }
 
 // RegisterForLottery ...
-func (c *Croupier) RegisterForLottery(ctx context.Context, game model.Game, user model.User) (int32, error) {
+func (c *Croupier) RegisterForLottery(ctx context.Context, _ model.Game, user model.User) (int32, error) {
 	lotteryInfoPageReq, err := http.NewRequest(http.MethodGet, c.lotteryInfoPageLink, nil)
 	if err != nil {
 		return 0, fmt.Errorf("creating lottery info page request error: %w", err)
@@ -189,15 +189,15 @@ func (c *Croupier) getCity(ctx context.Context, doc *goquery.Document) (string, 
 	return city, nil
 }
 
-func (c *Croupier) getGaCid(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getGaCid(_ context.Context, _ *goquery.Document) (string, error) {
 	return "2095662112.1674837243", nil
 }
 
-func (c *Croupier) getYmCid(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getYmCid(_ context.Context, _ *goquery.Document) (string, error) {
 	return "1668581346714918248", nil
 }
 
-func (c *Croupier) getValueByName(ctx context.Context, doc *goquery.Document, name string) string {
+func (c *Croupier) getValueByName(_ context.Context, doc *goquery.Document, name string) string {
 	var ret string
 	doc.Find("form").Each(func(_ int, s *goquery.Selection) {
 		doc.Find("input").Each(func(_ int, s *goquery.Selection) {
@@ -215,7 +215,7 @@ func (c *Croupier) getValueByName(ctx context.Context, doc *goquery.Document, na
 	return ret
 }
 
-func (c *Croupier) getFormID(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getFormID(_ context.Context, doc *goquery.Document) (string, error) {
 	var formID string
 	doc.Find("form").Each(func(i int, s *goquery.Selection) {
 		if v, ok := s.Attr("id"); ok {
@@ -231,7 +231,7 @@ func (c *Croupier) getFormID(ctx context.Context, doc *goquery.Document) (string
 	return formID, nil
 }
 
-func (c *Croupier) getFormsKey(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getFormsKey(_ context.Context, doc *goquery.Document) (string, error) {
 	var formsKey string
 	doc.Find("#allrecords").Each(func(i int, s *goquery.Selection) {
 		if v, ok := s.Attr("data-tilda-formskey"); ok {
@@ -247,7 +247,7 @@ func (c *Croupier) getFormsKey(ctx context.Context, doc *goquery.Document) (stri
 	return formsKey, nil
 }
 
-func (c *Croupier) getPageID(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getPageID(_ context.Context, doc *goquery.Document) (string, error) {
 	var pageID string
 	doc.Find("#allrecords").Each(func(i int, s *goquery.Selection) {
 		if v, ok := s.Attr("data-tilda-page-id"); ok {
@@ -263,7 +263,7 @@ func (c *Croupier) getPageID(ctx context.Context, doc *goquery.Document) (string
 	return pageID, nil
 }
 
-func (c *Croupier) getProjectID(ctx context.Context, doc *goquery.Document) (string, error) {
+func (c *Croupier) getProjectID(_ context.Context, doc *goquery.Document) (string, error) {
 	var projectID string
 	doc.Find("#allrecords").Each(func(i int, s *goquery.Selection) {
 		if v, ok := s.Attr("data-tilda-project-id"); ok {

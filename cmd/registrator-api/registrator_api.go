@@ -42,6 +42,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	rabbitmqproducer "github.com/nikita5637/quiz-registrator-api/internal/pkg/rabbitmq/producer"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
@@ -112,18 +113,26 @@ func main() {
 
 	txManager := tx.NewManager(db)
 
+	logStorage := storage.NewLogStorage(driverName, txManager)
+	quizLoggerConfig := quizlogger.Config{
+		LogStorage: logStorage,
+	}
+	quizLogger := quizlogger.New(quizLoggerConfig)
+
 	gameStorage := storage.NewGameStorage(driverName, txManager)
 	gamePlayerStorage := storage.NewGamePlayerStorage(driverName, txManager)
 
 	gamePlayersFacadeConfig := gameplayers.Config{
 		GamePlayerStorage: gamePlayerStorage,
 		TxManager:         txManager,
+		QuizLogger:        quizLogger,
 	}
 	gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
 
 	gamesFacadeConfig := games.Config{
 		GameStorage: gameStorage,
 		TxManager:   txManager,
+		QuizLogger:  quizLogger,
 	}
 	gamesFacade := games.New(gamesFacadeConfig)
 
@@ -187,8 +196,9 @@ func main() {
 			GameStorage:      gameStorage,
 			GamePhotoStorage: gamePhotoStorage,
 			TxManager:        txManager,
+			QuizLogger:       quizLogger,
 		}
-		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+		gamePhotosFacade := gamephotos.New(gamePhotosFacadeConfig)
 
 		icsRabbitMQProducerConfig := rabbitmqproducer.Config{
 			QueueName:       viper.GetString("service.game.ics.queue.name"),

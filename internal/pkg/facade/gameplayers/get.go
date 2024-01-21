@@ -7,7 +7,9 @@ import (
 	"fmt"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 )
 
@@ -132,6 +134,19 @@ func (f *Facade) GetUserGameIDs(ctx context.Context, userID int32) ([]int32, err
 		gameIDs = make([]int32, 0, len(gamePlayers))
 		for _, gamePlayer := range gamePlayers {
 			gameIDs = append(gameIDs, int32(gamePlayer.FkGameID))
+		}
+
+		if err := f.quizLogger.Write(ctx, quizlogger.Params{
+			UserID:     maybe.Just(userID),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfUserGameIDs,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfUserGameIDsMetadata{
+				UserID: userID,
+			},
+		}); err != nil {
+			return fmt.Errorf("write log error: %w", err)
 		}
 
 		return nil

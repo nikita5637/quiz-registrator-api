@@ -6,8 +6,9 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
+	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
@@ -22,8 +23,9 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	gameStorage      *mocks.GameStorage
-	gamePhotoStorage *mocks.GamePhotoStorage
+	gameStorage      *dbmocks.GameStorage
+	gamePhotoStorage *dbmocks.GamePhotoStorage
+	quizLogger       *mocks.QuizLogger
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -35,16 +37,17 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		gameStorage:      mocks.NewGameStorage(t),
-		gamePhotoStorage: mocks.NewGamePhotoStorage(t),
+		gameStorage:      dbmocks.NewGameStorage(t),
+		gamePhotoStorage: dbmocks.NewGamePhotoStorage(t),
+		quizLogger:       mocks.NewQuizLogger(t),
 	}
 
-	fx.facade = &Facade{
-		db: fx.db,
-
-		gameStorage:      fx.gameStorage,
-		gamePhotoStorage: fx.gamePhotoStorage,
-	}
+	fx.facade = New(Config{
+		GameStorage:      fx.gameStorage,
+		GamePhotoStorage: fx.gamePhotoStorage,
+		TxManager:        fx.db,
+		QuizLogger:       fx.quizLogger,
+	})
 
 	t.Cleanup(func() {
 		db.Close()

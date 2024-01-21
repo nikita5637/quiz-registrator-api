@@ -106,7 +106,7 @@ func TestImplementation_UpdatePayment(t *testing.T) {
 		assert.True(t, ok)
 		assert.Equal(t, "INVALID_PAYMENT", errorInfo.Reason)
 		assert.Equal(t, map[string]string{
-			"error": "Payment: must be no greater than 3.",
+			"error": "Payment: must be no greater than mixed.",
 		}, errorInfo.Metadata)
 	})
 

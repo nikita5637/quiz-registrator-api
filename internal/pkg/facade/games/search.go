@@ -8,7 +8,9 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 	"github.com/spf13/viper"
 )
 
@@ -110,6 +112,26 @@ func (f *Facade) SearchPassedAndRegisteredGames(ctx context.Context, offset, lim
 			}
 
 			modelGames = append(modelGames, modelGame)
+		}
+
+		userID := maybe.Nothing[int32]()
+		userFromContext := usersutils.UserFromContext(ctx)
+		if userFromContext != nil {
+			userID = maybe.Just(userFromContext.ID)
+		}
+
+		if err := f.quizLogger.Write(ctx, quizlogger.Params{
+			UserID:     userID,
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfPassedAndRegisteredGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfPassedAndRegisteredGamesMetadata{
+				Offset: offset,
+				Limit:  limit,
+			},
+		}); err != nil {
+			return fmt.Errorf("write log error: %w", err)
 		}
 
 		return nil

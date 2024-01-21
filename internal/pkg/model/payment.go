@@ -20,6 +20,20 @@ const (
 	numberOfPayments
 )
 
+// String ...
+func (p Payment) String() string {
+	switch p {
+	case PaymentCash:
+		return "cash"
+	case PaymentCertificate:
+		return "certificate"
+	case PaymentMixed:
+		return "mixed"
+	}
+
+	return "invalid payment"
+}
+
 // ValidatePayment ...
 func ValidatePayment(value interface{}) error {
 	v, ok := value.(Payment)

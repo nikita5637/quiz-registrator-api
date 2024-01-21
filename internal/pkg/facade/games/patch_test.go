@@ -12,8 +12,10 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -111,7 +113,7 @@ func TestFacade_PatchGame(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("error: league not found", func(t *testing.T) {
+	t.Run("error: get game by ID error", func(t *testing.T) {
 		fx := tearUp(t)
 
 		fx.dbMock.ExpectBegin()
@@ -135,9 +137,61 @@ func TestFacade_PatchGame(t *testing.T) {
 			},
 		), "").Return([]database.Game{}, nil)
 
-		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(nil, errors.New("some error"))
+
+		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
+			ID:          1,
+			ExternalID:  maybe.Nothing[int32](),
+			LeagueID:    1,
+			Number:      "number",
+			Name:        maybe.Nothing[string](),
+			PlaceID:     1,
+			Date:        model.DateTime(timeutils.TimeNow()),
+			PaymentType: maybe.Nothing[string](),
+			Payment:     maybe.Nothing[model.Payment](),
+		})
+		assert.Equal(t, model.NewGame(), got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("error: league not found", func(t *testing.T) {
+		fx := tearUp(t)
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Neq{
+				"id": int32(1),
+			},
+			builder.IsNull{
+				"external_id",
+			},
+			builder.Eq{
+				"league_id": int32(100),
+				"place_id":  int32(1),
+				"number":    "number",
+				"date":      timeutils.TimeNow(),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "").Return([]database.Game{}, nil)
+
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
 			ID:       1,
 			LeagueID: 1,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+		}, nil)
+
+		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+			ID:       1,
+			LeagueID: 100,
 			PlaceID:  1,
 			Number:   "number",
 			Date:     timeutils.TimeNow(),
@@ -149,7 +203,7 @@ func TestFacade_PatchGame(t *testing.T) {
 		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
 			ID:          1,
 			ExternalID:  maybe.Nothing[int32](),
-			LeagueID:    1,
+			LeagueID:    100,
 			Number:      "number",
 			Name:        maybe.Nothing[string](),
 			PlaceID:     1,
@@ -180,7 +234,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			},
 			builder.Eq{
 				"league_id": int32(1),
-				"place_id":  int32(1),
+				"place_id":  int32(100),
 				"number":    "number",
 				"date":      timeutils.TimeNow(),
 			},
@@ -189,10 +243,18 @@ func TestFacade_PatchGame(t *testing.T) {
 			},
 		), "").Return([]database.Game{}, nil)
 
-		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
 			ID:       1,
 			LeagueID: 1,
 			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+		}, nil)
+
+		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+			ID:       1,
+			LeagueID: 1,
+			PlaceID:  100,
 			Number:   "number",
 			Date:     timeutils.TimeNow(),
 		}).Return(&mysql.MySQLError{
@@ -206,7 +268,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			LeagueID:    1,
 			Number:      "number",
 			Name:        maybe.Nothing[string](),
-			PlaceID:     1,
+			PlaceID:     100,
 			Date:        model.DateTime(timeutils.TimeNow()),
 			PaymentType: maybe.Nothing[string](),
 			Payment:     maybe.Nothing[model.Payment](),
@@ -251,6 +313,14 @@ func TestFacade_PatchGame(t *testing.T) {
 			Date:     timeutils.TimeNow(),
 		}).Return(errors.New("some error"))
 
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:       1,
+			LeagueID: 1,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+		}, nil)
+
 		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
 			ID:          1,
 			ExternalID:  maybe.Nothing[int32](),
@@ -269,8 +339,109 @@ func TestFacade_PatchGame(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok with externalID", func(t *testing.T) {
+	t.Run("error: write batch error", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.Neq{
+				"id": int32(1),
+			},
+			builder.Eq{
+				"external_id": int32(777),
+				"league_id":   int32(1),
+				"place_id":    int32(1),
+				"number":      "number",
+				"date":        timeutils.TimeNow().Add(-3601 * time.Second),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "").Return([]database.Game{}, nil)
+
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:       1,
+			LeagueID: 100,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+			Payment: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
+			Registered: true,
+		}, nil)
+
+		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
+			ID: 1,
+			ExternalID: sql.NullInt64{
+				Int64: 777,
+				Valid: true,
+			},
+			LeagueID: 1,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow().Add(-3601 * time.Second),
+			Payment: sql.NullInt64{
+				Int64: 2,
+				Valid: true,
+			},
+			Registered: false,
+		}).Return(nil)
+
+		fx.quizLogger.EXPECT().WriteBatch(mock.Anything, []quizlogger.Params{
+			{
+				UserID:     maybe.Just(int32(1)),
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  quizlogger.GameUnregistered,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(int32(1)),
+				Metadata:   nil,
+			},
+			{
+				UserID:     maybe.Just(int32(1)),
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  quizlogger.GamePaymentChanged,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(int32(1)),
+				Metadata: quizlogger.GamePaymentChangedMetadata{
+					OldPayment: model.PaymentCash,
+					NewPayment: model.PaymentCertificate,
+				},
+			},
+		}).Return(errors.New("some error"))
+
+		got, err := fx.facade.PatchGame(ctx, model.Game{
+			ID:          1,
+			ExternalID:  maybe.Just(int32(777)),
+			LeagueID:    1,
+			Number:      "number",
+			Name:        maybe.Nothing[string](),
+			PlaceID:     1,
+			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
+			PaymentType: maybe.Nothing[string](),
+			Payment:     maybe.Just(model.PaymentCertificate),
+			Registered:  false,
+		})
+		assert.Equal(t, model.NewGame(), got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok with externalID and logs", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -291,6 +462,19 @@ func TestFacade_PatchGame(t *testing.T) {
 			},
 		), "").Return([]database.Game{}, nil)
 
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:       1,
+			LeagueID: 100,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+			Payment: sql.NullInt64{
+				Int64: 1,
+				Valid: true,
+			},
+			Registered: true,
+		}, nil)
+
 		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
 			ID: 1,
 			ExternalID: sql.NullInt64{
@@ -301,9 +485,36 @@ func TestFacade_PatchGame(t *testing.T) {
 			PlaceID:  1,
 			Number:   "number",
 			Date:     timeutils.TimeNow().Add(-3601 * time.Second),
+			Payment: sql.NullInt64{
+				Int64: 2,
+				Valid: true,
+			},
+			Registered: false,
 		}).Return(nil)
 
-		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
+		fx.quizLogger.EXPECT().WriteBatch(mock.Anything, []quizlogger.Params{
+			{
+				UserID:     maybe.Just(int32(1)),
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  quizlogger.GameUnregistered,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(int32(1)),
+				Metadata:   nil,
+			},
+			{
+				UserID:     maybe.Just(int32(1)),
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  quizlogger.GamePaymentChanged,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(int32(1)),
+				Metadata: quizlogger.GamePaymentChangedMetadata{
+					OldPayment: model.PaymentCash,
+					NewPayment: model.PaymentCertificate,
+				},
+			},
+		}).Return(nil)
+
+		got, err := fx.facade.PatchGame(ctx, model.Game{
 			ID:          1,
 			ExternalID:  maybe.Just(int32(777)),
 			LeagueID:    1,
@@ -312,7 +523,8 @@ func TestFacade_PatchGame(t *testing.T) {
 			PlaceID:     1,
 			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 			PaymentType: maybe.Nothing[string](),
-			Payment:     maybe.Nothing[model.Payment](),
+			Payment:     maybe.Just(model.PaymentCertificate),
+			Registered:  false,
 		})
 		assert.Equal(t, model.Game{
 			ID:          1,
@@ -323,7 +535,8 @@ func TestFacade_PatchGame(t *testing.T) {
 			PlaceID:     1,
 			Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 			PaymentType: maybe.Nothing[string](),
-			Payment:     maybe.Nothing[model.Payment](),
+			Payment:     maybe.Just(model.PaymentCertificate),
+			Registered:  false,
 			HasPassed:   true,
 			GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
 		}, got)
@@ -335,6 +548,10 @@ func TestFacade_PatchGame(t *testing.T) {
 
 	t.Run("ok without externalID", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -357,6 +574,14 @@ func TestFacade_PatchGame(t *testing.T) {
 			},
 		), "").Return([]database.Game{}, nil)
 
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:       1,
+			LeagueID: 100,
+			PlaceID:  1,
+			Number:   "number",
+			Date:     timeutils.TimeNow(),
+		}, nil)
+
 		fx.gameStorage.EXPECT().PatchGame(mock.Anything, database.Game{
 			ID:       1,
 			LeagueID: 1,
@@ -365,7 +590,7 @@ func TestFacade_PatchGame(t *testing.T) {
 			Date:     timeutils.TimeNow().Add(-3601 * time.Second),
 		}).Return(nil)
 
-		got, err := fx.facade.PatchGame(fx.ctx, model.Game{
+		got, err := fx.facade.PatchGame(ctx, model.Game{
 			ID:          1,
 			ExternalID:  maybe.Nothing[int32](),
 			LeagueID:    1,

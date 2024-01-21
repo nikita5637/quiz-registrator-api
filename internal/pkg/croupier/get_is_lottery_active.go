@@ -10,7 +10,7 @@ import (
 )
 
 // GetIsLotteryActive ...
-func (c *Croupier) GetIsLotteryActive(ctx context.Context, game model.Game) bool {
+func (c *Croupier) GetIsLotteryActive(_ context.Context, game model.Game) bool {
 	lotteryStartsBefore := viper.GetDuration("croupier.lottery_starts_before") * time.Second
 	if timeutils.TimeNow().UTC().After(game.Date.AsTime().Add(-1 * lotteryStartsBefore)) {
 		return true

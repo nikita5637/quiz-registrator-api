@@ -34,7 +34,7 @@ func convertModelGameResultToProtoGameResult(gameResult model.GameResult) *gamer
 	}
 }
 
-func validateGameResult(ctx context.Context, gameResult *gameresultmanagerpb.GameResult) error {
+func validateGameResult(_ context.Context, gameResult *gameresultmanagerpb.GameResult) error {
 	if valid := json.Valid([]byte(gameResult.GetRoundPoints())); !valid {
 		return errInvalidJSONRoundPointsValue
 	}

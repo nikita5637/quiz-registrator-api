@@ -1,8 +1,45 @@
 package model
 
 import (
+	"reflect"
 	"testing"
 )
+
+func TestPayment_String(t *testing.T) {
+	tests := []struct {
+		name string
+		p    Payment
+		want string
+	}{
+		{
+			name: "cash",
+			p:    PaymentCash,
+			want: "cash",
+		},
+		{
+			name: "certificate",
+			p:    PaymentCertificate,
+			want: "certificate",
+		},
+		{
+			name: "mixed",
+			p:    PaymentMixed,
+			want: "mixed",
+		},
+		{
+			name: "invalid",
+			p:    numberOfPayments,
+			want: "invalid payment",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.p.String(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Payment.String() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
 
 func TestValidatePayment(t *testing.T) {
 	type args struct {

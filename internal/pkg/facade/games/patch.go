@@ -11,6 +11,8 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 )
 
 // PatchGame ...
@@ -62,6 +64,11 @@ func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Gam
 			return ErrGameAlreadyExists
 		}
 
+		originalDBGame, err := f.gameStorage.GetGameByID(ctx, int(modelGame.ID))
+		if err != nil {
+			return fmt.Errorf("getting game by game ID error: %w", err)
+		}
+
 		patchedDBGame := convertModelGameToDBGame(modelGame)
 		if err := f.gameStorage.PatchGame(ctx, patchedDBGame); err != nil {
 			if err, ok := err.(*mysql.MySQLError); ok {
@@ -81,6 +88,50 @@ func (f *Facade) PatchGame(ctx context.Context, modelGame model.Game) (model.Gam
 
 		if gameLink := getGameLink(modelGame); gameLink != "" {
 			modelGame.GameLink = maybe.Just(gameLink)
+		}
+
+		logs := make([]quizlogger.Params, 0)
+
+		userID := maybe.Nothing[int32]()
+		userFromContext := usersutils.UserFromContext(ctx)
+		if userFromContext != nil {
+			userID = maybe.Just(userFromContext.ID)
+		}
+
+		if originalDBGame.Registered != modelGame.Registered {
+			messageID := quizlogger.GameRegistered
+			if !modelGame.Registered {
+				messageID = quizlogger.GameUnregistered
+			}
+
+			logs = append(logs, quizlogger.Params{
+				UserID:     userID,
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  messageID,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(modelGame.ID),
+				Metadata:   nil,
+			})
+		}
+
+		if model.Payment(originalDBGame.Payment.Int64) != modelGame.Payment.Value() {
+			logs = append(logs, quizlogger.Params{
+				UserID:     userID,
+				ActionID:   quizlogger.UpdatingActionID,
+				MessageID:  quizlogger.GamePaymentChanged,
+				ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+				ObjectID:   maybe.Just(modelGame.ID),
+				Metadata: quizlogger.GamePaymentChangedMetadata{
+					OldPayment: model.Payment(originalDBGame.Payment.Int64),
+					NewPayment: modelGame.Payment.Value(),
+				},
+			})
+		}
+
+		if len(logs) > 0 {
+			if err := f.quizLogger.WriteBatch(ctx, logs); err != nil {
+				return fmt.Errorf("write logs error: %w", err)
+			}
 		}
 
 		return nil

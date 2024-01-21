@@ -9,8 +9,10 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -199,8 +201,77 @@ func TestFacade_SearchPassedAndRegisteredGames(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("error: write logs error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Total(mock.Anything, builder.And(
+			builder.Eq{
+				"registered": true,
+			},
+			builder.Lt{
+				"date": timeutils.TimeNow().Add(-3600 * time.Second),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return(10, nil)
+
+		fx.gameStorage.EXPECT().FindWithLimit(mock.Anything, builder.And(
+			builder.Eq{
+				"registered": true,
+			},
+			builder.Lt{
+				"date": timeutils.TimeNow().Add(-3600 * time.Second),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "-date", uint64(0), uint64(1)).Return([]database.Game{
+			{
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID: 1,
+				Date:     timeutils.TimeNow().Add(-3601 * time.Second),
+			},
+		}, nil)
+
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfPassedAndRegisteredGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfPassedAndRegisteredGamesMetadata{
+				Offset: 0,
+				Limit:  1,
+			},
+		}).Return(errors.New("some error"))
+
+		got, total, err := fx.facade.SearchPassedAndRegisteredGames(ctx, 0, 1)
+		assert.Nil(t, got)
+		assert.Equal(t, uint64(0), total)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -239,7 +310,19 @@ func TestFacade_SearchPassedAndRegisteredGames(t *testing.T) {
 			},
 		}, nil)
 
-		got, total, err := fx.facade.SearchPassedAndRegisteredGames(fx.ctx, 0, 1)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfPassedAndRegisteredGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfPassedAndRegisteredGamesMetadata{
+				Offset: 0,
+				Limit:  1,
+			},
+		}).Return(nil)
+
+		got, total, err := fx.facade.SearchPassedAndRegisteredGames(ctx, 0, 1)
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
