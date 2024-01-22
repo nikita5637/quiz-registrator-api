@@ -79,7 +79,7 @@ func main() {
 			ElasticIndex:   viper.GetString("log.elastic.index"),
 		})
 		if err != nil {
-			panic(err)
+			logger.FatalKV(ctx, "new elasticsearch client error", zap.Error(err))
 		}
 
 		logger.Info(ctx, "initialized elasticsearch client")
@@ -101,13 +101,13 @@ func main() {
 
 	rabbitMQConn, err := amqp.Dial(config.GetRabbitMQURL())
 	if err != nil {
-		logger.FatalKV(ctx, "get rabbitMQ connection error", zap.Error(err))
+		logger.FatalKV(ctx, "getting rabbitMQ connection error", zap.Error(err))
 	}
 	defer rabbitMQConn.Close()
 
 	rabbitMQChannel, err := rabbitMQConn.Channel()
 	if err != nil {
-		logger.FatalKV(ctx, "get rabbitMQ channel error", zap.Error(err))
+		logger.FatalKV(ctx, "getting rabbitMQ channel error", zap.Error(err))
 	}
 	defer rabbitMQChannel.Close()
 
@@ -166,8 +166,9 @@ func main() {
 		certificatesFacadeConfig := certificates.Config{
 			CertificateStorage: certificateStorage,
 			TxManager:          txManager,
+			QuizLogger:         quizLogger,
 		}
-		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
+		certificatesFacade := certificates.New(certificatesFacadeConfig)
 
 		userRolesFacadeConfig := userroles.Config{
 			TxManager:       txManager,

@@ -9,7 +9,9 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 )
 
 // GetGameByID ...
@@ -34,6 +36,23 @@ func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) 
 
 		if gameLink := getGameLink(modelGame); gameLink != "" {
 			modelGame.GameLink = maybe.Just(gameLink)
+		}
+
+		userID := maybe.Nothing[int32]()
+		userFromContext := usersutils.UserFromContext(ctx)
+		if userFromContext != nil {
+			userID = maybe.Just(userFromContext.ID)
+		}
+
+		if err := f.quizLogger.Write(ctx, quizlogger.Params{
+			UserID:     userID,
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotGameInfo,
+			ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+			ObjectID:   maybe.Just(id),
+			Metadata:   nil,
+		}); err != nil {
+			return fmt.Errorf("write log error: %w", err)
 		}
 
 		return nil
