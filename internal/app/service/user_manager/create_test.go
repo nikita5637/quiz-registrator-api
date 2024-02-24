@@ -86,10 +86,8 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "invalid email",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
+				Email:      wrapperspb.String("invalid email"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
 			},
 		})
 		assert.Nil(t, got)
@@ -110,13 +108,9 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "invalid phone",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("invalid phone"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
 			},
 		})
 		assert.Nil(t, got)
@@ -137,13 +131,9 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_INVALID,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_INVALID,
 			},
 		})
 		assert.Nil(t, got)
@@ -164,16 +154,10 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "invalid birthdate",
-				},
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("invalid birthdate"),
 			},
 		})
 		assert.Nil(t, got)
@@ -196,14 +180,10 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Sex:   &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Sex:        &pbSex,
 			},
 		})
 		assert.Nil(t, got)
@@ -226,7 +206,7 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Phone:      maybe.Just("+79998887766"),
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
 			Sex:        maybe.Just(model.SexMale),
@@ -236,17 +216,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState(model.UserStateWelcome),
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState(model.UserStateWelcome),
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 		})
 		assert.Nil(t, got)
@@ -266,7 +240,7 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Phone:      maybe.Just("+79998887766"),
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
 			Sex:        maybe.Just(model.SexFemale),
@@ -276,17 +250,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState(model.UserStateWelcome),
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState(model.UserStateWelcome),
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 		})
 		assert.Nil(t, got)
@@ -309,7 +277,7 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Phone:      maybe.Just("+79998887766"),
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
 			Sex:        maybe.Just(model.SexFemale),
@@ -319,17 +287,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState(model.UserStateWelcome),
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState(model.UserStateWelcome),
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 		})
 		assert.Nil(t, got)
@@ -352,7 +314,7 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Phone:      maybe.Just("+79998887766"),
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
 			Sex:        maybe.Just(model.SexFemale),
@@ -361,7 +323,7 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Name:       "name",
 			TelegramID: -100,
 			Phone:      maybe.Just("+79998887766"),
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
 			Sex:        maybe.Just(model.SexFemale),
@@ -371,17 +333,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 			User: &usermanagerpb.User{
 				Name:       "name",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState(model.UserStateWelcome),
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState(model.UserStateWelcome),
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 		})
 		assert.NotNil(t, got)
@@ -389,17 +345,11 @@ func TestImplementation_CreateUser(t *testing.T) {
 			Id:         1,
 			Name:       "name",
 			TelegramId: -100,
-			Email: &wrapperspb.StringValue{
-				Value: "email@email.ru",
-			},
-			Phone: &wrapperspb.StringValue{
-				Value: "+79998887766",
-			},
-			State: usermanagerpb.UserState_USER_STATE_WELCOME,
-			Birthdate: &wrapperspb.StringValue{
-				Value: "1990-01-30",
-			},
-			Sex: &pbSex,
+			Email:      wrapperspb.String("email@example.com"),
+			Phone:      wrapperspb.String("+79998887766"),
+			State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+			Birthdate:  wrapperspb.String("1990-01-30"),
+			Sex:        &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})

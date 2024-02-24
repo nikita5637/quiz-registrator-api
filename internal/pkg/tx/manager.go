@@ -120,7 +120,7 @@ func (m *Manager) isInTx(ctx context.Context) bool {
 	return ok
 }
 
-func getDefaultDB(ctx context.Context, db *sql.DB) Client {
+func getDefaultDB(_ context.Context, db *sql.DB) Client {
 	return db
 }
 

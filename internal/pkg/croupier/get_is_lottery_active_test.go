@@ -5,30 +5,27 @@ import (
 	"testing"
 	"time"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCroupier_GetIsLotteryActive(t *testing.T) {
-	globalConfig := config.GlobalConfig{}
-	globalConfig.LotteryStartsBefore = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("croupier.lottery_starts_before", 3600)
 
 	t.Run("test case 1", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-01 15:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-01 15:00")
 		}
 
 		ctx := context.Background()
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
+			LeagueID: model.LeagueQuizPlease,
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 
 		got := c.GetIsLotteryActive(ctx, game)
@@ -36,16 +33,16 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 	})
 
 	t.Run("test case 2", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-01 18:00")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-01 18:00")
 		}
 
 		ctx := context.Background()
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
+			LeagueID: model.LeagueQuizPlease,
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 
 		got := c.GetIsLotteryActive(ctx, game)
@@ -53,16 +50,16 @@ func TestCroupier_GetIsLotteryActive(t *testing.T) {
 	})
 
 	t.Run("test case 3", func(t *testing.T) {
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-01 18:01")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-01 18:01")
 		}
 
 		ctx := context.Background()
 		c := New(Config{})
 
 		game := model.Game{
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-01 19:00")),
+			LeagueID: model.LeagueQuizPlease,
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-01 19:00")),
 		}
 
 		got := c.GetIsLotteryActive(ctx, game)

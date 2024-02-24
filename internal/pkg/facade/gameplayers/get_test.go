@@ -8,8 +8,10 @@ import (
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -64,7 +66,7 @@ func TestFacade_GetGamePlayer(t *testing.T) {
 			RegisteredBy: 1,
 			Degree:       1,
 			DeletedAt: sql.NullTime{
-				Time:  time_utils.TimeNow(),
+				Time:  timeutils.TimeNow(),
 				Valid: true,
 			},
 		}, nil)
@@ -350,8 +352,50 @@ func TestFacade_GetUserGameIDs(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("error: write logs error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gamePlayerStorage.EXPECT().Find(mock.Anything, builder.NewCond().And(
+			builder.Eq{
+				"fk_user_id": int32(1),
+			},
+			builder.IsNull{
+				"deleted_at",
+			},
+		)).Return([]database.GamePlayer{}, nil)
+
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfUserGameIDs,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfUserGameIDsMetadata{
+				UserID: 1,
+			},
+		}).Return(errors.New("some error"))
+
+		got, err := fx.facade.GetUserGameIDs(ctx, 1)
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
 	t.Run("ok: empty list", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -365,7 +409,18 @@ func TestFacade_GetUserGameIDs(t *testing.T) {
 			},
 		)).Return([]database.GamePlayer{}, nil)
 
-		got, err := fx.facade.GetUserGameIDs(fx.ctx, 1)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfUserGameIDs,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfUserGameIDsMetadata{
+				UserID: 1,
+			},
+		}).Return(nil)
+
+		got, err := fx.facade.GetUserGameIDs(ctx, 1)
 		assert.Equal(t, []int32{}, got)
 		assert.NoError(t, err)
 
@@ -375,6 +430,10 @@ func TestFacade_GetUserGameIDs(t *testing.T) {
 
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -410,7 +469,18 @@ func TestFacade_GetUserGameIDs(t *testing.T) {
 			},
 		}, nil)
 
-		got, err := fx.facade.GetUserGameIDs(fx.ctx, 1)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotListOfUserGameIDs,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata: quizlogger.GotListOfUserGameIDsMetadata{
+				UserID: 1,
+			},
+		}).Return(nil)
+
+		got, err := fx.facade.GetUserGameIDs(ctx, 1)
 		assert.Equal(t, []int32{1, 2, 3}, got)
 		assert.NoError(t, err)
 

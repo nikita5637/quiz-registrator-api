@@ -1,6 +1,7 @@
 LOCAL_BIN:=$(CURDIR)/bin
 GOIMPORTS_BIN:=$(LOCAL_BIN)/goimports
 GOLANGCI_BIN:=$(LOCAL_BIN)/golangci-lint
+GOTESTSUM_BIN=$(LOCAL_BIN)/gotestsum
 PROTOC_GEN_GO_BIN:=$(LOCAL_BIN)/protoc-gen-go
 PROTOC_GEN_GO_GRPC_BIN:=$(LOCAL_BIN)/protoc-gen-go-grpc
 XO_BIN:=$(LOCAL_BIN)/xo
@@ -18,6 +19,10 @@ endif
 ifeq ($(wildcard $(GOIMPORTS_BIN)),)
 	$(info Installing binary dependency goimports)
 	GOBIN=$(LOCAL_BIN) go install golang.org/x/tools/cmd/goimports 
+endif
+ifeq ($(wildcard $(GOTESTSUM_BIN)),)
+	$(info Installing binary dependency gotestsum)
+	GOBIN=$(LOCAL_BIN) go install gotest.tools/gotestsum
 endif
 
 .PHONY: .install-lint
@@ -38,7 +43,7 @@ endif
 
 .PHONY: build
 build:
-	go build -o registrator-api ./cmd/registrator-api
+	go build -buildvcs=auto -o registrator-api ./cmd/registrator-api
 
 .PHONY: clean
 clean:
@@ -96,6 +101,11 @@ generate: .install-bin-deps
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
 	--go_out=./pkg/pb --go_opt=paths=source_relative \
 	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
+	--proto_path=./api ./api/math_problem/math_problem.proto
+
+	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
+	--go_out=./pkg/pb --go_opt=paths=source_relative \
+	--go-grpc_out=./pkg/pb --go-grpc_opt=paths=source_relative \
 	--proto_path=./api ./api/photo_manager/photo_manager.proto
 
 	PATH="$(LOCAL_BIN):$(PATH)" && protoc \
@@ -125,12 +135,14 @@ migrations:
 
 .PHONY: run
 run:
-	go run ./cmd/registrator-api
+	go run ./cmd/registrator-api --config ./config.yaml
 
 .PHONY: test
 test:
-	go test -v ./internal/...
+	$(GOTESTSUM_BIN) --format pkgname -- -coverprofile=cover.out ./internal/... ./utils/...
+	go tool cover -html=cover.out
 
 .PHONY: integration-test
 integration-test:
-	go test -v ./tests/...
+	$(GOTESTSUM_BIN) --format pkgname -- -coverprofile=cover.out ./tests/...
+	go tool cover -html=cover.out

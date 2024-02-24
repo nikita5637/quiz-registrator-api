@@ -15,7 +15,7 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func okHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func okHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, nil
 }
 

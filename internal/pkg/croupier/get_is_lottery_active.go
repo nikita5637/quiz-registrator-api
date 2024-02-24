@@ -4,15 +4,15 @@ import (
 	"context"
 	"time"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 )
 
 // GetIsLotteryActive ...
-func (c *Croupier) GetIsLotteryActive(ctx context.Context, game model.Game) bool {
-	lotteryStartsBefore := config.GetValue("LotteryStartsBefore").Uint16()
-	if time_utils.TimeNow().UTC().After(game.Date.AsTime().Add(-1 * time.Duration(lotteryStartsBefore) * time.Second)) {
+func (c *Croupier) GetIsLotteryActive(_ context.Context, game model.Game) bool {
+	lotteryStartsBefore := viper.GetDuration("croupier.lottery_starts_before") * time.Second
+	if timeutils.TimeNow().UTC().After(game.Date.AsTime().Add(-1 * lotteryStartsBefore)) {
 		return true
 	}
 

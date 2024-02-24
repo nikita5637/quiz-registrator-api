@@ -90,6 +90,10 @@ service RegistratorService {
 	// UnregisterPlayer unregisters player from a game
 	rpc UnregisterPlayer(UnregisterPlayerRequest) returns (google.protobuf.Empty) {
 	}
+
+	// UpdatePlayerDegree updates player degree
+	rpc UpdatePlayerDegree(UpdatePlayerDegreeRequest) returns (google.protobuf.Empty) {
+	}
 }
 
 message RegisterPlayerRequest {
@@ -98,4 +102,9 @@ message RegisterPlayerRequest {
 
 message UnregisterPlayerRequest {
 	GamePlayer game_player = 1;
+}
+
+message UpdatePlayerDegreeRequest {
+	int32 id = 1;
+	Degree degree = 2;
 }

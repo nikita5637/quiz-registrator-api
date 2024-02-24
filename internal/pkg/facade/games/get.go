@@ -7,8 +7,11 @@ import (
 	"fmt"
 
 	"github.com/go-xorm/builder"
+	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
 )
 
 // GetGameByID ...
@@ -29,7 +32,28 @@ func (f *Facade) GetGameByID(ctx context.Context, id int32) (model.Game, error) 
 		}
 
 		modelGame = convertDBGameToModelGame(*dbGame)
-		modelGame.HasPassed = !modelGame.IsActive()
+		modelGame.HasPassed = gameHasPassed(modelGame)
+
+		if gameLink := getGameLink(modelGame); gameLink != "" {
+			modelGame.GameLink = maybe.Just(gameLink)
+		}
+
+		userID := maybe.Nothing[int32]()
+		userFromContext := usersutils.UserFromContext(ctx)
+		if userFromContext != nil {
+			userID = maybe.Just(userFromContext.ID)
+		}
+
+		if err := f.quizLogger.Write(ctx, quizlogger.Params{
+			UserID:     userID,
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotGameInfo,
+			ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+			ObjectID:   maybe.Just(id),
+			Metadata:   nil,
+		}); err != nil {
+			return fmt.Errorf("write log error: %w", err)
+		}
 
 		return nil
 	})
@@ -57,7 +81,11 @@ func (f *Facade) GetGamesByIDs(ctx context.Context, ids []int32) ([]model.Game, 
 		modelGames = make([]model.Game, 0, len(dbGames))
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
-			modelGame.HasPassed = !modelGame.IsActive()
+			modelGame.HasPassed = gameHasPassed(modelGame)
+
+			if gameLink := getGameLink(modelGame); gameLink != "" {
+				modelGame.GameLink = maybe.Just(gameLink)
+			}
 
 			modelGames = append(modelGames, modelGame)
 		}
@@ -90,7 +118,11 @@ func (f *Facade) GetTodaysGames(ctx context.Context) ([]model.Game, error) {
 		modelGames = make([]model.Game, 0, len(dbGames))
 		for _, dbGame := range dbGames {
 			modelGame := convertDBGameToModelGame(dbGame)
-			modelGame.HasPassed = !modelGame.IsActive()
+			modelGame.HasPassed = gameHasPassed(modelGame)
+
+			if gameLink := getGameLink(modelGame); gameLink != "" {
+				modelGame.GameLink = maybe.Just(gameLink)
+			}
 
 			modelGames = append(modelGames, modelGame)
 		}

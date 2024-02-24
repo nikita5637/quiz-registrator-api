@@ -52,7 +52,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, gameplayers.ReasonGamePlayerNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("internal error while getting game player", func(t *testing.T) {
@@ -86,11 +88,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 0,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       0,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -134,11 +134,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -156,7 +154,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, users.ReasonUserNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "user not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("game not found", func(t *testing.T) {
@@ -180,11 +180,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -202,7 +200,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, games.ReasonGameNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("game player already exists", func(t *testing.T) {
@@ -226,11 +226,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				Id:           1,
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -248,7 +246,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, gameplayers.ReasonGamePlayerAlreadyExists, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game player already exists",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("ok", func(t *testing.T) {
@@ -278,11 +278,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 
 		got, err := fx.implementation.PatchGamePlayer(fx.ctx, &gameplayer.PatchGamePlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				Id:     1,
-				GameId: 2,
-				UserId: &wrapperspb.Int32Value{
-					Value: 2,
-				},
+				Id:           1,
+				GameId:       2,
+				UserId:       wrapperspb.Int32(2),
 				RegisteredBy: 2,
 				Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 			},
@@ -291,11 +289,9 @@ func TestImplementation_PatchGamePlayer(t *testing.T) {
 			},
 		})
 		assert.Equal(t, &gameplayerpb.GamePlayer{
-			Id:     1,
-			GameId: 2,
-			UserId: &wrapperspb.Int32Value{
-				Value: 2,
-			},
+			Id:           1,
+			GameId:       2,
+			UserId:       wrapperspb.Int32(2),
 			RegisteredBy: 2,
 			Degree:       gameplayer.Degree_DEGREE_UNLIKELY,
 		}, got)

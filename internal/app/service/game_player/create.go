@@ -12,6 +12,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
@@ -25,7 +26,7 @@ func (i *Implementation) CreateGamePlayer(ctx context.Context, req *gameplayerpb
 
 	createdGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.Debugf(ctx, "trying to create new game player: %#v", createdGamePlayer)
+	logger.DebugKV(ctx, "creating new game player", zap.Reflect("game_player", createdGamePlayer))
 
 	if err := validateCreatedGamePlayer(createdGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())

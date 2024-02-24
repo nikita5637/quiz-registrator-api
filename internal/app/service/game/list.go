@@ -10,7 +10,7 @@ import (
 )
 
 // ListGames ...
-func (i *Implementation) ListGames(ctx context.Context, req *emptypb.Empty) (*gamepb.ListGamesResponse, error) {
+func (i *Implementation) ListGames(ctx context.Context, _ *emptypb.Empty) (*gamepb.ListGamesResponse, error) {
 	games, err := i.gamesFacade.ListGames(ctx)
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())

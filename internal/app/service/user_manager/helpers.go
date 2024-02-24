@@ -104,19 +104,13 @@ func convertModelUserToProtoUser(user model.User) *usermanagerpb.User {
 		State:      usermanagerpb.UserState(user.State),
 	}
 	if v, ok := user.Email.Get(); ok {
-		ret.Email = &wrapperspb.StringValue{
-			Value: v,
-		}
+		ret.Email = wrapperspb.String(v)
 	}
 	if v, ok := user.Phone.Get(); ok {
-		ret.Phone = &wrapperspb.StringValue{
-			Value: v,
-		}
+		ret.Phone = wrapperspb.String(v)
 	}
 	if v, ok := user.Birthdate.Get(); ok {
-		ret.Birthdate = &wrapperspb.StringValue{
-			Value: v,
-		}
+		ret.Birthdate = wrapperspb.String(v)
 	}
 	if v, ok := user.Sex.Get(); ok {
 		sex := usermanagerpb.Sex(v)

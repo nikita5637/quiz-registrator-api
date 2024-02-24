@@ -8,6 +8,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	users_utils "github.com/nikita5637/quiz-registrator-api/utils/users"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -41,7 +42,7 @@ func (m *Middleware) Authorization() grpc.UnaryServerInterceptor {
 		var roles roles
 		var ok bool
 		if roles, ok = grpcRules[info.FullMethod]; !ok {
-			logger.ErrorKV(ctx, "roles for method not found", "method", info.FullMethod)
+			logger.ErrorKV(ctx, "roles for method not found", zap.String("method", info.FullMethod))
 			st := model.GetStatus(ctx, codes.Internal, "roles for method not found", "", nil, i18n.Lexeme{})
 			return nil, st.Err()
 		}

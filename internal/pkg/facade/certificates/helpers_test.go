@@ -8,8 +8,9 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates/mocks"
 	model "github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
+	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,8 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	certificateStorage *mocks.CertificateStorage
+	certificateStorage *dbmocks.CertificateStorage
+	quizLogger         mocks.QuizLogger
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -33,13 +35,14 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		certificateStorage: mocks.NewCertificateStorage(t),
+		certificateStorage: dbmocks.NewCertificateStorage(t),
+		quizLogger:         *mocks.NewQuizLogger(t),
 	}
 
-	fx.facade = NewFacade(Config{
+	fx.facade = New(Config{
 		CertificateStorage: fx.certificateStorage,
-
-		TxManager: fx.db,
+		TxManager:          fx.db,
+		QuizLogger:         &fx.quizLogger,
 	})
 
 	t.Cleanup(func() {

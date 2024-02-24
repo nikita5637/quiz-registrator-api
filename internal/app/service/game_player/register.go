@@ -13,6 +13,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gameplayerpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game_player"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
@@ -48,7 +49,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 
 	registeredGamePlayer := convertProtoGamePlayerToModelGamePlayer(req.GetGamePlayer())
 
-	logger.Debugf(ctx, "trying to register new game player: %#v", registeredGamePlayer)
+	logger.DebugKV(ctx, "registering new game player", zap.Reflect("game_player", registeredGamePlayer))
 
 	if err := validateRegisteredGamePlayer(registeredGamePlayer); err != nil {
 		st := status.New(codes.InvalidArgument, err.Error())
@@ -78,7 +79,9 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if err != nil {
 		st := status.New(codes.Internal, err.Error())
 		if errors.Is(err, games.ErrGameNotFound) {
-			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, nil, games.GameNotFoundLexeme)
+			st = model.GetStatus(ctx, codes.FailedPrecondition, games.ErrGameNotFound.Error(), games.ReasonGameNotFound, map[string]string{
+				"error": err.Error(),
+			}, games.GameNotFoundLexeme)
 		}
 
 		return nil, st.Err()
@@ -92,7 +95,7 @@ func (i *Implementation) RegisterPlayer(ctx context.Context, req *gameplayerpb.R
 	if !game.Registered {
 		st := model.GetStatus(ctx,
 			codes.FailedPrecondition,
-			"there are no registration for the game",
+			thereAreNoRegistrationForTheGame,
 			reasonThereAreNoRegistrationForTheGame,
 			nil,
 			thereAreNoRegistrationForTheGameLexeme,

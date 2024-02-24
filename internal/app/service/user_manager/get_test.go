@@ -76,17 +76,11 @@ func TestImplementation_GetUser(t *testing.T) {
 			Id:         1,
 			Name:       "name",
 			TelegramId: 1,
-			Email: &wrapperspb.StringValue{
-				Value: "email",
-			},
-			Phone: &wrapperspb.StringValue{
-				Value: "phone",
-			},
-			State: usermanagerpb.UserState(model.UserStateChangingName),
-			Birthdate: &wrapperspb.StringValue{
-				Value: "1990-01-30",
-			},
-			Sex: &pbSex,
+			Email:      wrapperspb.String("email"),
+			Phone:      wrapperspb.String("phone"),
+			State:      usermanagerpb.UserState(model.UserStateChangingName),
+			Birthdate:  wrapperspb.String("1990-01-30"),
+			Sex:        &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})
@@ -153,17 +147,11 @@ func TestImplementation_GetUserByTelegramID(t *testing.T) {
 			Id:         1,
 			Name:       "name",
 			TelegramId: 1,
-			Email: &wrapperspb.StringValue{
-				Value: "email",
-			},
-			Phone: &wrapperspb.StringValue{
-				Value: "phone",
-			},
-			State: usermanagerpb.UserState(model.UserStateChangingName),
-			Birthdate: &wrapperspb.StringValue{
-				Value: "1990-01-30",
-			},
-			Sex: &pbSex,
+			Email:      wrapperspb.String("email"),
+			Phone:      wrapperspb.String("phone"),
+			State:      usermanagerpb.UserState(model.UserStateChangingName),
+			Birthdate:  wrapperspb.String("1990-01-30"),
+			Sex:        &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})

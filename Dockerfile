@@ -14,7 +14,7 @@ RUN make build
 FROM golang:1.18.3 as server
 
 COPY --from=builder /go/src/quiz-registrator-api/registrator-api /bin/
-COPY --from=builder /go/src/quiz-registrator-api/config.toml /etc/
+COPY --from=builder /go/src/quiz-registrator-api/config.yaml /etc/
 
 EXPOSE 8080
 

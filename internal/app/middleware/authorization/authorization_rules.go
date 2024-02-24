@@ -99,22 +99,22 @@ var grpcRules = map[string]roles{
 	// game_player
 	//
 	"/game_player.Service/CreateGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/DeleteGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/GetGamePlayer": {
-		Public: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.Service/GetGamePlayersByGameID": {
 		Public: struct{}{},
 	},
 	"/game_player.Service/GetUserGameIDs": {
-		Public: struct{}{},
+		User: struct{}{},
 	},
 	"/game_player.Service/PatchGamePlayer": {
-		User: struct{}{},
+		Management: struct{}{},
 	},
 	"/game_player.RegistratorService/RegisterPlayer": {
 		User: struct{}{},
@@ -122,17 +122,23 @@ var grpcRules = map[string]roles{
 	"/game_player.RegistratorService/UnregisterPlayer": {
 		User: struct{}{},
 	},
+	"/game_player.RegistratorService/UpdatePlayerDegree": {
+		User: struct{}{},
+	},
 	//
 	// game_result_manager
 	//
 	"/game_result_manager.Service/CreateGameResult": {
 		Management: struct{}{},
+		S2S:        struct{}{},
 	},
 	"/game_result_manager.Service/ListGameResults": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/game_result_manager.Service/PatchGameResult": {
 		Management: struct{}{},
+		S2S:        struct{}{},
 	},
 	"/game_result_manager.Service/SearchGameResultByGameID": {
 		Public: struct{}{},
@@ -145,10 +151,22 @@ var grpcRules = map[string]roles{
 		S2S:    struct{}{},
 	},
 	//
+	// math_problem
+	//
+	"/math_problem.Service/CreateMathProblem": {
+		Management: struct{}{},
+	},
+	"/math_problem.Service/SearchMathProblemByGameID": {
+		Public: struct{}{},
+	},
+	//
 	// photo_manager
 	//
 	"/photo_manager.Service/AddGamePhotos": {
 		Management: struct{}{},
+	},
+	"/photo_manager.Service/IsGameHasPhotos": {
+		Public: struct{}{},
 	},
 	"/photo_manager.Service/GetPhotosByGameID": {
 		Public: struct{}{},
@@ -169,6 +187,7 @@ var grpcRules = map[string]roles{
 	},
 	"/user_manager.Service/GetUser": {
 		Public: struct{}{},
+		S2S:    struct{}{},
 	},
 	"/user_manager.Service/GetUserByTelegramID": {
 		Public: struct{}{},

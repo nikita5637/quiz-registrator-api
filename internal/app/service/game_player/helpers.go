@@ -21,6 +21,8 @@ const (
 	invalidUserIDReason       = "INVALID_USER_ID"
 	invalidRegisteredByReason = "INVALID_REGISTERED_BY"
 	invalidDegreeReason       = "INVALID_DEGREE"
+
+	thereAreNoRegistrationForTheGame = "there are no registration for the game"
 )
 
 var (
@@ -69,9 +71,7 @@ func convertModelGamePlayerToProtoGamePlayer(gamePlayer model.GamePlayer) *gamep
 		Degree:       gameplayerpb.Degree(gamePlayer.Degree),
 	}
 	if v, ok := gamePlayer.UserID.Get(); ok {
-		ret.UserId = &wrapperspb.Int32Value{
-			Value: v,
-		}
+		ret.UserId = wrapperspb.Int32(v)
 	}
 
 	return ret

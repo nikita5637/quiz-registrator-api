@@ -78,6 +78,7 @@ func TestImplementation_BatchGetGames(t *testing.T) {
 				Date:        model.DateTime(time.Unix(0, 0)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, nil)
 

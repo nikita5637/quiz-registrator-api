@@ -7,7 +7,7 @@ import (
 )
 
 // Connect ...
-func (p *Producer) Connect(ctx context.Context) error {
+func (p *Producer) Connect(_ context.Context) error {
 	if p.queueName == "" {
 		return errors.New("queue name is empty")
 	}

@@ -1,12 +1,10 @@
 package main
 
 import (
-	"context"
-	"flag"
 	"fmt"
 	"net"
 	"os"
-	"os/signal"
+	"runtime/debug"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
@@ -24,6 +22,7 @@ import (
 	gameplayerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_player"
 	gameresultmanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/game_result_manager"
 	leagueservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/league"
+	mathproblemservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/math_problem"
 	photomanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/photo_manager"
 	placeservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/place"
 	usermanagerservice "github.com/nikita5637/quiz-registrator-api/internal/app/service/user_manager"
@@ -38,49 +37,49 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameresults"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/leagues"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/mathproblems"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	rabbitmqproducer "github.com/nikita5637/quiz-registrator-api/internal/pkg/rabbitmq/producer"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
+	"github.com/posener/ctxutil"
 	amqp "github.com/rabbitmq/amqp091-go"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"golang.org/x/sync/errgroup"
 )
 
-var (
-	configPath string
-)
-
 func init() {
-	flag.StringVar(&configPath, "config", "./config.toml", "path to config file")
+	pflag.StringP("config", "c", "", "path to config file")
+	_ = viper.BindPFlag("config", pflag.Lookup("config"))
 }
 
 func main() {
-	flag.Parse()
+	ctx := ctxutil.Interrupt()
 
-	ctx := context.Background()
+	pflag.Parse()
 
-	var err error
-	err = config.ParseConfigFile(configPath)
-	if err != nil {
+	if err := config.ReadConfig(); err != nil {
 		panic(err)
 	}
 
 	logsCombiner := &logger.Combiner{}
 	logsCombiner = logsCombiner.WithWriter(os.Stdout)
 
-	elasticLogsEnabled := config.GetValue("ElasticLogsEnabled").Bool()
+	elasticLogsEnabled := viper.GetBool("log.elastic.enabled")
 	if elasticLogsEnabled {
 		var elasticClient *elasticsearch.Client
-		elasticClient, err = elasticsearch.New(elasticsearch.Config{
+		elasticClient, err := elasticsearch.New(elasticsearch.Config{
 			ElasticAddress: config.GetElasticAddress(),
-			ElasticIndex:   config.GetValue("ElasticIndex").String(),
+			ElasticIndex:   viper.GetString("log.elastic.index"),
 		})
 		if err != nil {
-			panic(err)
+			logger.FatalKV(ctx, "new elasticsearch client error", zap.Error(err))
 		}
 
 		logger.Info(ctx, "initialized elasticsearch client")
@@ -89,41 +88,36 @@ func main() {
 
 	logLevel := config.GetLogLevel()
 	logger.SetGlobalLogger(logger.NewLogger(logLevel, logsCombiner, zap.Fields(
-		zap.String("module", "registrator-api"),
+		zap.String("module", viper.GetString("log.module_name")),
 	)))
-	logger.InfoKV(ctx, "initialized logger", "log level", logLevel)
+	logger.InfoKV(ctx, "initialized logger", zap.String("log_level", logLevel.String()))
 
-	driverName := config.GetValue("Driver").String()
+	driverName := viper.GetString("database.driver")
 	db, err := storage.NewDB(ctx, driverName)
 	if err != nil {
-		logger.Fatalf(ctx, "new DB initialization error: %s", err.Error())
+		logger.FatalKV(ctx, "new DB initialization error", zap.Error(err))
 	}
 	defer db.Close()
 
 	rabbitMQConn, err := amqp.Dial(config.GetRabbitMQURL())
 	if err != nil {
-		logger.Fatalf(ctx, "get rabbitMQ connection error: %s", err.Error())
+		logger.FatalKV(ctx, "getting rabbitMQ connection error", zap.Error(err))
 	}
 	defer rabbitMQConn.Close()
 
 	rabbitMQChannel, err := rabbitMQConn.Channel()
 	if err != nil {
-		logger.Fatalf(ctx, "get rabbitMQ channel error: %s", err.Error())
+		logger.FatalKV(ctx, "getting rabbitMQ channel error", zap.Error(err))
 	}
 	defer rabbitMQChannel.Close()
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt)
-
-	ctx, cancel := context.WithCancel(ctx)
-
-	go func() {
-		oscall := <-c
-		logger.Infof(ctx, "system call recieved: %+v", oscall)
-		cancel()
-	}()
-
 	txManager := tx.NewManager(db)
+
+	logStorage := storage.NewLogStorage(driverName, txManager)
+	quizLoggerConfig := quizlogger.Config{
+		LogStorage: logStorage,
+	}
+	quizLogger := quizlogger.New(quizLoggerConfig)
 
 	gameStorage := storage.NewGameStorage(driverName, txManager)
 	gamePlayerStorage := storage.NewGamePlayerStorage(driverName, txManager)
@@ -131,12 +125,14 @@ func main() {
 	gamePlayersFacadeConfig := gameplayers.Config{
 		GamePlayerStorage: gamePlayerStorage,
 		TxManager:         txManager,
+		QuizLogger:        quizLogger,
 	}
 	gamePlayersFacade := gameplayers.New(gamePlayersFacadeConfig)
 
 	gamesFacadeConfig := games.Config{
 		GameStorage: gameStorage,
 		TxManager:   txManager,
+		QuizLogger:  quizLogger,
 	}
 	gamesFacade := games.New(gamesFacadeConfig)
 
@@ -162,6 +158,7 @@ func main() {
 		gamePhotoStorage := storage.NewGamePhotoStorage(driverName, txManager)
 		gameResultStorage := storage.NewGameResultStorage(driverName, txManager)
 		leagueStorage := storage.NewLeagueStorage(driverName, txManager)
+		mathProblemStorage := storage.NewMathProblemStorage(driverName, txManager)
 		placeStorage := storage.NewPlaceStorage(driverName, txManager)
 		userStorage := storage.NewUserStorage(driverName, txManager)
 		userRoleStorage := storage.NewUserRoleStorage(driverName, txManager)
@@ -169,8 +166,9 @@ func main() {
 		certificatesFacadeConfig := certificates.Config{
 			CertificateStorage: certificateStorage,
 			TxManager:          txManager,
+			QuizLogger:         quizLogger,
 		}
-		certificatesFacade := certificates.NewFacade(certificatesFacadeConfig)
+		certificatesFacade := certificates.New(certificatesFacadeConfig)
 
 		userRolesFacadeConfig := userroles.Config{
 			TxManager:       txManager,
@@ -199,11 +197,12 @@ func main() {
 			GameStorage:      gameStorage,
 			GamePhotoStorage: gamePhotoStorage,
 			TxManager:        txManager,
+			QuizLogger:       quizLogger,
 		}
-		gamePhotosFacade := gamephotos.NewFacade(gamePhotosFacadeConfig)
+		gamePhotosFacade := gamephotos.New(gamePhotosFacadeConfig)
 
 		icsRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQICSQueueName").String(),
+			QueueName:       viper.GetString("service.game.ics.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		icsRabbitMQProducer := rabbitmqproducer.New(icsRabbitMQProducerConfig)
@@ -244,6 +243,17 @@ func main() {
 			LeaguesFacade: leaguesFacade,
 		}
 		leagueService := leagueservice.New(leagueServiceConfig)
+
+		mathProblemsFacadeConfig := mathproblems.Config{
+			MathProblemStorage: mathProblemStorage,
+			TxManager:          txManager,
+		}
+		mathProblemsFacade := mathproblems.New(mathProblemsFacadeConfig)
+
+		mathProblemServiceConfig := mathproblemservice.Config{
+			MathProblemsFacade: mathProblemsFacade,
+		}
+		mathProblemService := mathproblemservice.New(mathProblemServiceConfig)
 
 		photoManagerServiceConfig := photomanagerservice.Config{
 			GamePhotosFacade: gamePhotosFacade,
@@ -298,6 +308,7 @@ func main() {
 			GamePlayerRegistratorService: gamePlayerService,
 			GameResultManagerService:     gameResultManagerService,
 			LeagueService:                leagueService,
+			MathProblemService:           mathProblemService,
 			PhotoManagerService:          photoManagerService,
 			PlaceService:                 placeService,
 			UserManagerService:           userManagerService,
@@ -309,13 +320,13 @@ func main() {
 			return fmt.Errorf("failed to listen: %w", err)
 		}
 
-		logger.Infof(ctx, "starting registrator")
+		logger.Info(ctx, "starting registrator")
 		return apiServer.ListenAndServe(ctx, lis)
 	})
 
 	g.Go(func() error {
 		gameReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQGameReminderQueueName").String(),
+			QueueName:       viper.GetString("remind_manager.game.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		gameReminderRabbitMQProducer := rabbitmqproducer.New(gameReminderRabbitMQProducerConfig)
@@ -332,7 +343,7 @@ func main() {
 		gameReminder := game_reminder.New(gameReminderConfig)
 
 		lotteryReminderRabbitMQProducerConfig := rabbitmqproducer.Config{
-			QueueName:       config.GetValue("RabbitMQLotteryReminderQueueName").String(),
+			QueueName:       viper.GetString("remind_manager.lottery.queue.name"),
 			RabbitMQChannel: rabbitMQChannel,
 		}
 		lotteryReminderRabbitMQProducer := rabbitmqproducer.New(lotteryReminderRabbitMQProducerConfig)
@@ -356,9 +367,17 @@ func main() {
 		}
 		remindManager := remindmanager.New(remindManagerConfig)
 
-		logger.Infof(ctx, "starting remind manager")
+		logger.Info(ctx, "starting remind manager")
 		return remindManager.Start(ctx)
 	})
+
+	if buildInfo, ok := debug.ReadBuildInfo(); ok {
+		for _, setting := range buildInfo.Settings {
+			if setting.Key == "vcs.revision" {
+				logger.InfoKV(ctx, "application started", zap.String("vcs.revision", setting.Value))
+			}
+		}
+	}
 
 	if err := g.Wait(); err != nil {
 		logger.Fatal(ctx, err)

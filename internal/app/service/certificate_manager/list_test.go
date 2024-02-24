@@ -60,26 +60,18 @@ func TestRegistrator_ListCertificates(t *testing.T) {
 		assert.ElementsMatch(t,
 			[]*certificatemanagerpb.Certificate{
 				{
-					Id:    1,
-					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-					WonOn: 1,
-					SpentOn: &wrapperspb.Int32Value{
-						Value: 2,
-					},
-					Info: &wrapperspb.StringValue{
-						Value: "{}",
-					},
+					Id:      1,
+					Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+					WonOn:   1,
+					SpentOn: wrapperspb.Int32(2),
+					Info:    wrapperspb.String("{}"),
 				},
 				{
-					Id:    2,
-					Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-					WonOn: 3,
-					SpentOn: &wrapperspb.Int32Value{
-						Value: 2,
-					},
-					Info: &wrapperspb.StringValue{
-						Value: "{}",
-					},
+					Id:      2,
+					Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+					WonOn:   3,
+					SpentOn: wrapperspb.Int32(2),
+					Info:    wrapperspb.String("{}"),
 				},
 				{
 					Id:      3,

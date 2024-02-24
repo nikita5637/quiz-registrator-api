@@ -199,9 +199,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "invalid email",
-				},
+				Email:      wrapperspb.String("invalid email"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -240,12 +238,8 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "invalid phone",
-				},
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("invalid phone"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -284,13 +278,9 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_INVALID,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_INVALID,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -329,16 +319,10 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "invalid value",
-				},
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("invalid value"),
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -379,17 +363,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -425,7 +403,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 			ID:         1,
 			Name:       "Имя",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -437,17 +415,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -485,7 +457,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 			ID:         1,
 			Name:       "Имя",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -497,17 +469,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -548,7 +514,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 			ID:         1,
 			Name:       "Имя",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -560,17 +526,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -611,7 +571,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 			ID:         1,
 			Name:       "Имя",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -620,7 +580,7 @@ func TestImplementation_PatchUser(t *testing.T) {
 			ID:         1,
 			Name:       "Имя",
 			TelegramID: -100,
-			Email:      maybe.Just("email@email.ru"),
+			Email:      maybe.Just("email@example.com"),
 			Phone:      maybe.Just("+79998887766"),
 			State:      model.UserStateWelcome,
 			Birthdate:  maybe.Just("1990-01-30"),
@@ -632,17 +592,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 				Id:         1,
 				Name:       "Имя",
 				TelegramId: -100,
-				Email: &wrapperspb.StringValue{
-					Value: "email@email.ru",
-				},
-				Phone: &wrapperspb.StringValue{
-					Value: "+79998887766",
-				},
-				State: usermanagerpb.UserState_USER_STATE_WELCOME,
-				Birthdate: &wrapperspb.StringValue{
-					Value: "1990-01-30",
-				},
-				Sex: &pbSex,
+				Email:      wrapperspb.String("email@example.com"),
+				Phone:      wrapperspb.String("+79998887766"),
+				State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+				Birthdate:  wrapperspb.String("1990-01-30"),
+				Sex:        &pbSex,
 			},
 			UpdateMask: &fieldmaskpb.FieldMask{
 				Paths: []string{
@@ -660,17 +614,11 @@ func TestImplementation_PatchUser(t *testing.T) {
 			Id:         1,
 			Name:       "Имя",
 			TelegramId: -100,
-			Email: &wrapperspb.StringValue{
-				Value: "email@email.ru",
-			},
-			Phone: &wrapperspb.StringValue{
-				Value: "+79998887766",
-			},
-			State: usermanagerpb.UserState_USER_STATE_WELCOME,
-			Birthdate: &wrapperspb.StringValue{
-				Value: "1990-01-30",
-			},
-			Sex: &pbSex,
+			Email:      wrapperspb.String("email@example.com"),
+			Phone:      wrapperspb.String("+79998887766"),
+			State:      usermanagerpb.UserState_USER_STATE_WELCOME,
+			Birthdate:  wrapperspb.String("1990-01-30"),
+			Sex:        &pbSex,
 		}, got)
 		assert.NoError(t, err)
 	})

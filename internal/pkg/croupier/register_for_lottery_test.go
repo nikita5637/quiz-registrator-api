@@ -7,11 +7,10 @@ import (
 	"time"
 
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -31,19 +30,17 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 	t.Run("lottery is not active", func(t *testing.T) {
 		croupier := New(Config{})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-08 13:39")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-08 13:39")
 		}
 
 		ctx := context.Background()
 
 		got, err := croupier.RegisterForLottery(ctx, model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
+			LeagueID: model.LeagueQuizPlease,
 		}, model.User{})
 		assert.Equal(t, int32(0), got)
 		assert.Error(t, err)
@@ -56,19 +53,17 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			QuizPleaseCroupier: quizPleaseCroupierMock,
 		})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 15:31")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-10 15:31")
 		}
 
 		ctx := context.Background()
 
 		game := model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
+			LeagueID: model.LeagueQuizPlease,
 		}
 
 		user := model.User{
@@ -96,14 +91,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			globalConfig.LotteryStartsBefore = 3600
 			config.UpdateGlobalConfig(globalConfig)
 
-			time_utils.TimeNow = func() time.Time {
-				return time_utils.ConvertTime("2022-01-10 15:31")
+			timeutils.TimeNow = func() time.Time {
+				return timeutils.ConvertTime("2022-01-10 15:31")
 			}
 
 			ctx := context.Background()
 
 			game := model.Game{
-				Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
+				Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
 				LeagueID: pkgmodel.LeagueSquiz,
 			}
 			game.My = true
@@ -128,19 +123,17 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			QuizPleaseCroupier: quizPleaseCroupierMock,
 		})
 
-		globalConfig := config.GlobalConfig{}
-		globalConfig.LotteryStartsBefore = 3600
-		config.UpdateGlobalConfig(globalConfig)
+		viper.Set("croupier.lottery_starts_before", 3600)
 
-		time_utils.TimeNow = func() time.Time {
-			return time_utils.ConvertTime("2022-01-10 15:31")
+		timeutils.TimeNow = func() time.Time {
+			return timeutils.ConvertTime("2022-01-10 15:31")
 		}
 
 		ctx := context.Background()
 
 		game := model.Game{
-			Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
-			LeagueID: int32(leaguepb.LeagueID_QUIZ_PLEASE),
+			Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
+			LeagueID: model.LeagueQuizPlease,
 		}
 
 		user := model.User{
@@ -168,14 +161,14 @@ func TestCroupier_RegisterForLottery(t *testing.T) {
 			globalConfig.LotteryStartsBefore = 3600
 			config.UpdateGlobalConfig(globalConfig)
 
-			time_utils.TimeNow = func() time.Time {
-				return time_utils.ConvertTime("2022-01-10 15:31")
+			timeutils.TimeNow = func() time.Time {
+				return timeutils.ConvertTime("2022-01-10 15:31")
 			}
 
 			ctx := context.Background()
 
 			game := model.Game{
-				Date:     model.DateTime(time_utils.ConvertTime("2022-01-09 16:30")),
+				Date:     model.DateTime(timeutils.ConvertTime("2022-01-09 16:30")),
 				LeagueID: pkgmodel.LeagueSquiz,
 			}
 			game.My = true

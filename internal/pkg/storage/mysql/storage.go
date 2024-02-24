@@ -5,16 +5,18 @@ import (
 	"database/sql"
 
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	"go.uber.org/zap"
 )
 
 const (
-	driverName = "mysql"
+	// DriverName ...
+	DriverName = "mysql"
 )
 
 // NewDB ...
 func NewDB(ctx context.Context, dataSourceName string) (*sql.DB, error) {
-	logger.DebugKV(ctx, "initialize database connection started", "driverName", driverName, "DSN", dataSourceName)
-	db, err := sql.Open(driverName, dataSourceName)
+	logger.DebugKV(ctx, "initialize database connection started", zap.String("driver_name", DriverName), zap.String("DSN", dataSourceName))
+	db, err := sql.Open(DriverName, dataSourceName)
 	if err != nil {
 		return nil, err
 	}

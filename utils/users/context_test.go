@@ -26,7 +26,8 @@ func TestNewContextWithUser(t *testing.T) {
 func TestUserFromContext(t *testing.T) {
 	t.Run("not ok", func(t *testing.T) {
 		user := UserFromContext(context.Background())
-		assert.Equal(t, model.User{}, user)
+		var nilUser *model.User
+		assert.Equal(t, nilUser, user)
 	})
 
 	t.Run("ok", func(t *testing.T) {

@@ -26,6 +26,9 @@ func (f *Facade) CreateGame(ctx context.Context, game model.Game) (model.Game, e
 					"number":      game.Number,
 					"date":        game.DateTime().AsTime(),
 				},
+				builder.IsNull{
+					"deleted_at",
+				},
 			)
 		} else {
 			builderCond = builder.And(
@@ -37,6 +40,9 @@ func (f *Facade) CreateGame(ctx context.Context, game model.Game) (model.Game, e
 					"place_id":  game.PlaceID,
 					"number":    game.Number,
 					"date":      game.DateTime().AsTime(),
+				},
+				builder.IsNull{
+					"deleted_at",
 				},
 			)
 		}

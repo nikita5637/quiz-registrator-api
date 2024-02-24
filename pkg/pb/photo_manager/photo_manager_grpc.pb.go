@@ -26,6 +26,8 @@ const _ = grpc.SupportPackageIsVersion7
 type ServiceClient interface {
 	// AddGamePhotos adds game photos
 	AddGamePhotos(ctx context.Context, in *AddGamePhotosRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// IsGameHasPhotos returns bool flag
+	IsGameHasPhotos(ctx context.Context, in *IsGameHasPhotosRequest, opts ...grpc.CallOption) (*IsGameHasPhotosResponse, error)
 	// GetPhotosByGameID returns all photos by game ID
 	GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error)
 }
@@ -47,6 +49,15 @@ func (c *serviceClient) AddGamePhotos(ctx context.Context, in *AddGamePhotosRequ
 	return out, nil
 }
 
+func (c *serviceClient) IsGameHasPhotos(ctx context.Context, in *IsGameHasPhotosRequest, opts ...grpc.CallOption) (*IsGameHasPhotosResponse, error) {
+	out := new(IsGameHasPhotosResponse)
+	err := c.cc.Invoke(ctx, "/photo_manager.Service/IsGameHasPhotos", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *serviceClient) GetPhotosByGameID(ctx context.Context, in *GetPhotosByGameIDRequest, opts ...grpc.CallOption) (*GetPhotosByGameIDResponse, error) {
 	out := new(GetPhotosByGameIDResponse)
 	err := c.cc.Invoke(ctx, "/photo_manager.Service/GetPhotosByGameID", in, out, opts...)
@@ -62,6 +73,8 @@ func (c *serviceClient) GetPhotosByGameID(ctx context.Context, in *GetPhotosByGa
 type ServiceServer interface {
 	// AddGamePhotos adds game photos
 	AddGamePhotos(context.Context, *AddGamePhotosRequest) (*emptypb.Empty, error)
+	// IsGameHasPhotos returns bool flag
+	IsGameHasPhotos(context.Context, *IsGameHasPhotosRequest) (*IsGameHasPhotosResponse, error)
 	// GetPhotosByGameID returns all photos by game ID
 	GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error)
 	mustEmbedUnimplementedServiceServer()
@@ -73,6 +86,9 @@ type UnimplementedServiceServer struct {
 
 func (UnimplementedServiceServer) AddGamePhotos(context.Context, *AddGamePhotosRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AddGamePhotos not implemented")
+}
+func (UnimplementedServiceServer) IsGameHasPhotos(context.Context, *IsGameHasPhotosRequest) (*IsGameHasPhotosResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IsGameHasPhotos not implemented")
 }
 func (UnimplementedServiceServer) GetPhotosByGameID(context.Context, *GetPhotosByGameIDRequest) (*GetPhotosByGameIDResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPhotosByGameID not implemented")
@@ -108,6 +124,24 @@ func _Service_AddGamePhotos_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Service_IsGameHasPhotos_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(IsGameHasPhotosRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ServiceServer).IsGameHasPhotos(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/photo_manager.Service/IsGameHasPhotos",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ServiceServer).IsGameHasPhotos(ctx, req.(*IsGameHasPhotosRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Service_GetPhotosByGameID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetPhotosByGameIDRequest)
 	if err := dec(in); err != nil {
@@ -136,6 +170,10 @@ var Service_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AddGamePhotos",
 			Handler:    _Service_AddGamePhotos_Handler,
+		},
+		{
+			MethodName: "IsGameHasPhotos",
+			Handler:    _Service_IsGameHasPhotos_Handler,
 		},
 		{
 			MethodName: "GetPhotosByGameID",

@@ -306,6 +306,8 @@ type RegistratorServiceClient interface {
 	RegisterPlayer(ctx context.Context, in *RegisterPlayerRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// UnregisterPlayer unregisters player from a game
 	UnregisterPlayer(ctx context.Context, in *UnregisterPlayerRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
+	// UpdatePlayerDegree updates player degree
+	UpdatePlayerDegree(ctx context.Context, in *UpdatePlayerDegreeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 }
 
 type registratorServiceClient struct {
@@ -334,6 +336,15 @@ func (c *registratorServiceClient) UnregisterPlayer(ctx context.Context, in *Unr
 	return out, nil
 }
 
+func (c *registratorServiceClient) UpdatePlayerDegree(ctx context.Context, in *UpdatePlayerDegreeRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
+	out := new(emptypb.Empty)
+	err := c.cc.Invoke(ctx, "/game_player.RegistratorService/UpdatePlayerDegree", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RegistratorServiceServer is the server API for RegistratorService service.
 // All implementations must embed UnimplementedRegistratorServiceServer
 // for forward compatibility
@@ -342,6 +353,8 @@ type RegistratorServiceServer interface {
 	RegisterPlayer(context.Context, *RegisterPlayerRequest) (*emptypb.Empty, error)
 	// UnregisterPlayer unregisters player from a game
 	UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*emptypb.Empty, error)
+	// UpdatePlayerDegree updates player degree
+	UpdatePlayerDegree(context.Context, *UpdatePlayerDegreeRequest) (*emptypb.Empty, error)
 	mustEmbedUnimplementedRegistratorServiceServer()
 }
 
@@ -354,6 +367,9 @@ func (UnimplementedRegistratorServiceServer) RegisterPlayer(context.Context, *Re
 }
 func (UnimplementedRegistratorServiceServer) UnregisterPlayer(context.Context, *UnregisterPlayerRequest) (*emptypb.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UnregisterPlayer not implemented")
+}
+func (UnimplementedRegistratorServiceServer) UpdatePlayerDegree(context.Context, *UpdatePlayerDegreeRequest) (*emptypb.Empty, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdatePlayerDegree not implemented")
 }
 func (UnimplementedRegistratorServiceServer) mustEmbedUnimplementedRegistratorServiceServer() {}
 
@@ -404,6 +420,24 @@ func _RegistratorService_UnregisterPlayer_Handler(srv interface{}, ctx context.C
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RegistratorService_UpdatePlayerDegree_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdatePlayerDegreeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RegistratorServiceServer).UpdatePlayerDegree(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/game_player.RegistratorService/UpdatePlayerDegree",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RegistratorServiceServer).UpdatePlayerDegree(ctx, req.(*UpdatePlayerDegreeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RegistratorService_ServiceDesc is the grpc.ServiceDesc for RegistratorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -418,6 +452,10 @@ var RegistratorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UnregisterPlayer",
 			Handler:    _RegistratorService_UnregisterPlayer_Handler,
+		},
+		{
+			MethodName: "UpdatePlayerDegree",
+			Handler:    _RegistratorService_UpdatePlayerDegree_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

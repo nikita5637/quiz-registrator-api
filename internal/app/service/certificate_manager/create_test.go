@@ -88,7 +88,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 			Certificate: &certificatemanagerpb.Certificate{
 				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
 				WonOn:   1,
-				SpentOn: &wrapperspb.Int32Value{},
+				SpentOn: wrapperspb.Int32(0),
 			},
 		})
 		assert.Nil(t, got)
@@ -104,11 +104,9 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
-				WonOn: 1,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: -1,
-				},
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_BAR_BILL_PAYMENT,
+				WonOn:   1,
+				SpentOn: wrapperspb.Int32(-1),
 			},
 		})
 		assert.Nil(t, got)
@@ -126,7 +124,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 			Certificate: &certificatemanagerpb.Certificate{
 				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
 				WonOn: 1,
-				Info:  &wrapperspb.StringValue{},
+				Info:  wrapperspb.String(""),
 			},
 		})
 		assert.Nil(t, got)
@@ -144,9 +142,7 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 			Certificate: &certificatemanagerpb.Certificate{
 				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
 				WonOn: 1,
-				Info: &wrapperspb.StringValue{
-					Value: "invalid JSON",
-				},
+				Info:  wrapperspb.String("invalid JSON"),
 			},
 		})
 		assert.Nil(t, got)
@@ -169,14 +165,10 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn: 1,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 2,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
-				},
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn:   1,
+				SpentOn: wrapperspb.Int32(2),
+				Info:    wrapperspb.String("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 			},
 		})
 
@@ -200,14 +192,10 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn: 1,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 2,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
-				},
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn:   1,
+				SpentOn: wrapperspb.Int32(2),
+				Info:    wrapperspb.String("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 			},
 		})
 
@@ -231,14 +219,10 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn: 1,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 2,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
-				},
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn:   1,
+				SpentOn: wrapperspb.Int32(2),
+				Info:    wrapperspb.String("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 			},
 		})
 
@@ -268,27 +252,19 @@ func TestRegistrator_CreateCertificate(t *testing.T) {
 
 		got, err := fx.certificateManager.CreateCertificate(fx.ctx, &certificatemanagerpb.CreateCertificateRequest{
 			Certificate: &certificatemanagerpb.Certificate{
-				Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-				WonOn: 1,
-				SpentOn: &wrapperspb.Int32Value{
-					Value: 2,
-				},
-				Info: &wrapperspb.StringValue{
-					Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
-				},
+				Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+				WonOn:   1,
+				SpentOn: wrapperspb.Int32(2),
+				Info:    wrapperspb.String("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 			},
 		})
 
 		assert.Equal(t, &certificatemanagerpb.Certificate{
-			Id:    777,
-			Type:  certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
-			WonOn: 1,
-			SpentOn: &wrapperspb.Int32Value{
-				Value: 2,
-			},
-			Info: &wrapperspb.StringValue{
-				Value: "{\"sum\": 5000, \"expired\": \"2023-06-16\"}",
-			},
+			Id:      777,
+			Type:    certificatemanagerpb.CertificateType_CERTIFICATE_TYPE_FREE_PASS,
+			WonOn:   1,
+			SpentOn: wrapperspb.Int32(2),
+			Info:    wrapperspb.String("{\"sum\": 5000, \"expired\": \"2023-06-16\"}"),
 		}, got)
 		assert.NoError(t, err)
 	})

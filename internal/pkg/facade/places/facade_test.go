@@ -3,14 +3,14 @@ package places
 import (
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewFacade(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
-		ps := storage.NewPlaceStorage(config.DriverMySQL, nil)
+		ps := storage.NewPlaceStorage(mysql.DriverName, nil)
 		cfg := Config{
 			PlaceStorage: ps,
 		}

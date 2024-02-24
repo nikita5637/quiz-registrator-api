@@ -1,11 +1,7 @@
 package model
 
 import (
-	"time"
-
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
-	time_utils "github.com/nikita5637/quiz-registrator-api/utils/time"
 )
 
 // Game ...
@@ -26,6 +22,7 @@ type Game struct {
 	IsInMaster  bool
 	// additional info
 	HasPassed bool
+	GameLink  maybe.Maybe[string]
 }
 
 // NewGame returns dummy game
@@ -35,6 +32,7 @@ func NewGame() Game {
 		Name:        maybe.Nothing[string](),
 		PaymentType: maybe.Nothing[string](),
 		Payment:     maybe.Nothing[Payment](),
+		GameLink:    maybe.Nothing[string](),
 	}
 }
 
@@ -45,14 +43,4 @@ func (g *Game) DateTime() DateTime {
 	}
 
 	return g.Date
-}
-
-// IsActive ...
-func (g *Game) IsActive() bool {
-	if g == nil {
-		return false
-	}
-
-	activeGameLag := config.GetValue("ActiveGameLag").Uint16()
-	return time_utils.TimeNow().UTC().Before(g.DateTime().AsTime().Add(time.Duration(activeGameLag) * time.Second))
 }

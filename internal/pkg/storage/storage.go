@@ -12,8 +12,8 @@ import (
 // NewDB ...
 func NewDB(ctx context.Context, driver string) (*sql.DB, error) {
 	switch driver {
-	case config.DriverMySQL:
-		return mysql.NewDB(ctx, config.GetDatabaseDSN())
+	case mysql.DriverName:
+		return mysql.NewDB(ctx, config.GetMySQLDatabaseDSN())
 	}
 
 	return nil, errors.New("unknown driver")

@@ -12,6 +12,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/pkg/reminder"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 	"go.uber.org/zap"
 )
 
@@ -55,8 +56,8 @@ func New(cfg Config) *Reminder {
 
 // Run runs at 07:00 UTC
 func (r *Reminder) Run(ctx context.Context) error {
-	if timeutils.TimeNow().UTC().Hour() == 7 &&
-		timeutils.TimeNow().UTC().Minute() == 0 {
+	if timeutils.TimeNow().UTC().Hour() == viper.GetInt("remind_manager.game.hour") &&
+		timeutils.TimeNow().UTC().Minute() == viper.GetInt("remind_manager.game.minute") {
 		ctx = logger.ToContext(ctx, logger.FromContext(ctx).WithOptions(zap.Fields(
 			zap.String("reminder_name", "game reminder"),
 		)))
@@ -65,7 +66,7 @@ func (r *Reminder) Run(ctx context.Context) error {
 
 		err := r.run(ctx)
 		if err != nil {
-			logger.Errorf(ctx, "reminder error: %s", err.Error())
+			logger.ErrorKV(ctx, "running reminder error", zap.Error(err))
 			return err
 		}
 
@@ -89,7 +90,7 @@ func (r *Reminder) run(ctx context.Context) error {
 	for _, game := range games {
 		players, err := r.gamePlayersFacade.GetGamePlayersByGameID(ctx, game.ID)
 		if err != nil {
-			logger.ErrorKV(ctx, "get players by game ID error", "error", err, "gameID", game.ID)
+			logger.ErrorKV(ctx, "getting game players by game ID error", zap.Error(err), zap.Int32("game_id", game.ID))
 			continue
 		}
 
@@ -101,22 +102,22 @@ func (r *Reminder) run(ctx context.Context) error {
 		}
 
 		if len(playerIDs) == 0 {
-			logger.WarnKV(ctx, "there are not players to remind", "gameID", game.ID)
+			logger.WarnKV(ctx, "there are not players to remind", zap.Int32("game_id", game.ID))
 			continue
 		}
 
-		reminder := reminder.Game{
+		reminderMessage := reminder.Game{
 			GameID:    game.ID,
 			PlayerIDs: playerIDs,
 		}
 
-		err = r.rabbitMQProducer.Send(ctx, reminder)
+		err = r.rabbitMQProducer.Send(ctx, reminderMessage)
 		if err != nil {
-			logger.Errorf(ctx, "send message error: %s", err.Error())
+			logger.ErrorKV(ctx, "sending message error", zap.Error(err))
 			continue
 		}
 
-		logger.InfoKV(ctx, "message published", "reminder", reminder)
+		logger.InfoKV(ctx, "reminder message published", zap.Reflect("message", reminderMessage))
 	}
 
 	return nil

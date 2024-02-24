@@ -7,12 +7,10 @@ services:
       dockerfile: Dockerfile
       args:
         GITHUB_PATH: https://github.com/nikita5637/quiz-registrator-api.git
-        BRANCH: v1.3
-    command: "/bin/registrator-api --config /etc/config.toml"
+        BRANCH: v1.4
+    command: "/bin/registrator-api --config /etc/config.yaml"
     container_name: registrator-api
     environment:
-      DATABASE_PASSWORD: quiz_regbot
-      RABBITMQ_PASSWORD: quiz_regbot
     networks:
       - network
     ports:

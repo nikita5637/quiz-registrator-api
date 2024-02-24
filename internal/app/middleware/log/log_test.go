@@ -9,11 +9,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-func errorHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func errorHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, errors.New("some error")
 }
 
-func okHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func okHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, nil
 }
 

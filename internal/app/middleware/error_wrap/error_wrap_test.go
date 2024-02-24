@@ -11,19 +11,19 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-func okHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func okHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, nil
 }
 
-func internalErrorHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func internalErrorHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, status.New(codes.Internal, "internal error").Err()
 }
 
-func unavailableErrorHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func unavailableErrorHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, status.New(codes.Unavailable, "unavailable").Err()
 }
 
-func otherErrorHandler(ctx context.Context, req interface{}) (interface{}, error) {
+func otherErrorHandler(_ context.Context, _ interface{}) (interface{}, error) {
 	return nil, errors.New("some error")
 }
 

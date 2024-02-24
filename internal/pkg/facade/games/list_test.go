@@ -1,16 +1,19 @@
 package games
 
 import (
+	"database/sql"
 	"errors"
 	"testing"
 	"time"
 
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -20,9 +23,7 @@ func TestFacade_ListGames(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -44,8 +45,45 @@ func TestFacade_ListGames(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
+	t.Run("error: write logs error", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		fx.gameStorage.EXPECT().Find(mock.Anything, builder.And(
+			builder.IsNull{
+				"deleted_at",
+			},
+		), "date").Return([]database.Game{}, nil)
+
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotCompleteListOfGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata:   nil,
+		}).Return(errors.New("some error"))
+
+		got, err := fx.facade.ListGames(ctx)
+		assert.Nil(t, got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
 	t.Run("ok: empty list", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -56,7 +94,16 @@ func TestFacade_ListGames(t *testing.T) {
 			},
 		), "date").Return([]database.Game{}, nil)
 
-		got, err := fx.facade.ListGames(fx.ctx)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotCompleteListOfGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata:   nil,
+		}).Return(nil)
+
+		got, err := fx.facade.ListGames(ctx)
 		assert.Equal(t, []model.Game{}, got)
 		assert.NoError(t, err)
 
@@ -67,6 +114,10 @@ func TestFacade_ListGames(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		fx := tearUp(t)
 
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
@@ -76,34 +127,51 @@ func TestFacade_ListGames(t *testing.T) {
 			},
 		), "date").Return([]database.Game{
 			{
-				ID:   1,
-				Date: timeutils.TimeNow().Add(time.Hour),
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID: 1,
+				Date:     timeutils.TimeNow().Add(time.Hour),
 			},
 			{
 				ID:   3,
-				Date: timeutils.TimeNow().Add(-1 * time.Hour),
+				Date: timeutils.TimeNow().Add(-3601 * time.Second),
 			},
 		}, nil)
 
-		got, err := fx.facade.ListGames(fx.ctx)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotCompleteListOfGames,
+			ObjectType: maybe.Nothing[string](),
+			ObjectID:   maybe.Nothing[int32](),
+			Metadata:   nil,
+		}).Return(nil)
+
+		got, err := fx.facade.ListGames(ctx)
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    1,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
 			},
 			{
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)

@@ -62,10 +62,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -80,7 +78,9 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 		errorInfo, ok := st.Details()[0].(*errdetails.ErrorInfo)
 		assert.True(t, ok)
 		assert.Equal(t, games.ReasonGameNotFound, errorInfo.Reason)
-		assert.Nil(t, errorInfo.Metadata)
+		assert.Equal(t, map[string]string{
+			"error": "game not found",
+		}, errorInfo.Metadata)
 	})
 
 	t.Run("game has passed", func(t *testing.T) {
@@ -92,10 +92,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -120,10 +118,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -145,10 +141,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -218,10 +212,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -274,10 +266,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -332,10 +322,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -390,10 +378,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -448,10 +434,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},
@@ -505,10 +489,8 @@ func TestRegistrator_RegisterPlayer(t *testing.T) {
 
 		got, err := fx.implementation.RegisterPlayer(fx.ctx, &gameplayer.RegisterPlayerRequest{
 			GamePlayer: &gameplayer.GamePlayer{
-				GameId: 1,
-				UserId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
+				GameId:       1,
+				UserId:       wrapperspb.Int32(1),
 				RegisteredBy: 1,
 				Degree:       gameplayer.Degree_DEGREE_LIKELY,
 			},

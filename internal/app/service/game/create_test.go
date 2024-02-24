@@ -12,7 +12,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/places"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"github.com/stretchr/testify/assert"
 	"google.golang.org/genproto/googleapis/rpc/errdetails"
@@ -41,24 +40,20 @@ func TestImplementation_CreateGame(t *testing.T) {
 		paymentCertificate := gamepb.Payment_PAYMENT_CERTIFICATE
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name:     &wrapperspb.StringValue{}, // invalid
-				PlaceId:  1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   model.LeagueQuizPlease,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String(""), // invalid
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
 			},
 		})
 		assert.Nil(t, got)
@@ -94,30 +89,26 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}).Return(model.Game{}, games.ErrGameAlreadyExists)
 
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: math.MaxInt32,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   math.MaxInt32,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		})
 		assert.Nil(t, got)
@@ -153,30 +144,26 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}).Return(model.Game{}, leagues.ErrLeagueNotFound)
 
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: math.MaxInt32,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   math.MaxInt32,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		})
 		assert.Nil(t, got)
@@ -212,30 +199,26 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}).Return(model.Game{}, places.ErrPlaceNotFound)
 
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   model.LeagueQuizPlease,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		})
 		assert.Nil(t, got)
@@ -271,30 +254,26 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}).Return(model.Game{}, errors.New("some error"))
 
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   model.LeagueQuizPlease,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		})
 		assert.Nil(t, got)
@@ -323,6 +302,7 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}).Return(model.Game{
 			ID:          1,
 			ExternalID:  maybe.Just(int32(1)),
@@ -337,54 +317,45 @@ func TestImplementation_CreateGame(t *testing.T) {
 			MaxPlayers:  9,
 			Payment:     maybe.Just(model.PaymentCertificate),
 			IsInMaster:  true,
+			GameLink:    maybe.Just("link"),
 		}, nil)
 
 		got, err := fx.implementation.CreateGame(fx.ctx, &gamepb.CreateGameRequest{
 			Game: &gamepb.Game{
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   model.LeagueQuizPlease,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				IsInMaster: true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				IsInMaster:  true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		})
 		assert.Equal(t, &gamepb.Game{
-			Id: 1,
-			ExternalId: &wrapperspb.Int32Value{
-				Value: 1,
-			},
-			LeagueId: leaguepb.LeagueID_QUIZ_PLEASE,
-			Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-			Number:   "1",
-			Name: &wrapperspb.StringValue{
-				Value: "name",
-			},
-			PlaceId: 1,
+			Id:         1,
+			ExternalId: wrapperspb.Int32(1),
+			LeagueId:   model.LeagueQuizPlease,
+			Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+			Number:     "1",
+			Name:       wrapperspb.String("name"),
+			PlaceId:    1,
 			Date: &timestamppb.Timestamp{
 				Seconds: 1136214240,
 			},
-			Price: 400,
-			PaymentType: &wrapperspb.StringValue{
-				Value: "cash",
-			},
-			MaxPlayers: 9,
-			Payment:    &paymentCertificate,
-			IsInMaster: true,
+			Price:       400,
+			PaymentType: wrapperspb.String("cash"),
+			MaxPlayers:  9,
+			Payment:     &paymentCertificate,
+			IsInMaster:  true,
+			GameLink:    wrapperspb.String("link"),
 		}, got)
 		assert.NoError(t, err)
 	})
@@ -532,7 +503,7 @@ func Test_validateCreatedGame(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "error: invalid Nummber",
+			name: "error: invalid Number",
 			args: args{
 				game: model.Game{
 					ID:          1,
@@ -554,7 +525,7 @@ func Test_validateCreatedGame(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "error: invalid Nummber",
+			name: "error: invalid Number",
 			args: args{
 				game: model.Game{
 					ID:          1,
@@ -628,7 +599,7 @@ func Test_validateCreatedGame(t *testing.T) {
 					LeagueID:    1,
 					Type:        model.GameTypeClassic,
 					Number:      "1",
-					Name:        maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+					Name:        maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
 					PlaceID:     1,
 					Date:        model.DateTime(timeutils.ConvertTime("2006-01-02 15:04")),
 					Price:       400,

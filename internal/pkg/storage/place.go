@@ -5,7 +5,6 @@ package storage
 import (
 	"context"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
@@ -21,7 +20,7 @@ type PlaceStorage interface {
 // NewPlaceStorage ...
 func NewPlaceStorage(driver string, txManager *tx.Manager) PlaceStorage {
 	switch driver {
-	case config.DriverMySQL:
+	case mysql.DriverName:
 		return mysql.NewPlaceStorageAdapter(txManager)
 	}
 

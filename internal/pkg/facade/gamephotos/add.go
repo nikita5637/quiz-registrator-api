@@ -9,6 +9,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	"go.uber.org/zap"
 )
 
 // AddGamePhotos ...
@@ -32,7 +33,7 @@ func (f *Facade) AddGamePhotos(ctx context.Context, id int32, urls []string) err
 				return fmt.Errorf("insert error: %w", err)
 			}
 
-			logger.DebugKV(ctx, "added new game photo", "game id", id, "url", url)
+			logger.DebugKV(ctx, "added new game photo", zap.Int32("game_id", id), zap.String("url", url))
 		}
 
 		return nil

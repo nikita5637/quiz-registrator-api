@@ -4,7 +4,6 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/games"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	croupierpb "github.com/nikita5637/quiz-registrator-api/pkg/pb/croupier"
@@ -15,9 +14,6 @@ import (
 )
 
 func TestRegistrator_GetLotteryStatus(t *testing.T) {
-	globalConfig := config.GlobalConfig{}
-	globalConfig.LotteryStartsBefore = 3600
-	config.UpdateGlobalConfig(globalConfig)
 	t.Run("internal error while get game", func(t *testing.T) {
 		fx := tearUp(t)
 

@@ -6,7 +6,6 @@ import (
 	"context"
 
 	"github.com/go-xorm/builder"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
@@ -26,7 +25,7 @@ type GameStorage interface {
 // NewGameStorage ...
 func NewGameStorage(driver string, txManager *tx.Manager) GameStorage {
 	switch driver {
-	case config.DriverMySQL:
+	case mysql.DriverName:
 		return mysql.NewGameStorageAdapter(txManager)
 	}
 

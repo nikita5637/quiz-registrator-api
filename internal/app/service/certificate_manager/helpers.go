@@ -87,14 +87,10 @@ func convertModelCertificateToProtoCertificate(certificate model.Certificate) *c
 		WonOn: certificate.WonOn,
 	}
 	if v, ok := certificate.SpentOn.Get(); ok {
-		ret.SpentOn = &wrapperspb.Int32Value{
-			Value: v,
-		}
+		ret.SpentOn = wrapperspb.Int32(v)
 	}
 	if v, ok := certificate.Info.Get(); ok {
-		ret.Info = &wrapperspb.StringValue{
-			Value: v,
-		}
+		ret.Info = wrapperspb.String(v)
 	}
 
 	return ret

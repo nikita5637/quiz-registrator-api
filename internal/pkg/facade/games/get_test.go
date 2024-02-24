@@ -8,10 +8,12 @@ import (
 
 	"github.com/go-xorm/builder"
 	"github.com/mono83/maybe"
-	"github.com/nikita5637/quiz-registrator-api/internal/config"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
+	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	usersutils "github.com/nikita5637/quiz-registrator-api/utils/users"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 )
@@ -21,9 +23,7 @@ func TestFacade_GetGameByID(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: game not found", func(t *testing.T) {
 		fx := tearUp(t)
@@ -85,8 +85,45 @@ func TestFacade_GetGameByID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok. game has not passed", func(t *testing.T) {
+	t.Run("error: write logs error", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
+
+		fx.dbMock.ExpectBegin()
+		fx.dbMock.ExpectRollback()
+
+		timeNow := timeutils.TimeNow()
+		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
+			ID:   1,
+			Date: timeNow.Add(time.Hour),
+		}, nil)
+
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotGameInfo,
+			ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+			ObjectID:   maybe.Just(int32(1)),
+			Metadata:   nil,
+		}).Return(errors.New("some error"))
+
+		got, err := fx.facade.GetGameByID(ctx, 1)
+		assert.Equal(t, model.NewGame(), got)
+		assert.Error(t, err)
+
+		err = fx.dbMock.ExpectationsWereMet()
+		assert.NoError(t, err)
+	})
+
+	t.Run("ok: game has not passed", func(t *testing.T) {
+		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
@@ -97,7 +134,16 @@ func TestFacade_GetGameByID(t *testing.T) {
 			Date: timeNow.Add(time.Hour),
 		}, nil)
 
-		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotGameInfo,
+			ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+			ObjectID:   maybe.Just(int32(1)),
+			Metadata:   nil,
+		}).Return(nil)
+
+		got, err := fx.facade.GetGameByID(ctx, 1)
 		expectedGame := model.NewGame()
 		expectedGame.ID = 1
 		expectedGame.Date = model.DateTime(timeNow.Add(time.Hour))
@@ -108,23 +154,44 @@ func TestFacade_GetGameByID(t *testing.T) {
 		assert.NoError(t, err)
 	})
 
-	t.Run("ok. game has passed", func(t *testing.T) {
+	t.Run("ok: game has passed", func(t *testing.T) {
 		fx := tearUp(t)
+
+		ctx := usersutils.NewContextWithUser(fx.ctx, &model.User{
+			ID: 1,
+		})
 
 		fx.dbMock.ExpectBegin()
 		fx.dbMock.ExpectCommit()
 
 		timeNow := timeutils.TimeNow()
 		fx.gameStorage.EXPECT().GetGameByID(mock.Anything, 1).Return(&database.Game{
-			ID:   1,
-			Date: timeNow.Add(-time.Hour),
+			ID: 1,
+			ExternalID: sql.NullInt64{
+				Int64: 123,
+				Valid: true,
+			},
+			LeagueID: 1,
+			Date:     timeNow.Add(-3601 * time.Second),
 		}, nil)
 
-		got, err := fx.facade.GetGameByID(fx.ctx, 1)
+		fx.quizLogger.EXPECT().Write(mock.Anything, quizlogger.Params{
+			UserID:     maybe.Just(int32(1)),
+			ActionID:   quizlogger.ReadingActionID,
+			MessageID:  quizlogger.GotGameInfo,
+			ObjectType: maybe.Just(quizlogger.ObjectTypeGame),
+			ObjectID:   maybe.Just(int32(1)),
+			Metadata:   nil,
+		}).Return(nil)
+
+		got, err := fx.facade.GetGameByID(ctx, 1)
 		expectedGame := model.NewGame()
 		expectedGame.ID = 1
-		expectedGame.Date = model.DateTime(timeNow.Add(-time.Hour))
+		expectedGame.ExternalID = maybe.Just(int32(123))
+		expectedGame.LeagueID = 1
+		expectedGame.Date = model.DateTime(timeNow.Add(-3601 * time.Second))
 		expectedGame.HasPassed = true
+		expectedGame.GameLink = maybe.Just("https://spb.quizplease.ru/game-page?id=123")
 		assert.Equal(t, expectedGame, got)
 		assert.NoError(t, err)
 
@@ -138,9 +205,7 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -197,12 +262,17 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 			},
 		), "").Return([]database.Game{
 			{
-				ID:   1,
-				Date: timeutils.TimeNow().Add(time.Hour),
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID: 3,
+				Date:     timeutils.TimeNow().Add(time.Hour),
 			},
 			{
 				ID:   3,
-				Date: timeutils.TimeNow().Add(-1 * time.Hour),
+				Date: timeutils.TimeNow().Add(-3601 * time.Second),
 			},
 		}, nil)
 
@@ -210,21 +280,24 @@ func TestFacade_GetGamesByIDs(t *testing.T) {
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    3,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://club60sec.ru/quizgames/game/777/"),
 			},
 			{
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)
@@ -239,9 +312,7 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 		return timeutils.ConvertTime("2006-01-02 15:04")
 	}
 
-	globalConfig := config.GlobalConfig{}
-	globalConfig.ActiveGameLag = 3600
-	config.UpdateGlobalConfig(globalConfig)
+	viper.Set("service.game.has_passed_game_lag", 3600)
 
 	t.Run("error: find error", func(t *testing.T) {
 		fx := tearUp(t)
@@ -298,13 +369,18 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 			builder.Expr("date LIKE \"2006-01-02%\""),
 		), "").Return([]database.Game{
 			{
-				ID:         1,
+				ID: 1,
+				ExternalID: sql.NullInt64{
+					Int64: 777,
+					Valid: true,
+				},
+				LeagueID:   1,
 				Date:       timeutils.TimeNow().Add(time.Hour),
 				Registered: true,
 			},
 			{
 				ID:         3,
-				Date:       timeutils.TimeNow().Add(-1 * time.Hour),
+				Date:       timeutils.TimeNow().Add(-3601 * time.Second),
 				Registered: true,
 			},
 		}, nil)
@@ -313,23 +389,26 @@ func TestFacade_GetTodaysGames(t *testing.T) {
 		assert.Equal(t, []model.Game{
 			{
 				ID:          1,
-				ExternalID:  maybe.Nothing[int32](),
+				ExternalID:  maybe.Just(int32(777)),
+				LeagueID:    1,
 				Name:        maybe.Nothing[string](),
 				Date:        model.DateTime(timeutils.TimeNow().Add(time.Hour)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				Registered:  true,
 				HasPassed:   false,
+				GameLink:    maybe.Just("https://spb.quizplease.ru/game-page?id=777"),
 			},
 			{
 				ID:          3,
 				ExternalID:  maybe.Nothing[int32](),
 				Name:        maybe.Nothing[string](),
-				Date:        model.DateTime(timeutils.TimeNow().Add(-1 * time.Hour)),
+				Date:        model.DateTime(timeutils.TimeNow().Add(-3601 * time.Second)),
 				PaymentType: maybe.Nothing[string](),
 				Payment:     maybe.Nothing[model.Payment](),
 				Registered:  true,
 				HasPassed:   true,
+				GameLink:    maybe.Nothing[string](),
 			},
 		}, got)
 		assert.NoError(t, err)

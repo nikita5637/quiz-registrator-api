@@ -8,8 +8,9 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/mono83/maybe"
+	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameplayers/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
+	dbmocks "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mocks"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/tx"
 	"github.com/stretchr/testify/assert"
@@ -21,7 +22,8 @@ type fixture struct {
 	dbMock sqlmock.Sqlmock
 	facade *Facade
 
-	gamePlayerStorage *mocks.GamePlayerStorage
+	gamePlayerStorage *dbmocks.GamePlayerStorage
+	quizLogger        *mocks.QuizLogger
 }
 
 func tearUp(t *testing.T) *fixture {
@@ -33,13 +35,14 @@ func tearUp(t *testing.T) *fixture {
 		db:     tx.NewManager(db),
 		dbMock: dbMock,
 
-		gamePlayerStorage: mocks.NewGamePlayerStorage(t),
+		gamePlayerStorage: dbmocks.NewGamePlayerStorage(t),
+		quizLogger:        mocks.NewQuizLogger(t),
 	}
 
 	fx.facade = New(Config{
 		GamePlayerStorage: fx.gamePlayerStorage,
-
-		TxManager: fx.db,
+		TxManager:         fx.db,
+		QuizLogger:        fx.quizLogger,
 	})
 
 	t.Cleanup(func() {

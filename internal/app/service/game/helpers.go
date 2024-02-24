@@ -8,7 +8,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/i18n"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
 )
@@ -120,7 +119,7 @@ var (
 func convertModelGameToProtoGame(game model.Game) *gamepb.Game {
 	pbGame := &gamepb.Game{
 		Id:         game.ID,
-		LeagueId:   leaguepb.LeagueID(game.LeagueID),
+		LeagueId:   game.LeagueID,
 		Type:       gamepb.GameType(game.Type),
 		Number:     game.Number,
 		PlaceId:    game.PlaceID,
@@ -134,26 +133,24 @@ func convertModelGameToProtoGame(game model.Game) *gamepb.Game {
 	}
 
 	if externalID, isPresent := game.ExternalID.Get(); isPresent {
-		pbGame.ExternalId = &wrapperspb.Int32Value{
-			Value: externalID,
-		}
+		pbGame.ExternalId = wrapperspb.Int32(externalID)
 	}
 
 	if name, isPresent := game.Name.Get(); isPresent {
-		pbGame.Name = &wrapperspb.StringValue{
-			Value: name,
-		}
+		pbGame.Name = wrapperspb.String(name)
 	}
 
 	if paymentType, isPresent := game.PaymentType.Get(); isPresent {
-		pbGame.PaymentType = &wrapperspb.StringValue{
-			Value: paymentType,
-		}
+		pbGame.PaymentType = wrapperspb.String(paymentType)
 	}
 
 	if payment, isPresent := game.Payment.Get(); isPresent {
 		p := gamepb.Payment(payment)
 		pbGame.Payment = &p
+	}
+
+	if gameLink, isPresent := game.GameLink.Get(); isPresent {
+		pbGame.GameLink = wrapperspb.String(gameLink)
 	}
 
 	return pbGame
@@ -168,7 +165,7 @@ func convertProtoGameToModelGame(game *gamepb.Game) model.Game {
 		modelGame.ExternalID = maybe.Just(externalID.GetValue())
 	}
 
-	modelGame.LeagueID = int32(game.GetLeagueId())
+	modelGame.LeagueID = game.GetLeagueId()
 	modelGame.Type = model.GameType(game.GetType())
 	modelGame.Number = game.GetNumber()
 
@@ -194,6 +191,10 @@ func convertProtoGameToModelGame(game *gamepb.Game) model.Game {
 	modelGame.IsInMaster = game.GetIsInMaster()
 	// additional
 	modelGame.HasPassed = game.GetHasPassed()
+
+	if gameLink := game.GetGameLink(); gameLink != nil {
+		modelGame.GameLink = maybe.Just(gameLink.GetValue())
+	}
 
 	return modelGame
 }
@@ -225,7 +226,7 @@ func validateName(value interface{}) error {
 		return errors.New("must be Maybe[string]")
 	}
 
-	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Length(1, 64)))
+	return validation.Validate(v.Value(), validation.When(v.IsPresent(), validation.Required, validation.Length(1, 128)))
 }
 
 func validatePayment(value interface{}) error {

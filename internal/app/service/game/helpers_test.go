@@ -11,7 +11,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/app/service/game/mocks"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	gamepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/game"
-	leaguepb "github.com/nikita5637/quiz-registrator-api/pkg/pb/league"
 	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"google.golang.org/protobuf/types/known/wrapperspb"
@@ -72,32 +71,28 @@ func Test_convertModelGameToProtoGame(t *testing.T) {
 					Registered:  true,
 					IsInMaster:  true,
 					HasPassed:   true,
+					GameLink:    maybe.Just("link"),
 				},
 			},
 			want: &gamepb.Game{
-				Id: 1,
-				ExternalId: &wrapperspb.Int32Value{
-					Value: 1,
-				},
-				LeagueId: 1,
-				Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-				Number:   "1",
-				Name: &wrapperspb.StringValue{
-					Value: "name",
-				},
-				PlaceId: 1,
+				Id:         1,
+				ExternalId: wrapperspb.Int32(1),
+				LeagueId:   1,
+				Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+				Number:     "1",
+				Name:       wrapperspb.String("name"),
+				PlaceId:    1,
 				Date: &timestamppb.Timestamp{
 					Seconds: 1136214240,
 				},
-				Price: 400,
-				PaymentType: &wrapperspb.StringValue{
-					Value: "cash",
-				},
-				MaxPlayers: 9,
-				Payment:    &paymentCertificate,
-				Registered: true,
-				IsInMaster: true,
-				HasPassed:  true,
+				Price:       400,
+				PaymentType: wrapperspb.String("cash"),
+				MaxPlayers:  9,
+				Payment:     &paymentCertificate,
+				Registered:  true,
+				IsInMaster:  true,
+				HasPassed:   true,
+				GameLink:    wrapperspb.String("link"),
 			},
 		},
 	}
@@ -125,29 +120,24 @@ func Test_convertProtoGameToModelGame(t *testing.T) {
 			name: "tc1",
 			args: args{
 				game: &gamepb.Game{
-					Id: 1,
-					ExternalId: &wrapperspb.Int32Value{
-						Value: 1,
-					},
-					LeagueId: leaguepb.LeagueID(1),
-					Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-					Number:   "1",
-					Name: &wrapperspb.StringValue{
-						Value: "name",
-					},
-					PlaceId: 1,
+					Id:         1,
+					ExternalId: wrapperspb.Int32(1),
+					LeagueId:   model.LeagueQuizPlease,
+					Type:       gamepb.GameType_GAME_TYPE_CLASSIC,
+					Number:     "1",
+					Name:       wrapperspb.String("name"),
+					PlaceId:    1,
 					Date: &timestamppb.Timestamp{
 						Seconds: 1136214240,
 					},
-					Price: 400,
-					PaymentType: &wrapperspb.StringValue{
-						Value: "cash",
-					},
-					MaxPlayers: 9,
-					Payment:    &paymentCertificate,
-					Registered: true,
-					IsInMaster: true,
-					HasPassed:  true,
+					Price:       400,
+					PaymentType: wrapperspb.String("cash"),
+					MaxPlayers:  9,
+					Payment:     &paymentCertificate,
+					Registered:  true,
+					IsInMaster:  true,
+					HasPassed:   true,
+					GameLink:    wrapperspb.String("link"),
 				},
 			},
 			want: model.Game{
@@ -166,33 +156,29 @@ func Test_convertProtoGameToModelGame(t *testing.T) {
 				Registered:  true,
 				IsInMaster:  true,
 				HasPassed:   true,
+				GameLink:    maybe.Just("link"),
 			},
 		},
 		{
 			name: "tc2",
 			args: args{
 				game: &gamepb.Game{
-					Id: 1,
-					ExternalId: &wrapperspb.Int32Value{
-						Value: 1,
-					},
-					LeagueId: leaguepb.LeagueID(1),
-					Type:     gamepb.GameType_GAME_TYPE_CLASSIC,
-					Number:   "1",
-					Name: &wrapperspb.StringValue{
-						Value: "name",
-					},
-					PlaceId: 1,
-					Date:    nil,
-					Price:   400,
-					PaymentType: &wrapperspb.StringValue{
-						Value: "cash",
-					},
-					MaxPlayers: 9,
-					Payment:    &paymentCertificate,
-					Registered: true,
-					IsInMaster: true,
-					HasPassed:  true,
+					Id:          1,
+					ExternalId:  wrapperspb.Int32(1),
+					LeagueId:    model.LeagueQuizPlease,
+					Type:        gamepb.GameType_GAME_TYPE_CLASSIC,
+					Number:      "1",
+					Name:        wrapperspb.String("name"),
+					PlaceId:     1,
+					Date:        nil,
+					Price:       400,
+					PaymentType: wrapperspb.String("cash"),
+					MaxPlayers:  9,
+					Payment:     &paymentCertificate,
+					Registered:  true,
+					IsInMaster:  true,
+					HasPassed:   true,
+					GameLink:    wrapperspb.String("link"),
 				},
 			},
 			want: model.Game{
@@ -211,6 +197,7 @@ func Test_convertProtoGameToModelGame(t *testing.T) {
 				Registered:  true,
 				IsInMaster:  true,
 				HasPassed:   true,
+				GameLink:    maybe.Just("link"),
 			},
 		},
 	}
@@ -468,9 +455,9 @@ func Test_validateName(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "len lt 64",
+			name: "len lt 128",
 			args: args{
-				value: maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
+				value: maybe.Just("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"),
 			},
 			wantErr: true,
 		},

@@ -2,10 +2,14 @@ package games
 
 import (
 	"database/sql"
+	"fmt"
+	"time"
 
 	"github.com/mono83/maybe"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/model"
 	database "github.com/nikita5637/quiz-registrator-api/internal/pkg/storage/mysql"
+	timeutils "github.com/nikita5637/quiz-registrator-api/utils/time"
+	"github.com/spf13/viper"
 )
 
 const (
@@ -81,4 +85,26 @@ func convertModelGameToDBGame(game model.Game) database.Game {
 	}
 
 	return databaseGame
+}
+
+func gameHasPassed(modelGame model.Game) bool {
+	hasPassedGameLag := viper.GetDuration("service.game.has_passed_game_lag")
+	return timeutils.TimeNow().UTC().After(modelGame.DateTime().AsTime().Add(hasPassedGameLag * time.Second))
+}
+
+func getGameLink(modelGame model.Game) string {
+	externalID, isPresent := modelGame.ExternalID.Get()
+	if !isPresent {
+		return ""
+	}
+
+	switch modelGame.LeagueID {
+	case model.LeagueQuizPlease:
+		return fmt.Sprintf("https://spb.quizplease.ru/game-page?id=%d", externalID)
+	case model.LeagueSixtySeconds:
+		// return fmt.Sprintf("https://60sec.online/game/%d/", externalID) // old variant
+		return fmt.Sprintf("https://club60sec.ru/quizgames/game/%d/", externalID)
+	}
+
+	return ""
 }

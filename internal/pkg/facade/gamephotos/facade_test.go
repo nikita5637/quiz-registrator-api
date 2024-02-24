@@ -16,7 +16,7 @@ func TestNewFacade(t *testing.T) {
 			GamePhotoStorage: gps,
 			TxManager:        txManager,
 		}
-		facade := NewFacade(cfg)
+		facade := New(cfg)
 
 		assert.NotNil(t, facade)
 		assert.Equal(t, &Facade{
