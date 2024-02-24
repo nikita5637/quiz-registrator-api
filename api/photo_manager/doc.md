@@ -9,6 +9,7 @@
 ---
 ## Список ручек
 [/photo_manager.Service/AddGamePhotos](#/photo_manager.Service/AddGamePhotos)  
+[/photo_manager.Service/IsGameHasPhotos](#/photo_manager.Service/IsGameHasPhotos)  
 [/photo_manager.Service/GetPhotosByGameID](#/photo_manager.Service/GetPhotosByGameID)  
 
 ---
@@ -28,6 +29,22 @@
 | FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
 | Internal | | В остальных случаях |
 | PermissionDenied | PERMISSION_DENIED | Вызывающий не владеет ролью **management** |
+| PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
+| - | - | - |
+
+---
+### <a id="/photo_manager.Service/IsGameHasPhotos">IsGameHasPhotos</a>
+### Описание
+Возвращает признак того, есть ли фотографии с игры или нет.
+### Путь
+`/photo_manager.Service/IsGameHasPhotos`
+### Роли
++ public
+### Возвращаемые ошибки
+| Код | Причина | Описание |
+| - | - | - |
+| FailedPrecondition | GAME_NOT_FOUND | Игра не найдена |
+| Internal | | В остальных случаях |
 | PermissionDenied | YOU_ARE_BANNED | Вызывающий забанен |
 | - | - | - |
 

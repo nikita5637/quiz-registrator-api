@@ -165,6 +165,9 @@ var grpcRules = map[string]roles{
 	"/photo_manager.Service/AddGamePhotos": {
 		Management: struct{}{},
 	},
+	"/photo_manager.Service/IsGameHasPhotos": {
+		Public: struct{}{},
+	},
 	"/photo_manager.Service/GetPhotosByGameID": {
 		Public: struct{}{},
 	},

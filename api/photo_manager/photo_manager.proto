@@ -11,6 +11,10 @@ service Service {
 	rpc AddGamePhotos(AddGamePhotosRequest) returns (google.protobuf.Empty) {
 	}
 
+	// IsGameHasPhotos returns bool flag
+	rpc IsGameHasPhotos(IsGameHasPhotosRequest) returns (IsGameHasPhotosResponse) {
+	}
+
 	// GetPhotosByGameID returns all photos by game ID
 	rpc GetPhotosByGameID(GetPhotosByGameIDRequest) returns (GetPhotosByGameIDResponse) {
 	}
@@ -19,6 +23,14 @@ service Service {
 message AddGamePhotosRequest {
 	int32 game_id = 1;
 	repeated string urls = 2;
+}
+
+message IsGameHasPhotosRequest {
+	int32 game_id = 1;
+}
+
+message IsGameHasPhotosResponse {
+	bool has_photos = 1;
 }
 
 message GetPhotosByGameIDRequest {
