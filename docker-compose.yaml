@@ -3,17 +3,17 @@ version: "3.9"
 services:
   registrator-api:
     build:
+      args:
+        BASE_IMAGE: ${BASE_IMAGE}
       context: .
       dockerfile: Dockerfile
     command: "/bin/registrator-api --config /etc/config.yaml"
     container_name: registrator-api
     env_file:
       - path: .env
-        required: true
+        required: false
     networks:
       - network
-    ports:
-      - "8080:8080"
 
 networks:
   network:

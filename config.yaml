@@ -1,7 +1,8 @@
 apiserver:
-  bind:
-    address: "localhost"
-    port: 8080
+  grpc:
+    bind:
+      address: "localhost"
+      port: 8082
 
 croupier:
   lottery_starts_before: 3600

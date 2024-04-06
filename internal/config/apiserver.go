@@ -7,13 +7,13 @@ import (
 )
 
 func initAPIServerConfigureParams() {
-	_ = viper.BindEnv("apiserver.bind.address")
+	_ = viper.BindEnv("apiserver.grpc.bind.address")
 }
 
-// GetBindAddress ...
-func GetBindAddress() string {
+// GetGRPCBindAddress ...
+func GetGRPCBindAddress() string {
 	return fmt.Sprintf("%s:%d",
-		viper.GetString("apiserver.bind.address"),
-		viper.GetUint32("apiserver.bind.port"),
+		viper.GetString("apiserver.grpc.bind.address"),
+		viper.GetUint32("apiserver.grpc.bind.port"),
 	)
 }

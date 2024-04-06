@@ -1,5 +1,6 @@
 # Builder
-FROM golang:1.18.10-alpine3.17 AS builder
+ARG BASE_IMAGE=golang:1.18.10-alpine3.17
+FROM ${BASE_IMAGE} AS builder
 
 COPY ./ /go/src/quiz-registrator-api
 
@@ -13,6 +14,6 @@ FROM alpine:3.17 as server
 COPY --from=builder /go/src/quiz-registrator-api/registrator-api /bin/
 COPY --from=builder /go/src/quiz-registrator-api/config.yaml /etc/
 
-EXPOSE 8080
+EXPOSE 8082
 
 CMD ["/bin/registrator-api"]

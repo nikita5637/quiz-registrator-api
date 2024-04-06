@@ -315,7 +315,7 @@ func main() {
 		}
 		apiServer := apiserver.New(apiServerConfig)
 
-		lis, err := net.Listen("tcp", config.GetBindAddress())
+		lis, err := net.Listen("tcp", config.GetGRPCBindAddress())
 		if err != nil {
 			return fmt.Errorf("failed to listen: %w", err)
 		}
