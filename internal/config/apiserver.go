@@ -8,6 +8,7 @@ import (
 
 func initAPIServerConfigureParams() {
 	_ = viper.BindEnv("apiserver.grpc.bind.address")
+	_ = viper.BindEnv("apiserver.grpc.bind.port")
 }
 
 // GetGRPCBindAddress ...
