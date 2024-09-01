@@ -18,10 +18,12 @@ database:
 
 log:
   elastic:
-    address: "elasticsearch"
+    addresses:
+      - elasticsearch-node-1
+      - elasticsearch-node-2
+      - elasticsearch-node-3
     enabled: true
     index: "quiz_regbot"
-    port: 9200
   level: "info"
   module_name: "registrator-api"
 

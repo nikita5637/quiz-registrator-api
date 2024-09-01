@@ -6,6 +6,7 @@ import (
 	"os"
 	"runtime/debug"
 
+	"github.com/elastic/go-elasticsearch/v7"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/apiserver"
 	"github.com/nikita5637/quiz-registrator-api/internal/app/middleware/authentication"
@@ -30,7 +31,6 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/quiz_please"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/croupier/squiz"
-	"github.com/nikita5637/quiz-registrator-api/internal/pkg/elasticsearch"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/certificates"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gamephotos"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/gameplayers"
@@ -42,6 +42,7 @@ import (
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/userroles"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/facade/users"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/logger"
+	elasticsearch_logger "github.com/nikita5637/quiz-registrator-api/internal/pkg/logger/elasticsearch"
 	quizlogger "github.com/nikita5637/quiz-registrator-api/internal/pkg/quiz_logger"
 	rabbitmqproducer "github.com/nikita5637/quiz-registrator-api/internal/pkg/rabbitmq/producer"
 	"github.com/nikita5637/quiz-registrator-api/internal/pkg/storage"
@@ -73,17 +74,24 @@ func main() {
 
 	elasticLogsEnabled := viper.GetBool("log.elastic.enabled")
 	if elasticLogsEnabled {
-		var elasticClient *elasticsearch.Client
-		elasticClient, err := elasticsearch.New(elasticsearch.Config{
-			ElasticAddress: config.GetElasticAddress(),
-			ElasticIndex:   viper.GetString("log.elastic.index"),
+		elasticSearchClient, err := elasticsearch.NewClient(elasticsearch.Config{
+			Addresses: viper.GetStringSlice("log.elastic.addresses"),
 		})
 		if err != nil {
-			logger.FatalKV(ctx, "new elasticsearch client error", zap.Error(err))
+			logger.FatalKV(ctx, "failed to create elasticsearch client", zap.Error(err))
 		}
 
+		if _, err := elasticSearchClient.Ping(); err != nil {
+			logger.FatalKV(ctx, "failed to ping nodes", zap.Error(err))
+		}
+
+		elasticSearchLogger := elasticsearch_logger.New(elasticsearch_logger.Config{
+			ElasticSearchClient: elasticSearchClient,
+			Index:               viper.GetString("log.elastic.index"),
+		})
+
 		logger.Info(ctx, "initialized elasticsearch client")
-		logsCombiner = logsCombiner.WithWriter(elasticClient)
+		logsCombiner = logsCombiner.WithWriter(elasticSearchLogger)
 	}
 
 	logLevel := config.GetLogLevel()

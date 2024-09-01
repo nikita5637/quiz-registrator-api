@@ -7,6 +7,8 @@ services:
         BASE_IMAGE: ${BASE_IMAGE}
       context: .
       dockerfile: Dockerfile
+      platforms:
+        - linux/amd64
     command: "/bin/registrator-api --config /etc/config.yaml"
     container_name: registrator-api
     env_file:
