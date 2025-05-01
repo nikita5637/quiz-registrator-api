@@ -11,6 +11,7 @@ var (
 
 func initLoggerConfigureParams() {
 	_ = viper.BindEnv("log.elastic.addresses")
+	_ = viper.BindEnv("log.elastic.enabled")
 }
 
 // GetLogLevel ...
